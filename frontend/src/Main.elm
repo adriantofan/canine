@@ -6,10 +6,12 @@ import Browser.Navigation as Nav
 import Conversation exposing (Message)
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
+import Http
+import InfiniteScroll
 import Route exposing (Route, toRoute)
 import Svg exposing (path, svg)
 import Svg.Attributes as SvgAttr
-import Url
+import Url exposing (Protocol(..))
 
 
 
@@ -28,7 +30,18 @@ main =
         }
 
 
+loadMore : InfiniteScroll.Direction -> Cmd Msg
+loadMore dir =
+    Http.get
+     -- TODO: inject the api url somehow
+        { url = "http://localhost:1234/api/tmp-conversations"
+        , expect = Http.expectJson OnConversationsRetrieved Conversation.getConversationsDecoder
+        }
 
+
+
+--Http.getString "https://example.com/retrieve-more"
+--    |> Http.send OnDataRetrieved
 -- MODEL
 
 
@@ -36,12 +49,14 @@ type alias Model =
     { key : Nav.Key
     , url : Url.Url
     , route : Route
+    , infiniteScroll : InfiniteScroll.Model Msg
+    , conversations : List Conversation.Conversation
     }
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model key url (toRoute url), Cmd.none )
+    ( Model key url (toRoute url) (InfiniteScroll.init loadMore |> InfiniteScroll.direction InfiniteScroll.Top) [], Cmd.none )
 
 
 
@@ -51,6 +66,8 @@ init flags url key =
 type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | InfiniteScrollMsg InfiniteScroll.Msg
+    | OnConversationsRetrieved (Result Http.Error (List Conversation.Conversation))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -68,6 +85,30 @@ update msg model =
             ( { model | url = url, route = toRoute url }
             , Cmd.none
             )
+
+        InfiniteScrollMsg infiniteScrollMsg ->
+            let
+                ( infiniteScroll, cmd ) =
+                    InfiniteScroll.update InfiniteScrollMsg infiniteScrollMsg model.infiniteScroll
+            in
+            ( { model | infiniteScroll = infiniteScroll }, cmd )
+
+        OnConversationsRetrieved (Err err) ->
+            let
+                s =
+                    InfiniteScroll.stopLoading model.infiniteScroll
+            in
+            ( { model | infiniteScroll = s }, Cmd.none )
+
+        OnConversationsRetrieved (Ok conversations) ->
+            let
+                -- TODO: make this a function
+                newConversations =
+                    model.conversations ++ conversations
+                s =
+                    InfiniteScroll.stopLoading model.infiniteScroll
+            in
+            ( { model | infiniteScroll = s, conversations = newConversations }, Cmd.none )
 
 
 
@@ -111,7 +152,7 @@ sidebarIcon path icon selected =
         [ icon ]
 
 
-sidebar : Model -> Html msg
+sidebar : Model -> Html Msg
 sidebar model =
     let
         pageContent =
@@ -120,10 +161,10 @@ sidebar model =
                     []
 
                 Route.Conversations Nothing ->
-                    [ coversations ]
+                    [ coversations model]
 
                 Route.Conversations (Just _) ->
-                    [ coversations
+                    [ coversations model
                     , promptContainer
                     ]
     in
@@ -151,10 +192,11 @@ sidebar model =
             ]
 
 
-coversations : Html msg
-coversations =
+coversations : Model -> Html Msg
+coversations model =
     div
         [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
+        , InfiniteScroll.infiniteScroll InfiniteScrollMsg
         ]
         [ div
             [ Attr.class "flex items-start"
@@ -170,45 +212,46 @@ coversations =
             ]
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
+             --, Attr.style "height" "150px"
             ]
-            [ Html.form []
-                [ label
-                    [ Attr.for "chat-input"
-                    , Attr.class "sr-only"
-                    ]
-                    [ text "Search chats" ]
-                , div
-                    [ Attr.class "relative"
-                    ]
-                    [ input
-                        [ Attr.id "search-chats"
-                        , Attr.type_ "text"
-                        , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                        , Attr.placeholder "Search chats"
-                        , Attr.rows 1
-                        , Attr.required True
-                        ]
-                        []
-                    , button
-                        [ Attr.type_ "submit"
-                        , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
-                        ]
-                        [ Assets.searchSvg
-                        , span
-                            [ Attr.class "sr-only"
-                            ]
-                            [ text "Search chats" ]
-                        ]
-                    ]
-                ]
-            , conversationCell Conversation.dummyMessage True
-            , conversationCell Conversation.dummyMessage False
-            ]
+            (List.map (conversationCell False) model.conversations)
+            --[ Html.form []
+            --    [ label
+            --        [ Attr.for "chat-input"
+            --        , Attr.class "sr-only"
+            --        ]
+            --        [ text "Search chats" ]
+            --    , div
+            --        [ Attr.class "relative"
+            --        ]
+            --        [ input
+            --            [ Attr.id "search-chats"
+            --            , Attr.type_ "text"
+            --            , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            --            , Attr.placeholder "Search chats"
+            --            , Attr.rows 1
+            --            , Attr.required True
+            --            ]
+            --            []
+            --        , button
+            --            [ Attr.type_ "submit"
+            --            , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
+            --            ]
+            --            [ Assets.searchSvg
+            --            , span
+            --                [ Attr.class "sr-only"
+            --                ]
+            --                [ text "Search chats" ]
+            --            ]
+            --        ]
+            --    ]
+
+
         ]
 
 
-conversationCell : Message -> Bool -> Html msg
-conversationCell msg selected =
+conversationCell : Bool -> Conversation.Conversation -> Html msg
+conversationCell selected c =
     button
         [ Attr.class
             ("flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 focus:outline-none hover:bg-slate-200"
@@ -223,11 +266,11 @@ conversationCell msg selected =
         [ h1
             [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
             ]
-            [ text msg.text ]
+            [ text c.name ]
         , p
             [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
             ]
-            [ text "12 Mar" ]
+            [ text "fake date" ]
         ]
 
 
