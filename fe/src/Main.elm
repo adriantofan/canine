@@ -7,17 +7,18 @@ import Conversations
 import Home
 import Html exposing (Html, a, aside, div, text)
 import Html.Attributes as Attr
+import Store
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>))
 
 
 type alias Model =
-    { page : Page, key : Nav.Key }
+    { page : Page, key : Nav.Key, store : Store.Model }
 
 
 type Page
     = HomePage Home.Model
-    | ConversationsPage Conversations.Model
+    | ConversationPage Conversations.Model
     | NotFound
 
 
@@ -34,8 +35,8 @@ view model =
                 HomePage home ->
                     Home.view home |> Html.map HomeMsg
 
-                ConversationsPage conversations ->
-                    Conversations.view conversations |> Html.map ConversationsMsg
+                ConversationPage conversations ->
+                    Conversations.view model.store conversations |> Html.map ConversationsMsg
 
                 NotFound ->
                     text "Not Found"
@@ -97,7 +98,7 @@ isActive path page =
         ( "/", HomePage _ ) ->
             True
 
-        ( "/conversations", ConversationsPage _ ) ->
+        ( "/conversations", ConversationPage _ ) ->
             True
 
         ( _, _ ) ->
@@ -135,7 +136,7 @@ update msg model =
 
         ConversationsMsg conversationsMsg ->
             case model.page of
-                ConversationsPage conversations ->
+                ConversationPage conversations ->
                     toConversations model (Conversations.update conversationsMsg conversations)
 
                 _ ->
@@ -179,7 +180,7 @@ toHome model ( homeModel, homeCmd ) =
 
 toConversations : Model -> ( Conversations.Model, Cmd Conversations.Msg ) -> ( Model, Cmd Msg )
 toConversations model ( conversationsModel, conversationsCmd ) =
-    ( { model | page = ConversationsPage conversationsModel }, Cmd.map ConversationsMsg conversationsCmd )
+    ( { model | page = ConversationPage conversationsModel }, Cmd.map ConversationsMsg conversationsCmd )
 
 
 subscriptions : Model -> Sub Msg
@@ -189,7 +190,7 @@ subscriptions model =
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    updateUrl url { page = NotFound, key = key }
+    updateUrl url { page = NotFound, key = key, store = Store.init }
 
 
 main : Program () Model Msg

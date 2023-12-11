@@ -2,40 +2,24 @@ module Conversations exposing (Model, Msg, init, update, view)
 
 import Html exposing (..)
 import Html.Attributes as Attr
-import Http
-import Json.Decode exposing (Decoder, bool, field, int, list, map2, map5, string)
+import Html.Events exposing (onClick)
+import Store
 
 
 type alias Model =
-    { data : Maybe ConversationPage
-    , state : LoadState
-    }
-
-
-type alias ConversationPage =
-    { conversations : List Conversation
-    , lastId : Int
-    }
-
-
-type alias Conversation =
-    { id : Int
-    , name : String
-    }
-
-
-type LoadState
-    = Loading
-    | Loaded
-    | Error String
+    ()
 
 
 type Msg
-    = GotConversations (Result Http.Error (List Conversation))
+    = LoadMoreConversations
 
 
-view : Model -> Html Msg
-view model =
+view : Store.Model -> Model -> Html Msg
+view store _ =
+    let
+        conversations =
+            [ Store.Conversation 1 "name 1", Store.Conversation 2 "name 2" ]
+    in
     div
         [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
         ]
@@ -53,10 +37,8 @@ view model =
             ]
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
-
-            --, Attr.style "height" "150px"
             ]
-            (List.map (conversationCell False) [ Conversation 1 "name 1", Conversation 2 "name 2" ])
+            ([ conversationLoadingCell store.conversations ] ++ List.map (conversationCell False) conversations)
 
         --[ Html.form []
         --    [ label
@@ -91,7 +73,79 @@ view model =
         ]
 
 
-conversationCell : Bool -> Conversation -> Html msg
+isLoadingConversation : Store.ConversationStore -> Bool
+isLoadingConversation c =
+    case c of
+        Store.Unknown Store.Loading ->
+            True
+
+        Store.HaveData _ Store.Loading ->
+            True
+
+        _ ->
+            False
+
+
+hasLoadErrorConversation : Store.ConversationStore -> Bool
+hasLoadErrorConversation c =
+    case c of
+        Store.Unknown Store.Failed ->
+            True
+
+        Store.HaveData _ Store.Failed ->
+            True
+
+        _ ->
+            False
+
+
+conversationLoadingCell : Store.ConversationStore -> Html Msg
+conversationLoadingCell s =
+    let
+        loading =
+            isLoadingConversation s
+
+        buttonLabel =
+            if loading then
+                "Loading..."
+
+            else
+                "Load more..."
+
+        loadHeader =
+            [ h1
+                [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
+                ]
+                [ text buttonLabel ]
+            ]
+
+        infoText =
+            if hasLoadErrorConversation s then
+                [ p [ Attr.class "text-xs text-slate-500 dark:text-slate-400" ]
+                    [ text "Failed to load" ]
+                ]
+
+            else
+                []
+
+        onClickEvent =
+            if loading then
+                []
+
+            else
+                [ onClick LoadMoreConversations ]
+
+        buttonAttributes =
+            [ Attr.class
+                "flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 focus:outline-none hover:bg-slate-200 dark:hover:bg-slate-800"
+            ]
+    in
+    button
+        (buttonAttributes ++ onClickEvent)
+        (loadHeader ++ infoText)
+
+
+conversationCell : Bool -> Store.Conversation -> Html msg
 conversationCell selected c =
     button
         [ Attr.class
@@ -117,53 +171,11 @@ conversationCell selected c =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        LoadMoreConversations ->
+            ( model, Cmd.none )
 
 
 init : Maybe Int -> ( Model, Cmd Msg )
 init _ =
-    ( { data = Nothing
-      , state = Loading
-      }
-    , Cmd.none
-    )
-
-
-
--- API
-
-
-loadConversations : Maybe Int -> Cmd Msg
-loadConversations lastId =
-    let
-        baseUrl =
-            "http://localhost:3000/conversations"
-
-        url =
-            case lastId of
-                Just id ->
-                    baseUrl ++ "/" ++ String.fromInt id
-
-                Nothing ->
-                    baseUrl
-    in
-    Http.get
-        { url = url
-        , expect = Http.expectJson GotConversations getConversationsDecoder
-        }
-
-
-
--- DECODERS
-
-
-conversationDecoder : Decoder Conversation
-conversationDecoder =
-    map2 Conversation
-        (field "id" int)
-        (field "name" string)
-
-
-getConversationsDecoder : Decoder (List Conversation)
-getConversationsDecoder =
-    list conversationDecoder
+    ( (), Cmd.none )
