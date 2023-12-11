@@ -15,3 +15,7 @@ type alias Message =
     , timestamp : String
     , visible : Bool
     }
+
+
+dummyMessage =
+    Message 0 "Content of the message" "Author" "timestamp" True

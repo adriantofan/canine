@@ -3,6 +3,7 @@ module Main exposing (..)
 import Assets
 import Browser
 import Browser.Navigation as Nav
+import Conversation exposing (Message)
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
 import Route exposing (Route, toRoute)
@@ -84,7 +85,7 @@ subscriptions _ =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "URL Interceptor"
+    { title = "Canine AI"
     , body =
         [ Html.node "link" [ Attr.rel "stylesheet", Attr.href "style.css" ] []
         , sidebar model
@@ -112,9 +113,21 @@ sidebarIcon path icon selected =
 
 sidebar : Model -> Html msg
 sidebar model =
-    aside
-        [ Attr.class "flex"
-        ]
+    let
+        pageContent =
+            case model.route of
+                Route.Home ->
+                    []
+
+                Route.Conversations Nothing ->
+                    [ coversations ]
+
+                Route.Conversations (Just _) ->
+                    [ coversations
+                    , promptContainer
+                    ]
+    in
+    List.append
         [ {- First Column -}
           div
             [ Attr.class "flex h-screen w-12 flex-col items-center space-y-8 border-r border-slate-300 bg-slate-50 py-8 dark:border-slate-700 dark:bg-slate-900 sm:w-16"
@@ -131,148 +144,106 @@ sidebar model =
             , {- User -} sidebarIcon "/user" Assets.userSvg False
             , {- Settings -} sidebarIcon "/settings" Assets.settingsSvg False
             ]
-        , {- Second Column -}
-          div
-            [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
-            ]
-            [ div
-                [ Attr.class "flex items-start"
-                ]
-                [ h2
-                    [ Attr.class "inline px-5 text-lg font-medium text-slate-800 dark:text-slate-200"
-                    ]
-                    [ text "Chats" ]
-                , span
-                    [ Attr.class "rounded-full bg-blue-600 px-2 py-1 text-xs text-slate-200"
-                    ]
-                    [ text "24" ]
-                ]
-            , div
-                [ Attr.class "mx-2 mt-8 space-y-4"
-                ]
-                [ Html.form []
-                    [ label
-                        [ Attr.for "chat-input"
-                        , Attr.class "sr-only"
-                        ]
-                        [ text "Search chats" ]
-                    , div
-                        [ Attr.class "relative"
-                        ]
-                        [ input
-                            [ Attr.id "search-chats"
-                            , Attr.type_ "text"
-                            , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                            , Attr.placeholder "Search chats"
-                            , Attr.rows 1
-                            , Attr.required True
-                            ]
-                            []
-                        , button
-                            [ Attr.type_ "submit"
-                            , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
-                            ]
-                            [ svg
-                                [ SvgAttr.class "h-5 w-5"
-                                , Attr.attribute "aria-hidden" "true"
-                                , SvgAttr.viewBox "0 0 24 24"
-                                , SvgAttr.strokeWidth "2"
-                                , SvgAttr.stroke "currentColor"
-                                , SvgAttr.fill "none"
-                                , SvgAttr.strokeLinecap "round"
-                                , SvgAttr.strokeLinejoin "round"
-                                ]
-                                [ path
-                                    [ SvgAttr.stroke "none"
-                                    , SvgAttr.d "M0 0h24v24H0z"
-                                    , SvgAttr.fill "none"
-                                    ]
-                                    []
-                                , path
-                                    [ SvgAttr.d "M8 9h8"
-                                    ]
-                                    []
-                                , path
-                                    [ SvgAttr.d "M8 13h5"
-                                    ]
-                                    []
-                                , path
-                                    [ SvgAttr.d "M11.008 19.195l-3.008 1.805v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5"
-                                    ]
-                                    []
-                                , path
-                                    [ SvgAttr.d "M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"
-                                    ]
-                                    []
-                                , path
-                                    [ SvgAttr.d "M20.2 20.2l1.8 1.8"
-                                    ]
-                                    []
-                                ]
-                            , span
-                                [ Attr.class "sr-only"
-                                ]
-                                [ text "Search chats" ]
-                            ]
-                        ]
-                    ]
-                , button
-                    [ Attr.class "flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 hover:bg-slate-200 focus:outline-none dark:hover:bg-slate-800"
-                    ]
-                    [ h1
-                        [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
-                        ]
-                        [ text "Tailwind Classes" ]
-                    , p
-                        [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
-                        ]
-                        [ text "12 Mar" ]
-                    ]
-                , button
-                    [ Attr.class "flex w-full flex-col gap-y-2 rounded-lg bg-slate-200 px-3 py-2 text-left transition-colors duration-200 focus:outline-none dark:bg-slate-800"
-                    ]
-                    [ h1
-                        [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
-                        ]
-                        [ text "explain quantum computing" ]
-                    , p
-                        [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
-                        ]
-                        [ text "10 Feb" ]
-                    ]
-                , button
-                    [ Attr.class "flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 hover:bg-slate-200 focus:outline-none dark:hover:bg-slate-800"
-                    ]
-                    [ h1
-                        [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
-                        ]
-                        [ text "How to create ERP Diagram" ]
-                    , p
-                        [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
-                        ]
-                        [ text "22 Jan" ]
-                    ]
-                , button
-                    [ Attr.class "flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 hover:bg-slate-200 focus:outline-none dark:hover:bg-slate-800"
-                    ]
-                    [ h1
-                        [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
-                        ]
-                        [ text "API Scaling Strategies" ]
-                    , p
-                        [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
-                        ]
-                        [ text "1 Jan" ]
-                    ]
-                ]
-            ]
-        , -- Chat
-          if Route.isConversation model.route then
-            promptContainer
-
-          else
-            div [] []
         ]
+        pageContent
+        |> aside
+            [ Attr.class "flex"
+            ]
+
+
+coversations : Html msg
+coversations =
+    div
+        [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
+        ]
+        [ div
+            [ Attr.class "flex items-start"
+            ]
+            [ h2
+                [ Attr.class "inline px-5 text-lg font-medium text-slate-800 dark:text-slate-200"
+                ]
+                [ text "Chats" ]
+            , span
+                [ Attr.class "rounded-full bg-blue-600 px-2 py-1 text-xs text-slate-200"
+                ]
+                [ text "24" ]
+            ]
+        , div
+            [ Attr.class "mx-2 mt-8 space-y-4"
+            ]
+            [ Html.form []
+                [ label
+                    [ Attr.for "chat-input"
+                    , Attr.class "sr-only"
+                    ]
+                    [ text "Search chats" ]
+                , div
+                    [ Attr.class "relative"
+                    ]
+                    [ input
+                        [ Attr.id "search-chats"
+                        , Attr.type_ "text"
+                        , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                        , Attr.placeholder "Search chats"
+                        , Attr.rows 1
+                        , Attr.required True
+                        ]
+                        []
+                    , button
+                        [ Attr.type_ "submit"
+                        , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
+                        ]
+                        [ Assets.searchSvg
+                        , span
+                            [ Attr.class "sr-only"
+                            ]
+                            [ text "Search chats" ]
+                        ]
+                    ]
+                ]
+            , conversationCell Conversation.dummyMessage True
+            , conversationCell Conversation.dummyMessage False
+            ]
+        ]
+
+
+conversationCell : Message -> Bool -> Html msg
+conversationCell msg selected =
+    button
+        [ Attr.class
+            ("flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 focus:outline-none hover:bg-slate-200"
+                ++ (if selected then
+                        " bg-slate-200 dark:bg-slate-800"
+
+                    else
+                        " dark:hover:bg-slate-800"
+                   )
+            )
+        ]
+        [ h1
+            [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
+            ]
+            [ text msg.text ]
+        , p
+            [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
+            ]
+            [ text "12 Mar" ]
+        ]
+
+
+
+--button
+--            [ Attr.class "flex w-full flex-col gap-y-2 rounded-lg bg-slate-200 px-3 py-2 text-left transition-colors duration-200 focus:outline-none dark:bg-slate-800"
+--            ]
+--            [ h1
+--                [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
+--                ]
+--                [ text "explain quantum computing" ]
+--            , p
+--                [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
+--                ]
+--                [ text "10 Feb" ]
+--            ]
 
 
 promptMessageSystem : String -> Html msg
