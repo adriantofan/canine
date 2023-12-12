@@ -1,162 +1,151 @@
-module Store exposing (Action(..), Conversation, ConversationStore, Data(..), Model, Msg(..), Requested(..), init, runAction, update)
+module Store exposing (Action(..), Msg(..), Store, init, prevConversationPage, runAction, update)
 
+import Api exposing (Conversation, ConversationId, ConversationPage, getConversationPage)
 import Http
-import Json.Decode exposing (Decoder, field, int, list, map2, string)
+import RemoteData exposing (RemoteData(..), WebData)
 
 
-type alias ConversationStore =
-    Data ConversationPage Requested
-
-
-type alias Model =
-    { conversations : ConversationStore
-    }
-
-
-type alias ConversationPage =
-    { data : List Conversation
-    , next : Int
+type alias Store =
+    { conversations : List Conversation
+    , lastConversationPage : WebData ConversationPage
     }
 
 
 type Action
-    = NextConversationPage (Maybe Int) -- always request Nothing ...
+    = PrevConversationPage (Maybe ConversationId) -- last known conversation id
 
 
-type Data state status
-    = Unknown status -- not yet known, not yet requested etc.
-    | HaveData state status
-
-
-type Requested
-    = NotLoading
-    | Loading
-    | Failed
-
-
-type alias Conversation =
-    { id : Int
-    , name : String
-    }
-
-
-type Msg
-    = OnConversationsRetrieved ConversationPage
+type
+    Msg
+    -- Todo: rename in previous
+    = OnPrevConversationsRetrieved (Maybe ConversationId) ConversationPage
+    | OnPrevConversationPage
     | LoadError Action Http.Error
 
 
-init : Model
+init : Store
 init =
-    { conversations = Unknown NotLoading
+    { conversations = []
+    , lastConversationPage = NotAsked
     }
 
 
-runAction : Action -> Model -> ( Model, Cmd Msg )
+prevConversationPage : Store -> Action
+prevConversationPage store =
+    PrevConversationPage <| prevConversationPageId store
+
+
+runAction : Action -> Store -> ( Store, Cmd Msg )
 runAction action store =
     case action of
-        NextConversationPage _ ->
-            -- kind of sucks that the page id is built in needUpdateConversationPage
-            -- maybe split in to action and action payload?
-            let
-                ( conversations, cmd ) =
-                    needUpdateConversationPage store.conversations
-            in
-            ( { store | conversations = conversations }
-            , cmd
-            )
+        PrevConversationPage id ->
+            if shouldSendRequest store.lastConversationPage then
+                ( { store | lastConversationPage = Loading }
+                , send action (getConversationPage id) (OnPrevConversationsRetrieved id)
+                )
+
+            else
+                ( store, Cmd.none )
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+shouldSendRequest : WebData a -> Bool
+shouldSendRequest webdata =
+    case webdata of
+        NotAsked ->
+            True
+
+        Loading ->
+            False
+
+        Failure _ ->
+            False
+
+        Success _ ->
+            False
+
+
+shouldSendRequest_ : Maybe (WebData a) -> Bool
+shouldSendRequest_ maybeWebData =
+    case maybeWebData of
+        Nothing ->
+            True
+
+        Just webData ->
+            shouldSendRequest webData
+
+
+update : Msg -> Store -> ( Store, Cmd Msg )
 update msg store =
     case msg of
-        OnConversationsRetrieved page ->
+        OnPrevConversationsRetrieved afterId conversationPage ->
+            if prevConversationPageId store == afterId then
+                ( { store
+                    | conversations = store.conversations ++ conversationPage.data
+                    , lastConversationPage = Success conversationPage
+                  }
+                , Cmd.none
+                )
+
+            else
+                Debug.log "Discarding stale API response for conversation page"
+                    ( store, Cmd.none )
+
+        LoadError action err ->
+            ( saveFailure action err store
+            , Cmd.none
+            )
+
+        OnPrevConversationPage ->
             let
-                conversations =
-                    case store.conversations of
-                        Unknown _ ->
-                            HaveData page NotLoading
+                shouldRefresh =
+                    case store.lastConversationPage of
+                        NotAsked ->
+                            True
 
-                        HaveData _ _ ->
-                            HaveData page NotLoading
+                        Loading ->
+                            False
+
+                        Failure _ ->
+                            True
+
+                        Success _ ->
+                            True
             in
-            ( { store | conversations = conversations }, Cmd.none )
+            if shouldRefresh then
+                ( { store | lastConversationPage = NotAsked }, Cmd.none )
 
-        LoadError _ _ ->
-            let
-                conversations =
-                    case store.conversations of
-                        Unknown _ ->
-                            Unknown Failed
-
-                        HaveData page _ ->
-                            HaveData page Failed
-            in
-            ( { store | conversations = conversations }, Cmd.none )
+            else
+                ( store, Cmd.none )
 
 
-needUpdateConversationPage : Data ConversationPage Requested -> ( Data ConversationPage Requested, Cmd Msg )
-needUpdateConversationPage crt =
-    case crt of
-        Unknown state ->
-            case state of
-                -- should not have next page here :shrug:
-                NotLoading ->
-                    ( Unknown Loading, send (NextConversationPage Nothing) )
-
-                Loading ->
-                    ( crt, Cmd.none )
-
-                Failed ->
-                    ( Unknown Loading, send (NextConversationPage Nothing) )
-
-        HaveData page state ->
-            case state of
-                NotLoading ->
-                    ( HaveData page Loading, send (NextConversationPage (Just page.next)) )
-
-                Loading ->
-                    ( crt, Cmd.none )
-
-                Failed ->
-                    ( HaveData page Loading, send (NextConversationPage (Just page.next)) )
-
-
-
--- DECODERS - API
-
-
-conversationDecoder : Decoder Conversation
-conversationDecoder =
-    map2 Conversation
-        (field "id" int)
-        (field "name" string)
-
-
-conversationPageDecoder : Decoder ConversationPage
-conversationPageDecoder =
-    map2 ConversationPage
-        (field "conversations" (list conversationDecoder))
-        (field "next" int)
-
-
-send : Action -> Cmd Msg
-send action =
+saveFailure : Action -> Http.Error -> Store -> Store
+saveFailure action err store =
     case action of
-        NextConversationPage _ ->
-            -- TODO: inject next page id in the payload
-            Http.get
-                -- TODO: inject the api url somehow
-                { url = "http://localhost:1234/api/tmp-conversations"
-                , expect = Http.expectJson (jsonToMsg action OnConversationsRetrieved) conversationPageDecoder
-                }
+        PrevConversationPage id ->
+            if prevConversationPageId store == id then
+                { store | lastConversationPage = Failure err }
+
+            else
+                store
 
 
-jsonToMsg : Action -> (a -> Msg) -> (Result Http.Error a -> Msg)
-jsonToMsg action success =
-    \result ->
-        case result of
-            Err err ->
-                LoadError action err
+send : Action -> ((Result Http.Error a -> Msg) -> Cmd Msg) -> (a -> Msg) -> Cmd Msg
+send action toCmd toSuccessMsg =
+    toCmd
+        (\result ->
+            case result of
+                Err err ->
+                    LoadError action err
 
-            Ok page ->
-                success page
+                Ok success ->
+                    toSuccessMsg success
+        )
+
+
+
+-- HELPERS
+
+
+prevConversationPageId : Store -> Maybe ConversationId
+prevConversationPageId store =
+    store.lastConversationPage |> RemoteData.toMaybe |> Maybe.andThen (\page -> Just page.next)

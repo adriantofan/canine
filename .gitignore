@@ -2,3 +2,5 @@
 **/elm-stuff
 frontend/.parcel-cache/
 frontend/dist/
+fe/.parcel-cache/
+fe/dist/

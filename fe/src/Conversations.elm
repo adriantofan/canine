@@ -1,24 +1,23 @@
-module Conversations exposing (Model, Msg, init, update, view)
+module Conversations exposing (Config, dataRequests, view)
 
+import Api
 import Html exposing (..)
 import Html.Attributes as Attr
 import Html.Events exposing (onClick)
+import RemoteData
 import Store
 
 
-type alias Model =
-    ()
+type alias Config msg =
+    { loadPrevMsg : msg
+    }
 
 
-type Msg
-    = LoadMoreConversations
-
-
-view : Store.Model -> Model -> Html Msg
-view store _ =
+view : Config msg -> Store.Store -> Html msg
+view config store =
     let
         conversations =
-            [ Store.Conversation 1 "name 1", Store.Conversation 2 "name 2" ]
+            [ Api.Conversation 1 "name 1", Api.Conversation 2 "name 2" ]
     in
     div
         [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
@@ -38,7 +37,7 @@ view store _ =
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
             ]
-            ([ conversationLoadingCell store.conversations ] ++ List.map (conversationCell False) conversations)
+            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) conversations)
 
         --[ Html.form []
         --    [ label
@@ -73,37 +72,11 @@ view store _ =
         ]
 
 
-isLoadingConversation : Store.ConversationStore -> Bool
-isLoadingConversation c =
-    case c of
-        Store.Unknown Store.Loading ->
-            True
-
-        Store.HaveData _ Store.Loading ->
-            True
-
-        _ ->
-            False
-
-
-hasLoadErrorConversation : Store.ConversationStore -> Bool
-hasLoadErrorConversation c =
-    case c of
-        Store.Unknown Store.Failed ->
-            True
-
-        Store.HaveData _ Store.Failed ->
-            True
-
-        _ ->
-            False
-
-
-conversationLoadingCell : Store.ConversationStore -> Html Msg
-conversationLoadingCell s =
+conversationLoadingCell : Config msg -> Store.Store -> Html msg
+conversationLoadingCell config s =
     let
         loading =
-            isLoadingConversation s
+            s.lastConversationPage == RemoteData.Loading
 
         buttonLabel =
             if loading then
@@ -119,8 +92,16 @@ conversationLoadingCell s =
                 [ text buttonLabel ]
             ]
 
+        hasLoadErrorConversation =
+            case s.lastConversationPage of
+                RemoteData.Failure _ ->
+                    True
+
+                _ ->
+                    False
+
         infoText =
-            if hasLoadErrorConversation s then
+            if hasLoadErrorConversation then
                 [ p [ Attr.class "text-xs text-slate-500 dark:text-slate-400" ]
                     [ text "Failed to load" ]
                 ]
@@ -133,7 +114,7 @@ conversationLoadingCell s =
                 []
 
             else
-                [ onClick LoadMoreConversations ]
+                [ onClick config.loadPrevMsg ]
 
         buttonAttributes =
             [ Attr.class
@@ -145,7 +126,7 @@ conversationLoadingCell s =
         (loadHeader ++ infoText)
 
 
-conversationCell : Bool -> Store.Conversation -> Html msg
+conversationCell : Bool -> Api.Conversation -> Html msg
 conversationCell selected c =
     button
         [ Attr.class
@@ -169,13 +150,6 @@ conversationCell selected c =
         ]
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        LoadMoreConversations ->
-            ( model, Cmd.none )
-
-
-init : Maybe Int -> ( Model, Cmd Msg )
-init _ =
-    ( (), Cmd.none )
+dataRequests : Store.Store -> List Store.Action
+dataRequests store =
+    [ Store.prevConversationPage store ]
