@@ -15,10 +15,6 @@ type alias Config msg =
 
 view : Config msg -> Store.Store -> Html msg
 view config store =
-    let
-        conversations =
-            [ Api.Conversation 1 "name 1", Api.Conversation 2 "name 2" ]
-    in
     div
         [ Attr.class "h-screen w-52 overflow-y-auto bg-slate-50 py-8 dark:bg-slate-900 sm:w-60"
         ]
@@ -37,7 +33,7 @@ view config store =
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
             ]
-            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) conversations)
+            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) store.conversations)
 
         --[ Html.form []
         --    [ label
@@ -142,7 +138,7 @@ conversationCell selected c =
         [ h1
             [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
             ]
-            [ text c.name ]
+            [ text c.user1Id ]
         , p
             [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
             ]

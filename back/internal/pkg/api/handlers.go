@@ -162,7 +162,7 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 	}
 	response := struct {
 		Data []domain.Conversation `json:"data"`
-		Meta PaginationInfo
+		Meta PaginationInfo        `json:"meta"`
 	}{
 		Data: conversations,
 		Meta: PaginationInfo{

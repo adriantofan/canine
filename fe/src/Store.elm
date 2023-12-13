@@ -8,6 +8,7 @@ import RemoteData exposing (RemoteData(..), WebData)
 type alias Store =
     { conversations : List Conversation
     , lastConversationPage : WebData ConversationPage
+    , lastConversationId : Maybe ConversationId -- last known conversation id, got from the previous Success of lastConversationPage
     }
 
 
@@ -27,6 +28,7 @@ init : Store
 init =
     { conversations = []
     , lastConversationPage = NotAsked
+    , lastConversationId = Nothing
     }
 
 
@@ -82,6 +84,13 @@ update msg store =
                 ( { store
                     | conversations = store.conversations ++ conversationPage.data
                     , lastConversationPage = Success conversationPage
+                    , lastConversationId =
+                        if List.isEmpty store.conversations then
+                            Just conversationPage.next
+                            -- TODO: we could disable load more button here
+
+                        else
+                            store.lastConversationId
                   }
                 , Cmd.none
                 )
@@ -148,4 +157,4 @@ send action toCmd toSuccessMsg =
 
 prevConversationPageId : Store -> Maybe ConversationId
 prevConversationPageId store =
-    store.lastConversationPage |> RemoteData.toMaybe |> Maybe.andThen (\page -> Just page.next)
+    store.lastConversationId
