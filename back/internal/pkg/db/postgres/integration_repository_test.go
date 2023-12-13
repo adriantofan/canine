@@ -8,6 +8,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 	"math"
 	"os"
 )
@@ -24,12 +26,12 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		return user1
 	}
 
-	createConversation := func(user1Id, user2Id int) domain.Conversation {
+	createConversation := func(user1Id, user2Id int64) domain.Conversation {
 		conversation, err := messagesRepo.GetOrCreateConversation(ctx, user1Id, user2Id)
 		Expect(err).ToNot(HaveOccurred())
 		return conversation
 	}
-	createMessage := func(conversationId, senderId int, messageText string) domain.Message {
+	createMessage := func(conversationId, senderId int64, messageText string) domain.Message {
 		message, err := messagesRepo.CreateMessage(ctx, conversationId, senderId, messageText)
 		Expect(err).ToNot(HaveOccurred())
 		return message
@@ -162,10 +164,41 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		Expect(actualMessages).To(BeEmpty())
 	})
 
+	Specify("conversation list", func() {
+		u1 := createUser("+1111111111")
+		u2 := createUser("+2222222222")
+		u3 := createUser("+3333333333")
+		u4 := createUser("+4444444444")
+		u5 := createUser("+5555555555")
+
+		c12 := createConversation(u1.ID, u2.ID)
+		c13 := createConversation(u1.ID, u3.ID)
+		c14 := createConversation(u1.ID, u4.ID)
+		c15 := createConversation(u1.ID, u5.ID)
+		By("getting first page, without prev_id")
+		cs, err := messagesRepo.GetConversations(ctx, nil, 2, domain.Backward)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(cs).To(Equal([]domain.Conversation{c15, c14}))
+		By("getting prev page")
+		cs, err = messagesRepo.GetConversations(ctx, &c14.ID, 2, domain.Backward)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(cs).To(Equal([]domain.Conversation{c13, c12}))
+
+		By("getting first page, without next_id")
+		cs, err = messagesRepo.GetConversations(ctx, nil, 2, domain.Forward)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(cs).To(Equal([]domain.Conversation{c12, c13}))
+		By("getting next page")
+		cs, err = messagesRepo.GetConversations(ctx, &c13.ID, 5, domain.Forward)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(cs).To(Equal([]domain.Conversation{c14, c15}))
+
+	})
+
 })
 
 var truncateTables = `
-TRUNCATE TABLE messages, conversations, "user" CASCADE;
+TRUNCATE TABLE message, conversation, "user" CASCADE;
 `
 
 func reverseCopy[S ~[]E, E any](s S) S {

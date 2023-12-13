@@ -11,10 +11,10 @@ import (
 	"time"
 )
 
-type Conversations struct {
-	ID            int64 `sql:"primary_key"`
-	User1ID       int64
-	User2ID       int64
-	CreatedAt     time.Time
-	LastMessageID *int64
+type Message struct {
+	ID             int64 `sql:"primary_key"`
+	ConversationID int64
+	SenderID       int64
+	Message        string
+	CreatedAt      time.Time
 }

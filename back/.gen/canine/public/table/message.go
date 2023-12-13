@@ -11,9 +11,9 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 )
 
-var Messages = newMessagesTable("public", "messages", "")
+var Message = newMessageTable("public", "message", "")
 
-type messagesTable struct {
+type messageTable struct {
 	postgres.Table
 
 	// Columns
@@ -27,40 +27,40 @@ type messagesTable struct {
 	MutableColumns postgres.ColumnList
 }
 
-type MessagesTable struct {
-	messagesTable
+type MessageTable struct {
+	messageTable
 
-	EXCLUDED messagesTable
+	EXCLUDED messageTable
 }
 
-// AS creates new MessagesTable with assigned alias
-func (a MessagesTable) AS(alias string) *MessagesTable {
-	return newMessagesTable(a.SchemaName(), a.TableName(), alias)
+// AS creates new MessageTable with assigned alias
+func (a MessageTable) AS(alias string) *MessageTable {
+	return newMessageTable(a.SchemaName(), a.TableName(), alias)
 }
 
-// Schema creates new MessagesTable with assigned schema name
-func (a MessagesTable) FromSchema(schemaName string) *MessagesTable {
-	return newMessagesTable(schemaName, a.TableName(), a.Alias())
+// Schema creates new MessageTable with assigned schema name
+func (a MessageTable) FromSchema(schemaName string) *MessageTable {
+	return newMessageTable(schemaName, a.TableName(), a.Alias())
 }
 
-// WithPrefix creates new MessagesTable with assigned table prefix
-func (a MessagesTable) WithPrefix(prefix string) *MessagesTable {
-	return newMessagesTable(a.SchemaName(), prefix+a.TableName(), a.TableName())
+// WithPrefix creates new MessageTable with assigned table prefix
+func (a MessageTable) WithPrefix(prefix string) *MessageTable {
+	return newMessageTable(a.SchemaName(), prefix+a.TableName(), a.TableName())
 }
 
-// WithSuffix creates new MessagesTable with assigned table suffix
-func (a MessagesTable) WithSuffix(suffix string) *MessagesTable {
-	return newMessagesTable(a.SchemaName(), a.TableName()+suffix, a.TableName())
+// WithSuffix creates new MessageTable with assigned table suffix
+func (a MessageTable) WithSuffix(suffix string) *MessageTable {
+	return newMessageTable(a.SchemaName(), a.TableName()+suffix, a.TableName())
 }
 
-func newMessagesTable(schemaName, tableName, alias string) *MessagesTable {
-	return &MessagesTable{
-		messagesTable: newMessagesTableImpl(schemaName, tableName, alias),
-		EXCLUDED:      newMessagesTableImpl("", "excluded", ""),
+func newMessageTable(schemaName, tableName, alias string) *MessageTable {
+	return &MessageTable{
+		messageTable: newMessageTableImpl(schemaName, tableName, alias),
+		EXCLUDED:     newMessageTableImpl("", "excluded", ""),
 	}
 }
 
-func newMessagesTableImpl(schemaName, tableName, alias string) messagesTable {
+func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 	var (
 		IDColumn             = postgres.IntegerColumn("id")
 		ConversationIDColumn = postgres.IntegerColumn("conversation_id")
@@ -71,7 +71,7 @@ func newMessagesTableImpl(schemaName, tableName, alias string) messagesTable {
 		mutableColumns       = postgres.ColumnList{ConversationIDColumn, SenderIDColumn, MessageColumn, CreatedAtColumn}
 	)
 
-	return messagesTable{
+	return messageTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns

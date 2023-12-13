@@ -15,13 +15,15 @@ type Direction int
 
 // Define constants for the enum values.
 const (
-	Forward Direction = iota
-	Backward
+	Backward Direction = iota
+	Forward
 )
 
 type ChatRepository interface {
-	// GetConversations returns all conversations sorted by change sequence
-	GetConversations(ctx context.Context, id int64, limit int, direction Direction) ([]Conversation, error)
+	// GetConversations returns all conversations sorted id
+	// TODO: it should also work by change date, in order to sync conversations
+	// between the first page download and the first Websocket message
+	GetConversations(ctx context.Context, id *int64, limit int, direction Direction) ([]Conversation, error)
 
 	// GetMessagesAfter returns all messages after the given message ID (typically used to sync messages for a conversation)
 	GetMessagesAfter(ctx context.Context, conversationID int64, afterID int64, limit int) ([]Message, error)

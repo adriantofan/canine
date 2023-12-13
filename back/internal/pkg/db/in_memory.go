@@ -7,24 +7,24 @@ import (
 )
 
 type MemoryMessageRepository struct {
-	messages []domain.Message
-	//conversations      []domain.Conversation
-	users       []domain.User
-	timeService infrastructure.TimeService
-	nextUserID  int64
-	//nextConversationID int
-	nextMessageID int64
+	messages           []domain.Message
+	conversations      []domain.Conversation
+	users              []domain.User
+	timeService        infrastructure.TimeService
+	nextUserID         int64
+	nextConversationID int64
+	nextMessageID      int64
 }
 
 func NewInMemoryRepository(timeService infrastructure.TimeService) *MemoryMessageRepository {
 	return &MemoryMessageRepository{
-		messages:    make([]domain.Message, 0),
-		users:       make([]domain.User, 0),
-		timeService: timeService,
-		nextUserID:  1,
-		//conversations:      make([]domain.Conversation, 0),
-		//nextConversationID: 1,
-		nextMessageID: 1,
+		messages:           make([]domain.Message, 0),
+		users:              make([]domain.User, 0),
+		timeService:        timeService,
+		nextUserID:         1,
+		conversations:      make([]domain.Conversation, 0),
+		nextConversationID: 1,
+		nextMessageID:      1,
 	}
 }
 
@@ -68,7 +68,23 @@ func (r *MemoryMessageRepository) GetUserById(_ context.Context, id int64) (doma
 	return domain.User{}, domain.UserNotFoundError
 }
 func (r *MemoryMessageRepository) GetOrCreateConversation(_ context.Context, user1Id, user2Id int64) (domain.Conversation, error) {
-	panic("implement me")
+	if user1Id > user2Id {
+		user1Id, user2Id = user2Id, user1Id
+	}
+	for _, conversation := range r.conversations {
+		if conversation.User1ID == user1Id && conversation.User2ID == user2Id {
+			return conversation, nil
+		}
+	}
+	conversation := domain.Conversation{
+		ID:        r.nextConversationID,
+		User1ID:   user1Id,
+		User2ID:   user2Id,
+		CreatedAt: r.timeService.NowUTC(),
+	}
+	r.nextConversationID++
+	r.conversations = append(r.conversations, conversation)
+	return conversation, nil
 }
 
 func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationID int64, senderID int64, message string) (domain.Message, error) {
@@ -85,6 +101,45 @@ func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationI
 	return msg, nil
 }
 
-func (r *MemoryMessageRepository) GetConversations(ctx context.Context, id int, limit int, direction domain.Direction) ([]domain.Conversation, error) {
-	panic("implement me")
+func (r *MemoryMessageRepository) GetConversations(ctx context.Context, id *int64, limit int, direction domain.Direction) ([]domain.Conversation, error) {
+	// TODO: make sure it works :-) (it's not tested)
+	if direction == domain.Forward {
+		if id != nil {
+			for i, conversation := range r.conversations {
+				if conversation.ID == *id {
+					if i+1 < len(r.conversations) {
+						return r.conversations[i+1 : i+1+limit], nil
+					}
+					return []domain.Conversation{}, nil
+				}
+			}
+		}
+		return r.conversations[:limit], nil
+	} else {
+		if id != nil {
+			for i, conversation := range r.conversations {
+				if conversation.ID == *id {
+					if i-limit >= 0 {
+						return reverseSlice(r.conversations[i-limit : i]), nil
+					}
+					return []domain.Conversation{}, nil
+				}
+			}
+		}
+		if limit > len(r.conversations) {
+			return r.conversations, nil
+		}
+		return reverseSlice(r.conversations[len(r.conversations)-limit:]), nil
+	}
+}
+
+func reverseSlice[T any](input []T) []T {
+	length := len(input)
+	reversed := make([]T, length)
+
+	for i, v := range input {
+		reversed[length-i-1] = v
+	}
+
+	return reversed
 }

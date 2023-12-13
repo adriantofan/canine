@@ -83,7 +83,7 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, conversation)
+	c.JSON(http.StatusCreated, conversation)
 }
 
 func (h ChatHandlers) CreateMessage(c *gin.Context) {
@@ -126,18 +126,20 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 		return
 	}
 
-	var id int64 = math.MaxInt64
+	var id *int64
 	direction := domain.Backward
 
 	if greaterThanStr != "" {
-		id, err = strconv.ParseInt(greaterThanStr, 10, 64)
+		id = new(int64)
+		*id, err = strconv.ParseInt(greaterThanStr, 10, 64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
 			return
 		}
 		direction = domain.Forward
 	} else if lowerThanStr != "" {
-		id, err = strconv.ParseInt(lowerThanStr, 10, 64)
+		id = new(int64)
+		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
 			return
@@ -160,10 +162,10 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 	}
 	response := struct {
 		Data []domain.Conversation `json:"data"`
-		PaginationInfo
+		Meta PaginationInfo
 	}{
 		Data: conversations,
-		PaginationInfo: PaginationInfo{
+		Meta: PaginationInfo{
 			Limit:  limit,
 			PrevID: prevId,
 			NextID: nextId,
