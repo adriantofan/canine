@@ -18,6 +18,27 @@ type MessageRepository struct {
 func NewMessageRepository(db *sqlx.DB) *MessageRepository {
 	return &MessageRepository{db}
 }
+
+func (s *MessageRepository) GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction domain.Direction) ([]domain.Message, error) {
+	fromConversation := table.Message.ConversationID.EQ(Int64(conversationID))
+	stmt := SELECT(table.Message.AllColumns).
+		FROM(table.Message)
+	if direction == domain.Forward {
+		if id != nil {
+			stmt = stmt.WHERE(AND(fromConversation, table.Message.ID.GT(Int64(*id))))
+		}
+		stmt = stmt.ORDER_BY(table.Message.ID.ASC()).LIMIT(int64(limit))
+	} else {
+		if id != nil {
+			stmt = stmt.WHERE(AND(fromConversation, table.Message.ID.LT(Int64(*id))))
+		}
+		stmt = stmt.ORDER_BY(table.Message.ID.DESC()).LIMIT(int64(limit))
+	}
+	conversations := make([]domain.Message, 0)
+	err := stmt.QueryContext(ctx, s.db, &conversations)
+	return conversations, err
+}
+
 func (s *MessageRepository) GetMessagesBefore(ctx context.Context, conversationID int64, beforeID int64, limit int) ([]domain.Message, error) {
 	messages := make([]domain.Message, 0)
 	err := s.db.SelectContext(ctx, &messages, `

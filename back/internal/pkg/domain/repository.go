@@ -24,6 +24,7 @@ type ChatRepository interface {
 	// TODO: it should also work by change date, in order to sync conversations
 	// between the first page download and the first Websocket message
 	GetConversations(ctx context.Context, id *int64, limit int, direction Direction) ([]Conversation, error)
+	GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction Direction) ([]Message, error)
 
 	// GetMessagesAfter returns all messages after the given message ID (typically used to sync messages for a conversation)
 	GetMessagesAfter(ctx context.Context, conversationID int64, afterID int64, limit int) ([]Message, error)

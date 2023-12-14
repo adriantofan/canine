@@ -1,4 +1,4 @@
-module Conversations exposing (Config, dataRequests, view)
+module Conversations exposing (Config, view)
 
 import Api
 import Html exposing (..)
@@ -71,7 +71,7 @@ view config store =
 
 conversationCells : Config msg -> Store.Store -> List (Html msg)
 conversationCells config store =
-    List.map (conversationCell config False) store.conversations.data
+    List.map (conversationCell config False) (Store.getConversations store)
 
 
 conversationLoadingCell : Config msg -> Store.Store -> Html msg
@@ -151,8 +151,3 @@ conversationCell config selected c =
             ]
             [ text "fake date" ]
         ]
-
-
-dataRequests : Store.Store -> Maybe Api.ConversationId -> List Store.Action
-dataRequests store maybeConversationId =
-    [ Store.prevConversationPage store ]

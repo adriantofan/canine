@@ -116,35 +116,9 @@ func (h ChatHandlers) CreateMessage(c *gin.Context) {
 
 func (h ChatHandlers) GetConversations(c *gin.Context) {
 
-	greaterThanStr := c.Query("greater_than")
-	lowerThanStr := c.Query("lower_than")
-	limitStr := c.DefaultQuery("limit", "25") // Default limit is 10
-
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - limit", err.Error()))
+	limit, id, direction, ok := getPaginatedParams(c)
+	if !ok {
 		return
-	}
-
-	var id *int64
-	direction := domain.Backward
-
-	if greaterThanStr != "" {
-		id = new(int64)
-		*id, err = strconv.ParseInt(greaterThanStr, 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
-			return
-		}
-		direction = domain.Forward
-	} else if lowerThanStr != "" {
-		id = new(int64)
-		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
-			return
-		}
-		direction = domain.Backward
 	}
 
 	conversations, err := h.r.GetConversations(c, id, limit, direction)
@@ -172,23 +146,13 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 		},
 	}
 	c.JSON(http.StatusOK, response)
-	return
 
 }
 
 func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
-	// TODO: make like conversation
-	var queryParams struct {
-		LastID    int64 `form:"last_id"`
-		Ascending *bool `form:"ascending"`
-		Limit     int   `form:"limit"`
-	}
-	if err := c.ShouldBindQuery(&queryParams); err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+	limit, id, direction, ok := getPaginatedParams(c)
+	if !ok {
 		return
-	}
-	if queryParams.Limit == 0 {
-		queryParams.Limit = 25
 	}
 
 	var params struct {
@@ -201,24 +165,31 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 		return
 	}
 
-	var messages []domain.Message
-	var err error
-
-	missingParams := queryParams.Ascending == nil && queryParams.LastID == 0
-	ascending := queryParams.Ascending != nil && *queryParams.Ascending
-
-	if missingParams || ascending {
-		messages, err = h.r.GetMessagesAfter(c, params.ConversationID, queryParams.LastID, queryParams.Limit)
-	} else {
-		messages, err = h.r.GetMessagesBefore(c, params.ConversationID, queryParams.LastID, queryParams.Limit)
-	}
-
+	messages, err := h.r.GetMessages(c, params.ConversationID, id, limit, direction)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, messages)
+	var prevId int64 = math.MaxInt64
+	var nextId int64 = 0
+
+	if len(messages) > 0 {
+		prevId = messages[0].ID
+		nextId = messages[len(messages)-1].ID
+	}
+	response := struct {
+		Data []domain.Message `json:"data"`
+		Meta PaginationInfo   `json:"meta"`
+	}{
+		Data: messages,
+		Meta: PaginationInfo{
+			Limit:  limit,
+			PrevID: prevId,
+			NextID: nextId,
+		},
+	}
+	c.JSON(http.StatusOK, response)
 }
 
 type ChatMiddleware struct {
@@ -251,4 +222,38 @@ func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
 
 	c.Set("user", user)
 	c.Next()
+}
+
+func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
+	greaterThanStr := c.Query("greater_than")
+	lowerThanStr := c.Query("lower_than")
+	limitStr := c.DefaultQuery("limit", "25") // Default limit is 10
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - limit", err.Error()))
+		return 0, nil, 0, false
+	}
+
+	var id *int64
+	direction := domain.Backward
+
+	if greaterThanStr != "" {
+		id = new(int64)
+		*id, err = strconv.ParseInt(greaterThanStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
+			return 0, nil, 0, false
+		}
+		direction = domain.Forward
+	} else if lowerThanStr != "" {
+		id = new(int64)
+		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
+			return 0, nil, 0, false
+		}
+		direction = domain.Backward
+	}
+	return limit, id, direction, true
 }

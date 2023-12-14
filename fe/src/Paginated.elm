@@ -84,7 +84,7 @@ update config msg store =
                 | data = store.data ++ config.data page
                 , loadingId = Success ()
                 , nextIdToLoad =
-                    if List.isEmpty store.data then
+                    if not (List.isEmpty (config.data page)) then
                         Just <| config.nextId page
                         -- TODO: we could disable load more button here
 

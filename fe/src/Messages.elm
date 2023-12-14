@@ -10,11 +10,13 @@ import Svg exposing (path, svg)
 import Svg.Attributes as SvgAttr
 
 
-type alias Config =
-    ()
+type alias Config msg =
+    { loadPrevMsg : msg
+    , conversationID : Api.ConversationId
+    }
 
 
-view : Config -> Store.Store -> Html msg
+view : Config msg -> Store.Store -> Html msg
 view config store =
     {- Prompt Messages Container - Modify the height according to your need -}
     -- TODO Add some padding all around the container
@@ -25,38 +27,53 @@ view config store =
           div
             [ Attr.class "flex-1 overflow-y-auto rounded-xl bg-slate-200 p-4 text-sm leading-6 text-slate-900 dark:bg-slate-800 dark:text-slate-300 sm:text-base sm:leading-7"
             ]
-            [ promptMessageSystem "Explain quantum computing in simple terms"
-            , msgActionButtons
-            , promptMessage """Certainly! Quantum computing is a new type of computing that relies on the principles of quantum physics. Traditional computers, like the one you might be using right now, use bits to store and process information. These bits can represent either a 0 or a 1. In contrast, quantum computers use quantum bits, or qubits.
-
-            Unlike bits, qubits can represent not only a 0 or a 1 but also a superposition of both states simultaneously. This means that a qubit can be in multiple states at once, which allows quantum computers to perform certain calculations much faster and more efficiently
-            """
-            , promptMessageSystem "What are three great applications of quantum computing?"
-            , msgActionButtons
-            , promptMessage """"Three great applications of quantum computing are: Optimization of complex problems, Drug Discovery and Cryptography.
-            """
-            , promptMessage """1
-            2
-            3
-            4
-            5
-            """
-            , promptMessage """1
-            2
-            3
-            4
-            5
-            """
-            , promptMessage """1
-            2
-            3
-            4
-            5
-            """
-            ]
+            ([ loadMoreButton config ]
+                ++ promptMessages config store
+            )
         , promptSuggestions
         , promptMessageInput
         ]
+
+
+loadMoreButton : Config msg -> Html msg
+loadMoreButton config =
+    div
+        [ Attr.class "flex justify-center"
+        , onClick config.loadPrevMsg
+        ]
+        [ div
+            [ Attr.class "mb-4 py-1 sm:px-4 mx-auto"
+            ]
+            [ button
+                [ Attr.type_ "submit"
+                , Attr.class "inline-flex items-center gap-x-2 rounded-lg bg-slate-700 px-3 py-2 text-center text-sm font-medium text-slate-50 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                ]
+                [ text "Submit" ]
+            ]
+        ]
+
+
+promptMessages : Config msg -> Store.Store -> List (Html msg)
+promptMessages config store =
+    let
+        messages =
+            Store.getMessages store
+
+        messageCell : Api.Message -> List (Html msg)
+        messageCell message =
+            [ promptMessage <| message.text ]
+    in
+    List.concatMap messageCell messages
+
+
+msgs =
+    [ promptMessageSystem "Explain quantum computing in simple terms"
+    , msgActionButtons
+    , promptMessage """Certainly! Quantum computing is a new type of computing that relies on the principles of quantum physics. Traditional computers, like the one you might be using right now, use bits to store and process information. These bits can represent either a 0 or a 1. In contrast, quantum computers use quantum bits, or qubits.
+                 
+                             Unlike bits, qubits can represent not only a 0 or a 1 but also a superposition of both states simultaneously. This means that a qubit can be in multiple states at once, which allows quantum computers to perform certain calculations much faster and more efficiently
+                             """
+    ]
 
 
 promptMessage : String -> Html msg

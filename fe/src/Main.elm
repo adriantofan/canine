@@ -45,9 +45,6 @@ init flags url key =
         route =
             routeFromUrl url
 
-        store =
-            Store.init
-
         page =
             case route of
                 Home ->
@@ -58,6 +55,15 @@ init flags url key =
 
                 NotFoundRoute ->
                     NotFound
+
+        store =
+            Store.init <|
+                case page of
+                    ConversationPage maybeId ->
+                        maybeId
+
+                    _ ->
+                        Nothing
 
         requests : List Store.Action
         requests =
@@ -74,9 +80,11 @@ conversationConfig =
     }
 
 
-messagesConfig : Messages.Config
-messagesConfig =
-    ()
+messagesConfig : Api.ConversationId -> Messages.Config Msg
+messagesConfig conversationId =
+    { loadPrevMsg = StoreMsg (Store.MessageMsg conversationId Paginated.OnPrevPage)
+    , conversationID = conversationId
+    }
 
 
 view : Model -> Document Msg
@@ -94,7 +102,7 @@ view model =
 
                         Just id ->
                             [ Conversations.view conversationConfig model.store
-                            , Messages.view messagesConfig model.store
+                            , Messages.view (messagesConfig id) model.store
                             ]
 
                 NotFound ->
@@ -208,11 +216,19 @@ update msg model =
                         NotFoundRoute ->
                             NotFound
 
+                pageStore =
+                    case page of
+                        ConversationPage maybeId ->
+                            Store.updateConversation model.store maybeId
+
+                        _ ->
+                            model.store
+
                 requests : List Store.Action
                 requests =
-                    dataRequestsPage model.store page
+                    dataRequestsPage pageStore page
             in
-            ( { model | page = page }
+            ( { model | page = page, store = pageStore }
             , Cmd.none
             )
                 |> Cmd.andThen (sendDataRequests requests)
@@ -248,7 +264,7 @@ dataRequestsPage store page =
             []
 
         ConversationPage maybeId ->
-            Conversations.dataRequests store maybeId
+            conversationDataRequests store maybeId
 
         NotFound ->
             []
@@ -265,6 +281,16 @@ parser =
 
 conversationWithId id =
     Conversations (Just id)
+
+
+conversationDataRequests : Store.Store -> Maybe Api.ConversationId -> List Store.Action
+conversationDataRequests store maybeConversationId =
+    case maybeConversationId of
+        Nothing ->
+            []
+
+        Just conversationId ->
+            [ Store.prevConversationPage store ] ++ Store.prevMessagePage conversationId store
 
 
 routeFromUrl : Url -> Route
