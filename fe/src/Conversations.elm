@@ -33,7 +33,7 @@ view config store =
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
             ]
-            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) store.conversations)
+            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) store.conversations.data)
 
         --[ Html.form []
         --    [ label
@@ -72,7 +72,7 @@ conversationLoadingCell : Config msg -> Store.Store -> Html msg
 conversationLoadingCell config s =
     let
         loading =
-            s.lastConversationPage == RemoteData.Loading
+            s.conversations.lastPage == RemoteData.Loading
 
         buttonLabel =
             if loading then
@@ -89,7 +89,7 @@ conversationLoadingCell config s =
             ]
 
         hasLoadErrorConversation =
-            case s.lastConversationPage of
+            case s.conversations.lastPage of
                 RemoteData.Failure _ ->
                     True
 

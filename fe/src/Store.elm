@@ -1,160 +1,55 @@
 module Store exposing (Action(..), Msg(..), Store, init, prevConversationPage, runAction, update)
 
 import Api exposing (Conversation, ConversationId, ConversationPage, getConversationPage)
-import Http
-import RemoteData exposing (RemoteData(..), WebData)
+import Paginated
 
 
 type alias Store =
-    { conversations : List Conversation
-    , lastConversationPage : WebData ConversationPage
-    , lastConversationId : Maybe ConversationId -- last known conversation id, got from the previous Success of lastConversationPage
+    { conversations : Paginated.Model
     }
 
 
 type Action
-    = PrevConversationPage (Maybe ConversationId) -- last known conversation id
+    = ConversationAction Paginated.Action
 
 
-type
-    Msg
-    -- Todo: rename in previous
-    = OnPrevConversationsRetrieved (Maybe ConversationId) ConversationPage
-    | OnPrevConversationPage
-    | LoadError Action Http.Error
+type Msg
+    = ConversationMsg Paginated.Msg
 
 
 init : Store
 init =
-    { conversations = []
-    , lastConversationPage = NotAsked
-    , lastConversationId = Nothing
+    { conversations = Paginated.init
     }
 
 
 prevConversationPage : Store -> Action
 prevConversationPage store =
-    PrevConversationPage <| prevConversationPageId store
+    ConversationAction (Paginated.PrevPage <| prevConversationPageId store)
 
 
 runAction : Action -> Store -> ( Store, Cmd Msg )
 runAction action store =
     case action of
-        PrevConversationPage id ->
-            if shouldSendRequest store.lastConversationPage then
-                ( { store | lastConversationPage = Loading }
-                , send action (getConversationPage id) (OnPrevConversationsRetrieved id)
-                )
-
-            else
-                ( store, Cmd.none )
-
-
-shouldSendRequest : WebData a -> Bool
-shouldSendRequest webdata =
-    case webdata of
-        NotAsked ->
-            True
-
-        Loading ->
-            False
-
-        Failure _ ->
-            False
-
-        Success _ ->
-            False
-
-
-shouldSendRequest_ : Maybe (WebData a) -> Bool
-shouldSendRequest_ maybeWebData =
-    case maybeWebData of
-        Nothing ->
-            True
-
-        Just webData ->
-            shouldSendRequest webData
+        ConversationAction conversationAction ->
+            let
+                ( conversation, cmd ) =
+                    Paginated.runAction conversationAction store.conversations
+            in
+            ( { store | conversations = conversation }, Cmd.map ConversationMsg cmd )
 
 
 update : Msg -> Store -> ( Store, Cmd Msg )
 update msg store =
     case msg of
-        OnPrevConversationsRetrieved afterId conversationPage ->
-            if prevConversationPageId store == afterId then
-                ( { store
-                    | conversations = store.conversations ++ conversationPage.data
-                    , lastConversationPage = Success conversationPage
-                    , lastConversationId =
-                        if List.isEmpty store.conversations then
-                            Just conversationPage.next
-                            -- TODO: we could disable load more button here
-
-                        else
-                            store.lastConversationId
-                  }
-                , Cmd.none
-                )
-
-            else
-                Debug.log "Discarding stale API response for conversation page"
-                    ( store, Cmd.none )
-
-        LoadError action err ->
-            ( saveFailure action err store
-            , Cmd.none
-            )
-
-        OnPrevConversationPage ->
+        ConversationMsg conversationMsg ->
             let
-                shouldRefresh =
-                    case store.lastConversationPage of
-                        NotAsked ->
-                            True
-
-                        Loading ->
-                            False
-
-                        Failure _ ->
-                            True
-
-                        Success _ ->
-                            True
+                ( conversation, cmd ) =
+                    Paginated.update conversationMsg store.conversations
             in
-            if shouldRefresh then
-                ( { store | lastConversationPage = NotAsked }, Cmd.none )
-
-            else
-                ( store, Cmd.none )
-
-
-saveFailure : Action -> Http.Error -> Store -> Store
-saveFailure action err store =
-    case action of
-        PrevConversationPage id ->
-            if prevConversationPageId store == id then
-                { store | lastConversationPage = Failure err }
-
-            else
-                store
-
-
-send : Action -> ((Result Http.Error a -> Msg) -> Cmd Msg) -> (a -> Msg) -> Cmd Msg
-send action toCmd toSuccessMsg =
-    toCmd
-        (\result ->
-            case result of
-                Err err ->
-                    LoadError action err
-
-                Ok success ->
-                    toSuccessMsg success
-        )
-
-
-
--- HELPERS
+            ( { store | conversations = conversation }, Cmd.map ConversationMsg cmd )
 
 
 prevConversationPageId : Store -> Maybe ConversationId
 prevConversationPageId store =
-    store.lastConversationId
+    store.conversations.lastId

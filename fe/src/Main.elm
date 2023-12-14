@@ -8,6 +8,7 @@ import Conversations
 import Home
 import Html exposing (Html, a, aside, div, text)
 import Html.Attributes as Attr
+import Paginated
 import Store
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>))
@@ -65,7 +66,7 @@ init flags url key =
 
 conversationConfig : Conversations.Config Msg
 conversationConfig =
-    { loadPrevMsg = StoreMsg Store.OnPrevConversationPage }
+    { loadPrevMsg = StoreMsg (Store.ConversationMsg Paginated.OnPrevPage) }
 
 
 view : Model -> Document Msg
