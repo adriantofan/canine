@@ -1,4 +1,4 @@
-module Paginated exposing (Action(..), Model, Msg(..), init, prevConversationPage, runAction, update)
+module Paginated exposing (Action(..), Model, Msg(..), init, runAction, update)
 
 import Api exposing (Conversation, ConversationId, ConversationPage, getConversationPage)
 import Http
@@ -7,19 +7,17 @@ import RemoteData exposing (RemoteData(..), WebData)
 
 type alias Model =
     { data : List Conversation
-    , lastPage : WebData ConversationPage
-    , lastId : Maybe ConversationId -- last known conversation id, got from the previous Success of lastConversationPage
+    , loadingId : WebData ()
+    , nextIdToLoad : Maybe ConversationId
     }
 
 
 type Action
-    = PrevPage (Maybe ConversationId) -- last known conversation id
+    = PrevPage (Maybe ConversationId) -- last loaded conversation id
 
 
-type
-    Msg
-    -- Todo: rename in previous
-    = OnPrevRetrieved (Maybe ConversationId) ConversationPage
+type Msg
+    = OnPrevRetrieved ConversationPage
     | OnPrevPage
     | LoadError Action Http.Error
 
@@ -27,23 +25,18 @@ type
 init : Model
 init =
     { data = []
-    , lastPage = NotAsked
-    , lastId = Nothing
+    , loadingId = NotAsked
+    , nextIdToLoad = Nothing
     }
-
-
-prevConversationPage : Model -> Action
-prevConversationPage store =
-    PrevPage <| prevConversationPageId store
 
 
 runAction : Action -> Model -> ( Model, Cmd Msg )
 runAction action store =
     case action of
         PrevPage id ->
-            if shouldSendRequest store.lastPage then
-                ( { store | lastPage = Loading }
-                , send action (getConversationPage id) (OnPrevRetrieved id)
+            if shouldSendRequest store.loadingId then
+                ( { store | loadingId = Loading }
+                , send action (getConversationPage id) OnPrevRetrieved
                 )
 
             else
@@ -79,25 +72,20 @@ shouldSendRequest_ maybeWebData =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg store =
     case msg of
-        OnPrevRetrieved afterId conversationPage ->
-            if prevConversationPageId store == afterId then
-                ( { store
-                    | data = store.data ++ conversationPage.data
-                    , lastPage = Success conversationPage
-                    , lastId =
-                        if List.isEmpty store.data then
-                            Just conversationPage.next
-                            -- TODO: we could disable load more button here
+        OnPrevRetrieved conversationPage ->
+            ( { store
+                | data = store.data ++ conversationPage.data
+                , loadingId = Success ()
+                , nextIdToLoad =
+                    if List.isEmpty store.data then
+                        Just conversationPage.next
+                        -- TODO: we could disable load more button here
 
-                        else
-                            store.lastId
-                  }
-                , Cmd.none
-                )
-
-            else
-                Debug.log "Discarding stale API response for conversation page"
-                    ( store, Cmd.none )
+                    else
+                        store.nextIdToLoad
+              }
+            , Cmd.none
+            )
 
         LoadError action err ->
             ( saveFailure action err store
@@ -107,7 +95,7 @@ update msg store =
         OnPrevPage ->
             let
                 shouldRefresh =
-                    case store.lastPage of
+                    case store.loadingId of
                         NotAsked ->
                             True
 
@@ -121,7 +109,7 @@ update msg store =
                             True
             in
             if shouldRefresh then
-                ( { store | lastPage = NotAsked }, Cmd.none )
+                ( { store | loadingId = NotAsked }, Cmd.none )
 
             else
                 ( store, Cmd.none )
@@ -132,7 +120,7 @@ saveFailure action err store =
     case action of
         PrevPage id ->
             if prevConversationPageId store == id then
-                { store | lastPage = Failure err }
+                { store | loadingId = Failure err }
 
             else
                 store
@@ -157,4 +145,4 @@ send action toCmd toSuccessMsg =
 
 prevConversationPageId : Model -> Maybe ConversationId
 prevConversationPageId store =
-    store.lastId
+    store.nextIdToLoad

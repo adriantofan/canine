@@ -72,7 +72,7 @@ conversationLoadingCell : Config msg -> Store.Store -> Html msg
 conversationLoadingCell config s =
     let
         loading =
-            s.conversations.lastPage == RemoteData.Loading
+            s.conversations.loadingId == RemoteData.Loading
 
         buttonLabel =
             if loading then
@@ -89,7 +89,7 @@ conversationLoadingCell config s =
             ]
 
         hasLoadErrorConversation =
-            case s.conversations.lastPage of
+            case s.conversations.loadingId of
                 RemoteData.Failure _ ->
                     True
 

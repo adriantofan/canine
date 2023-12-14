@@ -52,4 +52,4 @@ update msg store =
 
 prevConversationPageId : Store -> Maybe ConversationId
 prevConversationPageId store =
-    store.conversations.lastId
+    store.conversations.nextIdToLoad
