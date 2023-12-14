@@ -10,6 +10,7 @@ import Store
 
 type alias Config msg =
     { loadPrevMsg : msg
+    , gotToConversation : String -> msg
     }
 
 
@@ -33,7 +34,7 @@ view config store =
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
             ]
-            ([ conversationLoadingCell config store ] ++ List.map (conversationCell False) store.conversations.data)
+            ([ conversationLoadingCell config store ] ++ conversationCells config store)
 
         --[ Html.form []
         --    [ label
@@ -66,6 +67,11 @@ view config store =
         --        ]
         --    ]
         ]
+
+
+conversationCells : Config msg -> Store.Store -> List (Html msg)
+conversationCells config store =
+    List.map (conversationCell config False) store.conversations.data
 
 
 conversationLoadingCell : Config msg -> Store.Store -> Html msg
@@ -122,8 +128,8 @@ conversationLoadingCell config s =
         (loadHeader ++ infoText)
 
 
-conversationCell : Bool -> Api.Conversation -> Html msg
-conversationCell selected c =
+conversationCell : Config msg -> Bool -> Api.Conversation -> Html msg
+conversationCell config selected c =
     button
         [ Attr.class
             ("flex w-full flex-col gap-y-2 rounded-lg px-3 py-2 text-left transition-colors duration-200 focus:outline-none hover:bg-slate-200"
@@ -134,6 +140,7 @@ conversationCell selected c =
                         " dark:hover:bg-slate-800"
                    )
             )
+        , onClick (config.gotToConversation c.id)
         ]
         [ h1
             [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
@@ -146,6 +153,6 @@ conversationCell selected c =
         ]
 
 
-dataRequests : Store.Store -> List Store.Action
-dataRequests store =
+dataRequests : Store.Store -> Maybe Api.ConversationId -> List Store.Action
+dataRequests store maybeConversationId =
     [ Store.prevConversationPage store ]

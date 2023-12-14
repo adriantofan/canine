@@ -33,7 +33,7 @@ main =
 loadMore : InfiniteScroll.Direction -> Cmd Msg
 loadMore dir =
     Http.get
-     -- TODO: inject the api url somehow
+        -- TODO: inject the api url somehow
         { url = "http://localhost:1234/api/tmp-conversations"
         , expect = Http.expectJson OnConversationsRetrieved Conversation.getConversationsDecoder
         }
@@ -105,6 +105,7 @@ update msg model =
                 -- TODO: make this a function
                 newConversations =
                     model.conversations ++ conversations
+
                 s =
                     InfiniteScroll.stopLoading model.infiniteScroll
             in
@@ -161,7 +162,7 @@ sidebar model =
                     []
 
                 Route.Conversations Nothing ->
-                    [ coversations model]
+                    [ coversations model ]
 
                 Route.Conversations (Just _) ->
                     [ coversations model
@@ -212,41 +213,41 @@ coversations model =
             ]
         , div
             [ Attr.class "mx-2 mt-8 space-y-4"
-             --, Attr.style "height" "150px"
+
+            --, Attr.style "height" "150px"
             ]
             (List.map (conversationCell False) model.conversations)
-            --[ Html.form []
-            --    [ label
-            --        [ Attr.for "chat-input"
-            --        , Attr.class "sr-only"
-            --        ]
-            --        [ text "Search chats" ]
-            --    , div
-            --        [ Attr.class "relative"
-            --        ]
-            --        [ input
-            --            [ Attr.id "search-chats"
-            --            , Attr.type_ "text"
-            --            , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-            --            , Attr.placeholder "Search chats"
-            --            , Attr.rows 1
-            --            , Attr.required True
-            --            ]
-            --            []
-            --        , button
-            --            [ Attr.type_ "submit"
-            --            , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
-            --            ]
-            --            [ Assets.searchSvg
-            --            , span
-            --                [ Attr.class "sr-only"
-            --                ]
-            --                [ text "Search chats" ]
-            --            ]
-            --        ]
-            --    ]
 
-
+        --[ Html.form []
+        --    [ label
+        --        [ Attr.for "chat-input"
+        --        , Attr.class "sr-only"
+        --        ]
+        --        [ text "Search chats" ]
+        --    , div
+        --        [ Attr.class "relative"
+        --        ]
+        --        [ input
+        --            [ Attr.id "search-chats"
+        --            , Attr.type_ "text"
+        --            , Attr.class "w-full rounded-lg border border-slate-300 bg-slate-50 p-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+        --            , Attr.placeholder "Search chats"
+        --            , Attr.rows 1
+        --            , Attr.required True
+        --            ]
+        --            []
+        --        , button
+        --            [ Attr.type_ "submit"
+        --            , Attr.class "absolute bottom-2 right-2.5 rounded-lg p-2 text-sm text-slate-500 hover:text-blue-700 focus:outline-none sm:text-base"
+        --            ]
+        --            [ Assets.searchSvg
+        --            , span
+        --                [ Attr.class "sr-only"
+        --                ]
+        --                [ text "Search chats" ]
+        --            ]
+        --        ]
+        --    ]
         ]
 
 

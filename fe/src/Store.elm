@@ -5,16 +5,16 @@ import Paginated
 
 
 type alias Store =
-    { conversations : Paginated.Model
+    { conversations : Paginated.Model Conversation ConversationId
     }
 
 
 type Action
-    = ConversationAction Paginated.Action
+    = ConversationAction (Paginated.Action ConversationId)
 
 
 type Msg
-    = ConversationMsg Paginated.Msg
+    = ConversationMsg (Paginated.Msg ConversationId ConversationPage)
 
 
 init : Store
@@ -28,13 +28,21 @@ prevConversationPage store =
     ConversationAction (Paginated.PrevPage <| prevConversationPageId store)
 
 
+conversationsConfig : Paginated.Config Conversation ConversationId ConversationPage
+conversationsConfig =
+    { fetchPrev = getConversationPage
+    , data = .data
+    , nextId = .next
+    }
+
+
 runAction : Action -> Store -> ( Store, Cmd Msg )
 runAction action store =
     case action of
         ConversationAction conversationAction ->
             let
                 ( conversation, cmd ) =
-                    Paginated.runAction conversationAction store.conversations
+                    Paginated.runAction conversationsConfig conversationAction store.conversations
             in
             ( { store | conversations = conversation }, Cmd.map ConversationMsg cmd )
 
@@ -45,7 +53,7 @@ update msg store =
         ConversationMsg conversationMsg ->
             let
                 ( conversation, cmd ) =
-                    Paginated.update conversationMsg store.conversations
+                    Paginated.update conversationsConfig conversationMsg store.conversations
             in
             ( { store | conversations = conversation }, Cmd.map ConversationMsg cmd )
 

@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Api
 import Assets
 import Browser exposing (Document)
 import Browser.Navigation as Nav
@@ -8,6 +9,7 @@ import Conversations
 import Home
 import Html exposing (Html, a, aside, div, text)
 import Html.Attributes as Attr
+import Messages
 import Paginated
 import Store
 import Url exposing (Url)
@@ -22,17 +24,18 @@ type Msg
     = ClickedLink Browser.UrlRequest
     | ChangedUrl Url
     | StoreMsg Store.Msg
+    | NavigateToConversationMsg Api.ConversationId
 
 
 type Page
     = HomePage
-    | ConversationPage
+    | ConversationPage (Maybe Api.ConversationId)
     | NotFound
 
 
 type Route
     = Home
-    | Conversations (Maybe Int)
+    | Conversations (Maybe Api.ConversationId)
     | NotFoundRoute
 
 
@@ -45,20 +48,20 @@ init flags url key =
         store =
             Store.init
 
-        requests : List Store.Action
-        requests =
-            dataRequests store route
-
         page =
             case route of
                 Home ->
                     HomePage
 
                 Conversations maybeId ->
-                    ConversationPage
+                    ConversationPage maybeId
 
                 NotFoundRoute ->
                     NotFound
+
+        requests : List Store.Action
+        requests =
+            dataRequestsPage store page
     in
     { page = page, key = key, store = store }
         |> sendDataRequests requests
@@ -66,7 +69,14 @@ init flags url key =
 
 conversationConfig : Conversations.Config Msg
 conversationConfig =
-    { loadPrevMsg = StoreMsg (Store.ConversationMsg Paginated.OnPrevPage) }
+    { loadPrevMsg = StoreMsg (Store.ConversationMsg Paginated.OnPrevPage)
+    , gotToConversation = NavigateToConversationMsg
+    }
+
+
+messagesConfig : Messages.Config
+messagesConfig =
+    ()
 
 
 view : Model -> Document Msg
@@ -75,22 +85,27 @@ view model =
         content =
             case model.page of
                 HomePage ->
-                    Home.view
+                    [ Home.view ]
 
-                ConversationPage ->
-                    Conversations.view conversationConfig model.store
+                ConversationPage maybeId ->
+                    case maybeId of
+                        Nothing ->
+                            [ Conversations.view conversationConfig model.store ]
+
+                        Just id ->
+                            [ Conversations.view conversationConfig model.store
+                            , Messages.view messagesConfig model.store
+                            ]
 
                 NotFound ->
-                    text "Not Found"
+                    [ text "Not Found" ]
     in
     { title = "Elm Chat"
     , body =
         [ aside
             [ Attr.class "flex"
             ]
-            [ navBar model.page
-            , content
-            ]
+            ([ navBar model.page ] ++ content)
         ]
     }
 
@@ -140,8 +155,8 @@ isActive path page =
         ( "/", HomePage ) ->
             True
 
-        ( "/conversations", ConversationPage ) ->
-            True
+        ( p, ConversationPage _ ) ->
+            String.startsWith "/conversations" p
 
         ( _, _ ) ->
             False
@@ -150,6 +165,9 @@ isActive path page =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NavigateToConversationMsg id ->
+            ( model, Nav.pushUrl model.key ("/conversations/" ++ id) )
+
         StoreMsg storeMsg ->
             let
                 ( newStore, storeCmd ) =
@@ -179,21 +197,20 @@ update msg model =
                 newRoute =
                     routeFromUrl url
 
-                requests : List Store.Action
-                requests =
-                    dataRequests model.store newRoute
-
-                -- TODO: does it really make sense to have a page model ?
                 page =
-                    case newRoute of
+                    case Debug.log "Changedurl" newRoute of
                         Home ->
                             HomePage
 
                         Conversations maybeId ->
-                            ConversationPage
+                            ConversationPage maybeId
 
                         NotFoundRoute ->
                             NotFound
+
+                requests : List Store.Action
+                requests =
+                    dataRequestsPage model.store page
             in
             ( { model | page = page }
             , Cmd.none
@@ -224,34 +241,14 @@ sendDataRequests requests model =
         requests
 
 
-dataRequests : Store.Store -> Route -> List Store.Action
-dataRequests store route =
-    -- TODO: OBSOLETE: use dataRequestsPage instead
-    case route of
-        Home ->
-            []
-
-        Conversations maybeId ->
-            case maybeId of
-                Just id ->
-                    Debug.todo "get specific conversation"
-
-                Nothing ->
-                    Conversations.dataRequests store
-
-        NotFoundRoute ->
-            []
-
-
 dataRequestsPage : Store.Store -> Page -> List Store.Action
 dataRequestsPage store page =
-    -- TODO: replace url based dataRequests with dataRequestsPage
     case page of
         HomePage ->
             []
 
-        ConversationPage ->
-            Conversations.dataRequests store
+        ConversationPage maybeId ->
+            Conversations.dataRequests store maybeId
 
         NotFound ->
             []
@@ -262,7 +259,7 @@ parser =
     Parser.oneOf
         [ Parser.map Home Parser.top
         , Parser.map (Conversations Nothing) (Parser.s "conversations")
-        , Parser.map conversationWithId (Parser.s "conversation" </> Parser.int)
+        , Parser.map conversationWithId (Parser.s "conversations" </> Parser.string)
         ]
 
 

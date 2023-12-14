@@ -1,28 +1,28 @@
-module Paginated exposing (Action(..), Model, Msg(..), init, runAction, update)
+module Paginated exposing (Action(..), Config, Model, Msg(..), init, runAction, update)
 
 import Api exposing (Conversation, ConversationId, ConversationPage, getConversationPage)
 import Http
 import RemoteData exposing (RemoteData(..), WebData)
 
 
-type alias Model =
-    { data : List Conversation
+type alias Model item itemId =
+    { data : List item
     , loadingId : WebData ()
-    , nextIdToLoad : Maybe ConversationId
+    , nextIdToLoad : Maybe itemId
     }
 
 
-type Action
-    = PrevPage (Maybe ConversationId) -- last loaded conversation id
+type Action itemId
+    = PrevPage (Maybe itemId) -- last loaded conversation id
 
 
-type Msg
-    = OnPrevRetrieved ConversationPage
+type Msg itemId page
+    = OnPrevRetrieved page
     | OnPrevPage
-    | LoadError Action Http.Error
+    | LoadError (Action itemId) Http.Error
 
 
-init : Model
+init : Model item itemId
 init =
     { data = []
     , loadingId = NotAsked
@@ -30,13 +30,20 @@ init =
     }
 
 
-runAction : Action -> Model -> ( Model, Cmd Msg )
-runAction action store =
+type alias Config item itemId page =
+    { fetchPrev : Maybe itemId -> (Result Http.Error page -> Msg itemId page) -> Cmd (Msg itemId page)
+    , data : page -> List item
+    , nextId : page -> itemId
+    }
+
+
+runAction : Config item itemId page -> Action itemId -> Model item itemId -> ( Model item itemId, Cmd (Msg itemId page) )
+runAction config action store =
     case action of
         PrevPage id ->
             if shouldSendRequest store.loadingId then
                 ( { store | loadingId = Loading }
-                , send action (getConversationPage id) OnPrevRetrieved
+                , send action (config.fetchPrev id) OnPrevRetrieved
                 )
 
             else
@@ -69,16 +76,16 @@ shouldSendRequest_ maybeWebData =
             shouldSendRequest webData
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg store =
+update : Config item itemId page -> Msg itemId page -> Model item itemId -> ( Model item itemId, Cmd (Msg itemId page) )
+update config msg store =
     case msg of
-        OnPrevRetrieved conversationPage ->
+        OnPrevRetrieved page ->
             ( { store
-                | data = store.data ++ conversationPage.data
+                | data = store.data ++ config.data page
                 , loadingId = Success ()
                 , nextIdToLoad =
                     if List.isEmpty store.data then
-                        Just conversationPage.next
+                        Just <| config.nextId page
                         -- TODO: we could disable load more button here
 
                     else
@@ -115,18 +122,18 @@ update msg store =
                 ( store, Cmd.none )
 
 
-saveFailure : Action -> Http.Error -> Model -> Model
+saveFailure : Action itemId -> Http.Error -> Model item itemId -> Model item itemId
 saveFailure action err store =
     case action of
         PrevPage id ->
-            if prevConversationPageId store == id then
+            if store.nextIdToLoad == id then
                 { store | loadingId = Failure err }
 
             else
                 store
 
 
-send : Action -> ((Result Http.Error a -> Msg) -> Cmd Msg) -> (a -> Msg) -> Cmd Msg
+send : Action itemId -> ((Result Http.Error a -> Msg itemId page) -> Cmd (Msg itemId page)) -> (a -> Msg itemId page) -> Cmd (Msg itemId page)
 send action toCmd toSuccessMsg =
     toCmd
         (\result ->
@@ -137,12 +144,3 @@ send action toCmd toSuccessMsg =
                 Ok success ->
                     toSuccessMsg success
         )
-
-
-
--- HELPERS
-
-
-prevConversationPageId : Model -> Maybe ConversationId
-prevConversationPageId store =
-    store.nextIdToLoad
