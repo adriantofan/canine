@@ -39,7 +39,7 @@ loadMoreButton : Config msg -> Html msg
 loadMoreButton config =
     div
         [ Attr.class "flex justify-center"
-        , onClick config.loadPrevMsg
+        , onClick config.loadPrevMsg -- TODO Add a loading indicator .... to prevent multiple clicks
         ]
         [ div
             [ Attr.class "mb-4 py-1 sm:px-4 mx-auto"
