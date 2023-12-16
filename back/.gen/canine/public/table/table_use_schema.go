@@ -12,5 +12,6 @@ package table
 func UseSchema(schema string) {
 	Conversation = Conversation.FromSchema(schema)
 	Message = Message.FromSchema(schema)
+	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	User = User.FromSchema(schema)
 }

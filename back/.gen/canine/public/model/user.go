@@ -12,7 +12,9 @@ import (
 )
 
 type User struct {
-	ID        int64 `sql:"primary_key"`
-	Phone     string
-	CreatedAt time.Time
+	ID               int64 `sql:"primary_key"`
+	MessagingAddress string
+	Type             UserType
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }

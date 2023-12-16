@@ -12,9 +12,10 @@ import (
 )
 
 type Conversation struct {
-	ID            int64 `sql:"primary_key"`
-	User1ID       int64
-	User2ID       int64
-	CreatedAt     time.Time
-	LastMessageID int64
+	ID             int64 `sql:"primary_key"`
+	ExternalUserID int64
+	Name           *string
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	LastMessageID  int64
 }

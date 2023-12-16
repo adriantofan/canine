@@ -11,7 +11,6 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"net/http/httptest"
-	"strconv"
 )
 
 var _ = Describe("Handlers", func() {
@@ -20,7 +19,7 @@ var _ = Describe("Handlers", func() {
 		var repository *db.MemoryMessageRepository
 		makeUser := func(phone string) domain.User {
 			user := map[string]interface{}{
-				"phone": phone,
+				"messaging_address": phone,
 			}
 			userJSON, _ := json.Marshal(user)
 			w := httptest.NewRecorder()
@@ -29,17 +28,17 @@ var _ = Describe("Handlers", func() {
 			Expect(w.Code).To(Equal(201))
 			var decoded domain.User
 			_ = json.Unmarshal(w.Body.Bytes(), &decoded)
-			Expect(decoded.Phone).To(Equal(phone))
+			Expect(decoded.MessagingAddress).To(Equal(phone))
 			return decoded
 		}
 
-		createConversation := func(user1ID int64, recipientPhone string) domain.Conversation {
+		createConversation := func(recipientPhone string) domain.Conversation {
 			conversation := map[string]interface{}{
-				"recipient_phone": recipientPhone,
+				"recipient_messaging_address": recipientPhone,
 			}
 			conversationJSON, _ := json.Marshal(conversation)
 			w := httptest.NewRecorder()
-			req := httptest.NewRequest("POST", "/users/"+strconv.FormatInt(user1ID, 10)+"/conversations", bytes.NewReader(conversationJSON))
+			req := httptest.NewRequest("POST", "/conversations", bytes.NewReader(conversationJSON))
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(201))
 			var decoded domain.Conversation
@@ -67,40 +66,64 @@ var _ = Describe("Handlers", func() {
 
 			w := httptest.NewRecorder()
 			user := map[string]interface{}{
-				"phone": "+1234567890",
+				"messaging_address": "+1234567890",
 			}
 			userJSON, _ := json.Marshal(user)
 			req := httptest.NewRequest("POST", "/users", bytes.NewReader(userJSON))
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(201))
-			Expect(w.Body.String()).To(MatchJSON(`{"id":1, "phone": "+1234567890", "created_at": "0001-01-01T00:00:00Z"}`))
+			Expect(w.Body.String()).To(MatchJSON(`
+{
+				"id": 1,
+				"messaging_address": "+1234567890",
+				"type": "external",
+				"created_at": "0001-01-01T00:00:00Z",
+				"updated_at": "0001-01-01T00:00:00Z"
+			  }
+			`))
 		})
 
 		It("should get user", func() {
 
 			w := httptest.NewRecorder()
 			user := map[string]interface{}{
-				"phone": "+1234567890",
+				"messaging_address": "+1234567890",
 			}
 			userJSON, _ := json.Marshal(user)
 			req := httptest.NewRequest("POST", "/users", bytes.NewReader(userJSON))
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(201))
-			Expect(w.Body.String()).To(MatchJSON(`{"id":1, "phone": "+1234567890", "created_at": "0001-01-01T00:00:00Z"}`))
+			Expect(w.Body.String()).To(MatchJSON(`
+				  {
+					"id": 1,
+					"messaging_address": "+1234567890",
+					"type": "external",
+					"created_at": "0001-01-01T00:00:00Z",
+					"updated_at": "0001-01-01T00:00:00Z"
+				  }
+			`))
 
 			w = httptest.NewRecorder()
 			req = httptest.NewRequest("GET", "/users/1", nil)
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(200))
-			Expect(w.Body.String()).To(MatchJSON(`{"id":1, "phone": "+1234567890", "created_at": "0001-01-01T00:00:00Z"}`))
+			Expect(w.Body.String()).To(MatchJSON(`
+				  {
+					"id": 1,
+					"messaging_address": "+1234567890",
+					"type": "external",
+					"created_at": "0001-01-01T00:00:00Z",
+					"updated_at": "0001-01-01T00:00:00Z"
+				  }
+	           `))
 		})
 
-		It("should create conversation", func() {
-			user1 := makeUser("+1111111111")
-			user2 := makeUser("+2222222222")
-			createConversation(user1.ID, user2.Phone)
+		It("should get conversation", func() {
+			_ = makeUser("+1111111111")
+
+			createConversation("+1111111111")
 			w := httptest.NewRecorder()
-			req := httptest.NewRequest("GET", "/users/"+strconv.FormatInt(user1.ID, 10)+"/conversations", nil)
+			req := httptest.NewRequest("GET", "/conversations", nil)
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(200))
 			var conversationPage struct {

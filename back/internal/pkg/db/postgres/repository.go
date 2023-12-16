@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"back/.gen/canine/public/table"
 	"back/internal/pkg/domain"
 	"context"
@@ -40,54 +41,35 @@ func (s *MessageRepository) GetMessages(ctx context.Context, conversationID int6
 }
 
 func (s *MessageRepository) GetMessagesBefore(ctx context.Context, conversationID int64, beforeID int64, limit int) ([]domain.Message, error) {
-	messages := make([]domain.Message, 0)
-	err := s.db.SelectContext(ctx, &messages, `
-		SELECT id, conversation_id, sender_id, message, created_at
-		FROM message
-		WHERE conversation_id = $1 AND id < $2
-		ORDER BY id DESC
-		LIMIT $3
-	`, conversationID, beforeID, limit)
-
-	return messages, err
+	return s.GetMessages(ctx, conversationID, &beforeID, limit, domain.Backward)
 }
 
 func (s *MessageRepository) GetMessagesAfter(ctx context.Context, conversationID int64, afterID int64, limit int) ([]domain.Message, error) {
-	messages := make([]domain.Message, 0)
-	err := s.db.SelectContext(ctx, &messages, `
-		SELECT id, conversation_id, sender_id, message, created_at
-		FROM message
-		WHERE conversation_id = $1 AND id > $2
-		ORDER BY id ASC
-		LIMIT $3
-	`, conversationID, afterID, limit)
-
-	return messages, err
+	return s.GetMessages(ctx, conversationID, &afterID, limit, domain.Forward)
 }
 
-func (s *MessageRepository) CreateUser(ctx context.Context, phone string) (domain.User, error) {
+func (s *MessageRepository) CreateUser(ctx context.Context, messagingAddress string, userType genModel.UserType) (domain.User, error) {
 	var user domain.User
 	stmt := table.User.
-		INSERT(table.User.Phone).
-		VALUES(String(phone)).
+		INSERT(table.User.MessagingAddress, table.User.Type).
+		VALUES(String(messagingAddress), userType).
 		RETURNING(table.User.AllColumns)
 	println(stmt.DebugSql())
 	err := stmt.QueryContext(ctx, s.db, &user)
 	var pqError *pq.Error
 	if err != nil && errors.As(err, &pqError) && pqError.Code.Name() == "unique_violation" {
-		return user, domain.PhoneNumberExistsError
+		return user, domain.MessagingAddressExistsError
 
 	}
-
 	return user, err
 }
 
 // GetUser implements MessageRepository
-func (s *MessageRepository) GetUserByPhone(ctx context.Context, phone string) (domain.User, error) {
+func (s *MessageRepository) GetUserByMessagingAddress(ctx context.Context, messagingAddress string) (domain.User, error) {
 	var user domain.User
-	stmt := SELECT(table.User.ID, table.User.Phone, table.User.CreatedAt).
+	stmt := SELECT(table.User.AllColumns).
 		FROM(table.User).
-		WHERE(table.User.Phone.EQ(String(phone)))
+		WHERE(table.User.MessagingAddress.EQ(String(messagingAddress)))
 
 	err := stmt.QueryContext(ctx, s.db, &user)
 
@@ -100,7 +82,7 @@ func (s *MessageRepository) GetUserByPhone(ctx context.Context, phone string) (d
 
 func (s *MessageRepository) GetUserById(ctx context.Context, id int64) (domain.User, error) {
 	var user domain.User
-	stmt := SELECT(table.User.ID, table.User.Phone, table.User.CreatedAt).
+	stmt := SELECT(table.User.AllColumns).
 		FROM(table.User).
 		WHERE(table.User.ID.EQ(Int64(id)))
 	err := stmt.QueryContext(ctx, s.db, &user)
@@ -112,38 +94,41 @@ func (s *MessageRepository) GetUserById(ctx context.Context, id int64) (domain.U
 	return user, err
 }
 
-func (s *MessageRepository) GetOrCreateConversation(ctx context.Context, user1Id, user2Id int64) (domain.Conversation, error) {
+func (s *MessageRepository) GetOrCreateConversation(ctx context.Context, externalUserID int64, name string) (domain.Conversation, error) {
+
 	var conversation domain.Conversation
-	if user1Id > user2Id {
-		user1Id, user2Id = user2Id, user1Id
+	createStmt := table.Conversation.
+		INSERT(table.Conversation.ExternalUserID, table.Conversation.Name).
+		VALUES(Int64(externalUserID), String(name)).
+		RETURNING(table.Conversation.AllColumns).
+		ON_CONFLICT(table.Conversation.ExternalUserID, table.Conversation.Name).
+		DO_NOTHING()
+	err := createStmt.QueryContext(ctx, s.db, &conversation)
+	if err != nil {
+		if !errors.Is(err, qrm.ErrNoRows) {
+			return conversation, err
+		}
+		loadStmt := SELECT(table.Conversation.AllColumns).
+			FROM(table.Conversation).
+			WHERE(
+				AND(
+					table.Conversation.ExternalUserID.EQ(Int64(externalUserID)),
+					table.Conversation.Name.EQ(String(name)))).
+			LIMIT(1)
+		err := loadStmt.QueryContext(ctx, s.db, &conversation)
+		return conversation, err
+
 	}
-	err := s.db.GetContext(ctx, &conversation, `
-		WITH new_conversation AS (
-			INSERT INTO conversation (user1_id, user2_id)
-			VALUES ($1, $2)
-			ON CONFLICT (user1_id, user2_id) DO NOTHING 
-			RETURNING id, user1_id, user2_id, last_message_id, created_at
-		)
-		SELECT id, user1_id, user2_id, last_message_id, created_at FROM new_conversation
-		UNION ALL
-		SELECT id, user1_id, user2_id, last_message_id, created_at
-		FROM conversation
-		WHERE user1_id = user1_id
-  		AND user2_id = user2_id
-		LIMIT 1
-	`, user1Id, user2Id)
-
-	return conversation, err
-
+	return conversation, nil
 }
 
-func (s *MessageRepository) CreateMessage(ctx context.Context, conversationID int64, senderID int64, message string) (domain.Message, error) {
+func (s *MessageRepository) CreateMessage(ctx context.Context, conversationID int64, senderID int64, message string, messageType genModel.MessageType) (domain.Message, error) {
 	var msg domain.Message
 	err := s.db.GetContext(ctx, &msg, `
-		INSERT INTO message (conversation_id, sender_id, message)
-		VALUES ($1, $2, $3)
-		RETURNING id, conversation_id, sender_id, message, created_at
-	`, conversationID, senderID, message)
+		INSERT INTO message (conversation_id, sender_id,  message, type)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, conversation_id, sender_id, message, type, created_at
+	`, conversationID, senderID, message, messageType)
 
 	return msg, err
 }

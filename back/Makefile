@@ -4,7 +4,7 @@ SHELL := /bin/bash
 
 
 test-integration:
-	export POSTGRES_DSN=postgres://postgres:postgres@localhost:5432/canine?sslmode=disable; \
+	export POSTGRES_DSN=postgres://postgres:postgres@localhost:5432/?sslmode=disable; \
 	ginkgo --tags integration -r
 
 

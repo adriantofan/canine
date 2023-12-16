@@ -1,6 +1,7 @@
 package domain
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -11,6 +12,10 @@ import (
 
 type MillisecondsTime struct {
 	time.Time
+}
+
+func NewMillisecondsTime(t time.Time) MillisecondsTime {
+	return MillisecondsTime{t}
 }
 
 func (mt *MillisecondsTime) MarshalJSON() ([]byte, error) {
@@ -28,25 +33,29 @@ func (mt *MillisecondsTime) UnmarshalJSON(data []byte) error {
 }
 
 type User struct {
-	ID        int64     `json:"id" sql:"primary_key"`
-	Phone     string    `json:"phone"`
-	CreatedAt time.Time `json:"created_at"`
+	ID               int64             `json:"id" sql:"primary_key"`
+	MessagingAddress string            `json:"messaging_address" db:"messaging_address"`
+	Type             genModel.UserType `json:"type" db:"type"`
+	CreatedAt        MillisecondsTime  `json:"created_at" db:"created_at"`
+	UpdatedAt        MillisecondsTime  `json:"updated_at" db:"updated_at"`
 }
 
 type Conversation struct {
-	ID            int64            `json:"id" sql:"primary_key"`
-	User1ID       int64            `db:"user1_id" json:"user1_id"`
-	User2ID       int64            `db:"user2_id" json:"user2_id"`
-	LastMessageID int64            `db:"last_message_id" json:"last_message_id"`
-	CreatedAt     MillisecondsTime `db:"created_at" json:"created_at"`
+	ID             int64            `json:"id" sql:"primary_key"`
+	ExternalUserID int64            `json:"external_user_id" db:"external_user_id"`
+	Name           string           `json:"name" db:"name"`
+	CreatedAt      MillisecondsTime `json:"created_at" db:"created_at"`
+	UpdatedAt      MillisecondsTime `json:"updated_at" db:"updated_at"`
+	LastMessageID  int64            `json:"last_message_id" db:"last_message_id"`
 }
 
 type Message struct {
-	ID             int64            `json:"id" sql:"primary_key"`
-	ConversationID int64            `db:"conversation_id" json:"conversation_id"`
-	SenderID       int64            `db:"sender_id" json:"sender_id"`
-	Message        string           `json:"message"`
-	CreatedAt      MillisecondsTime `db:"created_at" json:"created_at"`
+	ID             int64                `json:"id" sql:"primary_key"`
+	ConversationID int64                `json:"conversation_id" db:"conversation_id"`
+	SenderID       int64                `json:"sender_id" db:"sender_id"`
+	Type           genModel.MessageType `json:"type" db:"type"`
+	Message        string               `json:"message" db:"message"`
+	CreatedAt      MillisecondsTime     `json:"created_at" db:"created_at"`
 }
 
 func (mt *MillisecondsTime) Scan(value interface{}) error {

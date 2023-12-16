@@ -15,6 +15,7 @@ type Message struct {
 	ID             int64 `sql:"primary_key"`
 	ConversationID int64
 	SenderID       int64
+	Type           MessageType
 	Message        string
 	CreatedAt      time.Time
 }

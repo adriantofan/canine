@@ -36,9 +36,6 @@ func Run(args []string) {
 		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
 	}
 
-	// FIXME: This is a hack to make sure the database is ready.
-	postgres.MustExecMigrations(connexion, true)
-
 	repository := postgres.NewMessageRepository(connexion)
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(repository)

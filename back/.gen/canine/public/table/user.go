@@ -17,9 +17,11 @@ type userTable struct {
 	postgres.Table
 
 	// Columns
-	ID        postgres.ColumnInteger
-	Phone     postgres.ColumnString
-	CreatedAt postgres.ColumnTimestamp
+	ID               postgres.ColumnInteger
+	MessagingAddress postgres.ColumnString
+	Type             postgres.ColumnString
+	CreatedAt        postgres.ColumnTimestamp
+	UpdatedAt        postgres.ColumnTimestamp
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -60,20 +62,24 @@ func newUserTable(schemaName, tableName, alias string) *UserTable {
 
 func newUserTableImpl(schemaName, tableName, alias string) userTable {
 	var (
-		IDColumn        = postgres.IntegerColumn("id")
-		PhoneColumn     = postgres.StringColumn("phone")
-		CreatedAtColumn = postgres.TimestampColumn("created_at")
-		allColumns      = postgres.ColumnList{IDColumn, PhoneColumn, CreatedAtColumn}
-		mutableColumns  = postgres.ColumnList{PhoneColumn, CreatedAtColumn}
+		IDColumn               = postgres.IntegerColumn("id")
+		MessagingAddressColumn = postgres.StringColumn("messaging_address")
+		TypeColumn             = postgres.StringColumn("type")
+		CreatedAtColumn        = postgres.TimestampColumn("created_at")
+		UpdatedAtColumn        = postgres.TimestampColumn("updated_at")
+		allColumns             = postgres.ColumnList{IDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns         = postgres.ColumnList{MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return userTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:        IDColumn,
-		Phone:     PhoneColumn,
-		CreatedAt: CreatedAtColumn,
+		ID:               IDColumn,
+		MessagingAddress: MessagingAddressColumn,
+		Type:             TypeColumn,
+		CreatedAt:        CreatedAtColumn,
+		UpdatedAt:        UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

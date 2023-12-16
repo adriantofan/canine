@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS "user";
+DROP TYPE user_type;

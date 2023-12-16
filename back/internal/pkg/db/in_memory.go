@@ -1,6 +1,7 @@
 package db
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/infrastructure"
 	"context"
@@ -34,25 +35,26 @@ func (r *MemoryMessageRepository) GetMessagesAfter(ctx context.Context, conversa
 func (r *MemoryMessageRepository) GetMessagesBefore(ctx context.Context, conversationID int64, beforeID int64, limit int) ([]domain.Message, error) {
 	panic("implement me")
 }
-func (r *MemoryMessageRepository) CreateUser(_ context.Context, phone string) (domain.User, error) {
+func (r *MemoryMessageRepository) CreateUser(_ context.Context, messagingAddress string, userType genModel.UserType) (domain.User, error) {
 	for _, user := range r.users {
-		if user.Phone == phone {
-			return domain.User{}, domain.PhoneNumberExistsError
+		if user.MessagingAddress == messagingAddress {
+			return domain.User{}, domain.MessagingAddressExistsError
 		}
 	}
 
 	newID := r.nextUserID
 	r.nextUserID++
 	user := domain.User{
-		ID:    newID,
-		Phone: phone,
+		ID:               newID,
+		MessagingAddress: messagingAddress,
+		Type:             userType,
 	}
 	r.users = append(r.users, user)
 	return user, nil
 }
-func (r *MemoryMessageRepository) GetUserByPhone(_ context.Context, phone string) (domain.User, error) {
+func (r *MemoryMessageRepository) GetUserByMessagingAddress(_ context.Context, messagingAddress string) (domain.User, error) {
 	for _, user := range r.users {
-		if user.Phone == phone {
+		if user.MessagingAddress == messagingAddress {
 			return user, nil
 		}
 	}
@@ -67,27 +69,25 @@ func (r *MemoryMessageRepository) GetUserById(_ context.Context, id int64) (doma
 	}
 	return domain.User{}, domain.UserNotFoundError
 }
-func (r *MemoryMessageRepository) GetOrCreateConversation(_ context.Context, user1Id, user2Id int64) (domain.Conversation, error) {
-	if user1Id > user2Id {
-		user1Id, user2Id = user2Id, user1Id
-	}
+func (r *MemoryMessageRepository) GetOrCreateConversation(ctx context.Context, externalUserID int64, name string) (domain.Conversation, error) {
+
 	for _, conversation := range r.conversations {
-		if conversation.User1ID == user1Id && conversation.User2ID == user2Id {
+		if conversation.ExternalUserID == externalUserID && conversation.Name == name {
 			return conversation, nil
 		}
 	}
 	conversation := domain.Conversation{
-		ID:        r.nextConversationID,
-		User1ID:   user1Id,
-		User2ID:   user2Id,
-		CreatedAt: r.timeService.NowUTC(),
+		ID:             r.nextConversationID,
+		ExternalUserID: externalUserID,
+		Name:           name,
+		CreatedAt:      domain.NewMillisecondsTime(r.timeService.NowUTC()),
 	}
 	r.nextConversationID++
 	r.conversations = append(r.conversations, conversation)
 	return conversation, nil
 }
 
-func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationID int64, senderID int64, message string) (domain.Message, error) {
+func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationID int64, senderID int64, message string, messageType genModel.MessageType) (domain.Message, error) {
 	newID := r.nextMessageID
 	r.nextMessageID++
 	msg := domain.Message{
@@ -95,7 +95,8 @@ func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationI
 		ConversationID: conversationID,
 		SenderID:       senderID,
 		Message:        message,
-		CreatedAt:      r.timeService.NowUTC(),
+		Type:           messageType,
+		CreatedAt:      domain.NewMillisecondsTime(r.timeService.NowUTC()),
 	}
 	r.messages = append(r.messages, msg)
 	return msg, nil
@@ -131,6 +132,9 @@ func (r *MemoryMessageRepository) GetConversations(ctx context.Context, id *int6
 		}
 		return reverseSlice(r.conversations[len(r.conversations)-limit:]), nil
 	}
+}
+func (r *MemoryMessageRepository) GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction domain.Direction) ([]domain.Message, error) {
+	panic("implement me")
 }
 
 func reverseSlice[T any](input []T) []T {

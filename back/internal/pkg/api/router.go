@@ -12,14 +12,14 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, middleware *Cha
 
 	usersGroup := router.Group("/users/:user_id")
 	usersGroup.Use(middleware.UserMiddleware)
-
 	usersGroup.GET("", handlers.GetUser)
-	usersGroup.POST("/conversations", handlers.CreateConversation)
-	usersGroup.GET("/conversations", handlers.GetConversations)
 
-	userConversationGroup := usersGroup.Group("/conversations/:conversation_id")
-	userConversationGroup.POST("/messages", handlers.CreateMessage)
-	userConversationGroup.GET("/messages", handlers.GetConversationMessages)
+	router.POST("/conversations", handlers.CreateConversation)
+	router.GET("/conversations", handlers.GetConversations)
+
+	conversationGroup := router.Group("/conversations/:conversation_id")
+	conversationGroup.POST("/messages", handlers.CreateMessage)
+	conversationGroup.GET("/messages", handlers.GetConversationMessages)
 
 	router.GET("/tmp-conversations", func(ctx *gin.Context) {
 		results := make([]interface{}, 0)

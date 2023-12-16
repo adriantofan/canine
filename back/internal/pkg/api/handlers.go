@@ -1,6 +1,7 @@
 package api
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -41,8 +42,8 @@ func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.r.CreateUser(ctx, payload.Phone)
-	if errors.Is(err, domain.PhoneNumberExistsError) {
+	user, err := h.r.CreateUser(ctx, payload.Phone, genModel.UserType_External)
+	if errors.Is(err, domain.MessagingAddressExistsError) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodePayloadExists, "Phone number exists", err.Error()))
 		return
 	}
@@ -63,7 +64,7 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		return
 	}
 
-	recipient, err := h.r.GetUserByPhone(c, payload.RecipientPhone)
+	recipient, err := h.r.GetUserByMessagingAddress(c, payload.RecipientMessagingAddress)
 	if errors.Is(err, domain.UserNotFoundError) {
 		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
 		return
@@ -75,9 +76,9 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		return
 	}
 
-	sender := c.MustGet("user").(domain.User)
+	conversation, err := h.r.GetOrCreateConversation(c, recipient.ID, "")
+	// TODO: eventually introduce a name for the conversation
 
-	conversation, err := h.r.GetOrCreateConversation(c, sender.ID, recipient.ID)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -106,7 +107,7 @@ func (h ChatHandlers) CreateMessage(c *gin.Context) {
 	}
 
 	sender := c.MustGet("user").(domain.User)
-	message, err := h.r.CreateMessage(c, params.ConversationID, sender.ID, payload.Message)
+	message, err := h.r.CreateMessage(c, params.ConversationID, sender.ID, payload.Message, "")
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return

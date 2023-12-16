@@ -17,11 +17,12 @@ type conversationTable struct {
 	postgres.Table
 
 	// Columns
-	ID            postgres.ColumnInteger
-	User1ID       postgres.ColumnInteger
-	User2ID       postgres.ColumnInteger
-	CreatedAt     postgres.ColumnTimestamp
-	LastMessageID postgres.ColumnInteger
+	ID             postgres.ColumnInteger
+	ExternalUserID postgres.ColumnInteger
+	Name           postgres.ColumnString
+	CreatedAt      postgres.ColumnTimestamp
+	UpdatedAt      postgres.ColumnTimestamp
+	LastMessageID  postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -62,24 +63,26 @@ func newConversationTable(schemaName, tableName, alias string) *ConversationTabl
 
 func newConversationTableImpl(schemaName, tableName, alias string) conversationTable {
 	var (
-		IDColumn            = postgres.IntegerColumn("id")
-		User1IDColumn       = postgres.IntegerColumn("user1_id")
-		User2IDColumn       = postgres.IntegerColumn("user2_id")
-		CreatedAtColumn     = postgres.TimestampColumn("created_at")
-		LastMessageIDColumn = postgres.IntegerColumn("last_message_id")
-		allColumns          = postgres.ColumnList{IDColumn, User1IDColumn, User2IDColumn, CreatedAtColumn, LastMessageIDColumn}
-		mutableColumns      = postgres.ColumnList{User1IDColumn, User2IDColumn, CreatedAtColumn, LastMessageIDColumn}
+		IDColumn             = postgres.IntegerColumn("id")
+		ExternalUserIDColumn = postgres.IntegerColumn("external_user_id")
+		NameColumn           = postgres.StringColumn("name")
+		CreatedAtColumn      = postgres.TimestampColumn("created_at")
+		UpdatedAtColumn      = postgres.TimestampColumn("updated_at")
+		LastMessageIDColumn  = postgres.IntegerColumn("last_message_id")
+		allColumns           = postgres.ColumnList{IDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastMessageIDColumn}
+		mutableColumns       = postgres.ColumnList{ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastMessageIDColumn}
 	)
 
 	return conversationTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:            IDColumn,
-		User1ID:       User1IDColumn,
-		User2ID:       User2IDColumn,
-		CreatedAt:     CreatedAtColumn,
-		LastMessageID: LastMessageIDColumn,
+		ID:             IDColumn,
+		ExternalUserID: ExternalUserIDColumn,
+		Name:           NameColumn,
+		CreatedAt:      CreatedAtColumn,
+		UpdatedAt:      UpdatedAtColumn,
+		LastMessageID:  LastMessageIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

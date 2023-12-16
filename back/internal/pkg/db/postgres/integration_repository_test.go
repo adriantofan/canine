@@ -3,7 +3,9 @@
 package postgres_test
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/db/postgres"
+	"back/internal/pkg/db/postgres/test_util"
 	"back/internal/pkg/domain"
 	"context"
 	"fmt"
@@ -11,39 +13,41 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"math"
-	"os"
 )
 
 var _ = Describe("IntegrationRepository", Ordered, func() {
-	var dsn string
 	var testDb *sqlx.DB
 	var messagesRepo *postgres.MessageRepository
 
 	ctx := context.Background()
-	createUser := func(phone string) domain.User {
-		user1, err := messagesRepo.CreateUser(ctx, phone)
+	createUser := func(messagingAddress string) domain.User {
+		u, err := messagesRepo.CreateUser(ctx, messagingAddress, genModel.UserType_External)
 		Expect(err).ToNot(HaveOccurred())
-		return user1
+		Expect(u.MessagingAddress).To(Equal(messagingAddress))
+		Expect(u.CreatedAt).ToNot(BeZero())
+		Expect(u.UpdatedAt).ToNot(BeZero())
+		Expect(u.Type).To(Equal(genModel.UserType_External))
+		return u
 	}
 
-	createConversation := func(user1Id, user2Id int64) domain.Conversation {
-		conversation, err := messagesRepo.GetOrCreateConversation(ctx, user1Id, user2Id)
+	createConversation := func(user1Id int64, name string) domain.Conversation {
+		c, err := messagesRepo.GetOrCreateConversation(ctx, user1Id, name)
 		Expect(err).ToNot(HaveOccurred())
-		return conversation
+		Expect(c.ID).ToNot(BeZero())
+		Expect(c.Name).To(Equal(name))
+		Expect(c.ExternalUserID).To(Equal(user1Id))
+		Expect(c.CreatedAt).ToNot(BeZero())
+		Expect(c.UpdatedAt).ToNot(BeZero())
+		return c
 	}
 	createMessage := func(conversationId, senderId int64, messageText string) domain.Message {
-		message, err := messagesRepo.CreateMessage(ctx, conversationId, senderId, messageText)
+		message, err := messagesRepo.CreateMessage(ctx, conversationId, senderId, messageText, genModel.MessageType_Msg)
 		Expect(err).ToNot(HaveOccurred())
 		return message
 	}
 
 	BeforeAll(func() {
-		dsn = os.Getenv("POSTGRES_DSN")
-		if dsn == "" {
-			Fail("POSTGRES_DSN is not set")
-		}
-		testDb = postgres.MustConnect(dsn)
-		postgres.MustExecMigrations(testDb, true)
+		testDb, _ = test_util.MustCreateTestDBWithMigrations(false)
 	})
 
 	BeforeEach(func() {
@@ -52,18 +56,15 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 	})
 
 	Specify("user operations", func() {
-		_, err := messagesRepo.GetUserByPhone(ctx, "+1234567890")
+		_, err := messagesRepo.GetUserByMessagingAddress(ctx, "+1234567890")
 		Expect(err).Should(MatchError(domain.UserNotFoundError))
 
 		By("creating user")
 
-		user1, err := messagesRepo.CreateUser(ctx, "+1234567890")
-		Expect(user1.Phone).To(Equal("+1234567890"))
-		Expect(user1.CreatedAt).ToNot(BeZero())
-		Expect(err).ToNot(HaveOccurred())
+		user1 := createUser("+1234567890")
 
 		By("getting user by phone")
-		user, err := messagesRepo.GetUserByPhone(ctx, "+1234567890")
+		user, err := messagesRepo.GetUserByMessagingAddress(ctx, "+1234567890")
 		Expect(err).ToNot(HaveOccurred())
 		Expect(user).To(Equal(user1))
 
@@ -74,38 +75,52 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 
 		By("creating another user with different phone")
 
-		user2, err := messagesRepo.CreateUser(ctx, "+0987654321")
-		Expect(err).ToNot(HaveOccurred())
-		Expect(user2.Phone).To(Equal("+0987654321"))
+		user2 := createUser("+0987654321")
+
 		Expect(user1.ID).ToNot(Equal(user2.ID))
 
 		By("Fail to create user with same phone")
-		_, err = messagesRepo.CreateUser(ctx, "+1234567890")
-		Expect(err).To(MatchError(domain.PhoneNumberExistsError))
+		_, err = messagesRepo.CreateUser(ctx, "+1234567890", genModel.UserType_External)
+		Expect(err).To(MatchError(domain.MessagingAddressExistsError))
 	})
 
 	Specify("conversation operations", func() {
 		user1 := createUser("+1234567890")
 		user2 := createUser("+0987654321")
-		c1, err := messagesRepo.GetOrCreateConversation(ctx, user2.ID, user1.ID)
-		Expect(err).ToNot(HaveOccurred())
-		Expect(c1.ID).ToNot(BeZero())
-		Expect(c1.User1ID).To(Equal(user1.ID))
-		Expect(c1.User2ID).To(Equal(user2.ID))
-		Expect(c1.CreatedAt).ToNot(BeZero())
-		c2, err := messagesRepo.GetOrCreateConversation(ctx, user2.ID, user1.ID)
-		Expect(err).ToNot(HaveOccurred())
-		Expect(c1).To(Equal(c2))
-		c3, err := messagesRepo.GetOrCreateConversation(ctx, user1.ID, user2.ID)
-		Expect(err).ToNot(HaveOccurred())
-		Expect(c1).To(Equal(c3))
+		c1 := createConversation(user2.ID, "")
+
+		By("getting conversation by id instead of creating")
+		c2 := createConversation(user2.ID, "")
+		Expect(c2).To(Equal(c1))
+		By("creating a new conversation")
+		c3 := createConversation(user1.ID, "")
+		Expect(c3).ToNot(Equal(c1))
+	})
+
+	Specify("named conversation operations", func() {
+		user1 := createUser("+1234567890")
+		user2 := createUser("+0987654321")
+		conv1Name := "conv 1"
+		c1 := createConversation(user2.ID, conv1Name)
+
+		By("getting conversation by id instead of creating")
+		c2 := createConversation(user2.ID, conv1Name)
+		Expect(c2).To(Equal(c1))
+		By("creating a new conversation")
+		c3 := createConversation(user1.ID, conv1Name)
+		Expect(c3).ToNot(Equal(c1))
+
+		By("creating a new conversation with different name")
+		conv2Name := "conv 2"
+		c4 := createConversation(user1.ID, conv2Name)
+		Expect(c4).ToNot(Equal(c1))
+
 	})
 
 	Specify("message create", func() {
 		u1 := createUser("+1234567890")
-		u2 := createUser("+0987654321")
-		c := createConversation(u1.ID, u2.ID)
-		message, err := messagesRepo.CreateMessage(ctx, c.ID, u1.ID, "Hello, world!")
+		c := createConversation(u1.ID, "")
+		message, err := messagesRepo.CreateMessage(ctx, c.ID, u1.ID, "Hello, world!", genModel.MessageType_Ask)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(message.ID).ToNot(BeZero())
 		Expect(message.ConversationID).To(Equal(c.ID))
@@ -116,8 +131,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 
 	Specify("message get after/before", func() {
 		u1 := createUser("+1234567890")
-		u2 := createUser("+0987654321")
-		c := createConversation(u1.ID, u2.ID)
+		c := createConversation(u1.ID, "")
 
 		By("getting messages in empty conversation")
 		messages, err := messagesRepo.GetMessagesAfter(ctx, c.ID, 0, 10)
@@ -165,33 +179,32 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 	})
 
 	Specify("conversation list", func() {
-		u1 := createUser("+1111111111")
-		u2 := createUser("+2222222222")
-		u3 := createUser("+3333333333")
-		u4 := createUser("+4444444444")
-		u5 := createUser("+5555555555")
+		u1 := createUser("+2222222222")
+		u2 := createUser("+3333333333")
+		u3 := createUser("+4444444444")
+		u4 := createUser("+5555555555")
 
-		c12 := createConversation(u1.ID, u2.ID)
-		c13 := createConversation(u1.ID, u3.ID)
-		c14 := createConversation(u1.ID, u4.ID)
-		c15 := createConversation(u1.ID, u5.ID)
+		c1 := createConversation(u1.ID, "")
+		c2 := createConversation(u2.ID, "")
+		c3 := createConversation(u3.ID, "")
+		c4 := createConversation(u4.ID, "")
 		By("getting first page, without prev_id")
 		cs, err := messagesRepo.GetConversations(ctx, nil, 2, domain.Backward)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(cs).To(Equal([]domain.Conversation{c15, c14}))
+		Expect(cs).To(Equal([]domain.Conversation{c4, c3}))
 		By("getting prev page")
-		cs, err = messagesRepo.GetConversations(ctx, &c14.ID, 2, domain.Backward)
+		cs, err = messagesRepo.GetConversations(ctx, &c3.ID, 2, domain.Backward)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(cs).To(Equal([]domain.Conversation{c13, c12}))
+		Expect(cs).To(Equal([]domain.Conversation{c2, c1}))
 
 		By("getting first page, without next_id")
 		cs, err = messagesRepo.GetConversations(ctx, nil, 2, domain.Forward)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(cs).To(Equal([]domain.Conversation{c12, c13}))
+		Expect(cs).To(Equal([]domain.Conversation{c1, c2}))
 		By("getting next page")
-		cs, err = messagesRepo.GetConversations(ctx, &c13.ID, 5, domain.Forward)
+		cs, err = messagesRepo.GetConversations(ctx, &c2.ID, 5, domain.Forward)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(cs).To(Equal([]domain.Conversation{c14, c15}))
+		Expect(cs).To(Equal([]domain.Conversation{c3, c4}))
 
 	})
 

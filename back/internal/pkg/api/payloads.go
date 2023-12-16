@@ -8,11 +8,11 @@ import (
 )
 
 type CreateUserPayload struct {
-	Phone string `json:"phone" binding:"required"`
+	Phone string `json:"messaging_address" binding:"required"`
 }
 
 type CreateConversationPayload struct {
-	RecipientPhone string `json:"recipient_phone"`
+	RecipientMessagingAddress string `json:"recipient_messaging_address"`
 }
 
 type CreateMessagePayload struct {
