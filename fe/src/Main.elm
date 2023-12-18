@@ -25,6 +25,7 @@ type Msg
     | ChangedUrl Url
     | StoreMsg Store.Msg
     | NavigateToConversationMsg Api.ConversationId
+    | CreatePost Api.ConversationId
 
 
 type Page
@@ -40,7 +41,7 @@ type Route
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init _ url key =
     let
         route =
             routeFromUrl url
@@ -84,6 +85,8 @@ messagesConfig : Api.ConversationId -> Messages.Config Msg
 messagesConfig conversationId =
     { loadPrevMsg = StoreMsg (Store.MessageMsg conversationId Paginated.OnPrevPage)
     , conversationID = conversationId
+    , createNewMessage = \convId -> CreatePost convId
+    , messageEdited = \convId content -> StoreMsg (Store.ChangeOngoingMessage convId { content = content })
     }
 
 
@@ -175,6 +178,14 @@ update msg model =
     case msg of
         NavigateToConversationMsg id ->
             ( model, Nav.pushUrl model.key ("/conversations/" ++ id) )
+
+        CreatePost payload ->
+            let
+                requests =
+                    [ Store.CreateMessageAction payload ]
+            in
+            model
+                |> sendDataRequests requests
 
         StoreMsg storeMsg ->
             let
@@ -300,7 +311,7 @@ routeFromUrl url =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 

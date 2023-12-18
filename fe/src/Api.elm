@@ -2,6 +2,7 @@ module Api exposing (..)
 
 import Http
 import Json.Decode exposing (Decoder, field, float, int, list, map2, map5, map6, string)
+import Json.Encode
 import Time exposing (Posix)
 
 
@@ -15,6 +16,13 @@ type alias ConversationId =
 
 type alias UserId =
     String
+
+
+type alias CreateMessagePayload =
+    { conversationId : ConversationId
+    , senderId : UserId
+    , message : String
+    }
 
 
 type alias Conversation =
@@ -161,3 +169,24 @@ getMessagePage conversationId maybeId toMsg =
 posixFromInt : Decoder Time.Posix
 posixFromInt =
     int |> Json.Decode.map Time.millisToPosix
+
+
+createMessage : CreateMessagePayload -> (Result Http.Error Message -> msg) -> Cmd msg
+createMessage payload toMsg =
+    Http.post
+        { url = "http://localhost:1234/api/conversations/" ++ payload.conversationId ++ "/messages"
+        , body = Http.jsonBody (createMessageEncoder payload)
+        , expect = Http.expectJson toMsg messageDecoder
+        }
+
+
+createMessageEncoder : CreateMessagePayload -> Json.Encode.Value
+createMessageEncoder payload =
+    let
+        senderId =
+            payload.senderId |> String.toInt |> Maybe.withDefault -1
+    in
+    Json.Encode.object
+        [ ( "sender_id", Json.Encode.int senderId )
+        , ( "message", Json.Encode.string payload.message )
+        ]

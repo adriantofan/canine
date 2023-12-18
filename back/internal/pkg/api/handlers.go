@@ -111,16 +111,17 @@ func (h ChatHandlers) CreateMessage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not found", ""))
 		return
 	}
+	if sender.Type != genModel.UserType_Internal {
+		conversation, err := h.r.GetConversation(c, params.ConversationID)
+		if errors.Is(err, domain.ConversationNotFoundError) {
+			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
+			return
+		}
 
-	conversation, err := h.r.GetConversation(c, params.ConversationID)
-	if errors.Is(err, domain.ConversationNotFoundError) {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
-		return
-	}
-
-	if sender.Type == genModel.UserType_External && conversation.ExternalUserID != sender.ID {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not part of conversation", ""))
-		return
+		if sender.Type == genModel.UserType_External && conversation.ExternalUserID != sender.ID {
+			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not part of conversation", ""))
+			return
+		}
 	}
 
 	message, err := h.r.CreateMessage(c, params.ConversationID, sender.ID, payload.Message, genModel.MessageType_Msg)

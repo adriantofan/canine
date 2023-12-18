@@ -1,23 +1,39 @@
-module Store exposing (Action(..), Msg(..), Store, getConversations, getMessages, init, prevConversationPage, prevMessagePage, runAction, update, updateConversation)
+module Store exposing (Action(..), Msg(..), Store, getConversations, getMessages, getOngoing, init, isSending, prevConversationPage, prevMessagePage, runAction, update, updateConversation)
 
-import Api exposing (Conversation, ConversationId, ConversationPage, Message, MessageId, MessagePage, getConversationPage, getMessagePage)
+import Api exposing (Conversation, ConversationId, ConversationPage, CreateMessagePayload, Message, MessageId, MessagePage, getConversationPage, getMessagePage)
+import Dict exposing (Dict, get, insert)
+import Http
 import Paginated
 
 
 type alias Store =
     { conversations : Paginated.Model Conversation ConversationId
     , messages : Maybe ( ConversationId, Paginated.Model Message MessageId )
+    , ongoing : Dict ConversationId (FormData NewMessage)
+    , userId : String
     }
+
+
+type alias NewMessage =
+    { content : String }
+
+
+type FormData d
+    = Sending d
+    | Editing d
 
 
 type Action
     = ConversationAction (Paginated.Action ConversationId)
     | MessageAction ConversationId (Paginated.Action MessageId)
+    | CreateMessageAction ConversationId
 
 
 type Msg
     = ConversationMsg (Paginated.Msg ConversationId ConversationPage)
     | MessageMsg ConversationId (Paginated.Msg MessageId MessagePage)
+    | CreatedMessageMsg ConversationId (Result Http.Error Message)
+    | ChangeOngoingMessage ConversationId NewMessage
 
 
 init : Maybe ConversationId -> Store
@@ -30,13 +46,15 @@ init conversationId =
 
             Nothing ->
                 Nothing
+    , ongoing = Dict.empty
+    , userId = "13"
     }
 
 
 updateConversation : Store -> Maybe ConversationId -> Store
 updateConversation store newConversationId =
     case store.messages of
-        Just ( conversationId, messages ) ->
+        Just ( conversationId, _ ) ->
             case newConversationId of
                 Just id ->
                     if id == conversationId then
@@ -110,6 +128,79 @@ runAction action store =
                 Nothing ->
                     ( store, Cmd.none )
 
+        CreateMessageAction conversationId ->
+            case Dict.get conversationId store.ongoing of
+                Just (Sending _) ->
+                    -- Impossible states are possible ...
+                    Debug.log ("Already sending" ++ conversationId) ( store, Cmd.none )
+
+                Just (Editing m) ->
+                    let
+                        payload =
+                            { conversationId = conversationId, message = m.content, senderId = store.userId }
+
+                        cmd =
+                            Api.createMessage payload identity
+
+                        ongoing =
+                            updateOngoingSetSend store conversationId
+                    in
+                    ( { store | ongoing = ongoing }, Cmd.map (\x -> CreatedMessageMsg conversationId x) cmd )
+
+                Nothing ->
+                    -- Impossible states are possible ...
+                    Debug.log ("No ongoing" ++ conversationId) ( store, Cmd.none )
+
+
+isSending : Store -> ConversationId -> Bool
+isSending store conversationId =
+    case get conversationId store.ongoing of
+        Just (Sending _) ->
+            True
+
+        _ ->
+            False
+
+
+updateOngoingSetSend : Store -> ConversationId -> Dict ConversationId (FormData NewMessage)
+updateOngoingSetSend store conversationId =
+    case get conversationId store.ongoing of
+        Just (Sending _) ->
+            -- Impossible states are possible ..
+            Debug.log ("Already sending" ++ conversationId) store.ongoing
+
+        Just (Editing m) ->
+            insert conversationId (Sending m) store.ongoing
+
+        Nothing ->
+            -- Impossible states are possible ...
+            Debug.log ("No ongoing" ++ conversationId) store.ongoing
+
+
+updateOngoing : Store -> ConversationId -> NewMessage -> Dict ConversationId (FormData NewMessage)
+updateOngoing store conversationId msg =
+    case get conversationId store.ongoing of
+        Just (Sending _) ->
+            -- Impossible states are possible ...
+            Debug.log ("Already sending" ++ conversationId) store.ongoing
+
+        _ ->
+            insert conversationId (Editing msg) store.ongoing
+
+
+getOngoing : Store -> ConversationId -> Maybe NewMessage
+getOngoing store conversationId =
+    case get conversationId store.ongoing of
+        Just (Sending m) ->
+            -- Impossible states are possible ...
+            Just m
+
+        Just (Editing m) ->
+            Just m
+
+        Nothing ->
+            Nothing
+
 
 update : Msg -> Store -> ( Store, Cmd Msg )
 update msg store =
@@ -119,7 +210,7 @@ update msg store =
                 ( conversation, cmd ) =
                     Paginated.update conversationsConfig conversationMsg store.conversations
             in
-            ( { store | conversations = conversation }, Cmd.none )
+            ( { store | conversations = conversation }, Cmd.map ConversationMsg cmd )
 
         -- Cmd.none was Cmd.map ConversationMsg cmd
         MessageMsg msgConversationId messageMsg ->
@@ -134,11 +225,45 @@ update msg store =
                             ( message, cmd ) =
                                 Paginated.update (messagesConfig conversationId) messageMsg messages
                         in
-                        ( { store | messages = Just ( conversationId, message ) }, Cmd.none )
+                        ( { store | messages = Just ( conversationId, message ) }, Cmd.map (\x -> MessageMsg conversationId x) cmd )
 
                 -- Cmd.none was Cmd.map (\x -> MessageMsg conversationId x) cmd
                 Nothing ->
                     ( store, Cmd.none )
+
+        CreatedMessageMsg conversationID result ->
+            case result of
+                Ok message ->
+                    let
+                        ongoing =
+                            insert message.conversationId (Editing { content = "" }) store.ongoing
+                    in
+                    ( { store | ongoing = ongoing }, Cmd.none )
+
+                Err _ ->
+                    let
+                        ongoing =
+                            Dict.update conversationID
+                                (\x ->
+                                    case x of
+                                        Just (Sending m) ->
+                                            -- make it editable again for the moment
+                                            Just (Editing m)
+
+                                        _ ->
+                                            -- Impossible states are possible ...
+                                            Debug.log ("No ongoing in Err for CreatedMessageMsg" ++ conversationID) Nothing
+                                )
+                                store.ongoing
+                    in
+                    ( { store | ongoing = ongoing }, Cmd.none )
+
+        ChangeOngoingMessage conversationId newMessage ->
+            let
+                ongoing =
+                    updateOngoing store conversationId newMessage
+            in
+            ( { store | ongoing = ongoing }, Cmd.none )
 
 
 prevConversationPageId : Store -> Maybe ConversationId

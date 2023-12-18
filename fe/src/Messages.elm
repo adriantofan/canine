@@ -13,6 +13,8 @@ import Svg.Attributes as SvgAttr
 type alias Config msg =
     { loadPrevMsg : msg
     , conversationID : Api.ConversationId
+    , createNewMessage : Api.ConversationId -> msg
+    , messageEdited : Api.ConversationId -> String -> msg
     }
 
 
@@ -31,7 +33,7 @@ view config store =
                 ++ promptMessages config store
             )
         , promptSuggestions
-        , promptMessageInput
+        , promptMessageInput config store
         ]
 
 
@@ -149,9 +151,9 @@ promptSuggestions =
         ]
 
 
-promptMessageInput : Html msg
-promptMessageInput =
-    Html.form
+promptMessageInput : Config msg -> Store.Store -> Html msg
+promptMessageInput config store =
+    Html.div
         [ Attr.class "mt-2"
         ]
         [ label
@@ -210,19 +212,39 @@ promptMessageInput =
                 , Attr.placeholder "Enter your prompt"
                 , Attr.rows 1
                 , Attr.required True
+                , Html.Events.onInput <| config.messageEdited config.conversationID
+                , Attr.value <| (Store.getOngoing store config.conversationID |> Maybe.withDefault { content = "" }).content
                 ]
                 []
-            , button
-                [ Attr.type_ "submit"
-                , Attr.class "absolute bottom-2 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:text-base"
-                ]
-                [ text "Send"
-                , span
-                    [ Attr.class "sr-only"
-                    ]
-                    [ text "Send message" ]
-                ]
+            , submitMessageButton store config
             ]
+        ]
+
+
+submitMessageButton : Store.Store -> Config msg -> Html msg
+submitMessageButton store config =
+    let
+        isSending =
+            Store.isSending store config.conversationID
+
+        btnText =
+            if isSending then
+                "Sending..."
+
+            else
+                "Send"
+    in
+    button
+        [ Attr.type_ "submit"
+        , Attr.class "absolute bottom-2 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:text-base"
+        , onClick <| config.createNewMessage config.conversationID
+        , Attr.disabled isSending
+        ]
+        [ text btnText
+        , span
+            [ Attr.class "sr-only"
+            ]
+            [ text "Send message" ]
         ]
 
 
