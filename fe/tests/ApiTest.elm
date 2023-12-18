@@ -4,6 +4,7 @@ import Api exposing (Conversation, ConversationPage, conversationDecoder, conver
 import Expect
 import Json.Decode as Decode
 import Test exposing (..)
+import Time exposing (Posix)
 
 
 suite : Test
@@ -13,17 +14,33 @@ suite =
             \() ->
                 let
                     json =
-                        """{ "id":1, "user1_id":1 }"""
+                        """
+                        {
+                          "id": 1,
+                          "external_user_id": 2,
+                          "name": "",
+                          "created_at": 2,
+                          "updated_at": 3
+                        }
+                        """
 
                     expectedConversation =
-                        Conversation "1" "1"
+                        Conversation "1" "2" "" (Time.millisToPosix 2) (Time.millisToPosix 3)
                 in
                 Expect.equal (Decode.decodeString conversationDecoder json) (Ok expectedConversation)
         , test "Decode Conversation Page" <|
             \() ->
                 let
                     json =
-                        """{ "data" : [{ "id":1, "user1_id":1 }],
+                        """{ "data" : [
+                                {
+                                  "id": 1,
+                                  "external_user_id": 2,
+                                  "name": "",
+                                  "created_at": 2,
+                                  "updated_at": 3
+                                }
+                             ],
                              "meta": {
                                 "limit": 25,
                                 "prev_id": 2,
@@ -32,7 +49,7 @@ suite =
                             }"""
 
                     expectedConversationPage =
-                        ConversationPage [ Conversation "1" "1" ] "3"
+                        ConversationPage [ Conversation "1" "2" "" (Time.millisToPosix 2) (Time.millisToPosix 3) ] "3"
                 in
                 Expect.equal (Decode.decodeString conversationPageDecoder json) (Ok expectedConversationPage)
         ]

@@ -61,7 +61,7 @@ promptMessages config store =
 
         messageCell : Api.Message -> List (Html msg)
         messageCell message =
-            [ promptMessage <| message.text ]
+            [ promptMessage <| message.message ]
     in
     List.concatMap messageCell messages
 

@@ -9,6 +9,7 @@ import (
 var (
 	MessagingAddressExistsError = errors.New("phone number exists")
 	UserNotFoundError           = errors.New("user not found")
+	ConversationNotFoundError   = errors.New("conversation not found")
 )
 
 // Direction is a custom type representing the enum for forward and backward directions.
@@ -25,6 +26,9 @@ type ChatRepository interface {
 	// TODO: it should also work by change date, in order to sync conversations
 	// between the first page download and the first Websocket message
 	GetConversations(ctx context.Context, id *int64, limit int, direction Direction) ([]Conversation, error)
+
+	GetConversation(ctx context.Context, id int64) (Conversation, error)
+
 	GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction Direction) ([]Message, error)
 
 	// GetMessagesAfter returns all messages after the given message ID (typically used to sync messages for a conversation)

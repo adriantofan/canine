@@ -16,7 +16,8 @@ type CreateConversationPayload struct {
 }
 
 type CreateMessagePayload struct {
-	Message string `json:"message"`
+	Message  string `json:"message"`
+	SenderID int64  `json:"sender_id"`
 }
 
 type GetConversationMessagesParams struct {

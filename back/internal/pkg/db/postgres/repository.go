@@ -151,3 +151,17 @@ func (s *MessageRepository) GetConversations(ctx context.Context, id *int64, lim
 	err := stmt.QueryContext(ctx, s.db, &conversations)
 	return conversations, err
 }
+
+func (s *MessageRepository) GetConversation(ctx context.Context, id int64) (domain.Conversation, error) {
+	var conversation domain.Conversation
+	stmt := SELECT(table.Conversation.AllColumns).
+		FROM(table.Conversation).
+		WHERE(table.Conversation.ID.EQ(Int64(id)))
+	err := stmt.QueryContext(ctx, s.db, &conversation)
+
+	if errors.Is(err, qrm.ErrNoRows) {
+		return conversation, domain.ConversationNotFoundError
+	}
+
+	return conversation, err
+}

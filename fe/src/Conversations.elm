@@ -145,7 +145,7 @@ conversationCell config selected c =
         [ h1
             [ Attr.class "text-sm font-medium capitalize text-slate-700 dark:text-slate-200"
             ]
-            [ text c.user1Id ]
+            [ text c.externalUserId ]
         , p
             [ Attr.class "text-xs text-slate-500 dark:text-slate-400"
             ]

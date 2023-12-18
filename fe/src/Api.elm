@@ -1,7 +1,7 @@
 module Api exposing (..)
 
 import Http
-import Json.Decode exposing (Decoder, field, float, int, list, map2, map5, string)
+import Json.Decode exposing (Decoder, field, float, int, list, map2, map5, map6, string)
 import Time exposing (Posix)
 
 
@@ -19,7 +19,10 @@ type alias UserId =
 
 type alias Conversation =
     { id : ConversationId
-    , user1Id : UserId
+    , externalUserId : UserId
+    , name : String
+    , createdAt : Time.Posix
+    , updatedAt : Time.Posix
     }
 
 
@@ -31,9 +34,12 @@ type alias ConversationPage =
 
 conversationDecoder : Decoder Conversation
 conversationDecoder =
-    map2 Conversation
+    map5 Conversation
         (field "id" stringFromInt)
-        (field "user1_id" stringFromInt)
+        (field "external_user_id" stringFromInt)
+        (field "name" string)
+        (field "created_at" posixFromInt)
+        (field "updated_at" posixFromInt)
 
 
 conversationPageDecoder : Decoder ConversationPage
@@ -57,10 +63,10 @@ getConversationPage maybeId toMsg =
                     ""
 
                 Just id ->
-                    "?lower_than=" ++ id
+                    "?limit=5&lower_than=" ++ id
     in
     Http.get
-        { url = "http://localhost:1234/api/users/1/conversations" ++ idStr
+        { url = "http://localhost:1234/api/conversations" ++ idStr
         , expect = Http.expectJson toMsg conversationPageDecoder
         }
 
@@ -74,11 +80,17 @@ type alias MessageId =
     String
 
 
+type MessageType
+    = MessageTypeAsk
+    | MessageTypeMsg
+
+
 type alias Message =
     { id : MessageId
     , conversationId : ConversationId
     , sender_id : UserId
-    , text : String
+    , msgType : MessageType
+    , message : String
     , created_at : Time.Posix
     }
 
@@ -96,12 +108,30 @@ type alias MessagePage =
 
 messageDecoder : Decoder Message
 messageDecoder =
-    map5 Message
+    map6 Message
         (field "id" stringFromInt)
         (field "conversation_id" stringFromInt)
         (field "sender_id" stringFromInt)
+        (field "type" messageTypeDecoder)
         (field "message" string)
         (field "created_at" posixFromInt)
+
+
+messageTypeDecoder : Decoder MessageType
+messageTypeDecoder =
+    string
+        |> Json.Decode.andThen
+            (\str ->
+                case str of
+                    "ask" ->
+                        Json.Decode.succeed MessageTypeAsk
+
+                    "msg" ->
+                        Json.Decode.succeed MessageTypeMsg
+
+                    _ ->
+                        Json.Decode.fail "Unknown message type"
+            )
 
 
 messagePageDecoder : Decoder MessagePage
@@ -123,7 +153,7 @@ getMessagePage conversationId maybeId toMsg =
                     "?limit=5&lower_than=" ++ id
     in
     Http.get
-        { url = "http://localhost:1234/api/users/1/conversations/" ++ conversationId ++ "/messages" ++ idStr
+        { url = "http://localhost:1234/api/conversations/" ++ conversationId ++ "/messages" ++ idStr
         , expect = Http.expectJson toMsg messagePageDecoder
         }
 

@@ -287,7 +287,7 @@ conversationDataRequests : Store.Store -> Maybe Api.ConversationId -> List Store
 conversationDataRequests store maybeConversationId =
     case maybeConversationId of
         Nothing ->
-            []
+            [ Store.prevConversationPage store ]
 
         Just conversationId ->
             [ Store.prevConversationPage store ] ++ Store.prevMessagePage conversationId store

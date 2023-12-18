@@ -2,9 +2,11 @@ module StoreTest exposing (suite)
 
 import Api exposing (..)
 import Expect
+import Paginated
 import RemoteData as WebData
 import Store exposing (..)
 import Test exposing (..)
+import Time
 
 
 suite : Test
@@ -12,47 +14,87 @@ suite =
     describe "Store"
         [ test "initial state" <|
             \() ->
-                Expect.equal Store.init
-                    { lastConversationPage = WebData.NotAsked, conversations = [], lastConversationId = Nothing }
+                Expect.equal (Store.init Nothing)
+                    { conversations =
+                        { data = []
+                        , loadingId = WebData.NotAsked
+                        , nextIdToLoad = Nothing
+                        }
+                    , messages = Nothing
+                    }
         , test "load more" <|
             \() ->
                 let
                     initialStore =
-                        Store.init
+                        Store.init Nothing
 
                     prevConversationPageAction =
                         Store.prevConversationPage initialStore
 
                     ( storePrevConversationPageRequested, _ ) =
-                        Store.update Store.OnPrevConversationPage Store.init
+                        Store.update (Store.ConversationMsg Paginated.OnPrevPage) (Store.init Nothing)
 
                     ( actionSent, _ ) =
                         Store.runAction prevConversationPageAction storePrevConversationPageRequested
 
                     conversationPage1 =
-                        ConversationPage [ Conversation "1" "2" ] "2"
+                        ConversationPage [ Conversation "1" "2" "" (Time.millisToPosix 2) (Time.millisToPosix 3) ] "2"
 
                     ( storePrevConversationPageReceived, _ ) =
                         Store.update
-                            (OnPrevConversationsRetrieved Nothing conversationPage1)
+                            (Store.ConversationMsg (Paginated.OnPrevRetrieved conversationPage1))
                             actionSent
 
                     prevConversationPageAction1 =
                         Store.prevConversationPage storePrevConversationPageReceived
 
                     ( storePrevConversationPageRequested1, _ ) =
-                        Store.update Store.OnPrevConversationPage storePrevConversationPageReceived
+                        Store.update (Store.ConversationMsg Paginated.OnPrevPage) storePrevConversationPageReceived
 
                     prevConversationPageAction2 =
                         Store.prevConversationPage storePrevConversationPageRequested1
                 in
                 expectAll
-                    [ Expect.equal { lastConversationPage = WebData.NotAsked, conversations = [], lastConversationId = Nothing } initialStore
-                    , Expect.equal (PrevConversationPage Nothing) prevConversationPageAction
-                    , Expect.equal { lastConversationPage = WebData.NotAsked, conversations = [], lastConversationId = Nothing } storePrevConversationPageRequested
-                    , Expect.equal { lastConversationPage = WebData.Loading, conversations = [], lastConversationId = Nothing } actionSent
-                    , Expect.equal { lastConversationPage = WebData.Success conversationPage1, conversations = [ Conversation "1" "2" ], lastConversationId = Just "2" } storePrevConversationPageReceived
-                    , Expect.equal (PrevConversationPage (Just "2")) prevConversationPageAction1
+                    [ Expect.equal
+                        { conversations =
+                            { data = []
+                            , loadingId = WebData.NotAsked
+                            , nextIdToLoad = Nothing
+                            }
+                        , messages = Nothing
+                        }
+                        initialStore
+                    , Expect.equal (ConversationAction (Paginated.PrevPage Nothing)) prevConversationPageAction
+                    , Expect.equal
+                        { conversations =
+                            { data = []
+                            , loadingId = WebData.NotAsked
+                            , nextIdToLoad = Nothing
+                            }
+                        , messages = Nothing
+                        }
+                        storePrevConversationPageRequested
+                    , Expect.equal
+                        { conversations =
+                            { data = []
+                            , loadingId = WebData.Loading
+                            , nextIdToLoad = Nothing
+                            }
+                        , messages = Nothing
+                        }
+                        actionSent
+
+                    --, Expect.equal { lastConversationPage = WebData.Success conversationPage1, conversations = [ Conversation "1" "2" ], lastConversationId = Just "2" } storePrevConversationPageReceived
+                    , Expect.equal
+                        { conversations =
+                            { data = [ Conversation "1" "2" "" (Time.millisToPosix 2) (Time.millisToPosix 3) ]
+                            , loadingId = WebData.Success ()
+                            , nextIdToLoad = Just "2"
+                            }
+                        , messages = Nothing
+                        }
+                        storePrevConversationPageReceived
+                    , Expect.equal (ConversationAction (Paginated.PrevPage (Just "2"))) prevConversationPageAction1
                     , Expect.equal prevConversationPageAction2 prevConversationPageAction1
                     ]
         ]
