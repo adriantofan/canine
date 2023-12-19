@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Api
 import Assets
@@ -9,11 +9,15 @@ import Conversations
 import Home
 import Html exposing (Html, a, aside, div, text)
 import Html.Attributes as Attr
+import Json.Encode
 import Messages
 import Paginated
 import Store
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>))
+
+
+port ssmReceiver : (Json.Encode.Value -> msg) -> Sub msg
 
 
 type alias Model =
@@ -312,7 +316,7 @@ routeFromUrl url =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    ssmReceiver (\x -> StoreMsg (Store.GotSSM x))
 
 
 main : Program () Model Msg

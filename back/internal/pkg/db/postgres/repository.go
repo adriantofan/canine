@@ -13,11 +13,12 @@ import (
 )
 
 type MessageRepository struct {
-	db *sqlx.DB
+	db       *sqlx.DB
+	notifier domain.UpdateNotifier
 }
 
-func NewMessageRepository(db *sqlx.DB) *MessageRepository {
-	return &MessageRepository{db}
+func NewMessageRepository(db *sqlx.DB, notifier domain.UpdateNotifier) *MessageRepository {
+	return &MessageRepository{db, notifier}
 }
 
 func (s *MessageRepository) GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction domain.Direction) ([]domain.Message, error) {
@@ -129,8 +130,11 @@ func (s *MessageRepository) CreateMessage(ctx context.Context, conversationID in
 		VALUES ($1, $2, $3, $4)
 		RETURNING id, conversation_id, sender_id, message, type, created_at
 	`, conversationID, senderID, message, messageType)
+	if err != nil {
+		return msg, err
+	}
 
-	return msg, err
+	return msg, s.notifier.NotifyUpdateMessage(ctx, msg)
 }
 
 func (s *MessageRepository) GetConversations(ctx context.Context, id *int64, limit int, direction domain.Direction) ([]domain.Conversation, error) {

@@ -17,6 +17,11 @@ type MemoryMessageRepository struct {
 	nextMessageID      int64
 }
 
+func (r *MemoryMessageRepository) GetConversation(ctx context.Context, id int64) (domain.Conversation, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewInMemoryRepository(timeService infrastructure.TimeService) *MemoryMessageRepository {
 	return &MemoryMessageRepository{
 		messages:           make([]domain.Message, 0),

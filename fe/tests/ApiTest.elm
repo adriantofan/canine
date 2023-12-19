@@ -1,6 +1,6 @@
 module ApiTest exposing (suite)
 
-import Api exposing (Conversation, ConversationPage, conversationDecoder, conversationPageDecoder)
+import Api exposing (Conversation, ConversationPage, conversationDecoder, conversationPageDecoder, decodeUpdate)
 import Expect
 import Json.Decode as Decode
 import Test exposing (..)
@@ -10,7 +10,30 @@ import Time exposing (Posix)
 suite : Test
 suite =
     describe "JSON Decoding Tests"
-        [ test "Decode Conversation" <|
+        [ test "Decode Update" <|
+            \() ->
+                let
+                    json =
+                        """
+                     {
+                       "type": "message_update",
+                       "data" {
+                           "id": 1,
+                           "conversation_id": 2,
+                           "sender_id": 3,
+                           "message_type": "msg",
+                           "message": "message content",
+                           "created_at": 2,
+
+                       }
+                     }
+                     """
+
+                    expectedUpdate =
+                        Api.MessageUpdate <| Api.Message "1" "2" "3" Api.MessageTypeMsg "message content" (Time.millisToPosix 2)
+                in
+                Expect.equal (Decode.decodeString decodeUpdate json) (Ok expectedUpdate)
+        , test "Decode Conversation" <|
             \() ->
                 let
                     json =

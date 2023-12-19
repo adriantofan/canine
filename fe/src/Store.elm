@@ -3,6 +3,8 @@ module Store exposing (Action(..), Msg(..), Store, getConversations, getMessages
 import Api exposing (Conversation, ConversationId, ConversationPage, CreateMessagePayload, Message, MessageId, MessagePage, getConversationPage, getMessagePage)
 import Dict exposing (Dict, get, insert)
 import Http
+import Json.Decode exposing (decodeValue)
+import Json.Encode
 import Paginated
 
 
@@ -34,6 +36,7 @@ type Msg
     | MessageMsg ConversationId (Paginated.Msg MessageId MessagePage)
     | CreatedMessageMsg ConversationId (Result Http.Error Message)
     | ChangeOngoingMessage ConversationId NewMessage
+    | GotSSM Json.Encode.Value
 
 
 init : Maybe ConversationId -> Store
@@ -205,6 +208,21 @@ getOngoing store conversationId =
 update : Msg -> Store -> ( Store, Cmd Msg )
 update msg store =
     case msg of
+        GotSSM json ->
+            let
+                maybeUpdate =
+                    Json.Decode.decodeValue Api.decodeUpdate json
+
+                newStore =
+                    case maybeUpdate of
+                        Ok u ->
+                            updateSSE store u
+
+                        Err e ->
+                            Debug.log (Json.Decode.errorToString e) store
+            in
+            ( newStore, Cmd.none )
+
         ConversationMsg conversationMsg ->
             let
                 ( conversation, cmd ) =
@@ -264,6 +282,13 @@ update msg store =
                     updateOngoing store conversationId newMessage
             in
             ( { store | ongoing = ongoing }, Cmd.none )
+
+
+updateSSE : Store -> Api.Update -> Store
+updateSSE store u =
+    case Debug.log "UpdateSSe" u of
+        Api.MessageUpdate m ->
+            store
 
 
 prevConversationPageId : Store -> Maybe ConversationId

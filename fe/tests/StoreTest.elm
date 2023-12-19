@@ -1,6 +1,7 @@
 module StoreTest exposing (suite)
 
 import Api exposing (..)
+import Dict
 import Expect
 import Paginated
 import RemoteData as WebData
@@ -21,6 +22,8 @@ suite =
                         , nextIdToLoad = Nothing
                         }
                     , messages = Nothing
+                    , ongoing = Dict.empty
+                    , userId = "13"
                     }
         , test "load more" <|
             \() ->
@@ -62,6 +65,8 @@ suite =
                             , nextIdToLoad = Nothing
                             }
                         , messages = Nothing
+                        , ongoing = Dict.empty
+                        , userId = "13"
                         }
                         initialStore
                     , Expect.equal (ConversationAction (Paginated.PrevPage Nothing)) prevConversationPageAction
@@ -72,6 +77,8 @@ suite =
                             , nextIdToLoad = Nothing
                             }
                         , messages = Nothing
+                        , ongoing = Dict.empty
+                        , userId = "13"
                         }
                         storePrevConversationPageRequested
                     , Expect.equal
@@ -81,6 +88,8 @@ suite =
                             , nextIdToLoad = Nothing
                             }
                         , messages = Nothing
+                        , ongoing = Dict.empty
+                        , userId = "13"
                         }
                         actionSent
 
@@ -92,6 +101,8 @@ suite =
                             , nextIdToLoad = Just "2"
                             }
                         , messages = Nothing
+                        , ongoing = Dict.empty
+                        , userId = "13"
                         }
                         storePrevConversationPageReceived
                     , Expect.equal (ConversationAction (Paginated.PrevPage (Just "2"))) prevConversationPageAction1

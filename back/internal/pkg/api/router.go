@@ -6,8 +6,11 @@ import (
 )
 
 func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, middleware *ChatMiddleware) {
+
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	router.GET("/notifications", SSEMiddleware(), handlers.ServerSideEventsHandler)
+
 	router.POST("/users", handlers.CreateUser)
 
 	usersGroup := router.Group("/users/:user_id")

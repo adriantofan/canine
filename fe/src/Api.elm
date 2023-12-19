@@ -1,7 +1,7 @@
 module Api exposing (..)
 
 import Http
-import Json.Decode exposing (Decoder, field, float, int, list, map2, map5, map6, string)
+import Json.Decode exposing (Decoder, andThen, fail, field, float, int, list, map, map2, map5, map6, string)
 import Json.Encode
 import Time exposing (Posix)
 
@@ -190,3 +190,27 @@ createMessageEncoder payload =
         [ ( "sender_id", Json.Encode.int senderId )
         , ( "message", Json.Encode.string payload.message )
         ]
+
+
+
+-- Update
+
+
+type Update
+    = MessageUpdate Message
+
+
+decodeDataBasedOnType : String -> Decoder Update
+decodeDataBasedOnType dataType =
+    case Debug.log "decodeDataBasedOnType" dataType of
+        "message_update" ->
+            map MessageUpdate (field "data" <| messageDecoder)
+
+        _ ->
+            fail "Unknown update type"
+
+
+decodeUpdate : Decoder Update
+decodeUpdate =
+    field "type" string
+        |> andThen decodeDataBasedOnType

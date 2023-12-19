@@ -2,6 +2,7 @@ package domain
 
 import (
 	genModel "back/.gen/canine/public/model"
+	"context"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -14,11 +15,35 @@ type MillisecondsTime struct {
 	time.Time
 }
 
+type MarshallerDataUpdate interface {
+	MarshallDataUpdate() ([]byte, error)
+}
+
+type FailedUpdate struct {
+	Inner error
+}
+
+func (f FailedUpdate) Error() string {
+	return fmt.Sprintf("failed to update: %v", f.Inner)
+}
+
+func (f FailedUpdate) Unwrap() error {
+	return f.Inner
+}
+func MakeFailedUpdate(err error) FailedUpdate {
+	return FailedUpdate{Inner: err}
+}
+
+type UpdateNotifier interface {
+	// NotifyUpdateMessage returns FailedUpdate if failed to notify
+	NotifyUpdateMessage(ctx context.Context, message Message) error
+}
+
 func NewMillisecondsTime(t time.Time) MillisecondsTime {
 	return MillisecondsTime{t}
 }
 
-func (mt *MillisecondsTime) MarshalJSON() ([]byte, error) {
+func (mt MillisecondsTime) MarshalJSON() ([]byte, error) {
 	milliseconds := mt.Time.UnixNano() / int64(time.Millisecond)
 	return json.Marshal(milliseconds)
 }
@@ -30,6 +55,19 @@ func (mt *MillisecondsTime) UnmarshalJSON(data []byte) error {
 	}
 	mt.Time = time.Unix(0, milliseconds*int64(time.Millisecond))
 	return nil
+}
+
+type DataUpdateType string
+
+const (
+	DataUpdateTypeMessage DataUpdateType = "message_update"
+	//DataUpdateTypeUser         DataUpdateType = "user"
+	DataUpdateTypeConversation DataUpdateType = "conversation_update"
+)
+
+type DataUpdate struct {
+	Type DataUpdateType `json:"type"`
+	Data string         `json:"data"`
 }
 
 type User struct {
@@ -73,4 +111,12 @@ func (mt *MillisecondsTime) Scan(value interface{}) error {
 	default:
 		return fmt.Errorf("Unsupported Scan type: %T", value)
 	}
+}
+
+func (m *Message) MarshallDataUpdate() ([]byte, error) {
+	// TODO: make marshall - unmarshall test
+	return json.Marshal(struct {
+		Type DataUpdateType `json:"type"`
+		Data Message        `json:"data"`
+	}{Type: DataUpdateTypeMessage, Data: *m})
 }

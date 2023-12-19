@@ -4,6 +4,7 @@ import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/db/postgres"
 	"back/internal/pkg/env"
+	"back/internal/pkg/infrastructure"
 	"context"
 	"errors"
 	"flag"
@@ -35,10 +36,11 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
 	}
-
-	repository := postgres.NewMessageRepository(connexion)
+	rdb := infrastructure.NewRedisClient("redis://localhost:6379/0?protocol=3")
+	updateNotifier := infrastructure.NewUpdateNotifier(rdb)
+	repository := postgres.NewMessageRepository(connexion, updateNotifier)
 	router := gin.New()
-	handlers := apiInternal.NewChatHandlers(repository)
+	handlers := apiInternal.NewChatHandlers(repository, rdb)
 	middleware := apiInternal.NewChatMiddleware(repository)
 	apiInternal.ConfigureRouter(router, handlers, middleware)
 
@@ -67,8 +69,8 @@ func Run(args []string) {
 func gracefullyListenAndServe(shutdown chan os.Signal, addr string, serverHandler http.Handler) error {
 	srv := &http.Server{
 		Addr:         addr,
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
+		WriteTimeout: time.Second * 20,
+		ReadTimeout:  time.Second * 20,
 		IdleTimeout:  time.Second * 60,
 		Handler:      serverHandler, // Pass our instance of gorilla/mux in.
 	}

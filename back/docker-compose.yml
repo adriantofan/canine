@@ -1,18 +1,18 @@
 # build and run chat
 version: '3'
 services:
-  api:
-    build:
-      dockerfile: build/Dockerfile
-      context: .
-    ports:
-      - "8080:8080"
-    command: ["api"]
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-        DSN: "postgres://postgres:postgres@db:5432/canine?sslmode=disable"
+#  api:
+#    build:
+#      dockerfile: build/Dockerfile
+#      context: .
+#    ports:
+#      - "8080:8080"
+#    command: ["api"]
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    environment:
+#        DSN: "postgres://postgres:postgres@db:5432/canine?sslmode=disable"
 
   db:
     image: postgres:16
@@ -29,6 +29,13 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: canine
+  rdb:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
 
 volumes:
     pg-data:
+    redis-data:
