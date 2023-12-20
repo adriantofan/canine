@@ -107,11 +107,19 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	_, err = h.f.Commit()
+	updates, err := h.f.Commit()
 
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
+	}
+
+	for _, update := range updates {
+		err := h.notifier.Notify(c, update)
+		if err != nil {
+			log.Printf("FIXME: kill all SSE connections - error notifying: %v", err)
+			// TODO: should kill all SSE connections
+		}
 	}
 	c.JSON(http.StatusCreated, conversation)
 }

@@ -305,6 +305,36 @@ updateSSE store u =
                 Nothing ->
                     store
 
+        Api.ConversationUpdate c ->
+            let
+                newConversations =
+                    Paginated.updateWithNewItems cmpUpdatedConversation store.conversations [ c ]
+            in
+            { store | conversations = newConversations }
+
+
+cmpUpdatedConversation : Conversation -> Conversation -> Either Paginated.StrictOrder Conversation
+cmpUpdatedConversation old new =
+    if old.id == new.id then
+        let
+            oldTime =
+                Time.posixToMillis old.updatedAt
+
+            newTime =
+                Time.posixToMillis new.updatedAt
+        in
+        if newTime >= oldTime then
+            Right new
+
+        else
+            Right old
+
+    else if old.id > new.id then
+        Left Paginated.LT
+
+    else
+        Left Paginated.GT
+
 
 cmpUpdatedMessage : Message -> Message -> Either Paginated.StrictOrder Message
 cmpUpdatedMessage old new =

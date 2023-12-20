@@ -198,6 +198,7 @@ createMessageEncoder payload =
 
 type Update
     = MessageUpdate Message
+    | ConversationUpdate Conversation
 
 
 decodeDataBasedOnType : String -> Decoder Update
@@ -205,6 +206,9 @@ decodeDataBasedOnType dataType =
     case dataType of
         "message_update" ->
             map MessageUpdate (field "data" <| messageDecoder)
+
+        "conversation_update" ->
+            map ConversationUpdate (field "data" <| conversationDecoder)
 
         _ ->
             fail "Unknown update type"

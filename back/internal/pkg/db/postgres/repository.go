@@ -184,9 +184,21 @@ func (s *MessageRepository) GetOrCreateConversation(ctx context.Context, externa
 					table.Conversation.Name.EQ(String(name)))).
 			LIMIT(1)
 		err := loadStmt.QueryContext(ctx, s.db, &conversation)
+		if err != nil {
+			s.changes = append(s.changes, domain.DataUpdate{
+				Kind: domain.DataUpdateKindUpdate,
+				Type: domain.DataUpdateTypeConversation,
+				Data: &conversation,
+			})
+		}
 		return conversation, err
 
 	}
+	s.changes = append(s.changes, domain.DataUpdate{
+		Kind: domain.DataUpdateKindCreate,
+		Type: domain.DataUpdateTypeConversation,
+		Data: &conversation,
+	})
 	return conversation, nil
 }
 
