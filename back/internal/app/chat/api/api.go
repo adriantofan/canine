@@ -4,7 +4,7 @@ import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/db/postgres"
 	"back/internal/pkg/env"
-	"back/internal/pkg/infrastructure"
+	"back/internal/pkg/infrastructure/redis"
 	"context"
 	"errors"
 	"flag"
@@ -36,12 +36,12 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
 	}
-	rdb := infrastructure.NewRedisClient("redis://localhost:6379/0?protocol=3")
-	updateNotifier := infrastructure.NewUpdateNotifier(rdb)
-	repository := postgres.NewMessageRepository(connexion, updateNotifier)
+	rdb := redis.NewRedisClient("redis://localhost:6379/0?protocol=3")
+	updateNotifier := redis.NewUpdateNotifier(rdb)
+	transactionFactory := postgres.NewTransactionFactory(connexion)
 	router := gin.New()
-	handlers := apiInternal.NewChatHandlers(repository, rdb)
-	middleware := apiInternal.NewChatMiddleware(repository)
+	handlers := apiInternal.NewChatHandlers(transactionFactory, rdb, updateNotifier)
+	middleware := apiInternal.NewChatMiddleware(transactionFactory)
 	apiInternal.ConfigureRouter(router, handlers, middleware)
 
 	//handlers := apiInternal.MakeHandlers(repository)

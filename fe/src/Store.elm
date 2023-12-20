@@ -2,10 +2,12 @@ module Store exposing (Action(..), Msg(..), Store, getConversations, getMessages
 
 import Api exposing (Conversation, ConversationId, ConversationPage, CreateMessagePayload, Message, MessageId, MessagePage, getConversationPage, getMessagePage)
 import Dict exposing (Dict, get, insert)
+import Either exposing (Either(..))
 import Http
-import Json.Decode exposing (decodeValue)
+import Json.Decode
 import Json.Encode
 import Paginated
+import Time
 
 
 type alias Store =
@@ -288,7 +290,43 @@ updateSSE : Store -> Api.Update -> Store
 updateSSE store u =
     case Debug.log "UpdateSSe" u of
         Api.MessageUpdate m ->
-            store
+            case store.messages of
+                Just ( conversationId, messages ) ->
+                    if m.conversationId == conversationId then
+                        let
+                            newMessages =
+                                Paginated.updateWithNewItems cmpUpdatedMessage messages [ m ]
+                        in
+                        { store | messages = Just ( conversationId, newMessages ) }
+
+                    else
+                        store
+
+                Nothing ->
+                    store
+
+
+cmpUpdatedMessage : Message -> Message -> Either Paginated.StrictOrder Message
+cmpUpdatedMessage old new =
+    if old.id == new.id then
+        let
+            oldTime =
+                Time.posixToMillis old.createdAt
+
+            newTime =
+                Time.posixToMillis new.createdAt
+        in
+        if newTime >= oldTime then
+            Right new
+
+        else
+            Right old
+
+    else if old.id > new.id then
+        Left Paginated.LT
+
+    else
+        Left Paginated.GT
 
 
 prevConversationPageId : Store -> Maybe ConversationId

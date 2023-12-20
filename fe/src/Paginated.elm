@@ -1,6 +1,6 @@
-module Paginated exposing (Action(..), Config, Model, Msg(..), init, runAction, update)
+module Paginated exposing (Action(..), Config, Model, Msg(..), StrictOrder(..), init, runAction, update, updateWithNewItems)
 
-import Api exposing (Conversation, ConversationId, ConversationPage, getConversationPage)
+import Either exposing (Either(..))
 import Http
 import RemoteData exposing (RemoteData(..), WebData)
 
@@ -122,6 +122,11 @@ update config msg store =
                 ( store, Cmd.none )
 
 
+updateWithNewItems : (item -> item -> Either StrictOrder item) -> Model item itemId -> List item -> Model item itemId
+updateWithNewItems cmp store newData =
+    { store | data = mergeUpdateSortedListsWith cmp store.data newData }
+
+
 saveFailure : Action itemId -> Http.Error -> Model item itemId -> Model item itemId
 saveFailure action err store =
     case action of
@@ -144,3 +149,29 @@ send action toCmd toSuccessMsg =
                 Ok success ->
                     toSuccessMsg success
         )
+
+
+mergeUpdateSortedListsWith : (a -> a -> Either StrictOrder a) -> List a -> List a -> List a
+mergeUpdateSortedListsWith cmp list1 list2 =
+    case ( list1, list2 ) of
+        ( [], _ ) ->
+            list2
+
+        ( _, [] ) ->
+            list1
+
+        ( x :: xs, y :: ys ) ->
+            case cmp x y of
+                Left LT ->
+                    x :: mergeUpdateSortedListsWith cmp xs (y :: ys)
+
+                Right newer ->
+                    newer :: mergeUpdateSortedListsWith cmp xs ys
+
+                Left GT ->
+                    y :: mergeUpdateSortedListsWith cmp (x :: xs) ys
+
+
+type StrictOrder
+    = LT
+    | GT

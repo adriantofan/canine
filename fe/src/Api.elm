@@ -96,10 +96,10 @@ type MessageType
 type alias Message =
     { id : MessageId
     , conversationId : ConversationId
-    , sender_id : UserId
+    , senderId : UserId
     , msgType : MessageType
     , message : String
-    , created_at : Time.Posix
+    , createdAt : Time.Posix
     }
 
 
@@ -202,7 +202,7 @@ type Update
 
 decodeDataBasedOnType : String -> Decoder Update
 decodeDataBasedOnType dataType =
-    case Debug.log "decodeDataBasedOnType" dataType of
+    case dataType of
         "message_update" ->
             map MessageUpdate (field "data" <| messageDecoder)
 

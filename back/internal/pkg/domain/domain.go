@@ -2,7 +2,6 @@ package domain
 
 import (
 	genModel "back/.gen/canine/public/model"
-	"context"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -13,30 +12,6 @@ import (
 
 type MillisecondsTime struct {
 	time.Time
-}
-
-type MarshallerDataUpdate interface {
-	MarshallDataUpdate() ([]byte, error)
-}
-
-type FailedUpdate struct {
-	Inner error
-}
-
-func (f FailedUpdate) Error() string {
-	return fmt.Sprintf("failed to update: %v", f.Inner)
-}
-
-func (f FailedUpdate) Unwrap() error {
-	return f.Inner
-}
-func MakeFailedUpdate(err error) FailedUpdate {
-	return FailedUpdate{Inner: err}
-}
-
-type UpdateNotifier interface {
-	// NotifyUpdateMessage returns FailedUpdate if failed to notify
-	NotifyUpdateMessage(ctx context.Context, message Message) error
 }
 
 func NewMillisecondsTime(t time.Time) MillisecondsTime {
@@ -58,6 +33,13 @@ func (mt *MillisecondsTime) UnmarshalJSON(data []byte) error {
 }
 
 type DataUpdateType string
+type DataUpdateKind string
+
+const (
+	DataUpdateKindCreate DataUpdateKind = "create"
+	DataUpdateKindUpdate DataUpdateKind = "update"
+	DataUpdateKindDelete DataUpdateKind = "delete"
+)
 
 const (
 	DataUpdateTypeMessage DataUpdateType = "message_update"
@@ -66,8 +48,9 @@ const (
 )
 
 type DataUpdate struct {
+	Kind DataUpdateKind `json:"kind"`
 	Type DataUpdateType `json:"type"`
-	Data string         `json:"data"`
+	Data interface{}    `json:"data"`
 }
 
 type User struct {

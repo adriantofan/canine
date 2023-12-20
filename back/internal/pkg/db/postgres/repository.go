@@ -5,22 +5,89 @@ import (
 	"back/.gen/canine/public/table"
 	"back/internal/pkg/domain"
 	"context"
+	"database/sql"
 	"errors"
 	. "github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"log"
 )
 
+type TransactionFactory struct {
+	db   *sqlx.DB
+	tx   *sql.Tx
+	repo *MessageRepository
+}
+
+func NewTransactionFactory(db *sqlx.DB) *TransactionFactory {
+	return &TransactionFactory{db: db}
+}
+
+func (t *TransactionFactory) Begin() (domain.ChatRepository, error) {
+	if t.tx != nil || t.repo != nil {
+		return nil, errors.New("transaction already started")
+	}
+	tx, err := t.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	t.tx = tx
+	t.repo = NewMessageRepository(tx)
+	return t.repo, nil
+}
+func (t *TransactionFactory) Commit() ([]domain.DataUpdate, error) {
+	err := t.tx.Commit()
+
+	if err != nil {
+		return nil, err
+	}
+	t.tx = nil
+	changes := t.repo.GetChanges()
+	t.repo = nil
+	return changes, nil
+}
+
+func (t *TransactionFactory) Rollback() error {
+	if t.tx == nil {
+		return nil
+	}
+	err := t.tx.Rollback()
+	t.tx = nil
+	t.repo = nil
+	return err
+}
+
+func (t *TransactionFactory) InTransaction(ctx context.Context, f func(ctx context.Context, r domain.ChatRepository) error) ([]domain.DataUpdate, error) {
+	repo, err := t.Begin()
+	defer func() {
+		err := t.Rollback()
+		if err != nil {
+			log.Println("failed to rollback transaction", err)
+		}
+	}()
+	if err != nil {
+		return nil, err
+	}
+	err = f(ctx, repo)
+	if err != nil {
+		return nil, err
+	}
+	return t.Commit()
+}
+
 type MessageRepository struct {
-	db       *sqlx.DB
-	notifier domain.UpdateNotifier
+	db      qrm.DB
+	changes []domain.DataUpdate
 }
 
-func NewMessageRepository(db *sqlx.DB, notifier domain.UpdateNotifier) *MessageRepository {
-	return &MessageRepository{db, notifier}
+func NewMessageRepository(db qrm.DB) *MessageRepository {
+	return &MessageRepository{db, make([]domain.DataUpdate, 0)}
 }
 
+func (s *MessageRepository) GetChanges() []domain.DataUpdate {
+	return s.changes
+}
 func (s *MessageRepository) GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction domain.Direction) ([]domain.Message, error) {
 	fromConversation := table.Message.ConversationID.EQ(Int64(conversationID))
 	stmt := SELECT(table.Message.AllColumns).
@@ -55,7 +122,7 @@ func (s *MessageRepository) CreateUser(ctx context.Context, messagingAddress str
 		INSERT(table.User.MessagingAddress, table.User.Type).
 		VALUES(String(messagingAddress), userType).
 		RETURNING(table.User.AllColumns)
-	println(stmt.DebugSql())
+
 	err := stmt.QueryContext(ctx, s.db, &user)
 	var pqError *pq.Error
 	if err != nil && errors.As(err, &pqError) && pqError.Code.Name() == "unique_violation" {
@@ -125,16 +192,19 @@ func (s *MessageRepository) GetOrCreateConversation(ctx context.Context, externa
 
 func (s *MessageRepository) CreateMessage(ctx context.Context, conversationID int64, senderID int64, message string, messageType genModel.MessageType) (domain.Message, error) {
 	var msg domain.Message
-	err := s.db.GetContext(ctx, &msg, `
-		INSERT INTO message (conversation_id, sender_id,  message, type)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, conversation_id, sender_id, message, type, created_at
-	`, conversationID, senderID, message, messageType)
-	if err != nil {
-		return msg, err
+	stmt := table.
+		Message.INSERT(table.Message.ConversationID, table.Message.SenderID, table.Message.Message, table.Message.Type).
+		VALUES(Int64(conversationID), Int64(senderID), String(message), messageType).
+		RETURNING(table.Message.AllColumns)
+	err := stmt.QueryContext(ctx, s.db, &msg)
+	if err == nil {
+		s.changes = append(s.changes, domain.DataUpdate{
+			Kind: domain.DataUpdateKindCreate,
+			Type: domain.DataUpdateTypeMessage,
+			Data: &msg,
+		})
 	}
-
-	return msg, s.notifier.NotifyUpdateMessage(ctx, msg)
+	return msg, err
 }
 
 func (s *MessageRepository) GetConversations(ctx context.Context, id *int64, limit int, direction domain.Direction) ([]domain.Conversation, error) {

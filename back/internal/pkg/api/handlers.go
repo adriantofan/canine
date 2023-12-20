@@ -4,6 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/infrastructure"
+	redis2 "back/internal/pkg/infrastructure/redis"
 	"errors"
 	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
@@ -17,12 +18,13 @@ import (
 )
 
 type ChatHandlers struct {
-	r   domain.ChatRepository
-	rdb *redis.Client
+	f        domain.Transaction
+	rdb      *redis.Client
+	notifier infrastructure.UpdateNotifier
 }
 
-func NewChatHandlers(r domain.ChatRepository, rdb *redis.Client) *ChatHandlers {
-	return &ChatHandlers{r, rdb}
+func NewChatHandlers(f domain.Transaction, rdb *redis.Client, notifier infrastructure.UpdateNotifier) *ChatHandlers {
+	return &ChatHandlers{f, rdb, notifier}
 }
 
 func (h ChatHandlers) GetUser(c *gin.Context) {
@@ -38,7 +40,9 @@ func (h ChatHandlers) GetUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, user)
 }
-
+func (h ChatHandlers) rollback() {
+	_ = h.f.Rollback()
+}
 func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 	var payload CreateUserPayload
 
@@ -47,12 +51,19 @@ func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
 		return
 	}
+	repo, err := h.f.Begin()
+	defer h.rollback()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, ErrorInternalServer)
+		return
+	}
+	user, err := repo.CreateUser(ctx, payload.Phone, genModel.UserType_External)
 
-	user, err := h.r.CreateUser(ctx, payload.Phone, genModel.UserType_External)
 	if errors.Is(err, domain.MessagingAddressExistsError) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodePayloadExists, "Phone number exists", err.Error()))
 		return
 	}
+	_, err = h.f.Commit()
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorInternalServer)
@@ -70,7 +81,14 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		return
 	}
 
-	recipient, err := h.r.GetUserByMessagingAddress(c, payload.RecipientMessagingAddress)
+	repo, err := h.f.Begin()
+	defer h.rollback()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	recipient, err := repo.GetUserByMessagingAddress(c, payload.RecipientMessagingAddress)
 	if errors.Is(err, domain.UserNotFoundError) {
 		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
 		return
@@ -82,14 +100,19 @@ func (h ChatHandlers) CreateConversation(c *gin.Context) {
 		return
 	}
 
-	conversation, err := h.r.GetOrCreateConversation(c, recipient.ID, "")
+	conversation, err := repo.GetOrCreateConversation(c, recipient.ID, "")
 	// TODO: eventually introduce a name for the conversation
 
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
+	_, err = h.f.Commit()
 
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusCreated, conversation)
 }
 
@@ -111,14 +134,20 @@ func (h ChatHandlers) CreateMessage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
 		return
 	}
+	repo, err := h.f.Begin()
+	defer h.rollback()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
-	sender, err := h.r.GetUserById(c, payload.SenderID)
+	sender, err := repo.GetUserById(c, payload.SenderID)
 	if errors.Is(err, domain.UserNotFoundError) {
 		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not found", ""))
 		return
 	}
 	if sender.Type != genModel.UserType_Internal {
-		conversation, err := h.r.GetConversation(c, params.ConversationID)
+		conversation, err := repo.GetConversation(c, params.ConversationID)
 		if errors.Is(err, domain.ConversationNotFoundError) {
 			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
 			return
@@ -130,15 +159,26 @@ func (h ChatHandlers) CreateMessage(c *gin.Context) {
 		}
 	}
 
-	message, err := h.r.CreateMessage(c, params.ConversationID, sender.ID, payload.Message, genModel.MessageType_Msg)
+	message, err := repo.CreateMessage(c, params.ConversationID, sender.ID, payload.Message, genModel.MessageType_Msg)
 	if err != nil {
-		if !errors.Is(err, domain.FailedUpdate{}) {
-			_ = c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-		log.Printf("error notifying update....: %v", err)
-		// TODO: need to force resync of clients
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
+
+	updates, err := h.f.Commit()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	for _, update := range updates {
+		err := h.notifier.Notify(c, update)
+		if err != nil {
+			log.Printf("FIXME: kill all SSE connections - error notifying: %v", err)
+			// TODO: should kill all SSE connections
+		}
+	}
+
 	c.JSON(http.StatusCreated, message)
 }
 
@@ -149,7 +189,19 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 		return
 	}
 
-	conversations, err := h.r.GetConversations(c, id, limit, direction)
+	repo, err := h.f.Begin()
+	defer h.rollback()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	conversations, err := repo.GetConversations(c, id, limit, direction)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	_, err = h.f.Commit()
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -193,11 +245,20 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 		return
 	}
 
-	messages, err := h.r.GetMessages(c, params.ConversationID, id, limit, direction)
+	repo, err := h.f.Begin()
+	defer h.rollback()
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
+
+	messages, err := repo.GetMessages(c, params.ConversationID, id, limit, direction)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	_, err = h.f.Commit()
 
 	var prevId int64 = math.MaxInt64
 	var nextId int64 = 0
@@ -229,7 +290,7 @@ func (h ChatHandlers) ServerSideEventsHandler(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
 
 	}
-	pubsub := h.rdb.Subscribe(c, infrastructure.PubSubChannelSSE)
+	pubsub := h.rdb.Subscribe(c, redis2.PubSubChannelSSE)
 	defer func() {
 		err := pubsub.Close()
 		if err != nil {
@@ -264,10 +325,10 @@ func (h ChatHandlers) ServerSideEventsHandler(c *gin.Context) {
 }
 
 type ChatMiddleware struct {
-	r domain.ChatRepository
+	r domain.Transaction
 }
 
-func NewChatMiddleware(r domain.ChatRepository) *ChatMiddleware {
+func NewChatMiddleware(r domain.Transaction) *ChatMiddleware {
 	return &ChatMiddleware{r}
 }
 func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
@@ -279,13 +340,26 @@ func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
 		return
 	}
 
-	user, err := m.r.GetUserById(c, userRef.UserID)
+	repo, err := m.r.Begin()
+	defer m.r.Rollback()
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
+		return
+	}
+	user, err := repo.GetUserById(c, userRef.UserID)
 
 	if errors.Is(err, domain.UserNotFoundError) {
 		c.AbortWithStatusJSON(http.StatusNotFound, ErrorNotFound)
 		return
 	}
 
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
+		return
+	}
+
+	_, err = m.r.Commit()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
 		return

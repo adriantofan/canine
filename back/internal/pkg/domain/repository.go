@@ -21,6 +21,13 @@ const (
 	Forward
 )
 
+type Transaction interface {
+	Begin() (ChatRepository, error)
+	Commit() ([]DataUpdate, error)
+	Rollback() error
+	InTransaction(ctx context.Context, f func(ctx context.Context, r ChatRepository) error) ([]DataUpdate, error)
+}
+
 type ChatRepository interface {
 	// GetConversations returns all conversations sorted id
 	// TODO: it should also work by change date, in order to sync conversations
