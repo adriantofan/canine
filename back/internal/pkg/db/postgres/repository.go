@@ -1,17 +1,19 @@
 package postgres
 
 import (
-	genModel "back/.gen/canine/public/model"
-	"back/.gen/canine/public/table"
-	"back/internal/pkg/domain"
 	"context"
 	"database/sql"
 	"errors"
+	"log"
+
+	genModel "back/.gen/canine/public/model"
+	"back/.gen/canine/public/table"
+	"back/internal/pkg/domain"
+
 	. "github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
-	"log"
 )
 
 type TransactionFactory struct {
@@ -36,9 +38,9 @@ func (t *TransactionFactory) Begin() (domain.ChatRepository, error) {
 	t.repo = NewMessageRepository(tx)
 	return t.repo, nil
 }
+
 func (t *TransactionFactory) Commit() ([]domain.DataUpdate, error) {
 	err := t.tx.Commit()
-
 	if err != nil {
 		return nil, err
 	}
@@ -88,6 +90,7 @@ func NewMessageRepository(db qrm.DB) *MessageRepository {
 func (s *MessageRepository) GetChanges() []domain.DataUpdate {
 	return s.changes
 }
+
 func (s *MessageRepository) GetMessages(ctx context.Context, conversationID int64, id *int64, limit int, direction domain.Direction) ([]domain.Message, error) {
 	fromConversation := table.Message.ConversationID.EQ(Int64(conversationID))
 	stmt := SELECT(table.Message.AllColumns).
@@ -127,7 +130,6 @@ func (s *MessageRepository) CreateUser(ctx context.Context, messagingAddress str
 	var pqError *pq.Error
 	if err != nil && errors.As(err, &pqError) && pqError.Code.Name() == "unique_violation" {
 		return user, domain.MessagingAddressExistsError
-
 	}
 	return user, err
 }
@@ -163,7 +165,6 @@ func (s *MessageRepository) GetUserById(ctx context.Context, id int64) (domain.U
 }
 
 func (s *MessageRepository) GetOrCreateConversation(ctx context.Context, externalUserID int64, name string) (domain.Conversation, error) {
-
 	var conversation domain.Conversation
 	createStmt := table.Conversation.
 		INSERT(table.Conversation.ExternalUserID, table.Conversation.Name).
