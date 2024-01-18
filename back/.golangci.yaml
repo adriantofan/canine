@@ -113,3 +113,28 @@ linters-settings:
   varnamelen:
     ignore-names:
       - ok
+  tagliatelle:
+    # Check the struck tag name case.
+    case:
+      # Use the struct field name to check the name of the struct tag.
+      use-field-name: true
+      rules:
+        json: snake
+  depguard:
+    rules:
+      prevent_unmaintained_packages:
+        list-mode: lax # allow unless explicitely denied
+        files:
+          - $all
+          - "!$test"
+        allow:
+          - $gostd
+          - 'back'
+  ireturn:
+    allow:
+      - anon
+      - error
+      - empty
+      - stdlib
+      - "StateMachine"
+      - back\/internal\/pkg\/domain\/.*
