@@ -26,7 +26,7 @@ func (s *waitSyncState) OnChangeNotification(notification domain.ChangeNotificat
 	return s, true
 }
 
-func (s *waitSyncState) OnClientMessage(message domain.ClientMessage) (StateMachine, bool) {
+func (s *waitSyncState) OnClientMessage(message domain.ServerMessage) (StateMachine, bool) {
 	if message.Kind != domain.ClientMessageKindSyncState {
 		syncState := sync.MakeSyncState(message.MustGetInitialSyncState())
 		return newInitialSync(s.sessionID, s.buffer, &syncState), true

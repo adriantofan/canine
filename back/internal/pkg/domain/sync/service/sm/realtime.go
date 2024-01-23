@@ -37,7 +37,7 @@ func (s *realTime) OnChangeNotification(notification domain.ChangeNotification) 
 	return s, true
 }
 
-func (s *realTime) OnClientMessage(_ domain.ClientMessage) (StateMachine, bool) {
+func (s *realTime) OnClientMessage(_ domain.ServerMessage) (StateMachine, bool) {
 	log.Printf("Client sent messages while server doesnt support any client messages")
 
 	return s, true

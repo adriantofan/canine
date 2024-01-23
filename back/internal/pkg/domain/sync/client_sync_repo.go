@@ -74,7 +74,7 @@ func (s *ClientSyncRepo) GetMissingMessages(ctx context.Context) ([]domain.Conve
 			}
 
 			messageRange.clientRange.LastID = &messages[len(messages)-1].ID
-
+			// TODO: add conversation to messages if needed
 			conversationsMessages = append(conversationsMessages, domain.ConversationMessages{
 				ConversationID: conversationID,
 				Messages:       messages,

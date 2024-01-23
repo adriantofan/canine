@@ -34,7 +34,7 @@ func (s *InitialSync) OnChangeNotification(notification domain.ChangeNotificatio
 	return s, true
 }
 
-func (s *InitialSync) OnClientMessage(_ domain.ClientMessage) (StateMachine, bool) {
+func (s *InitialSync) OnClientMessage(_ domain.ServerMessage) (StateMachine, bool) {
 	// is it possible to have a race condition at end of sync?
 	log.Printf("Client sent messages while initial sync is not done")
 
@@ -57,7 +57,7 @@ func (s *InitialSync) PoolData() Update {
 
 	if len(conversations) != 0 {
 		return Update{
-			Messages: []domain.ClientMessage{domain.MakeClientMessageConversations(conversations)},
+			Messages: []domain.ServerMessage{domain.MakeClientMessageConversations(conversations)},
 			NewState: s,
 			Sane:     true,
 		}
@@ -75,7 +75,7 @@ func (s *InitialSync) PoolData() Update {
 
 	if len(messages) != 0 {
 		return Update{
-			Messages: []domain.ClientMessage{domain.MakeClientMessageMessages(messages)},
+			Messages: []domain.ServerMessage{domain.MakeClientMessageMessages(messages)},
 			NewState: s,
 			Sane:     true,
 		}

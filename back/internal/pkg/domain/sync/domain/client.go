@@ -8,19 +8,27 @@ import (
 	mainDomain "back/internal/pkg/domain"
 )
 
-type clientMessageKind int
+type serverMessageKind string
 
 const (
-	ClientMessageKindNA clientMessageKind = iota
-	ClientMessageKindSyncState
-	ClientMessageKindConversations
-	ClientMessageKindMessages
+	ClientMessageKindNA            serverMessageKind = ""
+	ClientMessageKindSyncState     serverMessageKind = "sync_state"
+	ClientMessageKindConversations serverMessageKind = "conversations"
+	ClientMessageKindMessages      serverMessageKind = "messages"
 )
 
-type ClientMessage struct {
-	Kind clientMessageKind
+type ServerMessage struct {
+	Kind serverMessageKind
 	data interface{}
 }
+
+type (
+	clientMessageKind int
+	ClientMessage     struct {
+		Kind clientMessageKind
+		data interface{}
+	}
+)
 
 type InitialSyncState struct {
 	ConversationRange IDRange        `json:"conversation_range"`
@@ -44,23 +52,23 @@ type ConversationMessages struct {
 
 var ErrInvalidClientPayload = errors.New("invalid client payload")
 
-func MakeClientMessageConversations(conversations []mainDomain.Conversation) ClientMessage {
-	return ClientMessage{
+func MakeClientMessageConversations(conversations []mainDomain.Conversation) ServerMessage {
+	return ServerMessage{
 		Kind: ClientMessageKindConversations,
 		data: conversations,
 	}
 }
 
-func MakeClientMessageMessages(messages []ConversationMessages) ClientMessage {
-	return ClientMessage{
+func MakeClientMessageMessages(messages []ConversationMessages) ServerMessage {
+	return ServerMessage{
 		Kind: ClientMessageKindMessages,
 		data: messages,
 	}
 }
 
-func (cm *ClientMessage) UnmarshalJSON(data []byte) error {
+func (cm *ServerMessage) UnmarshalJSON(data []byte) error {
 	var tmp struct {
-		Kind clientMessageKind `json:"kind"`
+		Kind serverMessageKind `json:"kind"`
 	}
 
 	if err := json.Unmarshal(data, &tmp); err != nil {
@@ -81,10 +89,10 @@ func (cm *ClientMessage) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("unknown ClientMessageKind %d: %w", tmp.Kind, ErrInvalidClientPayload)
 }
 
-func (c *ClientMessage) MustGetInitialSyncState() InitialSyncState {
+func (c *ServerMessage) MustGetInitialSyncState() InitialSyncState {
 	state, ok := c.data.(InitialSyncState)
 	if !ok {
-		panic("invalid InitialSyncState inside ClientMessage")
+		panic("invalid InitialSyncState inside ServerMessage")
 	}
 
 	return state

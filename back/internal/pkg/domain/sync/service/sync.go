@@ -94,7 +94,7 @@ func sync(q Notification, s *ClientStream) error {
 				// TODO: in which circumstances this could happen?
 				return errWebsocketClosed
 			}
-			var clientMessage domain.ClientMessage
+			var clientMessage domain.ServerMessage
 			if err := clientMessage.UnmarshalJSON(clientMessageStr); err != nil {
 				close(s.in)
 				<-s.done

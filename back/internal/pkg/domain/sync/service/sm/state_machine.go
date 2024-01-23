@@ -4,7 +4,7 @@ import "back/internal/pkg/domain/sync/domain"
 
 type StateMachine interface {
 	OnChangeNotification(domain.ChangeNotification) (StateMachine, bool)
-	OnClientMessage(message domain.ClientMessage) (StateMachine, bool)
+	OnClientMessage(message domain.ServerMessage) (StateMachine, bool)
 	PoolData() Update
 }
 
@@ -13,7 +13,7 @@ func NewStateMachine() StateMachine {
 }
 
 type Update struct {
-	Messages []domain.ClientMessage
+	Messages []domain.ServerMessage
 	NewState StateMachine
 	Sane     bool
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type handShake struct {
-	initialMessage *domain.ClientMessage
+	initialMessage *domain.ServerMessage
 }
 
 func (s *handShake) OnChangeNotification(notification domain.ChangeNotification) (StateMachine, bool) {
@@ -22,7 +22,7 @@ func (s *handShake) OnChangeNotification(notification domain.ChangeNotification)
 	return s, true
 }
 
-func (s *handShake) OnClientMessage(message domain.ClientMessage) (StateMachine, bool) {
+func (s *handShake) OnClientMessage(message domain.ServerMessage) (StateMachine, bool) {
 	if message.Kind != domain.ClientMessageKindSyncState {
 		s.initialMessage = &message
 	}
