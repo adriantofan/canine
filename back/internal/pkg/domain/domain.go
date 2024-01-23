@@ -1,10 +1,11 @@
 package domain
 
 import (
-	genModel "back/.gen/canine/public/model"
 	"encoding/json"
 	"fmt"
 	"time"
+
+	genModel "back/.gen/canine/public/model"
 )
 
 // db anotation is used by sqlx
@@ -32,8 +33,10 @@ func (mt *MillisecondsTime) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type DataUpdateType string
-type DataUpdateKind string
+type (
+	DataUpdateType string
+	DataUpdateKind string
+)
 
 const (
 	DataUpdateKindCreate DataUpdateKind = "create"
@@ -43,7 +46,7 @@ const (
 
 const (
 	DataUpdateTypeMessage DataUpdateType = "message_update"
-	//DataUpdateTypeUser         DataUpdateType = "user"
+	// DataUpdateTypeUser         DataUpdateType = "user"
 	DataUpdateTypeConversation DataUpdateType = "conversation_update"
 )
 
@@ -53,6 +56,9 @@ type DataUpdate struct {
 	Data interface{}    `json:"data"`
 }
 
+// FIXME: Ints won't work with multiplafrom reliably (int32 vs int64 vs javascript -2^53 and 2^53)
+//
+//	Use strings instead when converting to from json
 type User struct {
 	ID               int64             `json:"id" sql:"primary_key"`
 	MessagingAddress string            `json:"messaging_address" db:"messaging_address"`
