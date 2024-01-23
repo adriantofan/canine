@@ -55,6 +55,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
       //  one solution might be in go_router ShellRoute
       //  https://pub.dev/documentation/go_router/latest/go_router/ShellRoute-class.html
       return buildListView((selectedConversation) {
+        _selection.value = selectedConversation;
         Navigator.of(context).push(MaterialPageRoute(builder: (_) {
           return ChatWidget(selectedConversation);
         }));
@@ -63,21 +64,38 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   }
 
   Widget buildListView(ValueChanged<Conversation> onSelected) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: ListView(
-        children: [
-          const SizedBox(height: 8),
-          ...List.generate(conversationList.length, (index) {
-            return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: ConversationRowWidget(
-                  conversation: conversationList[index],
-                  onSelected: () => onSelected(conversationList[index]),
-                ));
-          }),
-        ],
-      ),
-    );
+    return ValueListenableBuilder(
+        valueListenable: _selection,
+        builder: (context, conversation, child) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ListView(
+              children: [
+                const SizedBox(height: 8),
+                ...List.generate(conversationList.length, (index) {
+                  return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ConversationRowWidget(
+                        conversation: conversationList[index],
+                        conversationInfo: _makeConversationInfo(
+                            conversationList[index], _selection.value),
+                        isSelected:
+                            _selection.value?.id == conversationList[index].id,
+                        onSelected: () => onSelected(conversationList[index]),
+                      ));
+                }),
+              ],
+            ),
+          );
+        });
   }
+}
+
+ConversationInfo _makeConversationInfo(
+    Conversation conversation, Conversation? selectedConversation) {
+  return ConversationInfo(
+    name: "John Doe",
+    lastMessageTime: DateTime.now(),
+    lastMessage: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+  );
 }

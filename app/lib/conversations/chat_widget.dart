@@ -10,7 +10,7 @@ class ChatWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text('Messages ${conversation.id}'),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),
