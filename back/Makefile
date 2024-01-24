@@ -1,6 +1,6 @@
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 export GOBIN := $(ROOT_DIR)/.bin
-export GOROOT := /Users/adriantofan/.local/share/mise/installs/go/1.21.5/go
+export GOROOT := /Users/adriantofan/.local/share/mise/installs/go/1.21.6/go
 GO := TZ=UTC $(GOROOT)/bin/go
 
 SHELL := /bin/bash
