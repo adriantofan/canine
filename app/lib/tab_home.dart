@@ -1,9 +1,10 @@
+import 'package:app/bloc/current_conversation_cubit.dart';
+import 'package:app/conversations/screen.dart';
 import 'package:app/settings/screen.dart';
 import 'package:app/widgets/disappearing_bottom_navigation_bar.dart';
 import 'package:app/widgets/disappearing_navigation_rail.dart';
 import 'package:flutter/material.dart';
-
-import 'conversations/screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TabHome extends StatefulWidget {
   const TabHome({Key? key}) : super(key: key);
@@ -75,8 +76,11 @@ class _TabHomeState extends State<TabHome> {
   IndexedStack buildBody(BuildContext context) {
     return IndexedStack(
       index: selectedIndex,
-      children: const [
-        ConversationsScreen(),
+      children: [
+        BlocProvider(
+          create: (_) => CurrentConversationCubit(),
+          child: const ConversationsScreen(),
+        ),
         SettingsScreen(),
       ],
     );
