@@ -7,6 +7,7 @@ import 'package:app/state/ws.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Store {
+  static Store shared = Store();
   // Returns a broadcast stream of updates to the store, there is no initial
   // update sent at subscription. Outside of the package used mostly for debugging.
   late final Stream<Update> updateStream =
