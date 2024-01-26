@@ -1,8 +1,8 @@
-import 'package:app/state/ws.dart';
+import 'package:app/conversations/model/conversation_info.dart';
 import 'package:flutter/material.dart';
 
 class ChatWidget extends StatelessWidget {
-  final Conversation conversation;
+  final ConversationInfo conversation;
 
   ChatWidget(this.conversation);
 
@@ -10,7 +10,7 @@ class ChatWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages ${conversation.id}'),
+        title: Text('Messages ${conversation.conversationId}'),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),

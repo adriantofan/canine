@@ -1,14 +1,14 @@
-import 'package:app/state/ws.dart';
+import 'package:app/conversations/model/conversation_info.dart';
 import 'package:flutter/material.dart';
 
 class ConversationRowWidget extends StatefulWidget {
-  final Conversation conversation;
+  final int conversationID;
   final ConversationInfo conversationInfo;
   final bool isSelected;
   ConversationRowWidget({
     super.key,
     required this.onSelected,
-    required this.conversation,
+    required this.conversationID,
     required this.conversationInfo,
     this.isSelected = false,
   });
@@ -39,52 +39,23 @@ class _ConversationRowWidgetState extends State<ConversationRowWidget> {
               children: [
                 Expanded(
                   child: Text(
-                    "John Doe",
+                    widget.conversationInfo.name,
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
-                  "12:01:22",
+                  widget.conversationInfo.lastMessageTimeFormatted,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
-            subtitle: const Text(
-              "Hello, how are you? Hello, how are you? Hello, how are you? Hello, how are you? Hello, how are you?",
+            subtitle: Text(
+              widget.conversationInfo.lastMessage,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ));
   }
-}
-
-class ConversationInfo {
-  final String name;
-  final DateTime lastMessageTime;
-  final String lastMessage;
-  final String avatarInitials;
-
-  ConversationInfo({
-    required this.name,
-    required this.lastMessageTime,
-    required this.lastMessage,
-  }) : avatarInitials = _getAvatarInitials(name);
-}
-
-String _getAvatarInitials(String name) {
-  if (name.isEmpty) {
-    return "";
-  }
-  List<String> names = name.split(" ");
-  String initials = "";
-  int numWords = 2;
-  if (names.length < 2) {
-    numWords = names.length;
-  }
-  for (int i = 0; i < numWords; i++) {
-    initials += names[i][0];
-  }
-  return initials;
 }

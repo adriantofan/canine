@@ -29,6 +29,7 @@ class DisappearingNavigationRail extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
+            heroTag: "disappearing_fab",
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(15),

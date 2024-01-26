@@ -1,6 +1,7 @@
 import 'package:app/repository.dart';
 import 'package:app/tab_home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   // final store = Store();
@@ -19,7 +20,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MainAppView();
+    return RepositoryProvider.value(
+      value: _repository,
+      child: const MainAppView(),
+    );
   }
 }
 
