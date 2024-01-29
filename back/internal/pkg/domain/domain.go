@@ -29,7 +29,7 @@ func (mt *MillisecondsTime) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &milliseconds); err != nil {
 		return err
 	}
-	mt.Time = time.Unix(0, milliseconds*int64(time.Millisecond))
+	mt.Time = time.Unix(0, milliseconds*int64(time.Millisecond)).UTC()
 	return nil
 }
 
