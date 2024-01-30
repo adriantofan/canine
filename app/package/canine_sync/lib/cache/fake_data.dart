@@ -1,4 +1,4 @@
-import 'package:app/state/ws.dart';
+import '../models/model.dart';
 
 const conversationCount = 20;
 final List<Conversation> fakeConversationList = [
@@ -7,8 +7,8 @@ final List<Conversation> fakeConversationList = [
         id: i,
         externalUserId: i,
         name: "Conversation $i",
-        createdAt: 0,
-        updatedAt: 0)
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now())
 ];
 
 final Map<int, Conversation> fakeConversationMap = {
@@ -17,8 +17,8 @@ final Map<int, Conversation> fakeConversationMap = {
 
 final now = DateTime.now();
 const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-final everyMinuteTimestampList = List.generate(10,
-    (index) => (now..add(Duration(minutes: -index))).millisecondsSinceEpoch);
+final everyMinuteTimestampList =
+    List.generate(10, (index) => (now..add(Duration(minutes: -index))));
 final ids = [for (var i = 1; i <= conversationCount; i++) i];
 
 final Map<int, List<Message>> fakeMessages = {
@@ -46,6 +46,6 @@ final Map<int, User> fakeUsers = {
         id: userID,
         messagingAddress: 'user $userID',
         type: '',
-        createdAt: 0,
-        updatedAt: 0)
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now())
 };

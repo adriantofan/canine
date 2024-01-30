@@ -1,11 +1,12 @@
-import 'package:app/repository.dart';
+import 'package:app/repository/repository.dart';
 import 'package:app/tab_home.dart';
+import 'package:canine_sync/canine_sync.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
-  // final store = Store();
-  final repository = SyncRepository();
+void main() async {
+  final sync = await start();
+  final repository = SyncRepository(sync);
   runApp(MainApp(
     repository: repository,
   ));

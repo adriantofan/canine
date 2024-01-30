@@ -1,11 +1,10 @@
 import 'package:app/conversations/bloc/conversations_bloc.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
 import 'package:app/conversations/conversation_row_widget.dart';
-import 'package:app/repository.dart';
+import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../fake_data.dart';
 import 'chat_widget.dart';
 
 class ConversationsScreen extends StatelessWidget {
@@ -89,7 +88,7 @@ class ConversationList extends StatelessWidget {
                       conversationID: state.conversations[index].conversationId,
                       conversationInfo: state.conversations[index],
                       isSelected: selectedConversationId ==
-                          fakeConversationList[index].id,
+                          state.conversations[index].conversationId,
                       onSelected: () {
                         final bloc = context.read<ConversationsBloc>();
                         bloc.add(ConversationsSelect(
