@@ -1,10 +1,9 @@
-package sync
+package rpc
 
 import (
+	"back/internal/pkg/rpc/domain"
 	"context"
 	"fmt"
-
-	"back/internal/pkg/domain/sync/domain"
 
 	mainDomain "back/internal/pkg/domain"
 )

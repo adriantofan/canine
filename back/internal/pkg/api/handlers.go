@@ -3,8 +3,8 @@ package api
 import (
 	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain"
-	syncService "back/internal/pkg/domain/sync/service"
 	"back/internal/pkg/infrastructure"
+	syncService "back/internal/pkg/rpc/service"
 	"errors"
 	"log"
 	"math"
