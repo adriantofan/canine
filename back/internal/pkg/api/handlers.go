@@ -3,18 +3,22 @@ package api
 import (
 	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain"
+	syncService "back/internal/pkg/domain/sync/service"
 	"back/internal/pkg/infrastructure"
 	redis2 "back/internal/pkg/infrastructure/redis"
 	"errors"
-	"github.com/gin-contrib/sse"
-	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 	"io"
 	"log"
 	"math"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/websocket"
+
+	"github.com/gin-contrib/sse"
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 type ChatHandlers struct {
@@ -330,6 +334,30 @@ func (h ChatHandlers) ServerSideEventsHandler(c *gin.Context) {
 
 		return true
 	})
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func (h ChatHandlers) UpdateWebSocket(c *gin.Context) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Printf("error upgrading websocket: %v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
+		return
+	}
+	log.Printf("client %s connected", c.Request.RemoteAddr)
+	clientOutChan := make(chan []byte)
+	clientDoneChan := make(chan struct{})
+	clientStream := syncService.NewClientStream(conn, clientDoneChan, clientOutChan)
+	clientStream.Run()
+	<-clientDoneChan
+	log.Printf("client %s disconnected", c.Request.RemoteAddr)
 }
 
 type ChatMiddleware struct {

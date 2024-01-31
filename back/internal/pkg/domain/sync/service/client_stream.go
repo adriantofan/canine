@@ -28,7 +28,7 @@ type ClientStream struct {
 	in   chan []byte   // msgs from this channel are written to websocket
 }
 
-func NewConn(conn *websocket.Conn, done chan struct{}, in chan []byte) *ClientStream {
+func NewClientStream(conn *websocket.Conn, done chan struct{}, in chan []byte) *ClientStream {
 	return &ClientStream{
 		conn: conn,
 		done: done,
