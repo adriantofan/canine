@@ -5,18 +5,14 @@ import (
 	"back/internal/pkg/domain"
 	syncService "back/internal/pkg/domain/sync/service"
 	"back/internal/pkg/infrastructure"
-	redis2 "back/internal/pkg/infrastructure/redis"
 	"errors"
-	"io"
 	"log"
 	"math"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/websocket"
 
-	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
@@ -293,49 +289,6 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (h ChatHandlers) ServerSideEventsHandler(c *gin.Context) {
-	log.Println("Serving SSE for client", c.Request.RemoteAddr)
-	rc := http.NewResponseController(c.Writer)
-	err := rc.SetWriteDeadline(time.Time{})
-	if err != nil {
-		log.Printf("error setting write deadline: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
-
-	}
-	pubsub := h.rdb.Subscribe(c, redis2.PubSubChannelSSE)
-	defer func() {
-		err := pubsub.Close()
-		if err != nil {
-			log.Printf("error closing pubsub: %v", err)
-		}
-	}()
-
-	tickerChan := time.NewTicker(1 * time.Second).C
-	c.Stream(func(writer io.Writer) bool {
-		select {
-		case msg, ok := <-pubsub.Channel():
-			if !ok {
-				return false
-			}
-
-			c.Render(-1, sse.Event{
-				Event: "update",
-				Data:  msg.Payload,
-				Retry: 2000,
-			})
-
-		case <-tickerChan:
-			c.Render(-1, sse.Event{
-				Event: "ping",
-				Data:  time.Now().UnixMilli(),
-				Retry: 2000,
-			})
-		}
-
-		return true
-	})
-}
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -437,14 +390,4 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 		direction = domain.Backward
 	}
 	return limit, id, direction, true
-}
-
-func SSEMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Content-Type", "text/event-stream")
-		c.Writer.Header().Set("Cache-Control", "no-cache")
-		c.Writer.Header().Set("Connection", "keep-alive")
-		//c.Writer.Header().Set("Transfer-Encoding", "chunked")
-		c.Next()
-	}
 }

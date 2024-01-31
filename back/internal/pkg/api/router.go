@@ -1,15 +1,15 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, middleware *ChatMiddleware) {
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	router.GET("/notifications", SSEMiddleware(), handlers.ServerSideEventsHandler)
 
 	router.POST("/users", handlers.CreateUser)
 
