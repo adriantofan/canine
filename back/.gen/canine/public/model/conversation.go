@@ -17,5 +17,7 @@ type Conversation struct {
 	Name           *string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	LastMessageID  int64
+	UpdatedSeq     int64
+	Archived       bool
+	LastMessageID  *int64
 }

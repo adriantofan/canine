@@ -2,22 +2,23 @@ package api_test
 
 import (
 	"back/internal/pkg/api"
-	"back/internal/pkg/db"
-	"back/internal/pkg/domain"
+	"back/internal/pkg/domain/infrastructure/repository"
+	"back/internal/pkg/domain/model"
 	"back/internal/pkg/infrastructure"
 	"bytes"
 	"encoding/json"
+	"net/http/httptest"
+
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"net/http/httptest"
 )
 
 var _ = Describe("Handlers", func() {
-	Describe("Users", func() {
+	Describe("LastKnownUserVersion", func() {
 		var r *gin.Engine
-		var repository *db.MemoryMessageRepository
-		makeUser := func(phone string) domain.User {
+		var repository *repository.MemoryMessageRepository
+		makeUser := func(phone string) model.User {
 			user := map[string]interface{}{
 				"messaging_address": phone,
 			}
@@ -26,13 +27,13 @@ var _ = Describe("Handlers", func() {
 			req := httptest.NewRequest("POST", "/users", bytes.NewReader(userJSON))
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(201))
-			var decoded domain.User
+			var decoded model.User
 			_ = json.Unmarshal(w.Body.Bytes(), &decoded)
 			Expect(decoded.MessagingAddress).To(Equal(phone))
 			return decoded
 		}
 
-		createConversation := func(recipientPhone string) domain.Conversation {
+		createConversation := func(recipientPhone string) model.Conversation {
 			conversation := map[string]interface{}{
 				"recipient_messaging_address": recipientPhone,
 			}
@@ -41,14 +42,14 @@ var _ = Describe("Handlers", func() {
 			req := httptest.NewRequest("POST", "/conversations", bytes.NewReader(conversationJSON))
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(201))
-			var decoded domain.Conversation
+			var decoded model.Conversation
 			_ = json.Unmarshal(w.Body.Bytes(), &decoded)
 			return decoded
 		}
 
 		BeforeEach(func() {
 			r = gin.Default()
-			repository = db.NewInMemoryRepository(infrastructure.NewTimeService())
+			repository = repository.NewInMemoryRepository(infrastructure.NewTimeService())
 			handlers := api.NewChatHandlers(repository)
 			middleware := api.NewChatMiddleware(repository)
 			api.ConfigureRouter(r, handlers, middleware)
@@ -127,7 +128,7 @@ var _ = Describe("Handlers", func() {
 			r.ServeHTTP(w, req)
 			Expect(w.Code).To(Equal(200))
 			var conversationPage struct {
-				Data []domain.Conversation
+				Data []model.Conversation
 				Meta api.PaginationInfo
 			}
 			_ = json.Unmarshal(w.Body.Bytes(), &conversationPage)

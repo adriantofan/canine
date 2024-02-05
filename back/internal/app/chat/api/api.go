@@ -2,21 +2,23 @@ package api
 
 import (
 	apiInternal "back/internal/pkg/api"
-	"back/internal/pkg/db/postgres"
+	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	"back/internal/pkg/env"
 	"back/internal/pkg/infrastructure/redis"
+	"back/internal/pkg/infrastructure/user_queue"
 	"context"
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 )
 
 func Run(args []string) {
@@ -37,10 +39,10 @@ func Run(args []string) {
 		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
 	}
 	rdb := redis.NewRedisClient("redis://localhost:6379/0?protocol=3")
-	updateNotifier := redis.NewUpdateNotifier(rdb)
+	writeQueue := user_queue.NewWriteQueue(rdb)
 	transactionFactory := postgres.NewTransactionFactory(connexion)
 	router := gin.New()
-	handlers := apiInternal.NewChatHandlers(transactionFactory, rdb, updateNotifier)
+	handlers := apiInternal.NewChatHandlers(transactionFactory, rdb, writeQueue)
 	middleware := apiInternal.NewChatMiddleware(transactionFactory)
 	apiInternal.ConfigureRouter(router, handlers, middleware)
 

@@ -22,6 +22,8 @@ type conversationTable struct {
 	Name           postgres.ColumnString
 	CreatedAt      postgres.ColumnTimestamp
 	UpdatedAt      postgres.ColumnTimestamp
+	UpdatedSeq     postgres.ColumnInteger
+	Archived       postgres.ColumnBool
 	LastMessageID  postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
@@ -68,9 +70,11 @@ func newConversationTableImpl(schemaName, tableName, alias string) conversationT
 		NameColumn           = postgres.StringColumn("name")
 		CreatedAtColumn      = postgres.TimestampColumn("created_at")
 		UpdatedAtColumn      = postgres.TimestampColumn("updated_at")
+		UpdatedSeqColumn     = postgres.IntegerColumn("updated_seq")
+		ArchivedColumn       = postgres.BoolColumn("archived")
 		LastMessageIDColumn  = postgres.IntegerColumn("last_message_id")
-		allColumns           = postgres.ColumnList{IDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastMessageIDColumn}
-		mutableColumns       = postgres.ColumnList{ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, LastMessageIDColumn}
+		allColumns           = postgres.ColumnList{IDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
+		mutableColumns       = postgres.ColumnList{ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
 	)
 
 	return conversationTable{
@@ -82,6 +86,8 @@ func newConversationTableImpl(schemaName, tableName, alias string) conversationT
 		Name:           NameColumn,
 		CreatedAt:      CreatedAtColumn,
 		UpdatedAt:      UpdatedAtColumn,
+		UpdatedSeq:     UpdatedSeqColumn,
+		Archived:       ArchivedColumn,
 		LastMessageID:  LastMessageIDColumn,
 
 		AllColumns:     allColumns,

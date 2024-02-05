@@ -25,7 +25,11 @@ GOVULNCHECK_VERSION := v1.0.1 # https://go.googlesource.com/vuln
 MIGRATE := $(GOBIN)/migrate
 MIGRATE_VERSION := v4.17.0 # https://github.com/golang-migrate/migrate/releases
 
+JET := $(GOBIN)/jet
+JET_VERSION := v2.10.1]
 
+GINKGO := $(GOBIN)/ginkgo
+GINKGO_VERSION := v2.15.0 # github.com/onsi/ginkgo/v2/ginkgo
 
 .PHONY: all
 all: migrate-up generate tidy format lint build test
@@ -35,7 +39,7 @@ prepare-system:
 	brew doctor
 
 .PHONY: install
-install: $(GOFUMPT) $(GOLANGCI_LINT) $(GOIMPORTS) $(GOVULNCHECK) $(MIGRATE) $(GOLINES)
+install: $(GOFUMPT) $(GOLANGCI_LINT) $(GOIMPORTS) $(GOVULNCHECK) $(MIGRATE) $(GOLINES) $(GINKGO) $(JET)
 
 $(GOFUMPT):
 	$(GO) install mvdan.cc/gofumpt@$(GOFUMPT_VERSION)
@@ -55,6 +59,12 @@ $(GOVULNCHECK):
 $(MIGRATE):
 	$(GO) install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@$(MIGRATE_VERSION)
 
+$(JET):
+	$(GO) install github.com/go-jet/jet/v2/cmd/jet@$(JET_VERSION)
+
+$(GINKGO):
+	$(GO) install github.com/onsi/ginkgo/v2/ginkgo@$(GINKGO_VERSION)
+
 .PHONY: migrate-up
 migrate-up: $(MIGRATE)
 	$(MIGRATE) \
@@ -69,6 +79,14 @@ migrate-down: $(MIGRATE)
 		-path ./migrations \
 		down --all
 
+
+.PHONY: migrate-drop
+migrate-drop: $(MIGRATE)
+	$(MIGRATE) \
+		-database 'postgres://postgres:postgres@localhost:5432/canine?sslmode=disable' \
+		-path ./migrations \
+		drop
+
 .PHONY: generate
 generate: generate-models generate-mocks
 
@@ -78,7 +96,8 @@ generate-mocks: $(MOCKERY)
 	$(MOCKERY)
 
 .PHONY: generate-models
-generate-models: export PATH := $(dir $(SQLBOILER_PSQL)):$(PATH)
+generate-models: $(JET)
+	$(JET) -dsn="postgres://postgres:postgres@localhost:5432/canine?sslmode=disable" -path=./.gen
 
 .PHONY: build
 build:
@@ -97,13 +116,13 @@ lint-go: $(GOLANGCI_LINT)
 	$(GOLANGCI_LINT) run ./...
 
 .PHONY: test-integration
-test-integration:
+test-integration: $(GINKGO)
 	export POSTGRES_DSN=postgres://postgres:postgres@localhost:5432/?sslmode=disable; \
-	ginkgo --tags integration -r
+	$(GINKGO) --tags integration -r
 
 .PHONY:  test
-test:
-	ginkgo -r
+test: $(GINKGO)
+	$(GINKGO) -r
 
 
 .PHONY: tdd

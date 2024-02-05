@@ -1,5 +1,13 @@
 package api
 
+import (
+	"back/internal/pkg/app"
+	"errors"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type Error struct {
 	Code    string
 	Message string
@@ -26,3 +34,20 @@ const (
 	ErrorCodeInvalidRequest = "invalid_request"
 	ErrorCodePayloadExists  = "payload_exists"
 )
+
+func abortBadRequest(c *gin.Context, err error) {
+	c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+}
+
+func abortWithError(c *gin.Context, err error) {
+
+	if errors.Is(err, app.ErrUserNotAuthorized) {
+		c.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
+	}
+	if errors.Is(err, app.ErrUserNotFound) {
+		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
+	}
+
+	_ = c.AbortWithError(http.StatusInternalServerError, err)
+
+}
