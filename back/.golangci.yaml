@@ -113,6 +113,14 @@ linters-settings:
   varnamelen:
     ignore-names:
       - ok
+  revive:
+    rules:
+      - name: dot-imports
+        disabled: true # FIXME: enable when it is going to handle allowed packages
+        arguments:
+          - allowedPackages:
+            - "github.com/onsi/ginkgo/v2"
+            - "github.com/onsi/gomega"
   tagliatelle:
     # Check the struck tag name case.
     case:
@@ -138,3 +146,8 @@ linters-settings:
       - stdlib
       - "StateMachine"
       - back\/internal\/pkg\/domain\/.*
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      linters:
+        - goerr113
