@@ -35,13 +35,16 @@ func NewInMemoryRepository(timeService infrastructure.TimeService) *MemoryMessag
 	}
 }
 
-func (r *MemoryMessageRepository) GetMessagesAfter(ctx context.Context, conversationID int64, afterID int64, limit int) ([]model.Message, error) {
+func (r *MemoryMessageRepository) GetMessagesAfter(
+	ctx context.Context, conversationID int64, afterID int64, limit int) ([]model.Message, error) {
 	panic("implement me")
 }
-func (r *MemoryMessageRepository) GetMessagesBefore(ctx context.Context, conversationID int64, beforeID int64, limit int) ([]model.Message, error) {
+func (r *MemoryMessageRepository) GetMessagesBefore(
+	ctx context.Context, conversationID int64, beforeID int64, limit int) ([]model.Message, error) {
 	panic("implement me")
 }
-func (r *MemoryMessageRepository) CreateUser(_ context.Context, messagingAddress string, userType genModel.UserType) (model.User, error) {
+func (r *MemoryMessageRepository) CreateUser(
+	_ context.Context, messagingAddress string, userType genModel.UserType) (model.User, error) {
 	for _, user := range r.users {
 		if user.MessagingAddress == messagingAddress {
 			return model.User{}, domain.ErrMessagingAddressExists
@@ -58,7 +61,8 @@ func (r *MemoryMessageRepository) CreateUser(_ context.Context, messagingAddress
 	r.users = append(r.users, user)
 	return user, nil
 }
-func (r *MemoryMessageRepository) GetUserByMessagingAddress(_ context.Context, messagingAddress string) (model.User, error) {
+func (r *MemoryMessageRepository) GetUserByMessagingAddress(
+	_ context.Context, messagingAddress string) (model.User, error) {
 	for _, user := range r.users {
 		if user.MessagingAddress == messagingAddress {
 			return user, nil

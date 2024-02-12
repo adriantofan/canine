@@ -72,7 +72,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		Expect(user).To(Equal(user1))
 
 		By("getting user by id")
-		user, err = messagesRepo.GetUserById(ctx, user1.ID)
+		user, err = messagesRepo.GetUserByID(ctx, user1.ID)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(user).To(Equal(user1))
 

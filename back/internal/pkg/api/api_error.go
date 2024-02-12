@@ -39,15 +39,24 @@ func abortBadRequest(c *gin.Context, err error) {
 	c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
 }
 
-func abortWithError(c *gin.Context, err error) {
+func abortWithAppError(ctx *gin.Context, err error) {
 
-	if errors.Is(err, app.ErrUserNotAuthorized) {
-		c.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
-	}
 	if errors.Is(err, app.ErrUserNotFound) {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
+		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
+	}
+	if errors.Is(err, app.ErrUserNotAuthorized) {
+		ctx.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
+	}
+	if errors.Is(err, app.ErrCreateUserMessagingAddressExists) {
+		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodePayloadExists, "Messaging address already exists", ""))
+	}
+	if errors.Is(err, app.ErrSenderNotFound) {
+		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not found", ""))
+	}
+	if errors.Is(err, app.ErrConversationNotFound) {
+		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
 	}
 
-	_ = c.AbortWithError(http.StatusInternalServerError, err)
+	_ = ctx.AbortWithError(http.StatusInternalServerError, err)
 
 }

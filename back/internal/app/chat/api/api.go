@@ -2,10 +2,10 @@ package api
 
 import (
 	apiInternal "back/internal/pkg/api"
+	"back/internal/pkg/app"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	"back/internal/pkg/env"
-	"back/internal/pkg/infrastructure/redis"
-	"back/internal/pkg/infrastructure/user_queue"
+	"back/internal/pkg/rt/eventlog"
 	"context"
 	"errors"
 	"flag"
@@ -19,6 +19,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+)
+
+const (
+	// When asking server to shut down, give it a grace period to finish processing.
+	kShutdownTimeout = time.Second * 15
 )
 
 func Run(args []string) {
@@ -38,11 +43,19 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
 	}
-	rdb := redis.NewRedisClient("redis://localhost:6379/0?protocol=3")
-	writeQueue := user_queue.NewWriteQueue(rdb)
+
 	transactionFactory := postgres.NewTransactionFactory(connexion)
+	eventsOutput := eventlog.NewInMemoryEventLog()
+
+	fatalCtx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	service := app.NewService(transactionFactory, eventsOutput, func(err error) {
+		log.Printf("event output fatal error: %v", err)
+		cancel()
+	})
+
 	router := gin.New()
-	handlers := apiInternal.NewChatHandlers(transactionFactory, rdb, writeQueue)
+	handlers := apiInternal.NewChatHandlers(transactionFactory, service)
 	middleware := apiInternal.NewChatMiddleware(transactionFactory)
 	apiInternal.ConfigureRouter(router, handlers, middleware)
 
@@ -58,9 +71,9 @@ func Run(args []string) {
 	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
-	err = gracefullyListenAndServe(shutdown, *addr, router)
+	err = gracefullyListenAndServe(fatalCtx, shutdown, *addr, router)
 
-	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -68,8 +81,12 @@ func Run(args []string) {
 
 }
 
-func gracefullyListenAndServe(shutdown chan os.Signal, addr string, serverHandler http.Handler) error {
-	srv := &http.Server{
+func gracefullyListenAndServe(
+	fatalCtx context.Context,
+	shutdown chan os.Signal,
+	addr string,
+	serverHandler http.Handler) error {
+	srv := &http.Server{ //nolint:exhaustruct
 		Addr:         addr,
 		WriteTimeout: time.Second * 20,
 		ReadTimeout:  time.Second * 20,
@@ -86,15 +103,33 @@ func gracefullyListenAndServe(shutdown chan os.Signal, addr string, serverHandle
 	}()
 
 	// Block until we receive our signal to gracefully shutdown or stop if failed.
+	var fatalError error
 	select {
 	case <-shutdown:
 		break
+	case <-fatalCtx.Done():
+		log.Printf("Shutodown due to fatal ctx signal")
+		fatalError = fmt.Errorf("fatal error: %w", fatalCtx.Err())
 	case err := <-srvErrors:
 		return err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	ctx, cancel := context.WithTimeout(context.Background(), kShutdownTimeout)
 	defer cancel()
 	log.Println("Shutting down...")
-	return srv.Shutdown(ctx)
+
+	shutDownErr := srv.Shutdown(ctx) //nolint:contextcheck
+	if errors.Is(shutDownErr, http.ErrServerClosed) {
+		return fatalError
+	}
+
+	if fatalError == nil {
+		return fmt.Errorf("shutdown server: %w", shutDownErr)
+	}
+
+	if shutDownErr == nil {
+		return nil
+	}
+
+	return fmt.Errorf("shutdown server: %w due to %w", shutDownErr, fatalError)
 }

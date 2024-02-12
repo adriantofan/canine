@@ -14,6 +14,16 @@ type Event struct {
 	Payload     []byte
 }
 
+func MakeEvent(workspaceID int64, destination Destination, payload []byte) Event {
+	return Event{
+		WorkspaceID: workspaceID,
+		Destination: destination,
+		Time:        time.Now().UTC(),
+		MarkerHash:  "",
+		Payload:     payload,
+	}
+}
+
 func MakeMarkerEvent(workspaceID int64) Event {
 	return Event{
 		WorkspaceID: workspaceID,

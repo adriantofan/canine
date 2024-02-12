@@ -192,7 +192,7 @@ func (s *MessageRepository) GetUserByMessagingAddress(ctx context.Context, messa
 	return user, err
 }
 
-func (s *MessageRepository) GetUserById(ctx context.Context, id int64) (model.User, error) {
+func (s *MessageRepository) GetUserByID(ctx context.Context, id int64) (model.User, error) {
 	var user model.User
 	stmt := SELECT(table.User.AllColumns).
 		FROM(table.User).

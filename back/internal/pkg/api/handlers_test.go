@@ -2,7 +2,7 @@ package api_test
 
 import (
 	"back/internal/pkg/api"
-	"back/internal/pkg/domain/infrastructure/repository"
+	inMemRepo "back/internal/pkg/domain/infrastructure/repository"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/infrastructure"
 	"bytes"
@@ -17,7 +17,7 @@ import (
 var _ = Describe("Handlers", func() {
 	Describe("LastKnownUserVersion", func() {
 		var r *gin.Engine
-		var repository *repository.MemoryMessageRepository
+		var repository *inMemRepo.MemoryMessageRepository
 		makeUser := func(phone string) model.User {
 			user := map[string]interface{}{
 				"messaging_address": phone,
@@ -49,7 +49,7 @@ var _ = Describe("Handlers", func() {
 
 		BeforeEach(func() {
 			r = gin.Default()
-			repository = repository.NewInMemoryRepository(infrastructure.NewTimeService())
+			repository = inMemRepo.NewInMemoryRepository(infrastructure.NewTimeService())
 			handlers := api.NewChatHandlers(repository)
 			middleware := api.NewChatMiddleware(repository)
 			api.ConfigureRouter(r, handlers, middleware)

@@ -1,161 +1,122 @@
 package api
 
 import (
-	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/app"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
-	websocket2 "back/internal/pkg/rt/websocket"
-	"back/internal/pkg/user_queue"
+	"back/internal/pkg/rt/websocket"
 	"errors"
 	"log"
 	"math"
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/websocket"
+	gorillaWebsocket "github.com/gorilla/websocket"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 )
 
 type ChatHandlers struct {
-	f         domain.Transaction
-	rdb       *redis.Client
-	userQueue user_queue.WriteQueue
-	Service   *app.Service
+	f       domain.Transaction
+	Service *app.Service
 }
 
-func NewChatHandlers(f domain.Transaction, rdb *redis.Client, userQueue user_queue.WriteQueue, Service *app.Service) *ChatHandlers {
-	return &ChatHandlers{f, rdb, userQueue, Service}
+func NewChatHandlers(f domain.Transaction, service *app.Service) *ChatHandlers {
+	return &ChatHandlers{f: f, Service: service}
 }
 
-func (h ChatHandlers) GetUser(c *gin.Context) {
-	user := c.MustGet("user").(model.User)
+func (h ChatHandlers) GetUser(ctx *gin.Context) {
+	user := h.getUser(ctx)
 
-	userRef := struct {
-		UserID int `uri:"user_id" binding:"required"`
+	userRef := struct { //nolint:exhaustruct
+		UserID int `binding:"required" uri:"user_id"`
 	}{}
-	err := c.ShouldBindUri(&userRef)
+	err := ctx.ShouldBindUri(&userRef)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
+		ctx.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, user)
 }
+
 func (h ChatHandlers) rollback() {
 	_ = h.f.Rollback()
 }
+
 func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 	var payload CreateUserPayload
 
 	err := ctx.ShouldBindJSON(&payload)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
-		return
-	}
-	repo, err := h.f.Begin()
-	defer h.rollback()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, ErrorInternalServer)
-		return
-	}
-	user, err := repo.CreateUser(ctx, payload.Phone, genModel.UserType_External)
+		abortBadRequest(ctx, err)
 
-	if errors.Is(err, domain.ErrMessagingAddressExists) {
-		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodePayloadExists, "Phone number exists", err.Error()))
 		return
 	}
-	_, err = h.f.Commit()
+
+	user, err := h.Service.CreateUser(ctx, h.getUser(ctx), payload)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, ErrorInternalServer)
+		abortWithAppError(ctx, err)
+
 		return
 	}
 
 	ctx.JSON(http.StatusCreated, user)
 }
-func (h ChatHandlers) CreateConversation(c *gin.Context) {
+
+func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 	var payload CreateConversationPayload
 
-	err := c.ShouldBindJSON(&payload)
+	err := ctx.ShouldBindJSON(&payload)
 
 	if err != nil {
-		abortBadRequest(c, err)
+		abortBadRequest(ctx, err)
+
 		return
 	}
 
-	user := c.MustGet("user").(model.User)
+	user := h.getUser(ctx)
 
-	conversation, err := h.Service.GetOrCreateConversation(c, user, payload.RecipientMessagingAddress)
+	conversation, err := h.Service.GetOrCreateConversation(ctx, user, payload.RecipientMessagingAddress)
 
 	if err != nil {
-		abortWithError(c, err)
+		abortWithAppError(ctx, err)
+
 		return
 	}
 
-	c.JSON(http.StatusCreated, conversation)
+	ctx.JSON(http.StatusCreated, conversation)
 }
 
-func (h ChatHandlers) CreateMessage(c *gin.Context) {
+func (h ChatHandlers) CreateMessage(ctx *gin.Context) {
 	var params struct {
-		ConversationID int64 `uri:"conversation_id" binding:"required"`
+		ConversationID int64 `binding:"required" uri:"conversation_id"`
 	}
 
-	if err := c.ShouldBindUri(&params); err != nil {
-		// maybe a not found instead
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		abortBadRequest(ctx, err)
+
 		return
 	}
 
 	var payload CreateMessagePayload
 
-	err := c.ShouldBindJSON(&payload)
+	err := ctx.ShouldBindJSON(&payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+		abortBadRequest(ctx, err)
+
 		return
 	}
-	repo, err := h.f.Begin()
-	defer h.rollback()
+
+	user := h.getUser(ctx)
+	message, err := h.Service.CreateMessage(ctx, user, params.ConversationID, payload)
+
 	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
+		abortWithAppError(ctx, err)
 	}
 
-	sender, err := repo.GetUserById(c, payload.SenderID)
-	if errors.Is(err, domain.ErrUserNotFound) {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not found", ""))
-		return
-	}
-	if sender.Type != genModel.UserType_Internal {
-		conversation, err := repo.GetConversation(c, params.ConversationID)
-		if errors.Is(err, domain.ErrConversationNotFound) {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
-			return
-		}
-
-		if sender.Type == genModel.UserType_External && conversation.ExternalUserID != sender.ID {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not part of conversation", ""))
-			return
-		}
-	}
-
-	message, err := repo.CreateMessage(c, params.ConversationID, sender.ID, payload.Message, genModel.MessageType_Msg)
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	_, err = h.f.Commit()
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	// TODO: handle updates from commit
-
-	c.JSON(http.StatusCreated, message)
+	ctx.JSON(http.StatusCreated, message)
 }
 
 func (h ChatHandlers) GetConversations(c *gin.Context) {
@@ -257,7 +218,7 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-var upgrader = websocket.Upgrader{
+var upgrader = gorillaWebsocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
@@ -275,7 +236,7 @@ func (h ChatHandlers) UpdateWebSocket(c *gin.Context) {
 	log.Printf("client %s connected", c.Request.RemoteAddr)
 	clientOutChan := make(chan []byte)
 	clientDoneChan := make(chan struct{})
-	clientStream := websocket2.NewClientStream(conn, clientDoneChan, clientOutChan)
+	clientStream := websocket.NewClientStream(conn, clientDoneChan, clientOutChan)
 	clientStream.Run()
 	<-clientDoneChan
 	log.Printf("client %s disconnected", c.Request.RemoteAddr)
@@ -304,12 +265,10 @@ func (h ChatHandlers) RPC(c *gin.Context) {
 func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user model.User, requestID string,
 	clientState model.ClientSyncStateRepresentation) {
 	// Strict because we want serial responses on the queue
-	done, ctx := app.NewSerialContextStrictGin(c)
-	defer done()
 
 	repo, err := h.f.WithoutTransaction()
 
-	stateUpdate, err := repo.GetSyncState(ctx, user, clientState)
+	stateUpdate, err := repo.GetSyncState(c, user, clientState)
 
 	if err != nil {
 		log.Printf("error getting sync state: %v", err)
@@ -317,19 +276,13 @@ func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user mode
 		return
 	}
 
-	r := rt.MakeServerMessageSyncState(requestID, ctx.SyncSeq(), stateUpdate)
+	_ = rt.MakeServerMessageSyncState(requestID, stateUpdate)
+	// TODO: send message to client
 
-	err = h.userQueue.Enqueue(c, user.ID, r)
-	if err != nil {
-		log.Printf("error enqueueing message: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
-		return
-	}
 }
 
 type ChatMiddleware struct {
-	r     domain.Transaction
-	scope *app.Scope
+	r domain.Transaction
 }
 
 func NewChatMiddleware(r domain.Transaction) *ChatMiddleware {
@@ -352,7 +305,7 @@ func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
 		return
 	}
 
-	user, err := repo.GetUserById(c, userRef.UserID)
+	user, err := repo.GetUserByID(c, userRef.UserID)
 
 	if errors.Is(err, domain.ErrUserNotFound) {
 		c.AbortWithStatusJSON(http.StatusNotFound, ErrorNotFound)
@@ -369,7 +322,6 @@ func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
 		return
 	}
-	c.Set("scope", m.scope)
 	c.Set("user", user)
 	c.Next()
 }
@@ -406,4 +358,13 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 		direction = domain.Backward
 	}
 	return limit, id, direction, true
+}
+
+func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
+	user, ok := ctx.MustGet("user").(model.User)
+	if !ok {
+		panic("user not found")
+	}
+
+	return user
 }

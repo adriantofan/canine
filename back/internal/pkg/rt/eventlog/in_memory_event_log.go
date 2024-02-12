@@ -162,8 +162,10 @@ func (l *InMemoryEventLog) Stop(ctx context.Context) error {
 	}
 }
 
-func (l *InMemoryEventLog) Write(event Event) {
+func (l *InMemoryEventLog) Write(event Event) error {
 	l.inbox <- event
+
+	return nil // 🤦
 }
 
 // removeOldEvents removes events, assuming that the events are ordered by time

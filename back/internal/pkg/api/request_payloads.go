@@ -1,24 +1,20 @@
 package api
 
 import (
+	"back/internal/pkg/app"
 	"fmt"
 	"math"
 	"net/url"
 	"strconv"
 )
 
-type CreateUserPayload struct {
-	Phone string `json:"messaging_address" binding:"required"`
-}
+type CreateUserPayload = app.CreateUserData
 
 type CreateConversationPayload struct {
 	RecipientMessagingAddress string `json:"recipient_messaging_address"`
 }
 
-type CreateMessagePayload struct {
-	Message  string `json:"message"`
-	SenderID int64  `json:"sender_id"`
-}
+type CreateMessagePayload = app.CreateMessageData
 
 type GetConversationMessagesParams struct {
 	LastID    int
