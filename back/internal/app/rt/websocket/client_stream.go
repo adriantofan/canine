@@ -1,4 +1,4 @@
-package rpc
+package websocket
 
 import (
 	"log"

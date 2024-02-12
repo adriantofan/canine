@@ -11,23 +11,6 @@ const (
 	kEventLogBufferThreshold = 30 * time.Second
 )
 
-/*
- Want to send to:
- 1. Internal messages  - send to all internal users
- 2. External message in a conversation with an external user - send to all internal users and the user
- 3. A private message in a group of users (conversation with a group of users) - send to all users from the list
- 4. Internal user changed - To everyone
-*/
-
-type ServerEventLog interface {
-	// Write is a blocking call, goroutine safe
-	Write(event Event) error
-}
-
-type ClientEvenLog interface {
-	StreamEvents(WorkspaceID int64, UserID int64, startHash []byte) (func(), chan []Event)
-}
-
 // InMemoryEventLog contract
 // First Run in a goroutine
 // While running it is possible to Write events and to StreamEvents
@@ -51,7 +34,7 @@ type Subscription struct {
 	outbox        chan []Event
 	workspaceID   int64
 	userID        int64
-	broadcastMask maskType
+	broadcastMask broadcastMask
 	startHash     string
 }
 
@@ -113,7 +96,7 @@ func (l *InMemoryEventLog) storeAndDispatchNewEvent(e Event) {
 
 func (l *InMemoryEventLog) StreamEvents(
 	workspaceID, userID int64,
-	broadcastMask maskType,
+	broadcastMask broadcastMask,
 	startHash string,
 ) (func(), chan []Event) {
 	if !l.running {
@@ -138,7 +121,7 @@ func (l *InMemoryEventLog) StreamEvents(
 // Includes events that are equal to startHash.
 func (l *InMemoryEventLog) getMissedEvents(
 	workspaceID, userID int64,
-	broadcastMask maskType,
+	broadcastMask broadcastMask,
 	startHash string) []Event {
 	events, ok := l.events[workspaceID]
 	if !ok {
@@ -153,7 +136,7 @@ func (l *InMemoryEventLog) getMissedEvents(
 	return events
 }
 
-func getEventsForUser(workspaceID, userID int64, broadcastMask maskType, events []Event) []Event {
+func getEventsForUser(workspaceID, userID int64, broadcastMask broadcastMask, events []Event) []Event {
 	result := make([]Event, 0, len(events))
 	for _, e := range events {
 		if e.WorkspaceID == workspaceID && e.Destination.Match(userID, broadcastMask) {
@@ -206,8 +189,6 @@ func (l *InMemoryEventLog) removeOldEvents(events map[int64][]Event) map[int64][
 			events[key] = []Event{}
 		} else {
 			events[key] = eventList[firstToKeep:]
-			// This won't work because it might overwrite other events in other slices using
-			// the same underlying array.
 		}
 	}
 

@@ -1,7 +1,7 @@
 package user_queue
 
 import (
-	"back/internal/pkg/rpc"
+	"back/internal/app/rt"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -18,7 +18,7 @@ func NewWriteQueue(client *redis.Client) *WriteQueue {
 }
 
 // Enqueue implements infrastructure.WriteQueue interface using redis pub/sub
-func (u *WriteQueue) Enqueue(ctx context.Context, userID int64, msg rpc.ServerMessage) error {
+func (u *WriteQueue) Enqueue(ctx context.Context, userID int64, msg rt.ServerMessage) error {
 	data, err := json.Marshal(msg)
 	if err != nil {
 		// This is a 500 error

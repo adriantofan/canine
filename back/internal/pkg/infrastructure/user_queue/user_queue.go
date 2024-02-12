@@ -1,7 +1,7 @@
 package user_queue
 
 import (
-	"back/internal/pkg/rpc"
+	"back/internal/app/rt"
 	"context"
 	"encoding/json"
 	"log"
@@ -18,7 +18,7 @@ func NewUserReadQueue(client *redis.Client) *ReadQueue {
 }
 
 // Messages implements infrastructure.ReadQueue interface using redis pub/sub
-func (u *ReadQueue) Messages(ctx context.Context, userID int64) (<-chan rpc.ServerMessage, error) {
+func (u *ReadQueue) Messages(ctx context.Context, userID int64) (<-chan rt.ServerMessage, error) {
 	channel := userQueueName(userID)
 	pubsub := u.client.Subscribe(ctx, channel)
 	pubsubChan := pubsub.Channel()
@@ -26,11 +26,11 @@ func (u *ReadQueue) Messages(ctx context.Context, userID int64) (<-chan rpc.Serv
 
 }
 
-func convertToServerMessageChan(pubsubChan <-chan *redis.Message) <-chan rpc.ServerMessage {
-	serverMessageChan := make(chan rpc.ServerMessage)
+func convertToServerMessageChan(pubsubChan <-chan *redis.Message) <-chan rt.ServerMessage {
+	serverMessageChan := make(chan rt.ServerMessage)
 	go func() {
 		for msg := range pubsubChan {
-			serverMessage := rpc.ServerMessage{}
+			serverMessage := rt.ServerMessage{}
 			err := json.Unmarshal([]byte(msg.Payload), &serverMessage)
 			// something was enqueued incorrectly
 			if err != nil {

@@ -1,6 +1,7 @@
 package eventlog_test
 
 import (
+	eventlog2 "back/internal/app/rt/eventlog"
 	"context"
 	"errors"
 	"fmt"
@@ -9,8 +10,6 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gleak"
-
-	"back/internal/pkg/infrastructure/eventlog"
 )
 
 var _ = Describe("EventLog", func() {
@@ -20,27 +19,27 @@ var _ = Describe("EventLog", func() {
 	errGotMoreElements := fmt.Errorf("got more elements")
 
 	It("should be able to create a new event log", func() {
-		eventLog := eventlog.NewInMemoryEventLog()
+		eventLog := eventlog2.NewInMemoryEventLog()
 		go eventLog.Run()
-		event1 := eventlog.MakeMarkerEvent(workspaceID1)
-		event2 := eventlog.Event{
+		event1 := eventlog2.MakeMarkerEvent(workspaceID1)
+		event2 := eventlog2.Event{
 			WorkspaceID: workspaceID1,
-			Destination: eventlog.MakeDestinationInternalMessage(),
+			Destination: eventlog2.MakeDestinationInternalMessage(),
 			Time:        time.Now(),
 			MarkerHash:  "hash0",
 			Payload:     []byte("payload0"),
 		}
-		event3 := eventlog.MakeMarkerEvent(workspaceID1)
-		event4 := eventlog.Event{
+		event3 := eventlog2.MakeMarkerEvent(workspaceID1)
+		event4 := eventlog2.Event{
 			WorkspaceID: workspaceID1,
-			Destination: eventlog.MakeDestinationExternalMessage(eID1),
+			Destination: eventlog2.MakeDestinationExternalMessage(eID1),
 			Time:        time.Now(),
 			MarkerHash:  "hash1",
 			Payload:     []byte("payload1"),
 		}
-		event5 := eventlog.Event{
+		event5 := eventlog2.Event{
 			WorkspaceID: workspaceID1,
-			Destination: eventlog.MakeDestinationExternalMessage(eID1),
+			Destination: eventlog2.MakeDestinationExternalMessage(eID1),
 			Time:        time.Now(),
 			MarkerHash:  "",
 			Payload:     []byte("payload5"),
@@ -50,18 +49,18 @@ var _ = Describe("EventLog", func() {
 		eventLog.Write(event2)
 		eventLog.Write(event3)
 		eventLog.Write(event4)
-		_, i1Chan := eventLog.StreamEvents(workspaceID1, iID1, eventlog.MaskBroadcastInternal, event1.MarkerHash)
-		_, e1Chan := eventLog.StreamEvents(workspaceID1, eID1, eventlog.MaskBroadcastInternal, event3.MarkerHash)
+		_, i1Chan := eventLog.StreamEvents(workspaceID1, iID1, eventlog2.MaskBroadcastInternal, event1.MarkerHash)
+		_, e1Chan := eventLog.StreamEvents(workspaceID1, eID1, eventlog2.MaskBroadcastInternal, event3.MarkerHash)
 		i1ResChan := make(chan error, 1)
 		go func() {
-			if ok, err := waitFor([]eventlog.Event{event1, event2, event3, event4}, i1Chan); !ok {
+			if ok, err := waitFor([]eventlog2.Event{event1, event2, event3, event4}, i1Chan); !ok {
 				i1ResChan <- fmt.Errorf("failed to get all events: %w", err)
 
 				return
 			}
 			i1ResChan <- nil
 
-			if ok, err := waitFor([]eventlog.Event{event5}, i1Chan); !ok {
+			if ok, err := waitFor([]eventlog2.Event{event5}, i1Chan); !ok {
 				i1ResChan <- fmt.Errorf("failed to get event: %w", err)
 
 				return
@@ -80,12 +79,12 @@ var _ = Describe("EventLog", func() {
 
 		e1ResChan := make(chan error, 1)
 		go func() {
-			if ok, err := waitFor([]eventlog.Event{event3, event4}, e1Chan); !ok {
+			if ok, err := waitFor([]eventlog2.Event{event3, event4}, e1Chan); !ok {
 				e1ResChan <- fmt.Errorf("failed to get all events: %w", err)
 			}
 			e1ResChan <- nil
 
-			if ok, err := waitFor([]eventlog.Event{event5}, e1Chan); !ok {
+			if ok, err := waitFor([]eventlog2.Event{event5}, e1Chan); !ok {
 				e1ResChan <- fmt.Errorf("failed to get event: %w", err)
 			}
 			e1ResChan <- nil
@@ -113,8 +112,8 @@ var _ = Describe("EventLog", func() {
 
 })
 
-func waitFor(events []eventlog.Event, in chan []eventlog.Event) (bool, error) {
-	var got []eventlog.Event
+func waitFor(events []eventlog2.Event, in chan []eventlog2.Event) (bool, error) {
+	var got []eventlog2.Event
 	for r := range in {
 		got = append(got, r...)
 		if len(got) > len(events) {

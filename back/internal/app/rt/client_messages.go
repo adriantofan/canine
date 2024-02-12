@@ -1,4 +1,4 @@
-package rpc
+package rt
 
 import (
 	"back/internal/pkg/domain/model"

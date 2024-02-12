@@ -2,10 +2,11 @@ package api
 
 import (
 	genModel "back/.gen/canine/public/model"
+	"back/internal/app/rt"
+	websocket2 "back/internal/app/rt/websocket"
 	"back/internal/pkg/app"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
-	"back/internal/pkg/rpc"
 	"back/internal/pkg/user_queue"
 	"errors"
 	"log"
@@ -274,7 +275,7 @@ func (h ChatHandlers) UpdateWebSocket(c *gin.Context) {
 	log.Printf("client %s connected", c.Request.RemoteAddr)
 	clientOutChan := make(chan []byte)
 	clientDoneChan := make(chan struct{})
-	clientStream := rpc.NewClientStream(conn, clientDoneChan, clientOutChan)
+	clientStream := websocket2.NewClientStream(conn, clientDoneChan, clientOutChan)
 	clientStream.Run()
 	<-clientDoneChan
 	log.Printf("client %s disconnected", c.Request.RemoteAddr)
@@ -283,7 +284,7 @@ func (h ChatHandlers) UpdateWebSocket(c *gin.Context) {
 func (h ChatHandlers) RPC(c *gin.Context) {
 	user := c.MustGet("user").(model.User)
 
-	var msg rpc.ClientMessage
+	var msg rt.ClientMessage
 
 	err := c.ShouldBindJSON(&msg)
 	if err != nil {
@@ -292,7 +293,7 @@ func (h ChatHandlers) RPC(c *gin.Context) {
 	}
 
 	switch msg.Kind {
-	case rpc.ClientMessageKindSyncState:
+	case rt.ClientMessageKindSyncState:
 		h.HandleClientMessageKindSyncState(c, user, msg.RequestID, msg.MustGetClientSyncStateRepresentation())
 		return
 	}
@@ -316,7 +317,7 @@ func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user mode
 		return
 	}
 
-	r := rpc.MakeServerMessageSyncState(requestID, ctx.SyncSeq(), stateUpdate)
+	r := rt.MakeServerMessageSyncState(requestID, ctx.SyncSeq(), stateUpdate)
 
 	err = h.userQueue.Enqueue(c, user.ID, r)
 	if err != nil {
