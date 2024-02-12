@@ -1,7 +1,7 @@
 package eventlog_test
 
 import (
-	eventlog2 "back/internal/app/rt/eventlog"
+	eventlog2 "back/internal/pkg/rt/eventlog"
 	"context"
 	"errors"
 	"fmt"

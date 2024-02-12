@@ -2,11 +2,11 @@ package api
 
 import (
 	genModel "back/.gen/canine/public/model"
-	"back/internal/app/rt"
-	websocket2 "back/internal/app/rt/websocket"
 	"back/internal/pkg/app"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
+	"back/internal/pkg/rt"
+	websocket2 "back/internal/pkg/rt/websocket"
 	"back/internal/pkg/user_queue"
 	"errors"
 	"log"
