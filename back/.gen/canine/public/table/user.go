@@ -18,10 +18,12 @@ type userTable struct {
 
 	// Columns
 	ID               postgres.ColumnInteger
+	WorkspaceID      postgres.ColumnInteger
 	MessagingAddress postgres.ColumnString
 	Type             postgres.ColumnString
 	CreatedAt        postgres.ColumnTimestamp
 	UpdatedAt        postgres.ColumnTimestamp
+	PasswordHash     postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -63,12 +65,14 @@ func newUserTable(schemaName, tableName, alias string) *UserTable {
 func newUserTableImpl(schemaName, tableName, alias string) userTable {
 	var (
 		IDColumn               = postgres.IntegerColumn("id")
+		WorkspaceIDColumn      = postgres.IntegerColumn("workspace_id")
 		MessagingAddressColumn = postgres.StringColumn("messaging_address")
 		TypeColumn             = postgres.StringColumn("type")
 		CreatedAtColumn        = postgres.TimestampColumn("created_at")
 		UpdatedAtColumn        = postgres.TimestampColumn("updated_at")
-		allColumns             = postgres.ColumnList{IDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns         = postgres.ColumnList{MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn}
+		PasswordHashColumn     = postgres.StringColumn("password_hash")
+		allColumns             = postgres.ColumnList{IDColumn, WorkspaceIDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, PasswordHashColumn}
+		mutableColumns         = postgres.ColumnList{WorkspaceIDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, PasswordHashColumn}
 	)
 
 	return userTable{
@@ -76,10 +80,12 @@ func newUserTableImpl(schemaName, tableName, alias string) userTable {
 
 		//Columns
 		ID:               IDColumn,
+		WorkspaceID:      WorkspaceIDColumn,
 		MessagingAddress: MessagingAddressColumn,
 		Type:             TypeColumn,
 		CreatedAt:        CreatedAtColumn,
 		UpdatedAt:        UpdatedAtColumn,
+		PasswordHash:     PasswordHashColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

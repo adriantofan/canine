@@ -11,7 +11,9 @@ import (
 //
 //	Use strings instead when converting to from json
 type User struct {
-	ID               int64             `json:"id" sql:"primary_key"`
+	ID               int64             `json:"id"sql:"primary_key"`
+	WorkspaceID      int64             `json:"workspace_id" db:"workspace_id"`
+	PasswordHash     string            `json:"-" db:"password_hash"`
 	MessagingAddress string            `json:"messaging_address" db:"messaging_address"`
 	Type             genModel.UserType `json:"type" db:"type"`
 	CreatedAt        MillisecondsTime  `json:"created_at" db:"created_at"`
@@ -20,6 +22,7 @@ type User struct {
 
 type Conversation struct {
 	ID             int64            `json:"id" sql:"primary_key"`
+	WorkspaceID    int64            `json:"workspace_id" db:"workspace_id"`
 	ExternalUserID int64            `json:"external_user_id" db:"external_user_id"`
 	Name           string           `json:"name" db:"name"`
 	CreatedAt      MillisecondsTime `json:"created_at" db:"created_at"`
@@ -36,4 +39,10 @@ type Message struct {
 	Type           genModel.MessageType `json:"type" db:"type"`
 	Message        string               `json:"message" db:"message"`
 	CreatedAt      MillisecondsTime     `json:"created_at" db:"created_at"`
+}
+type Workspace struct {
+	ID        int64            `json:"id" sql:"primary_key"`
+	Name      string           `json:"name" db:"name"`
+	CreatedAt MillisecondsTime `json:"created_at" db:"created_at"`
+	UpdatedAt MillisecondsTime `json:"updated_at" db:"updated_at"`
 }

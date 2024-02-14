@@ -18,8 +18,8 @@ type Direction int
 
 // Define constants for the enum values.
 const (
-	Backward Direction = iota
-	Forward
+	DirectionBackward Direction = iota
+	DirectionForward
 )
 
 type Transaction interface {
@@ -33,10 +33,17 @@ type Transaction interface {
 
 //nolint:interfacebloat
 type ChatRepository interface {
+	CreateWorkspace(ctx context.Context, name string) (model.Workspace, error)
 	// GetConversations returns all conversations sorted id
 	// TODO: it should also work by change date, in order to sync conversations
 	// between the first page download and the first Websocket message
-	GetConversations(ctx context.Context, id *int64, limit int, direction Direction) ([]model.Conversation, error)
+	GetConversations(
+		ctx context.Context,
+		workspaceID int64,
+		externalUserID *int64,
+		id *int64,
+		limit int,
+		direction Direction) ([]model.Conversation, error)
 
 	GetConversation(ctx context.Context, id int64) (model.Conversation, error)
 
@@ -57,18 +64,25 @@ type ChatRepository interface {
 
 	// CreateUser creates a new user with the given phone number.
 	// Returns ErrMessagingAddressExists if phone number is already used
-	CreateUser(ctx context.Context, messagingAddress string, userType genModel.UserType) (model.User, error)
+	CreateUser(
+		ctx context.Context,
+		workspaceID int64,
+		messagingAddress string,
+		userType genModel.UserType,
+		passwordHash string) (model.User, error)
 
 	// GetUserByMessagingAddress returns the user having the given phone number. err is ErrUserNotFound if user not found
-	GetUserByMessagingAddress(ctx context.Context, messagingAddress string) (model.User, error)
+	GetUserByMessagingAddress(ctx context.Context, workspaceID int64, messagingAddress string) (model.User, error)
 
 	// GetUserByID returns the user having the given user id. err is ErrUserNotFound if user not found
 	GetUserByID(ctx context.Context, id int64) (model.User, error)
 
-	GetInternalUserIds(ctx context.Context) ([]int64, error)
-
 	// GetOrCreateConversation creates a new conversation between two users or returns existing one
-	GetOrCreateConversation(ctx context.Context, externalUserID int64, name string) (model.Conversation, error)
+	GetOrCreateConversation(
+		ctx context.Context,
+		workspaceID int64,
+		externalUserID int64,
+		name string) (model.Conversation, error)
 
 	CreateMessage(
 		ctx context.Context,

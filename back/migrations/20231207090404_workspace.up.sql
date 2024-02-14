@@ -1,0 +1,7 @@
+CREATE TABLE workspace
+(
+    id         BIGINT PRIMARY KEY NOT NULL,
+    name       VARCHAR(150)       NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

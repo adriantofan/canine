@@ -18,6 +18,7 @@ type conversationTable struct {
 
 	// Columns
 	ID             postgres.ColumnInteger
+	WorkspaceID    postgres.ColumnInteger
 	ExternalUserID postgres.ColumnInteger
 	Name           postgres.ColumnString
 	CreatedAt      postgres.ColumnTimestamp
@@ -66,6 +67,7 @@ func newConversationTable(schemaName, tableName, alias string) *ConversationTabl
 func newConversationTableImpl(schemaName, tableName, alias string) conversationTable {
 	var (
 		IDColumn             = postgres.IntegerColumn("id")
+		WorkspaceIDColumn    = postgres.IntegerColumn("workspace_id")
 		ExternalUserIDColumn = postgres.IntegerColumn("external_user_id")
 		NameColumn           = postgres.StringColumn("name")
 		CreatedAtColumn      = postgres.TimestampColumn("created_at")
@@ -73,8 +75,8 @@ func newConversationTableImpl(schemaName, tableName, alias string) conversationT
 		UpdatedSeqColumn     = postgres.IntegerColumn("updated_seq")
 		ArchivedColumn       = postgres.BoolColumn("archived")
 		LastMessageIDColumn  = postgres.IntegerColumn("last_message_id")
-		allColumns           = postgres.ColumnList{IDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
-		mutableColumns       = postgres.ColumnList{ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
+		allColumns           = postgres.ColumnList{IDColumn, WorkspaceIDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
+		mutableColumns       = postgres.ColumnList{WorkspaceIDColumn, ExternalUserIDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, UpdatedSeqColumn, ArchivedColumn, LastMessageIDColumn}
 	)
 
 	return conversationTable{
@@ -82,6 +84,7 @@ func newConversationTableImpl(schemaName, tableName, alias string) conversationT
 
 		//Columns
 		ID:             IDColumn,
+		WorkspaceID:    WorkspaceIDColumn,
 		ExternalUserID: ExternalUserIDColumn,
 		Name:           NameColumn,
 		CreatedAt:      CreatedAtColumn,

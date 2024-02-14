@@ -14,4 +14,5 @@ func UseSchema(schema string) {
 	Message = Message.FromSchema(schema)
 	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	User = User.FromSchema(schema)
+	Workspace = Workspace.FromSchema(schema)
 }

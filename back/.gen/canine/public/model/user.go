@@ -13,8 +13,10 @@ import (
 
 type User struct {
 	ID               int64 `sql:"primary_key"`
+	WorkspaceID      int64
 	MessagingAddress string
 	Type             UserType
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
+	PasswordHash     string
 }

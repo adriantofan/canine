@@ -2,6 +2,7 @@ package api
 
 import (
 	"back/internal/pkg/app"
+	"back/internal/pkg/auth"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
@@ -44,6 +45,23 @@ func (h ChatHandlers) rollback() {
 	_ = h.f.Rollback()
 }
 
+func (h ChatHandlers) CreateWorkspace(ctx *gin.Context) {
+	var payload CreateWorkspacePayload
+
+	err := ctx.ShouldBindJSON(&payload)
+	if err != nil {
+		abortBadRequest(ctx, err)
+	}
+
+	workspaceWithUser, err := h.Service.CreateWorkspace(ctx, payload)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, workspaceWithUser)
+}
 func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 	var payload CreateUserPayload
 
@@ -54,7 +72,7 @@ func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.Service.CreateUser(ctx, h.getUser(ctx), payload)
+	user, err := h.Service.CreateUser(ctx, getIdentity(ctx), payload)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -76,9 +94,7 @@ func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 		return
 	}
 
-	user := h.getUser(ctx)
-
-	conversation, err := h.Service.GetOrCreateConversation(ctx, user, payload.RecipientMessagingAddress)
+	conversation, err := h.Service.GetOrCreateConversation(ctx, getIdentity(ctx), payload.RecipientMessagingAddress)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -109,8 +125,7 @@ func (h ChatHandlers) CreateMessage(ctx *gin.Context) {
 		return
 	}
 
-	user := h.getUser(ctx)
-	message, err := h.Service.CreateMessage(ctx, user, params.ConversationID, payload)
+	message, err := h.Service.CreateMessage(ctx, getIdentity(ctx), params.ConversationID, payload)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -123,24 +138,13 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 
 	limit, id, direction, ok := getPaginatedParams(c)
 	if !ok {
+		abortBadRequest(c, errors.New("invalid pagination parameters"))
 		return
 	}
 
-	repo, err := h.f.Begin()
-	defer h.rollback()
+	conversations, err := h.Service.GetConversations(c, getIdentity(c), id, limit, direction)
 	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	conversations, err := repo.GetConversations(c, id, limit, direction)
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-	_, err = h.f.Commit()
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		abortWithAppError(c, err)
 		return
 	}
 
@@ -169,33 +173,25 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 	limit, id, direction, ok := getPaginatedParams(c)
 	if !ok {
+		abortBadRequest(c, errors.New("invalid pagination parameters"))
 		return
 	}
-
+	// FIXME: check permissions
 	var params struct {
 		ConversationID int64 `uri:"conversation_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindUri(&params); err != nil {
 		// maybe a not found instead
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+		abortBadRequest(c, err)
 		return
 	}
 
-	repo, err := h.f.Begin()
-	defer h.rollback()
+	messages, err := h.Service.GetConversationMessages(c, getIdentity(c), params.ConversationID, id, limit, direction)
 	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		abortWithAppError(c, err)
 		return
 	}
-
-	messages, err := repo.GetMessages(c, params.ConversationID, id, limit, direction)
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	_, err = h.f.Commit()
 
 	var prevId int64 = math.MaxInt64
 	var nextId int64 = 0
@@ -290,9 +286,10 @@ func NewChatMiddleware(r domain.Transaction) *ChatMiddleware {
 		r: r,
 	}
 }
-func (m *ChatMiddleware) UserMiddleware(c *gin.Context) {
+func (m *ChatMiddleware) AuthMiddleware(c *gin.Context) {
 	userRef := struct {
-		UserID int64 `uri:"user_id" binding:"required"`
+		WorkspaceID int64 `uri:"workspace_id" binding:"required"`
+		UserID      int64 `uri:"user_id" binding:"required"`
 	}{}
 	if err := c.ShouldBindUri(&userRef); err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, ErrorNotFound)
@@ -338,7 +335,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 	}
 
 	var id *int64
-	direction := domain.Backward
+	direction := domain.DirectionBackward
 
 	if greaterThanStr != "" {
 		id = new(int64)
@@ -347,7 +344,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
 			return 0, nil, 0, false
 		}
-		direction = domain.Forward
+		direction = domain.DirectionForward
 	} else if lowerThanStr != "" {
 		id = new(int64)
 		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
@@ -355,16 +352,21 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
 			return 0, nil, 0, false
 		}
-		direction = domain.Backward
+		direction = domain.DirectionBackward
 	}
 	return limit, id, direction, true
 }
 
 func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
+	// TODO: kill and replace with getIdentity
 	user, ok := ctx.MustGet("user").(model.User)
 	if !ok {
 		panic("user not found")
 	}
 
 	return user
+}
+
+func getIdentity(ctx *gin.Context) *app.Identity {
+	return ctx.MustGet(auth.IdentityKey).(*app.Identity)
 }

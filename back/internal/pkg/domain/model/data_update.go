@@ -14,8 +14,8 @@ const (
 )
 
 const (
-	DataUpdateTypeMessage DataUpdateType = "message_update"
-	// DataUpdateTypeUser         DataUpdateType = "user"
+	DataUpdateTypeMessage      DataUpdateType = "message_update"
+	DataUpdateTypeUser         DataUpdateType = "user"
 	DataUpdateTypeConversation DataUpdateType = "conversation_update"
 )
 

@@ -114,7 +114,7 @@ func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationI
 
 func (r *MemoryMessageRepository) GetConversations(ctx context.Context, id *int64, limit int, direction domain.Direction) ([]model.Conversation, error) {
 	// TODO: make sure it works :-) (it's not tested)
-	if direction == domain.Forward {
+	if direction == domain.DirectionForward {
 		if id != nil {
 			for i, conversation := range r.conversations {
 				if conversation.ID == *id {

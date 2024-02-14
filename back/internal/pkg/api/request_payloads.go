@@ -8,10 +8,12 @@ import (
 	"strconv"
 )
 
+type CreateWorkspacePayload = app.CreateWorkspaceData
 type CreateUserPayload = app.CreateUserData
 
 type CreateConversationPayload struct {
 	RecipientMessagingAddress string `json:"recipient_messaging_address"`
+	Password                  string `json:"password"`
 }
 
 type CreateMessagePayload = app.CreateMessageData

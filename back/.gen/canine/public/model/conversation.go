@@ -13,6 +13,7 @@ import (
 
 type Conversation struct {
 	ID             int64 `sql:"primary_key"`
+	WorkspaceID    int64
 	ExternalUserID int64
 	Name           *string
 	CreatedAt      time.Time

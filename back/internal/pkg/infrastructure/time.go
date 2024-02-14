@@ -4,14 +4,18 @@ import "time"
 
 type TimeService interface {
 	NowUTC() time.Time
+	Now() time.Time
 }
 
-type timeService struct{}
+type RealTimeService struct{}
 
-func NewTimeService() TimeService {
-	return &timeService{}
+func NewRealTimeService() *RealTimeService {
+	return &RealTimeService{}
 }
 
-func (t *timeService) NowUTC() time.Time {
+func (t *RealTimeService) NowUTC() time.Time {
 	return time.Now().UTC()
+}
+func (t *RealTimeService) Now() time.Time {
+	return time.Now()
 }

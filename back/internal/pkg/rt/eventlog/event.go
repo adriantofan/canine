@@ -14,11 +14,11 @@ type Event struct {
 	Payload     []byte
 }
 
-func MakeEvent(workspaceID int64, destination Destination, payload []byte) Event {
+func MakeEvent(workspaceID int64, destination Destination, payload []byte, eventTime time.Time) Event {
 	return Event{
 		WorkspaceID: workspaceID,
 		Destination: destination,
-		Time:        time.Now().UTC(),
+		Time:        eventTime,
 		MarkerHash:  "",
 		Payload:     payload,
 	}

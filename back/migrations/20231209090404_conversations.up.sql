@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS conversation
 (
     id               BIGSERIAL,
+    workspace_id     BIGINT    NOT NULL,
     external_user_id BIGINT    NOT NULL,
     name             VARCHAR(256),
     created_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -10,7 +11,8 @@ CREATE TABLE IF NOT EXISTS conversation
     last_message_id  BIGINT UNIQUE,
     PRIMARY KEY (id),
     FOREIGN KEY (external_user_id) REFERENCES "user" (id),
-    CONSTRAINT unique_conversation_user UNIQUE (external_user_id, name)
+    FOREIGN KEY (workspace_id) REFERENCES "workspace" (id),
+    CONSTRAINT unique_conversation_user UNIQUE (workspace_id, external_user_id, name)
 );
 
 

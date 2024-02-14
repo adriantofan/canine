@@ -41,17 +41,17 @@ func abortBadRequest(c *gin.Context, err error) {
 
 func abortWithAppError(ctx *gin.Context, err error) {
 
-	if errors.Is(err, app.ErrUserNotFound) {
+	if errors.Is(err, app.ErrRecipientNotFound) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Recipient not found", ""))
 	}
-	if errors.Is(err, app.ErrUserNotAuthorized) {
+	if errors.Is(err, app.ErrNotAuthorized) {
 		ctx.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
+	}
+	if errors.Is(err, app.ErrForbidden) {
+		ctx.JSON(http.StatusForbidden, ErrorNotAuthorized)
 	}
 	if errors.Is(err, app.ErrCreateUserMessagingAddressExists) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodePayloadExists, "Messaging address already exists", ""))
-	}
-	if errors.Is(err, app.ErrSenderNotFound) {
-		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Sender not found", ""))
 	}
 	if errors.Is(err, app.ErrConversationNotFound) {
 		ctx.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Conversation not found", ""))
