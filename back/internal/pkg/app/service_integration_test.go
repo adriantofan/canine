@@ -159,7 +159,7 @@ type testWorkspace struct {
 }
 
 func newTestWorkspace(ctx serviceContext) testWorkspace {
-	workspace, owner := makeWorkspace(ctx, "girls", "emmaOwner@example.com", "emmaOwner for ever")
+	workspace, owner := makeWorkspace(ctx, "canine", "emmaOwner@example.com", "emmaOwner for ever")
 	result := testWorkspace{ //nolint:exhaustruct
 		workspace: workspace,
 		emmaOwner: owner,

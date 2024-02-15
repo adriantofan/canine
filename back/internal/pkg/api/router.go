@@ -10,7 +10,7 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.POST("/login", authMiddleware.LoginHandler)
-	router.POST("/workspace", handlers.CreateWorkspace)
+	router.POST("/workspaces", handlers.CreateWorkspace)
 	workspaceGroup := router.Group("/:workspace_id")
 	workspaceGroup.GET("/refresh_token", authMiddleware.RefreshHandler)
 

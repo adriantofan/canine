@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -69,10 +70,12 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 		},
 		// Login step 2. returns jwt MapClaims
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*model.User); ok {
+			if v, ok := data.(model.User); ok {
 				return jwt.MapClaims{
-					IdentityKey:  v.ID,
-					workspaceKey: v.WorkspaceID,
+					// by default all number fields become float64 . this is a workaround
+					// due to the fact that jwt.MapClaims is a map[string]interface{}
+					IdentityKey:  strconv.FormatInt(v.ID, 10),
+					workspaceKey: strconv.FormatInt(v.WorkspaceID, 10),
 				}
 			}
 			log.Printf("failed to cast user in PayloadFunc %v", data)
@@ -81,13 +84,32 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 
+			userID, err := strconv.ParseInt(claims[IdentityKey].(string), 10, 64)
+			if err != nil {
+				return nil
+			}
+			workspaceID, err := strconv.ParseInt(claims[workspaceKey].(string), 10, 64)
+			if err != nil {
+				return nil
+			}
+
 			return &app.Identity{
-				UserID:      claims[IdentityKey].(int64),
-				WorkspaceID: claims[workspaceKey].(int64),
+				UserID:      userID,
+				WorkspaceID: workspaceID,
 			}
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*app.Identity); ok && c.MustGet("workspace_id").(int64) == v.WorkspaceID {
+			if data == nil {
+				return false
+			}
+
+			pathWorkspaceIDStr := c.Param("workspace_id")
+			pathWorkspaceID, err := strconv.ParseInt(pathWorkspaceIDStr, 10, 64)
+			if err != nil {
+				return false
+			}
+
+			if v, ok := data.(*app.Identity); ok && pathWorkspaceID == v.WorkspaceID {
 
 				return true
 			}

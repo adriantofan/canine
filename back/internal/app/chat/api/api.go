@@ -77,7 +77,7 @@ func Run(args []string) {
 	// kill -2 is syscall.SIGINT
 	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
-
+	go inMemoryEventLog.Run()
 	err = gracefullyListenAndServe(fatalCtx, shutdown, *addr, router)
 
 	if err != nil {
