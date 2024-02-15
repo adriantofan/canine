@@ -1,6 +1,6 @@
 package model
 
-type UserSyncState struct {
+type RTCRemoteUpdate struct {
 	Conversations []Conversation         `json:"conversations"`
 	Messages      []ConversationMessages `json:"messages"`
 	Users         []User                 `json:"users"`

@@ -1,19 +1,24 @@
 package eventlog
 
-type broadcastMask int
+import "fmt"
+
+type BroadcastMask int
 
 const (
-	MaskBroadcastUserIDsOnly = 0
-	MaskBroadcastInternal    = iota << 1
+	MaskBroadcastUserIDsOnly BroadcastMask = 0
+	MaskBroadcastInternal    BroadcastMask = iota << 1
 	MaskBroadcastExternal
 	MaskBroadcastMarker
 )
 
 type Destination struct {
-	BroadcastMask broadcastMask
+	BroadcastMask BroadcastMask
 	UserIDs       []int64
 }
 
+func (d Destination) String() string {
+	return fmt.Sprintf("Destination{BroadcastMask: %b, UserIDs: %v}", d.BroadcastMask, d.UserIDs)
+}
 func MakeDestinationMarker() Destination {
 	return Destination{BroadcastMask: MaskBroadcastMarker, UserIDs: nil}
 }
@@ -32,7 +37,7 @@ func MakeDestinationBroadcastAll() Destination {
 	return Destination{BroadcastMask: MaskBroadcastInternal & MaskBroadcastExternal, UserIDs: nil}
 }
 
-func (d *Destination) Match(userID int64, broadcast broadcastMask) bool {
+func (d *Destination) Match(userID int64, broadcast BroadcastMask) bool {
 	if d.BroadcastMask&broadcast&MaskBroadcastMarker != 0 {
 		return true
 	}

@@ -16,7 +16,7 @@ type Output interface {
 type Input interface {
 	StreamEvents(
 		workspaceID, userID int64,
-		broadcastMask broadcastMask,
+		broadcastMask BroadcastMask,
 		startHash string,
 	) (func(), chan []Event)
 }

@@ -24,10 +24,10 @@ const (
 // 2. need to marshal/unmarshal messages client and server side
 // 3. need to determine be able to easily access Data
 
-func (m *ClientMessage) MustGetClientSyncStateRepresentation() model.ClientSyncStateRepresentation {
-	syncState, ok := m.Data.(model.ClientSyncStateRepresentation)
+func (m *ClientMessage) MustGetClientSyncStateRepresentation() model.RTCRemote {
+	syncState, ok := m.Data.(model.RTCRemote)
 	if !ok {
-		panic("invalid ClientSyncStateRepresentation inside ClientMessage")
+		panic("invalid RTCRemote inside ClientMessage")
 	}
 
 	return syncState
@@ -43,9 +43,9 @@ func (m *ClientMessage) UnmarshallJSON(data []byte) error {
 
 	switch tmp.Kind {
 	case ClientMessageKindSyncState:
-		var syncState model.ClientSyncStateRepresentation
+		var syncState model.RTCRemote
 		if err := json.Unmarshal(data, &syncState); err != nil {
-			return fmt.Errorf("unmarshal ClientMessage ClientSyncStateRepresentation: %w", err)
+			return fmt.Errorf("unmarshal ClientMessage RTCRemote: %w", err)
 		}
 		m.Kind = tmp.Kind
 		m.Data = syncState

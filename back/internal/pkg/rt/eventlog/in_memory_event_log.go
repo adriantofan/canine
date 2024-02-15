@@ -34,7 +34,7 @@ type Subscription struct {
 	outbox        chan []Event
 	workspaceID   int64
 	userID        int64
-	broadcastMask broadcastMask
+	broadcastMask BroadcastMask
 	startHash     string
 }
 
@@ -96,7 +96,7 @@ func (l *InMemoryEventLog) storeAndDispatchNewEvent(e Event) {
 
 func (l *InMemoryEventLog) StreamEvents(
 	workspaceID, userID int64,
-	broadcastMask broadcastMask,
+	broadcastMask BroadcastMask,
 	startHash string,
 ) (func(), chan []Event) {
 	if !l.running {
@@ -121,7 +121,7 @@ func (l *InMemoryEventLog) StreamEvents(
 // Includes events that are equal to startHash.
 func (l *InMemoryEventLog) getMissedEvents(
 	workspaceID, userID int64,
-	broadcastMask broadcastMask,
+	broadcastMask BroadcastMask,
 	startHash string) []Event {
 	events, ok := l.events[workspaceID]
 	if !ok {
@@ -136,7 +136,7 @@ func (l *InMemoryEventLog) getMissedEvents(
 	return events
 }
 
-func getEventsForUser(workspaceID, userID int64, broadcastMask broadcastMask, events []Event) []Event {
+func getEventsForUser(workspaceID, userID int64, broadcastMask BroadcastMask, events []Event) []Event {
 	result := make([]Event, 0, len(events))
 	for _, e := range events {
 		if e.WorkspaceID == workspaceID && e.Destination.Match(userID, broadcastMask) {

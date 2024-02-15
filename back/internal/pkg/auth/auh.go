@@ -15,8 +15,9 @@ import (
 )
 
 type login struct {
-	Username string `binding:"required" form:"username" json:"username"`
-	Password string `binding:"required" form:"password" json:"password"`
+	Username    string `binding:"required" form:"username" json:"username"`
+	Password    string `binding:"required" form:"password" json:"password"`
+	WorkspaceID int64  `binding:"required" form:"workspace_id" json:"workspace_id"`
 }
 
 const (
@@ -30,7 +31,7 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 		return nil, fmt.Errorf("failed to get repository: %w", err)
 	}
 
-	return jwt.New(&jwt.GinJWTMiddleware{
+	return jwt.New(&jwt.GinJWTMiddleware{ //nolint:exhaustruct
 		Realm:       realm,
 		Key:         secretKey,
 		Timeout:     time.Hour,
@@ -44,11 +45,12 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 			}
 			userID := loginVars.Username
 			submittedPassword := loginVars.Password
-			user, err := repo.GetUserByMessagingAddress(c, userID)
+			user, err := repo.GetUserByMessagingAddress(c, loginVars.WorkspaceID, userID)
 			if err != nil {
 				if errors.Is(err, domain.ErrUserNotFound) {
 					return nil, jwt.ErrFailedAuthentication
 				}
+
 				return nil, fmt.Errorf("failed to get user by messaging address: %w", err)
 			}
 			passwordHash := user.PasswordHash

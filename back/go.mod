@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/appleboy/gin-jwt/v2 v2.9.2
+	github.com/gammazero/deque v0.2.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-jet/jet/v2 v2.10.1
 	github.com/golang-migrate/migrate/v4 v4.16.2

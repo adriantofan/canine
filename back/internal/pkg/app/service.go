@@ -104,26 +104,35 @@ func (s *Service) CreateWorkspace(
 	return WorkspaceWithUser{Workspace: workspace, User: user}, nil
 }
 
-func (s *Service) RTSyncStart(
+func (s *Service) GetRTCRemoteUpdate(
 	ctx context.Context,
-	workspaceID int64,
-	user model.User,
-	clientState model.ClientSyncStateRepresentation) (model.UserSyncState, error) {
-	var serverState model.UserSyncState
+	identity *Identity,
+	clientState model.RTCRemote) (model.RTCRemoteUpdate, error) {
+
+	var workspaceID int64
+
+	var serverState model.RTCRemoteUpdate
 	repo, err := s.t.WithoutTransaction()
 	if err != nil {
-		return serverState, fmt.Errorf("RTSyncStart begin transaction: %w", err)
+		return serverState, fmt.Errorf("GetRTCRemoteUpdate begin transaction: %w", err)
 	}
+
+	var user model.User
+	user, err = repo.GetUserByID(ctx, identity.UserID)
+	if err != nil {
+		return serverState, ErrNotAuthorized
+	}
+
 	marker := eventlog.MakeMarkerEvent(workspaceID)
 	err = s.eventsOutput.Write(marker)
 	if err != nil {
 		// even if it would lead to a crash, on a create/edit request, here it is technically not fatal
-		return serverState, fmt.Errorf("RTSyncStart write marker event: %w", err)
+		return serverState, fmt.Errorf("GetRTCRemoteUpdate write marker event: %w", err)
 	}
 
 	serverState, err = repo.GetSyncState(ctx, user, clientState)
 	if err != nil {
-		return serverState, fmt.Errorf("RTSyncStart get sync state: %w", err)
+		return serverState, fmt.Errorf("GetRTCRemoteUpdate get sync state: %w", err)
 	}
 
 	return serverState, nil

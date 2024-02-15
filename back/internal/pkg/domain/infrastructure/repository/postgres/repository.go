@@ -419,8 +419,8 @@ func (s *MessageRepository) GetConversation(ctx context.Context, id int64) (mode
 	return conversation, err
 }
 
-func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, known model.ClientSyncStateRepresentation) (model.UserSyncState, error) {
-	r := model.UserSyncState{}
+func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, known model.RTCRemote) (model.RTCRemoteUpdate, error) {
+	r := model.RTCRemoteUpdate{}
 
 	// Only need to return the full conversation object for each changed known conversation.
 	// Given their changed status it is not required to get last known message because messages for known conversations
@@ -458,7 +458,7 @@ func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, k
 		return r, fmt.Errorf("user sync failed to get changed users: %w", err)
 	}
 
-	return model.UserSyncState{
+	return model.RTCRemoteUpdate{
 		Conversations: changedConversations,
 		Messages:      messages,
 		Users:         users,

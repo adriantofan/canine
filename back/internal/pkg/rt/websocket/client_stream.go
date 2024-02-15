@@ -23,53 +23,85 @@ const (
 
 type ClientStream struct {
 	conn *websocket.Conn
-	done chan struct{} // signals that the connection is closed
-	out  chan []byte   // msgs from websocket are written to this channel
-	in   chan []byte   // msgs from this channel are written to websocket
+	done chan<- struct{} // signals that the connection is closed
+	out  chan []byte     // msgs from websocket are written to this channel
+	in   <-chan []byte   // msgs from this channel are written to websocket
+	stop <-chan struct{}
 }
 
-func NewClientStream(conn *websocket.Conn, done chan struct{}, in chan []byte) *ClientStream {
+func NewClientStream(conn *websocket.Conn, stop <-chan struct{}, done chan<- struct{}, in <-chan []byte) *ClientStream {
 	return &ClientStream{
 		conn: conn,
 		done: done,
 		out:  make(chan []byte),
 		in:   in,
+		stop: stop,
 	}
 }
 
 func (c *ClientStream) Run() {
-	go c.writePump()
-	go c.readPump()
+	readClosed := make(chan struct{}, 1)
+	go c.writePump(readClosed)
+	go c.readPump(readClosed)
 }
 
-func (c *ClientStream) writePump() {
+func (c *ClientStream) writePump(readClosed <-chan struct{}) {
 	ticker := time.NewTicker(pingPeriod)
+	var shutdownAsked bool
 	defer func() {
 		ticker.Stop()
-		c.conn.Close()
+		if shutdownAsked {
+			log.Printf("ClientStream.writePump: shutdown asked")
+			clientClosedTimer := time.NewTimer(10 * time.Second)
+			select { // wait for the client to close or timeout
+			case <-readClosed:
+			case <-clientClosedTimer.C:
+			}
+		}
+		// even if the client does not close we eventually close the connection to interrupt the readPump
+		_ = c.conn.Close()
 	}()
 	for {
 		select {
+		case <-c.stop:
+			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait)) // seems like it never returns nil
+			err := c.conn.WriteMessage(websocket.CloseMessage,
+				websocket.FormatCloseMessage(websocket.CloseGoingAway, "a"))
+			if err != nil {
+				shutdownAsked = true
+			}
+			// could wait here for the server to close the connection
+			return
+
 		case message, ok := <-c.in:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait)) // seems like it never returns nil
 			if !ok {
 				// The hub closed the channel.
-				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-
+				err := c.conn.WriteMessage(websocket.CloseMessage,
+					websocket.FormatCloseMessage(websocket.CloseGoingAway, "b"))
+				if err != nil {
+					shutdownAsked = true
+				}
+				// could wait here for the server to close the connection
 				return
 			}
 			// FIXME: ASSUMPTION: after an IO failure the connection is closed which would trigger the readPump to
 			// 	 fail and close the done channel
-			w, _ := c.conn.NextWriter(websocket.TextMessage)
-			_, _ = w.Write(message)
+			writer, err := c.conn.NextWriter(websocket.TextMessage)
+			if err != nil {
+				return
+			}
+			_, err = writer.Write(message)
+			if err != nil {
 
-			// TODO: should do something about queued messages to improve throughput ?
+				return
+			}
 
-			if err := w.Close(); err != nil {
+			if err := writer.Close(); err != nil {
 				return
 			}
 		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait)) // seems like it never returns nil
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
@@ -82,10 +114,11 @@ func (c *ClientStream) writePump() {
 //
 // A goroutine running readPump is started for each connection.
 // The application ensures that there is at most one reader on a connection by executing all reads from this goroutine.
-func (c *ClientStream) readPump() {
+func (c *ClientStream) readPump(readClosed chan<- struct{}) {
 	defer func() {
-		c.done <- struct{}{}
+		readClosed <- struct{}{}
 		_ = c.conn.Close()
+		c.done <- struct{}{}
 	}()
 	c.conn.SetReadLimit(maxMessageSize)
 	// TODO: what does it mean that a error is returned here? Is it a full stop ?

@@ -102,7 +102,7 @@ var _ = Describe("ServiceIntegration", Ordered, func() {
 		mskEmmaToWiskers := sendMessage(ctx, testWksp.emmaOwner, withWiskers, "hello wiskers")
 
 		By("ava initiates RT")
-		state := startRTC(ctx, ava, model.NewClientSyncStateRepresentation())
+		state := startRTC(ctx, ava, model.NewRTCSessionStart())
 		verifySyncState(
 			state,
 			[]model.Conversation{withKitty, withWiskers},
@@ -113,7 +113,7 @@ var _ = Describe("ServiceIntegration", Ordered, func() {
 			[]model.User{testWksp.emmaOwner, ava, kitty, whiskers})
 
 		By("kitty initiates RT")
-		state = startRTC(ctx, kitty, model.NewClientSyncStateRepresentation())
+		state = startRTC(ctx, kitty, model.NewRTCSessionStart())
 		verifySyncState(
 			state,
 			[]model.Conversation{withKitty},
@@ -243,13 +243,17 @@ func getMessages(
 func startRTC(
 	ctx serviceContext,
 	user model.User,
-	clientState model.ClientSyncStateRepresentation) model.UserSyncState {
-	syncState, err := ctx.service.RTSyncStart(ctx, user.WorkspaceID, user, clientState)
+	clientState model.RTCRemote) model.RTCRemoteUpdate {
+	identity := &app.Identity{
+		WorkspaceID: user.WorkspaceID,
+		UserID:      user.ID,
+	}
+	syncState, err := ctx.service.GetRTCRemoteUpdate(ctx, identity, clientState)
 	Expect(err).ToNot(HaveOccurred())
 
 	return syncState
 }
-func verifySyncState(syncState model.UserSyncState,
+func verifySyncState(syncState model.RTCRemoteUpdate,
 	conversations []model.Conversation,
 	messages []model.ConversationMessages,
 	users []model.User) {

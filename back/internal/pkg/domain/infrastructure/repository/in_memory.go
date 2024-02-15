@@ -147,7 +147,7 @@ func (r *MemoryMessageRepository) GetMessages(ctx context.Context, conversationI
 	panic("implement me")
 }
 
-func (r *MemoryMessageRepository) GetSyncState(ctx context.Context, userID int64, current model.ClientSyncStateRepresentation) (model.UserSyncState, error) {
+func (r *MemoryMessageRepository) GetSyncState(ctx context.Context, userID int64, current model.RTCRemote) (model.RTCRemoteUpdate, error) {
 	panic("implement MemoryMessageRepository.GetSyncState")
 }
 

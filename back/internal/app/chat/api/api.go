@@ -3,6 +3,7 @@ package api
 import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/app"
+	"back/internal/pkg/auth"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	"back/internal/pkg/env"
 	"back/internal/pkg/rt/eventlog"
@@ -29,7 +30,9 @@ const (
 func Run(args []string) {
 	fs := flag.NewFlagSet("api", flag.ExitOnError)
 	addr := fs.String("addr", ":8080", "websocket service address")
-	dsn := fs.String("dsn", "", "database connection string")
+	dsn := fs.String("postgres-dsn", "", "database connection string")
+	authSecret := fs.String("auth-secret", "", "auth secret")
+	authRealm := fs.String("auth-realm", "", "auth realm")
 
 	if err := env.SetFlagsFromEnvironment(fs); err != nil {
 		log.Fatal(err)
@@ -45,18 +48,22 @@ func Run(args []string) {
 	}
 
 	transactionFactory := postgres.NewTransactionFactory(connexion)
-	eventsOutput := eventlog.NewInMemoryEventLog()
+	inMemoryEventLog := eventlog.NewInMemoryEventLog()
 
 	fatalCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	service := app.NewService(transactionFactory, eventsOutput, func(err error) {
+	service := app.NewService(transactionFactory, inMemoryEventLog, func(err error) {
 		log.Printf("event output fatal error: %v", err)
-		cancel()
+		cancel() // WTF
 	})
 
 	router := gin.New()
-	handlers := apiInternal.NewChatHandlers(transactionFactory, service)
-	middleware := apiInternal.NewChatMiddleware(transactionFactory)
+	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
+	middleware, err := auth.Middleware(transactionFactory, *authRealm, []byte(*authSecret))
+	if err != nil {
+		log.Printf("failed to create middleware: %v", err)
+
+	}
 	apiInternal.ConfigureRouter(router, handlers, middleware)
 
 	//handlers := apiInternal.MakeHandlers(repository)
@@ -123,7 +130,7 @@ func gracefullyListenAndServe(
 		return fatalError
 	}
 
-	if fatalError == nil {
+	if fatalError != nil {
 		return fmt.Errorf("shutdown server: %w", shutDownErr)
 	}
 

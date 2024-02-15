@@ -27,7 +27,7 @@ func MakeServerMessageDataLog(requestID string, dataUpdate []model.DataUpdate) S
 	}
 }
 
-func MakeServerMessageSyncState(requestID string, syncState model.UserSyncState) ServerMessage {
+func MakeServerMessageSyncState(requestID string, syncState model.RTCRemoteUpdate) ServerMessage {
 	return ServerMessage{
 		Kind:      serverMessageKindSyncState,
 		RequestID: requestID,
@@ -35,10 +35,10 @@ func MakeServerMessageSyncState(requestID string, syncState model.UserSyncState)
 	}
 }
 
-func (m *ServerMessage) MustGetSyncState() model.UserSyncState {
-	syncState, ok := m.Data.(model.UserSyncState)
+func (m *ServerMessage) MustGetSyncState() model.RTCRemoteUpdate {
+	syncState, ok := m.Data.(model.RTCRemoteUpdate)
 	if !ok {
-		panic("invalid UserSyncState inside ServerMessage")
+		panic("invalid RTCRemoteUpdate inside ServerMessage")
 	}
 
 	return syncState

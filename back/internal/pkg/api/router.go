@@ -21,6 +21,8 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	usersGroup := workspaceGroup.Group("/users/:user_id")
 
 	usersGroup.GET("", handlers.GetUser)
+	usersGroup.GET("/rtc/connect", handlers.RTCConnect)
+	usersGroup.POST("/rtc/session", handlers.RTCStartSession)
 
 	workspaceGroup.POST("/conversations", handlers.CreateConversation)
 	workspaceGroup.GET("/conversations", handlers.GetConversations)

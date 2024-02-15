@@ -1,17 +1,22 @@
 package api
 
 import (
+	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/app"
 	"back/internal/pkg/auth"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
+	"back/internal/pkg/rt/buffer"
+	"back/internal/pkg/rt/eventlog"
 	"back/internal/pkg/rt/websocket"
 	"errors"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
 	"strconv"
+	"sync"
 
 	gorillaWebsocket "github.com/gorilla/websocket"
 
@@ -19,12 +24,21 @@ import (
 )
 
 type ChatHandlers struct {
-	f       domain.Transaction
-	Service *app.Service
+	transaction      domain.Transaction
+	Service          *app.Service
+	input            eventlog.Input
+	closeWSSignalsMX *sync.Mutex
+	closeWSSignals   []chan<- struct{}
 }
 
-func NewChatHandlers(f domain.Transaction, service *app.Service) *ChatHandlers {
-	return &ChatHandlers{f: f, Service: service}
+func NewChatHandlers(f domain.Transaction, service *app.Service, input eventlog.Input) *ChatHandlers {
+	return &ChatHandlers{
+		transaction:      f,
+		Service:          service,
+		input:            input,
+		closeWSSignalsMX: &sync.Mutex{},
+		closeWSSignals:   make([]chan<- struct{}, 0, 10),
+	}
 }
 
 func (h ChatHandlers) GetUser(ctx *gin.Context) {
@@ -42,7 +56,7 @@ func (h ChatHandlers) GetUser(ctx *gin.Context) {
 }
 
 func (h ChatHandlers) rollback() {
-	_ = h.f.Rollback()
+	_ = h.transaction.Rollback()
 }
 
 func (h ChatHandlers) CreateWorkspace(ctx *gin.Context) {
@@ -213,6 +227,23 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response)
 }
+func (h ChatHandlers) RTCStartSession(c *gin.Context) {
+	var payload model.RTCRemote
+
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+		return
+	}
+
+	update, err := h.Service.GetRTCRemoteUpdate(c, getIdentity(c), payload)
+	if err != nil {
+		abortWithAppError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, update)
+}
 
 var upgrader = gorillaWebsocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -222,20 +253,101 @@ var upgrader = gorillaWebsocket.Upgrader{
 	},
 }
 
-func (h ChatHandlers) UpdateWebSocket(c *gin.Context) {
+func (h ChatHandlers) RTCConnect(c *gin.Context) {
+	payload := struct {
+		Token string `json:"token"`
+	}{}
+
+	err := c.ShouldBind(&payload)
+	if err != nil {
+		abortBadRequest(c, err)
+		return
+	}
+
+	repo, err := h.transaction.WithoutTransaction()
+	if err != nil {
+		abortWithAppError(c, fmt.Errorf("error getting repo: %w", err))
+		return
+	}
+
+	identity := getIdentity(c)
+	user, err := repo.GetUserByID(c, identity.UserID)
+	if err != nil {
+		abortWithAppError(c, fmt.Errorf("error getting user: %w", err))
+		return
+	}
+
+	mask := eventlog.MaskBroadcastMarker
+	switch user.Type {
+	case genModel.UserType_Internal:
+		mask = mask | eventlog.MaskBroadcastInternal
+	case genModel.UserType_External:
+		mask = mask | eventlog.MaskBroadcastExternal
+	default:
+		abortBadRequest(c, fmt.Errorf("invalid user type: %s", user.Type))
+	}
+
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Printf("error upgrading websocket: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
+		abortWithAppError(c, fmt.Errorf("error upgrading websocket: %w", err))
 		return
 	}
 	log.Printf("client %s connected", c.Request.RemoteAddr)
-	clientOutChan := make(chan []byte)
+	/*
+			Shutdown sequence:
+			1. server shutdown  - stopConnection is closed, handled by ClientStream
+			2. client closes connection - in ClientStream read pump, connection is closed, stops the write pump and
+			outputs a message to the clientDoneChan
+			3. stream events closes clientEventLog, which stops the buffer and closes the clientOutChan
+			initiating the graceful shutdown sequence in the client stream
+			possible race condition: server shutdown is also initiated by eventlog, which closes the clientEventLog
+			both paths lead to the same outcome => ok
+
+			ClientStream shutdown in detail:
+			1. stopConnection is closed -> graceful shutdown:
+				- writePump sends a close message to the client
+			    - writePump waits for the readPump to stop or timeout
+				- readPump stops when the client closes the connection, unblocking the writePump close wait
+			2. client stops the connection
+				- readPump stops and closes the connection
+			    - write pump stops
+			when readpump stops clientDoneChan unblocks
+		    Manual test atm:
+		     - stop client side
+		     - shutdown server side
+		     - eventlog initiate stop
+	*/
+	stopStream, clientEventLog := h.input.StreamEvents(identity.WorkspaceID, identity.UserID, mask, payload.Token)
+
+	clientOutChan := buffer.Buffer(clientEventLog)
 	clientDoneChan := make(chan struct{})
-	clientStream := websocket.NewClientStream(conn, clientDoneChan, clientOutChan)
+	stopConnection := make(chan struct{})
+	h.addStopWSConnection(stopConnection)
+
+	clientStream := websocket.NewClientStream(conn, stopConnection, clientDoneChan, clientOutChan)
 	clientStream.Run()
 	<-clientDoneChan
+	stopStream() // also stops the buffer on clientOutChan
 	log.Printf("client %s disconnected", c.Request.RemoteAddr)
+}
+func (h ChatHandlers) addStopWSConnection(stop chan<- struct{}) {
+	h.closeWSSignalsMX.Lock()
+	defer h.closeWSSignalsMX.Unlock()
+	if h.closeWSSignals == nil {
+		close(stop)
+		return
+	}
+	h.closeWSSignals = append(h.closeWSSignals, stop)
+}
+
+func (h ChatHandlers) ServerShutDownHandler() {
+	h.closeWSSignalsMX.Lock()
+	defer h.closeWSSignalsMX.Unlock()
+	for _, stop := range h.closeWSSignals {
+		close(stop)
+	}
+	h.closeWSSignals = nil
 }
 
 func (h ChatHandlers) RPC(c *gin.Context) {
@@ -259,10 +371,10 @@ func (h ChatHandlers) RPC(c *gin.Context) {
 }
 
 func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user model.User, requestID string,
-	clientState model.ClientSyncStateRepresentation) {
+	clientState model.RTCRemote) {
 	// Strict because we want serial responses on the queue
 
-	repo, err := h.f.WithoutTransaction()
+	repo, err := h.transaction.WithoutTransaction()
 
 	stateUpdate, err := repo.GetSyncState(c, user, clientState)
 
@@ -275,52 +387,6 @@ func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user mode
 	_ = rt.MakeServerMessageSyncState(requestID, stateUpdate)
 	// TODO: send message to client
 
-}
-
-type ChatMiddleware struct {
-	r domain.Transaction
-}
-
-func NewChatMiddleware(r domain.Transaction) *ChatMiddleware {
-	return &ChatMiddleware{
-		r: r,
-	}
-}
-func (m *ChatMiddleware) AuthMiddleware(c *gin.Context) {
-	userRef := struct {
-		WorkspaceID int64 `uri:"workspace_id" binding:"required"`
-		UserID      int64 `uri:"user_id" binding:"required"`
-	}{}
-	if err := c.ShouldBindUri(&userRef); err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, ErrorNotFound)
-		return
-	}
-
-	repo, err := m.r.WithoutTransaction()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
-		return
-	}
-
-	user, err := repo.GetUserByID(c, userRef.UserID)
-
-	if errors.Is(err, domain.ErrUserNotFound) {
-		c.AbortWithStatusJSON(http.StatusNotFound, ErrorNotFound)
-		return
-	}
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
-		return
-	}
-
-	_, err = m.r.Commit()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
-		return
-	}
-	c.Set("user", user)
-	c.Next()
 }
 
 func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {

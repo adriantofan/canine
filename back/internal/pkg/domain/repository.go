@@ -94,5 +94,5 @@ type ChatRepository interface {
 	GetSyncState(
 		ctx context.Context,
 		user model.User,
-		current model.ClientSyncStateRepresentation) (model.UserSyncState, error)
+		current model.RTCRemote) (model.RTCRemoteUpdate, error)
 }
