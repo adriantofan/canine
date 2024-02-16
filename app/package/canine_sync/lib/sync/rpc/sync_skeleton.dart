@@ -24,7 +24,7 @@ class SyncSkeleton implements SyncWorker {
           sendPort.send(initial);
         }
         break;
-      case MsgUnsubscribeProcAck ack:
+      case MsgUnsubscribeProc ack:
         final sub = procMap[ack.key]!;
         sub.sendPort.send(MsgUnsubscribeProcAck(ack.key));
         procMap.remove(ack.key);

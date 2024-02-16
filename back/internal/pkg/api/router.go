@@ -21,6 +21,8 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	usersGroup := workspaceGroup.Group("/users/:user_id")
 
 	usersGroup.GET("", handlers.GetUser)
+
+	// on the users group in order to be able to count how many connections a user has
 	usersGroup.GET("/rtc/connect", handlers.RTCConnect)
 	usersGroup.POST("/rtc/session", handlers.RTCStartSession)
 

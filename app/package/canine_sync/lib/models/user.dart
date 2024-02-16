@@ -9,6 +9,7 @@ part 'user.g.dart';
 class User with _$User {
   const factory User({
     required int id,
+    required int workspaceId,
     required String messagingAddress,
     required String type,
     @TimestampSerializer() required DateTime createdAt,

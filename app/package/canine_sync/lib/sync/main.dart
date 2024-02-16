@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../api/main.dart';
 import '../cache/in_memory_cache.dart';
 import '../ws/model/models.dart';
 import 'rpc/sync_skeleton.dart';
@@ -12,6 +13,7 @@ import 'sync_worker.dart';
 
 Future<Sync> start() async {
   var receivePort = ReceivePort();
+
   await Isolate.spawn(_runner, receivePort.sendPort);
   final sendPort = await receivePort.first as SendPort;
   SyncStub stub = SyncStub(sendPort);
@@ -23,6 +25,8 @@ _runner(SendPort sendPort) async {
   final cache = InMemoryCache();
   final sync = SyncSkeleton(cache);
   sendPort.send(receivePort.sendPort);
+  APIClient apiClient = APIClient();
+
   final cancelOnMsg = receivePort.listen((data) {
     // even if this is running async with respect to _work, it is still
     // running in the same isolate, so onMsg and onUpdate are not running
@@ -30,16 +34,29 @@ _runner(SendPort sendPort) async {
     sync.onMsg(data);
   });
   try {
-    await _work(sync, receivePort);
+    await _work(sync, receivePort, apiClient);
   } finally {
     await cancelOnMsg.cancel();
   }
 }
 
 // It would be nice to split websocket connection and sync logic
-_work(SyncWorker worker, ReceivePort receivePort) async {
+_work(SyncWorker worker, ReceivePort receivePort, APIClient apiClient) async {
   while (true) {
     try {
+      await for (var authStatus in apiClient.authStatus) {
+        switch (authStatus) {
+          case AuthenticationStatus.authenticated:
+            break;
+          case AuthenticationStatus.unauthenticated:
+          // TODO: clean cache
+          case AuthenticationStatus.unknown:
+            await apiClient.refreshToken();
+        }
+      }
+
+      // it would be nice to emit auth and sync messages on the same stream
+
       var channel =
           WebSocketChannel.connect(Uri.parse('ws://localhost:8080/echo'));
       await channel.ready;

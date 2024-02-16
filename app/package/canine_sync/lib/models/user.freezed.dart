@@ -21,6 +21,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$User {
   int get id => throw _privateConstructorUsedError;
+  int get workspaceId => throw _privateConstructorUsedError;
   String get messagingAddress => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   @TimestampSerializer()
@@ -40,6 +41,7 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
+      int workspaceId,
       String messagingAddress,
       String type,
       @TimestampSerializer() DateTime createdAt,
@@ -60,6 +62,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? id = null,
+    Object? workspaceId = null,
     Object? messagingAddress = null,
     Object? type = null,
     Object? createdAt = null,
@@ -69,6 +72,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      workspaceId: null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
               as int,
       messagingAddress: null == messagingAddress
           ? _value.messagingAddress
@@ -99,6 +106,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
+      int workspaceId,
       String messagingAddress,
       String type,
       @TimestampSerializer() DateTime createdAt,
@@ -116,6 +124,7 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? workspaceId = null,
     Object? messagingAddress = null,
     Object? type = null,
     Object? createdAt = null,
@@ -125,6 +134,10 @@ class __$$UserImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      workspaceId: null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
               as int,
       messagingAddress: null == messagingAddress
           ? _value.messagingAddress
@@ -151,6 +164,7 @@ class __$$UserImplCopyWithImpl<$Res>
 class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.id,
+      required this.workspaceId,
       required this.messagingAddress,
       required this.type,
       @TimestampSerializer() required this.createdAt,
@@ -161,6 +175,8 @@ class _$UserImpl implements _User {
 
   @override
   final int id;
+  @override
+  final int workspaceId;
   @override
   final String messagingAddress;
   @override
@@ -174,7 +190,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, messagingAddress: $messagingAddress, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, workspaceId: $workspaceId, messagingAddress: $messagingAddress, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -183,6 +199,8 @@ class _$UserImpl implements _User {
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId) &&
             (identical(other.messagingAddress, messagingAddress) ||
                 other.messagingAddress == messagingAddress) &&
             (identical(other.type, type) || other.type == type) &&
@@ -194,8 +212,8 @@ class _$UserImpl implements _User {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, messagingAddress, type, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, id, workspaceId,
+      messagingAddress, type, createdAt, updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -214,6 +232,7 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   const factory _User(
       {required final int id,
+      required final int workspaceId,
       required final String messagingAddress,
       required final String type,
       @TimestampSerializer() required final DateTime createdAt,
@@ -223,6 +242,8 @@ abstract class _User implements User {
 
   @override
   int get id;
+  @override
+  int get workspaceId;
   @override
   String get messagingAddress;
   @override

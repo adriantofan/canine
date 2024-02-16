@@ -8,6 +8,7 @@ part of 'user.dart';
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       id: json['id'] as int,
+      workspaceId: json['workspaceId'] as int,
       messagingAddress: json['messagingAddress'] as String,
       type: json['type'] as String,
       createdAt: const TimestampSerializer().fromJson(json['createdAt']),
@@ -17,6 +18,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'workspaceId': instance.workspaceId,
       'messagingAddress': instance.messagingAddress,
       'type': instance.type,
       'createdAt': const TimestampSerializer().toJson(instance.createdAt),
