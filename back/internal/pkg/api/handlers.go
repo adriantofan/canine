@@ -2,6 +2,7 @@ package api
 
 import (
 	genModel "back/.gen/canine/public/model"
+	apiModel "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
 	"back/internal/pkg/auth"
 	"back/internal/pkg/domain"
@@ -49,7 +50,7 @@ func (h ChatHandlers) GetUser(ctx *gin.Context) {
 	}{}
 	err := ctx.ShouldBindUri(&userRef)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, ErrorNotAuthorized)
+		ctx.JSON(http.StatusUnauthorized, apiModel.ErrorNotAuthorized)
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
@@ -232,7 +233,7 @@ func (h ChatHandlers) RTCStartSession(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+		c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
 		return
 	}
 
@@ -255,7 +256,7 @@ var upgrader = gorillaWebsocket.Upgrader{
 
 func (h ChatHandlers) RTCConnect(c *gin.Context) {
 	payload := struct {
-		Token string `json:"token"`
+		Token string `json:"sync_token" binding:"required"`
 	}{}
 
 	err := c.ShouldBind(&payload)
@@ -357,7 +358,7 @@ func (h ChatHandlers) RPC(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&msg)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
+		c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload", err.Error()))
 		return
 	}
 
@@ -367,7 +368,7 @@ func (h ChatHandlers) RPC(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid rpc message kind", err.Error()))
+	c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid rpc message kind", err.Error()))
 }
 
 func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user model.User, requestID string,
@@ -380,7 +381,7 @@ func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user mode
 
 	if err != nil {
 		log.Printf("error getting sync state: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorInternalServer)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, apiModel.ErrorInternalServer)
 		return
 	}
 
@@ -396,7 +397,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - limit", err.Error()))
+		c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload - limit", err.Error()))
 		return 0, nil, 0, false
 	}
 
@@ -407,7 +408,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 		id = new(int64)
 		*id, err = strconv.ParseInt(greaterThanStr, 10, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
+			c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload - greater_than", err.Error()))
 			return 0, nil, 0, false
 		}
 		direction = domain.DirectionForward
@@ -415,7 +416,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 		id = new(int64)
 		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, MakeError(ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
+			c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
 			return 0, nil, 0, false
 		}
 		direction = domain.DirectionBackward

@@ -74,7 +74,7 @@ class _TabHomeState extends State<TabHome> {
   Widget buildBody(BuildContext context) {
     return IndexedStack(
       index: selectedIndex,
-      children: [
+      children: const [
         ConversationsScreen(),
         SettingsScreen(),
       ],

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/state/ws.dart';
+import 'package:canine_sync/canine_sync.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -19,19 +19,21 @@ void main() {
       ]
     }""";
 
-    var msg = ServerMessage.fromJson(jsonDecode(jsontxt));
-    expect(msg, isA<ServerMessageMessages>());
+    var msg = APIServerMessage.fromJson(jsonDecode(jsontxt));
+    expect(msg, isA<APIServerMessageMessages>());
     switch (msg) {
-      case ServerMessageConversations():
+      case APIServerMessageConversations():
         print(msg);
-      case ServerMessageMessages():
+      case APIServerMessageMessages():
         takesM(msg);
-      case ServerMessageInvalid():
+      case APIServerMessageInvalid():
         print("Invalid");
+      default:
+        throw Exception("not tested");
     }
   });
 }
 
-void takesM(ServerMessageMessages msg) {
+void takesM(APIServerMessageMessages msg) {
   print(msg.data);
 }

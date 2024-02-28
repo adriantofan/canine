@@ -1,6 +1,7 @@
 package auth
 
 import (
+	apiInternal "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
 	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -98,6 +100,7 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 				WorkspaceID: workspaceID,
 			}
 		},
+
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			if data == nil {
 				return false
@@ -117,10 +120,16 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
-			})
+			switch code {
+			case http.StatusUnauthorized:
+				c.JSON(code, apiInternal.MakeError(apiInternal.ErrorCodeUnauthorized, message, ""))
+			case http.StatusForbidden:
+				c.JSON(code, apiInternal.MakeError(apiInternal.ErrorCodeForbidden, message, ""))
+			case http.StatusBadRequest:
+				c.JSON(code, apiInternal.MakeError(apiInternal.ErrorCodeInvalidRequest, message, ""))
+			default:
+				c.JSON(code, apiInternal.MakeError("", message, ""))
+			}
 		},
 		// TokenLookup is a string in the form of "<source>:<name>" that is used
 		// to extract token from the request.

@@ -9,6 +9,7 @@ void main() {
     final updatedAt = createdAt.add(const Duration(seconds: 1));
     final user = User(
         id: 1,
+        workspaceId: 1,
         messagingAddress: "adr",
         type: "t",
         createdAt: createdAt,

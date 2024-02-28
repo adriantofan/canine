@@ -8,6 +8,7 @@ abstract class Cache {
   List<Conversation> get conversations;
   List<Message> getConversationMessages(int conversationId);
   User? getUser(int userId);
+  Stream<User?> get userStream;
   Conversation? getConversation(int conversationId);
   Update? doUpdate(APIServerMessage message);
 }

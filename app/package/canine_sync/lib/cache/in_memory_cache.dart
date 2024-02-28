@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../models/model.dart';
 import '../ws/ws.dart';
 import 'cache.dart';
@@ -5,6 +7,9 @@ import 'fake_data.dart';
 
 // package internal
 class InMemoryCache implements Cache {
+  final _controller = StreamController<User?>.broadcast();
+  User? _user;
+
   @override
   List<Conversation> conversations = fakeConversationList;
   final Map<int, User> _usersById = fakeUsers;
@@ -29,5 +34,15 @@ class InMemoryCache implements Cache {
   @override
   Update? doUpdate(APIServerMessage message) {
     return null;
+  }
+
+  @override
+  Stream<User?> get userStream async* {
+    yield _user;
+    yield* _controller.stream;
+  }
+
+  void dispose() {
+    _controller.close();
   }
 }
