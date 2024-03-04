@@ -12,15 +12,14 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final SyncRepository _syncRepository;
 
-  LoginCubit(this._syncRepository)
-      : super(const LoginState.initial(Email.dirty('adrian@tofan.co')));
+  LoginCubit(this._syncRepository) : super(const LoginState.initial());
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
     emit(
       state.copyWith(
         email: email,
-        isValid: Formz.validate([email, state.password]),
+        isValid: Formz.validate([email, state.password, state.workspaceId]),
         status: FormzSubmissionStatus.initial,
       ),
     );
@@ -31,7 +30,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(
       state.copyWith(
         password: password,
-        isValid: Formz.validate([state.email, password]),
+        isValid: Formz.validate([state.email, password, state.workspaceId]),
         status: FormzSubmissionStatus.initial,
       ),
     );
@@ -42,7 +41,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(
       state.copyWith(
         workspaceId: workspaceId,
-        isValid: Formz.validate([state.workspaceId, workspaceId]),
+        isValid: Formz.validate([state.email, state.password, workspaceId]),
         status: FormzSubmissionStatus.initial,
       ),
     );

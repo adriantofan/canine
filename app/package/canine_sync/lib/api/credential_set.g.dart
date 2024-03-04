@@ -1,0 +1,23 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'credential_set.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$CredentialImpl _$$CredentialImplFromJson(Map<String, dynamic> json) =>
+    _$CredentialImpl(
+      identity: Identity.fromJson(json['identity'] as Map<String, dynamic>),
+      token: json['token'] as String?,
+      tokenExpiration: json['tokenExpiration'] == null
+          ? null
+          : DateTime.parse(json['tokenExpiration'] as String),
+    );
+
+Map<String, dynamic> _$$CredentialImplToJson(_$CredentialImpl instance) =>
+    <String, dynamic>{
+      'identity': instance.identity,
+      'token': instance.token,
+      'tokenExpiration': instance.tokenExpiration?.toIso8601String(),
+    };

@@ -91,6 +91,11 @@ class SyncSkeleton implements SyncWorker {
             // I could set the user on the cache
             .catchError((e) => sendPort.send(e));
         break;
+      case [SendPort sendPort, MsgLogout _]:
+        _apiClient
+            .logout()
+            .then((_) => sendPort.send(null))
+            .catchError((e) => sendPort.send(e));
       default:
         throw Exception('Unknown message type $parts');
     }

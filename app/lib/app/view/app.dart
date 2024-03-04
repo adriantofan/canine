@@ -1,10 +1,9 @@
-import 'package:app/app/bloc/app_bloc.dart';
-import 'package:app/repository/repository.dart';
-import 'package:canine_sync/canine_sync.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../repository/repository.dart';
+import '../bloc/app_bloc.dart';
 import '../routes/routes.dart';
 
 class MainApp extends StatelessWidget {
@@ -35,8 +34,8 @@ class MainAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(useMaterial3: true),
-      home: FlowBuilder<AuthenticationStatus>(
-        state: context.select((AppBloc bloc) => bloc.state.status),
+      home: FlowBuilder<AppState>(
+        state: context.select((AppBloc bloc) => bloc.state),
         onGeneratePages: onGenerateAppViewPages,
       ),
     );

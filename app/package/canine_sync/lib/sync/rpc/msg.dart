@@ -10,6 +10,8 @@ class MsgLogin extends Msg {
   MsgLogin(this.workspaceId, this.username, this.password);
 }
 
+class MsgLogout extends Msg {}
+
 class MsgAuthStatusSubscribe extends Msg {
   String key;
   MsgAuthStatusSubscribe(this.key);

@@ -5,7 +5,11 @@ import 'package:app/widgets/disappearing_navigation_rail.dart';
 import 'package:flutter/material.dart';
 
 class TabHome extends StatefulWidget {
-  const TabHome({Key? key}) : super(key: key);
+  const TabHome({super.key});
+
+  static Page<void> page() => const MaterialPage<void>(
+        child: TabHome(),
+      );
 
   @override
   State<TabHome> createState() => _TabHomeState();

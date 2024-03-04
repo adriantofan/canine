@@ -1,7 +1,8 @@
 part of 'app_bloc.dart';
 
 @freezed
-class AppEvent with _$AppEvent {
-  const factory AppEvent._statusChanged(AuthenticationStatus status) =
-      _StatusChanged;
+sealed class AppEvent with _$AppEvent {
+  const factory AppEvent.statusChanged(AuthenticationStatus status) =
+      StatusChanged;
+  const factory AppEvent.logout() = Logout;
 }

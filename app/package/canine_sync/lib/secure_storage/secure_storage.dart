@@ -1,6 +1,6 @@
-import '../api/credential.dart';
+import '../api/credential_set.dart';
 
 abstract class SecureStorage {
-  Future<Credential?> getCredentials();
-  Future<void> setCredentials(Credential? credential);
+  Future<CredentialSet?> getCredentials();
+  Future<void> setCredentials(CredentialSet? credential);
 }

@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import '../api/credential.dart';
+import '../api/credential_set.dart';
 import './secure_storage.dart';
 import 'msg_get_credential.dart';
 import 'msg_set_credential.dart';
@@ -10,7 +10,7 @@ class SecureStoragesStub implements SecureStorage {
   SecureStoragesStub(this._sendPort);
 
   @override
-  Future<Credential?> getCredentials() async {
+  Future<CredentialSet?> getCredentials() async {
     ReceivePort receivePort = ReceivePort();
     final msg = MsgGetCredential(receivePort.sendPort);
     _sendPort.send(msg);
@@ -18,14 +18,14 @@ class SecureStoragesStub implements SecureStorage {
     if (result is Exception) {
       throw result;
     }
-    if (result == null || result is Credential) {
+    if (result == null || result is CredentialSet) {
       return result;
     }
     throw Exception('Unexpected result: $result');
   }
 
   @override
-  Future<void> setCredentials(Credential? credential) async {
+  Future<void> setCredentials(CredentialSet? credential) async {
     ReceivePort receivePort = ReceivePort();
     final msg = MsgSetCredential(credential, receivePort.sendPort);
     _sendPort.send(msg);

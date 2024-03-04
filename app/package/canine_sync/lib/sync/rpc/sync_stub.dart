@@ -34,7 +34,7 @@ class SyncStub extends Sync {
       _sendPort.send([receivePort.sendPort, msg]);
     };
     controller.onCancel = () {
-      _sendPort.send(msg.unsubscribe());
+      _sendPort.send([msg.unsubscribe()]);
     };
 
     return controller.stream;
@@ -65,7 +65,7 @@ class SyncStub extends Sync {
     };
 
     controller.onCancel = () {
-      _sendPort.send(msg.unsubscribe());
+      _sendPort.send([msg.unsubscribe()]);
     };
 
     return controller.stream;
@@ -93,8 +93,21 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<void> logout() {
-    // TODO: implement logout
+  Future<void> logout() async {
+    ReceivePort receivePort = ReceivePort();
+    _sendPort.send([receivePort.sendPort, MsgLogout()]);
+    await for (var data in receivePort) {
+      if (data == null) {
+        return;
+      }
+
+      if (data is APIError) {
+        throw data;
+      }
+
+      throw ArgumentError.value(
+          data, "Invalid response from canine_sync on logout");
+    }
     throw UnimplementedError();
   }
 }

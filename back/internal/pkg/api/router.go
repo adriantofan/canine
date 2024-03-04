@@ -12,7 +12,7 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.POST("/workspaces", handlers.CreateWorkspace)
 	workspaceGroup := router.Group("/:workspace_id")
-	workspaceGroup.GET("/refresh_token", authMiddleware.RefreshHandler)
+	workspaceGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
 
 	workspaceGroup.Use(authMiddleware.MiddlewareFunc())
 

@@ -33,12 +33,14 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repository: %w", err)
 	}
-
+	log.Printf("Set JWT timeout and refresh")
 	return jwt.New(&jwt.GinJWTMiddleware{ //nolint:exhaustruct
-		Realm:       realm,
-		Key:         secretKey,
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
+		Realm:   realm,
+		Key:     secretKey,
+		Timeout: time.Minute,
+		// TODO: clients should be limited to generate tokens somehow
+		MaxRefresh: time.Minute, // the doc seems incorrect, because this is a absolute value, threshold for refresh
+		// independent on Timeout
 		IdentityKey: IdentityKey,
 		// Login step 1. checks password and returns user
 		Authenticator: func(c *gin.Context) (interface{}, error) {

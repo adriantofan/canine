@@ -5,6 +5,8 @@ import 'package:canine_sync/canine_sync.dart';
 
 import 'update_conversations_proc.dart';
 
+export 'package:canine_sync/canine_sync.dart';
+
 class SyncRepository {
   final Sync _sync;
 
@@ -18,4 +20,6 @@ class SyncRepository {
 
   Future<void> login(int workspaceId, String username, String password) =>
       _sync.login(workspaceId, username, password);
+
+  Future<void> logout() => _sync.logout();
 }
