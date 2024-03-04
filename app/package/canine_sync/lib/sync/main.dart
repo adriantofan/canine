@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:logging/logging.dart';
+
 import '../api/main.dart';
 import '../cache/in_memory_cache.dart';
 import '../secure_storage/secure_storage_skeleton.dart';
@@ -25,6 +27,12 @@ Future<Sync> start() async {
 }
 
 _runner(SendPort sendPort) async {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+  final logger = Logger('runner');
+
   ReceivePort receivePort = ReceivePort();
   final tmpReceivePort = ReceivePort();
 
@@ -46,8 +54,7 @@ _runner(SendPort sendPort) async {
     try {
       sync.onMsg(data);
     } catch (e) {
-      print('Error in onMsg: $e');
-      // TODO: should we crash the isolate here?
+      logger.severe('Error in onMsg', e);
     }
   });
   try {
@@ -55,5 +62,5 @@ _runner(SendPort sendPort) async {
   } finally {
     await cancelOnMsg.cancel();
   }
-  print("SyncSkeleton stopped");
+  logger.info('SyncSkeleton terminated');
 }

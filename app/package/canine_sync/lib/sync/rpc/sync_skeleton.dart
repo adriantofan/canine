@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -15,6 +16,7 @@ import 'msg.dart';
 
 class SyncSkeleton implements SyncWorker {
   final Cache _cache;
+  final Logger _logger = Logger('SyncSkeleton');
   final APIClient _apiClient;
   Map<String, Subscription> _procMap = {};
   final Map<String, (SendPort, StreamSubscription<AuthenticationStatus>)>
@@ -33,6 +35,7 @@ class SyncSkeleton implements SyncWorker {
         }
 
         var update = await _apiClient.rtcSession(const RtcRemote());
+        _logger.fine('Got rtc session $update');
         var channel = WebSocketChannel.connect(
             _apiClient.rtcConnectionUri(update.syncToken));
 
@@ -41,14 +44,11 @@ class SyncSkeleton implements SyncWorker {
         await for (var data
             in channel.stream.takeUntil(_stopController.stream)) {
           var msg = APIServerMessage.fromJson(jsonDecode(data));
-          if (msg is APIServerMessageSyncCompleted) {
-          } else {
-            onUpdate(msg);
-          }
+          onUpdate(msg);
         }
       } on Object catch (e) {
         await Future.delayed(Duration(seconds: 3));
-        print(e);
+        _logger.fine('Retrying websocket connection', e);
 
         // Todo: add exponential backoff
         // TODO: what is going to happen with ongoing procs ?

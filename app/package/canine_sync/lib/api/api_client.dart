@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 import '../constants/constants.dart';
 import '../models/api_error.dart';
@@ -16,6 +17,7 @@ import 'credential_set.dart';
 class APIClient {
   final _apiBase = 'http://localhost:8080';
   final _wsBase = 'ws://localhost:8080';
+  final _logger = Logger('APIClient');
   CredentialSet? _credential;
   final SecureStorage _secureStorage;
   APIClient(this._secureStorage);
@@ -35,7 +37,7 @@ class APIClient {
   Future<void> init() async {
     final credential = await _secureStorage.getCredentials();
     if (credential == null) {
-      print('No credential found in storage');
+      _logger.config('No credential found in storage');
       _authStatus = AuthenticationStatus.unauthenticated(null);
       _controller.add(_authStatus);
       return;
@@ -55,7 +57,7 @@ class APIClient {
       _authStatus = AuthenticationStatus.unauthenticated(credential.identity);
     }
     _controller.add(_authStatus);
-    print(
+    _logger.config(
         'Credential loaded from storage: $_workspaceId/$_userId expiration ${credential.tokenExpiration}');
   }
 
@@ -67,7 +69,7 @@ class APIClient {
       try {
         await refreshToken();
       } catch (e) {
-        print('Periodic token refresh failed: $e');
+        _logger.fine('Periodic token refresh failed: $e');
         //
       }
     }
@@ -86,7 +88,7 @@ class APIClient {
   Future<void> updateCredential(CredentialSet? credential) async {
     _credential = credential;
     await _secureStorage.setCredentials(credential);
-    print(
+    _logger.fine(
         'Credential updated in storage: $_workspaceId/$_userId expiration ${credential?.tokenExpiration}');
   }
 
@@ -137,8 +139,9 @@ class APIClient {
       } on APIError catch (e) {
         if (e.code == kServerUnauthorized || e.code == kServerInvalidRequest) {
           if (e.code == kServerInvalidRequest) {
-            print(
-                'Invalid request during token refresh - this is a bug in the client');
+            _logger.severe(
+                'Invalid request during token refresh - this is a bug in the client',
+                e);
           }
           _authStatus =
               AuthenticationStatus.unauthenticated(_credential?.identity);
@@ -158,7 +161,7 @@ class APIClient {
     try {
       return await _postJSON(path, body, skipRefresh: skipRefresh);
     } catch (e) {
-      print('Error POST $path: $e');
+      _logger.fine('Error POST $path: $e');
       rethrow;
     }
   }
@@ -202,7 +205,7 @@ class APIClient {
     try {
       decoded = jsonDecode(response.body);
     } catch (e) {
-      print(response.body);
+      _logger.finer('Invalid response: ${response.body}', e);
       throw APIError.invalidResponse(e.toString());
     }
 
