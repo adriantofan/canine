@@ -134,7 +134,7 @@ func (s *Service) GetRTCRemoteUpdate(
 	if err != nil {
 		return serverState, fmt.Errorf("GetRTCRemoteUpdate get sync state: %w", err)
 	}
-
+	serverState.SyncToken = marker.MarkerHash
 	return serverState, nil
 }
 

@@ -7,12 +7,12 @@ part of 'range.dart';
 // **************************************************************************
 
 _$RangeImpl _$$RangeImplFromJson(Map<String, dynamic> json) => _$RangeImpl(
-      firstId: json['firstId'] as int,
-      lastId: json['lastId'] as int,
+      firstId: json['first_id'] as int,
+      lastId: json['last_id'] as int,
     );
 
 Map<String, dynamic> _$$RangeImplToJson(_$RangeImpl instance) =>
     <String, dynamic>{
-      'firstId': instance.firstId,
-      'lastId': instance.lastId,
+      'first_id': instance.firstId,
+      'last_id': instance.lastId,
     };

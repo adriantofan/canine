@@ -100,7 +100,7 @@ class APIClient {
 
   Uri rtcConnectionUri(String syncToken) {
     return Uri.parse(
-        '$_wsBase/$_workspaceId/users/$_userId/rtc/connect?syncToken=$syncToken&token=$_token');
+        '$_wsBase/$_workspaceId/users/$_userId/rtc/connect?sync_token=$syncToken&token=$_token');
   }
 
   Future<void> login(int workspaceId, String username, String password) async {
@@ -169,7 +169,7 @@ class APIClient {
   Future<void> _refreshTokenIfNeeded() async {
     if (_credential != null &&
         _credential!.tokenExpiration != null &&
-        _credential!.tokenExpiration!.isAfter(
+        _credential!.tokenExpiration!.isBefore(
             DateTime.now().subtract(Constants.api.tokenRefreshThreshold))) {
       await refreshToken();
     }

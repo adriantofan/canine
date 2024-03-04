@@ -256,10 +256,10 @@ var upgrader = gorillaWebsocket.Upgrader{
 
 func (h ChatHandlers) RTCConnect(c *gin.Context) {
 	payload := struct {
-		Token string `json:"sync_token" binding:"required"`
+		SyncToken string `form:"sync_token" json:"sync_token" binding:"required"`
 	}{}
 
-	err := c.ShouldBind(&payload)
+	err := c.ShouldBindQuery(&payload)
 	if err != nil {
 		abortBadRequest(c, err)
 		return
@@ -319,7 +319,7 @@ func (h ChatHandlers) RTCConnect(c *gin.Context) {
 		     - shutdown server side
 		     - eventlog initiate stop
 	*/
-	stopStream, clientEventLog := h.input.StreamEvents(identity.WorkspaceID, identity.UserID, mask, payload.Token)
+	stopStream, clientEventLog := h.input.StreamEvents(identity.WorkspaceID, identity.UserID, mask, payload.SyncToken)
 
 	clientOutChan := buffer.Buffer(clientEventLog)
 	clientDoneChan := make(chan struct{})

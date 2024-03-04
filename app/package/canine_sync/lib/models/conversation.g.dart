@@ -9,17 +9,17 @@ part of 'conversation.dart';
 _$ConversationImpl _$$ConversationImplFromJson(Map<String, dynamic> json) =>
     _$ConversationImpl(
       id: json['id'] as int,
-      externalUserId: json['externalUserId'] as int,
+      externalUserId: json['external_user_id'] as int,
       name: json['name'] as String,
-      createdAt: const TimestampSerializer().fromJson(json['createdAt']),
-      updatedAt: const TimestampSerializer().fromJson(json['updatedAt']),
+      createdAt: const TimestampSerializer().fromJson(json['created_at']),
+      updatedAt: const TimestampSerializer().fromJson(json['updated_at']),
     );
 
 Map<String, dynamic> _$$ConversationImplToJson(_$ConversationImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'externalUserId': instance.externalUserId,
+      'external_user_id': instance.externalUserId,
       'name': instance.name,
-      'createdAt': const TimestampSerializer().toJson(instance.createdAt),
-      'updatedAt': const TimestampSerializer().toJson(instance.updatedAt),
+      'created_at': const TimestampSerializer().toJson(instance.createdAt),
+      'updated_at': const TimestampSerializer().toJson(instance.updatedAt),
     };

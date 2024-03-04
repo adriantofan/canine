@@ -1,20 +1,32 @@
-import 'dart:async';
-
 import '../models/model.dart';
-import '../ws/ws.dart';
+import '../models/rtc_remote_update.dart';
+import '../ws/model/api_server_message.dart';
 import 'cache.dart';
-import 'fake_data.dart';
 
 // package internal
 class InMemoryCache implements Cache {
-  final _controller = StreamController<User?>.broadcast();
   User? _user;
 
   @override
-  List<Conversation> conversations = fakeConversationList;
-  final Map<int, User> _usersById = fakeUsers;
+  List<Conversation> conversations = [];
+  Map<int, User> _usersById = {};
+  Map<int, List<Message>> conversationMessages = {};
 
-  Map<int, List<Message>> conversationMessages = fakeMessages;
+  @override
+  void reset() {
+    _user = null;
+    conversations = [];
+    _usersById = {};
+    conversationMessages = {};
+  }
+
+  @override
+  void init(RTCRemoteUpdate updates) {
+    conversations = updates.conversations;
+    _usersById = Map.fromEntries(updates.users.map((u) => MapEntry(u.id, u)));
+    conversationMessages = Map.fromEntries(
+        updates.messages.map((m) => MapEntry(m.conversationId, m.messages)));
+  }
 
   @override
   List<Message> getConversationMessages(int conversationId) {
@@ -34,15 +46,5 @@ class InMemoryCache implements Cache {
   @override
   Update? doUpdate(APIServerMessage message) {
     return null;
-  }
-
-  @override
-  Stream<User?> get userStream async* {
-    yield _user;
-    yield* _controller.stream;
-  }
-
-  void dispose() {
-    _controller.close();
   }
 }

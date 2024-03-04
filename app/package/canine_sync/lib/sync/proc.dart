@@ -1,7 +1,8 @@
 import '../cache/cache.dart';
 
 abstract class Proc<R> {
-  R? update(Update? changes, Cache cache);
+  R? update(Update changes, Cache cache);
+  R? init(Cache cache);
 }
 
 // ProcRef is passed over an isolate boundary to the Sync service where it is

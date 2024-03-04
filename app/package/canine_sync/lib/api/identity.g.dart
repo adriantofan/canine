@@ -8,14 +8,14 @@ part of 'identity.dart';
 
 _$IdentityImpl _$$IdentityImplFromJson(Map<String, dynamic> json) =>
     _$IdentityImpl(
-      userId: json['userId'] as int,
-      workspaceId: json['workspaceId'] as int,
+      userId: json['user_id'] as int,
+      workspaceId: json['workspace_id'] as int,
       username: json['username'] as String,
     );
 
 Map<String, dynamic> _$$IdentityImplToJson(_$IdentityImpl instance) =>
     <String, dynamic>{
-      'userId': instance.userId,
-      'workspaceId': instance.workspaceId,
+      'user_id': instance.userId,
+      'workspace_id': instance.workspaceId,
       'username': instance.username,
     };

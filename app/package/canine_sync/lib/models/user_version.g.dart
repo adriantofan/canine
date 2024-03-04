@@ -9,11 +9,11 @@ part of 'user_version.dart';
 _$UserVersionImpl _$$UserVersionImplFromJson(Map<String, dynamic> json) =>
     _$UserVersionImpl(
       maxUpdateTime:
-          const TimestampSerializer().fromJson(json['maxUpdateTime']),
+          const TimestampSerializer().fromJson(json['max_update_time']),
     );
 
 Map<String, dynamic> _$$UserVersionImplToJson(_$UserVersionImpl instance) =>
     <String, dynamic>{
-      'maxUpdateTime':
+      'max_update_time':
           const TimestampSerializer().toJson(instance.maxUpdateTime),
     };

@@ -18,7 +18,7 @@ _$RTCRemoteUpdateImpl _$$RTCRemoteUpdateImplFromJson(
       users: (json['users'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
-      syncToken: json['syncToken'] as String,
+      syncToken: json['sync_token'] as String,
     );
 
 Map<String, dynamic> _$$RTCRemoteUpdateImplToJson(
@@ -27,5 +27,5 @@ Map<String, dynamic> _$$RTCRemoteUpdateImplToJson(
       'conversations': instance.conversations,
       'messages': instance.messages,
       'users': instance.users,
-      'syncToken': instance.syncToken,
+      'sync_token': instance.syncToken,
     };

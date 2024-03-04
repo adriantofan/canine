@@ -29,7 +29,13 @@ Future<Sync> start() async {
 _runner(SendPort sendPort) async {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
+    if (record.error != null || record.stackTrace != null) {
+      print(
+          '${record.level.name}: ${record.time}: ${record.loggerName}: ❗️${record.message} ${record.error} ${record.stackTrace}');
+    } else {
+      print(
+          '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+    }
   });
   final logger = Logger('runner');
 

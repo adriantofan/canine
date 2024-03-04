@@ -9,19 +9,19 @@ part of 'message.dart';
 _$MessageImpl _$$MessageImplFromJson(Map<String, dynamic> json) =>
     _$MessageImpl(
       id: json['id'] as int,
-      conversationId: json['conversationId'] as int,
-      senderId: json['senderId'] as int,
+      conversationId: json['conversation_id'] as int,
+      senderId: json['sender_id'] as int,
       message: json['message'] as String,
       type: json['type'] as String,
-      createdAt: const TimestampSerializer().fromJson(json['createdAt']),
+      createdAt: const TimestampSerializer().fromJson(json['created_at']),
     );
 
 Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'conversationId': instance.conversationId,
-      'senderId': instance.senderId,
+      'conversation_id': instance.conversationId,
+      'sender_id': instance.senderId,
       'message': instance.message,
       'type': instance.type,
-      'createdAt': const TimestampSerializer().toJson(instance.createdAt),
+      'created_at': const TimestampSerializer().toJson(instance.createdAt),
     };

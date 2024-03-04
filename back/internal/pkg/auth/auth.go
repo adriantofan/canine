@@ -37,9 +37,9 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 	return jwt.New(&jwt.GinJWTMiddleware{ //nolint:exhaustruct
 		Realm:   realm,
 		Key:     secretKey,
-		Timeout: time.Minute,
+		Timeout: time.Hour * 24,
 		// TODO: clients should be limited to generate tokens somehow
-		MaxRefresh: time.Minute, // the doc seems incorrect, because this is a absolute value, threshold for refresh
+		MaxRefresh: time.Hour * 24, // the doc seems incorrect, because this is a absolute value, threshold for refresh
 		// independent on Timeout
 		IdentityKey: IdentityKey,
 		// Login step 1. checks password and returns user

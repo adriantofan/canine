@@ -1,4 +1,5 @@
 import 'package:canine_sync/canine_sync.dart';
+import 'package:logging/logging.dart';
 
 import '../conversations/model/conversation_info.dart';
 
@@ -11,11 +12,19 @@ class UpdateConversationsProcRef
 }
 
 class UpdateConversationsProc extends Proc<ListChange<ConversationInfo, int>> {
+  final _log = Logger('UpdateConversationsProc');
+
   @override
-  ListChange<ConversationInfo, int>? update(Update? changes, Cache cache) {
+  ListChange<ConversationInfo, int>? init(Cache cache) {
+    return _prev = bootstrap(cache);
+  }
+
+  @override
+  ListChange<ConversationInfo, int>? update(Update changes, Cache cache) {
     if (_prev == null) {
       return _prev = bootstrap(cache);
     }
+    _log.warning("UpdateConversationsProc.update: 🟡UNIMPLEMENTED $changes");
     return null;
   }
 
@@ -39,6 +48,7 @@ class UpdateConversationsProc extends Proc<ListChange<ConversationInfo, int>> {
     final conversations = cache.conversations;
     final conversationItems = conversations
         .map((c) => makeConversationItem(c.id, cache))
+        .nonNulls
         .toList()
       ..sort(ConversationInfo.compareByLastMessageTime);
     return ListChange([], [], [], conversationItems);
@@ -52,7 +62,14 @@ ListChange<ConversationInfo, int> userUpdate(
   List<int> changedConversationIDs = [];
   for (var i = 0; i < prev.length; i++) {
     if (changedUserIds.contains(prev[i].userId)) {
-      prev[i] = conversationItemBuilder(cache)(prev[i].conversationId);
+      final newConversationItem =
+          conversationItemBuilder(cache)(prev[i].conversationId);
+      if (newConversationItem == null) {
+        print(
+            "userUpdate: conversationItemBuilder returned null for conversationId ${prev[i].conversationId}");
+        continue;
+      }
+      prev[i] = newConversationItem;
       changedConversationIDs.add(prev[i].conversationId);
     }
   }
@@ -72,7 +89,7 @@ ListChange<ConversationInfo, int> conversationUpdate(
   var addedOrUpdated = [
     ...update.changes.addedItems,
     ...update.changes.updatedItems
-  ].map(conversationItemBuilder(cache)).toList()
+  ].map(conversationItemBuilder(cache)).nonNulls.toList()
     ..sort(ConversationInfo.compareByLastMessageTime);
 
   var deletedIDs = Set.from(update.changes.removedItems);
@@ -120,14 +137,18 @@ ListChange<ConversationInfo, int> conversationUpdate(
       update.changes.updatedItems, items);
 }
 
-ConversationInfo Function(int) conversationItemBuilder(Cache cache) =>
+ConversationInfo? Function(int) conversationItemBuilder(Cache cache) =>
     (int conversationId) => makeConversationItem(conversationId, cache);
 
-ConversationInfo makeConversationItem(int conversationId, Cache cache) {
+ConversationInfo? makeConversationItem(int conversationId, Cache cache) {
   // TODO: can have conversation without messages ? at sync start, depends on implementation
   final conversation = cache.getConversation(conversationId)!;
   final user = cache.getUser(conversation.externalUserId)!;
-  final lastMessage = cache.getConversationMessages(conversationId).last;
+  final messages = cache.getConversationMessages(conversationId);
+  if (messages.isEmpty) {
+    return null;
+  }
+  final lastMessage = messages.last;
   // Fixme: assumes consistent db. All required info is there.
   // How to deal with inconsistencies?
 
