@@ -20,7 +20,8 @@ class SyncSkeleton implements SyncWorker {
   final Map<String, (SendPort, StreamSubscription<AuthenticationStatus>)>
       _authStatusSubs = {};
 
-  final StreamController<void> _stopController = StreamController<void>();
+  final StreamController<void> _stopController =
+      StreamController<void>.broadcast();
 
   SyncSkeleton(this._cache, this._apiClient);
   websocketListen() async {
@@ -72,31 +73,26 @@ class SyncSkeleton implements SyncWorker {
         if (initial != null) {
           sendPort.send(initial);
         }
-        break;
       case [MsgUnsubscribeProc unsubscribe]:
         final sub = _procMap[unsubscribe.key]!;
         sub.sendPort.send(MsgUnsubscribeProcAck(unsubscribe.key));
         _procMap.remove(unsubscribe.key);
-        break;
       case [SendPort sendPort, MsgAuthStatusSubscribe subscribe]:
         final sub = _apiClient.authStatus.listen((status) {
           sendPort.send(MsgAuthStatusUpdate(status));
         });
         _authStatusSubs[subscribe.key] = (sendPort, sub);
-        break;
       case [MsgAuthStatusUnsubscribe unsubscribe]:
         final sub = _authStatusSubs[unsubscribe.key]!;
         sub.$2.cancel();
         sub.$1.send(MsgAuthStatusUnsubscribeAck());
         _authStatusSubs.remove(unsubscribe.key);
-        break;
       case [SendPort sendPort, MsgLogin login]:
         _apiClient
             .login(login.workspaceId, login.username, login.password)
             .then((_) => sendPort.send(null))
             // I could set the user on the cache
             .catchError((e) => sendPort.send(e));
-        break;
       case [SendPort sendPort, MsgLogout _]:
         _stopController.add(null);
         _apiClient
