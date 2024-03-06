@@ -1,7 +1,6 @@
 import 'package:app/conversations/bloc/selection.dart';
 import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/repository/repository.dart';
-import 'package:canine_sync/canine_sync.dart';
 
 final class ConversationsState {
   final List<ConversationInfo> conversations;

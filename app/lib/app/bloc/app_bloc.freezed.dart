@@ -80,8 +80,6 @@ abstract class _$$StatusChangedImplCopyWith<$Res> {
       __$$StatusChangedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AuthenticationStatus status});
-
-  $AuthenticationStatusCopyWith<$Res> get status;
 }
 
 /// @nodoc
@@ -95,22 +93,14 @@ class __$$StatusChangedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
+    Object? status = freezed,
   }) {
     return _then(_$StatusChangedImpl(
-      null == status
+      freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as AuthenticationStatus,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $AuthenticationStatusCopyWith<$Res> get status {
-    return $AuthenticationStatusCopyWith<$Res>(_value.status, (value) {
-      return _then(_value.copyWith(status: value));
-    });
   }
 }
 
@@ -132,11 +122,12 @@ class _$StatusChangedImpl implements StatusChanged {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$StatusChangedImpl &&
-            (identical(other.status, status) || other.status == status));
+            const DeepCollectionEquality().equals(other.status, status));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(status));
 
   @JsonKey(ignore: true)
   @override
@@ -661,8 +652,6 @@ abstract class _$$LoginImplCopyWith<$Res> {
       __$$LoginImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
 }
 
 /// @nodoc
@@ -676,22 +665,14 @@ class __$$LoginImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? identity = freezed,
   }) {
     return _then(_$LoginImpl(
-      null == identity
+      freezed == identity
           ? _value.identity
           : identity // ignore: cast_nullable_to_non_nullable
               as Identity,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
@@ -713,12 +694,12 @@ class _$LoginImpl implements Login {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            const DeepCollectionEquality().equals(other.identity, identity));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(identity));
 
   @JsonKey(ignore: true)
   @override
@@ -829,8 +810,6 @@ abstract class _$$RunningImplCopyWith<$Res> {
       __$$RunningImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
 }
 
 /// @nodoc
@@ -844,22 +823,14 @@ class __$$RunningImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? identity = freezed,
   }) {
     return _then(_$RunningImpl(
-      null == identity
+      freezed == identity
           ? _value.identity
           : identity // ignore: cast_nullable_to_non_nullable
               as Identity,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
@@ -881,12 +852,12 @@ class _$RunningImpl implements Running {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RunningImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            const DeepCollectionEquality().equals(other.identity, identity));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(identity));
 
   @JsonKey(ignore: true)
   @override
@@ -997,8 +968,6 @@ abstract class _$$RunningRefreshImplCopyWith<$Res> {
       __$$RunningRefreshImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
 }
 
 /// @nodoc
@@ -1012,22 +981,14 @@ class __$$RunningRefreshImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? identity = freezed,
   }) {
     return _then(_$RunningRefreshImpl(
-      null == identity
+      freezed == identity
           ? _value.identity
           : identity // ignore: cast_nullable_to_non_nullable
               as Identity,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
@@ -1049,12 +1010,12 @@ class _$RunningRefreshImpl implements RunningRefresh {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RunningRefreshImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            const DeepCollectionEquality().equals(other.identity, identity));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(identity));
 
   @JsonKey(ignore: true)
   @override

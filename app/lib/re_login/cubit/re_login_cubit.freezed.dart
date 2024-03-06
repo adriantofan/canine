@@ -77,8 +77,6 @@ abstract class $ReLoginStateCopyWith<$Res> {
       FormzSubmissionStatus status,
       bool isValid,
       String? errorMessage});
-
-  $IdentityCopyWith<$Res>? get identity;
 }
 
 /// @nodoc
@@ -123,18 +121,6 @@ class _$ReLoginStateCopyWithImpl<$Res, $Val extends ReLoginState>
               as String?,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res>? get identity {
-    if (_value.identity == null) {
-      return null;
-    }
-
-    return $IdentityCopyWith<$Res>(_value.identity!, (value) {
-      return _then(_value.copyWith(identity: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -151,9 +137,6 @@ abstract class _$$ReLoginStateInitialImplCopyWith<$Res>
       FormzSubmissionStatus status,
       bool isValid,
       String? errorMessage});
-
-  @override
-  $IdentityCopyWith<$Res>? get identity;
 }
 
 /// @nodoc
@@ -233,8 +216,7 @@ class _$ReLoginStateInitialImpl implements _ReLoginStateInitial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ReLoginStateInitialImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity) &&
+            const DeepCollectionEquality().equals(other.identity, identity) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.status, status) || other.status == status) &&
@@ -245,7 +227,12 @@ class _$ReLoginStateInitialImpl implements _ReLoginStateInitial {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, identity, password, status, isValid, errorMessage);
+      runtimeType,
+      const DeepCollectionEquality().hash(identity),
+      password,
+      status,
+      isValid,
+      errorMessage);
 
   @JsonKey(ignore: true)
   @override

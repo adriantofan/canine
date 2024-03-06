@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:app/conversations/model/conversation_info.dart';
+import 'package:app/repository/update_messages_proc.dart';
 import 'package:canine_sync/canine_sync.dart';
 
+import '../messages/messages.dart';
 import 'update_conversations_proc.dart';
 
 export 'package:canine_sync/canine_sync.dart';
@@ -14,6 +16,10 @@ class SyncRepository {
 
   Stream<ListChange<ConversationInfo, int>> conversations() {
     return _sync.addProcRef(UpdateConversationsProcRef());
+  }
+
+  Stream<ListChange<ChatMessage, int>> chatMessages(int conversationId) {
+    return _sync.addProcRef(UpdateMessagesProcRef(conversationId));
   }
 
   Stream<AuthenticationStatus> get authStatus => _sync.authStatus;

@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import '../conversations/model/conversation_info.dart';
 
 class UpdateConversationsProcRef
-    extends ProcBuilder<ListChange<ConversationInfo, int>> {
+    implements ProcBuilder<ListChange<ConversationInfo, int>> {
   @override
   Proc<ListChange<ConversationInfo, int>> build() {
     return UpdateConversationsProc();

@@ -5,7 +5,7 @@ import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'chat_widget.dart';
+import '../messages/messages.dart';
 
 class ConversationsScreen extends StatelessWidget {
   const ConversationsScreen({super.key});
@@ -27,10 +27,8 @@ class ConversationsScreen extends StatelessWidget {
                   return;
                 }
 
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                  return ChatWidget(
-                      state.conversations[state.currentSelection!.listIndex]);
-                }));
+                Navigator.of(context).push(MessagesPage.page(
+                    state.conversations[state.currentSelection!.listIndex]));
               },
               builder: (context, state) {
                 if (constraints.maxWidth > 600) {
@@ -52,7 +50,7 @@ class ConversationsScreen extends StatelessWidget {
                                     child: Text('Select a conversation'),
                                   ),
                                 )
-                              : ChatWidget(state.conversations[
+                              : MessagesPage(state.conversations[
                                   state.currentSelection!.listIndex])),
                     ],
                   );

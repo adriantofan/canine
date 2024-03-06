@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '../../util/avatar.dart';
+
 class ConversationInfo {
   final int conversationId;
   final String name;
@@ -16,7 +18,7 @@ class ConversationInfo {
     required this.userId,
     required this.lastMessageTime,
     required this.lastMessage,
-  }) : avatarInitials = _getAvatarInitials(name);
+  }) : avatarInitials = getAvatarInitials(name);
 
   static int compareById(ConversationInfo a, ConversationInfo b) {
     final byID = a.conversationId.compareTo(b.conversationId);
@@ -33,20 +35,4 @@ class ConversationInfo {
     }
     return byTime;
   }
-}
-
-String _getAvatarInitials(String name) {
-  if (name.isEmpty) {
-    return "";
-  }
-  List<String> names = name.split(" ");
-  String initials = "";
-  int numWords = 2;
-  if (names.length < 2) {
-    numWords = names.length;
-  }
-  for (int i = 0; i < numWords; i++) {
-    initials += names[i][0];
-  }
-  return initials;
 }
