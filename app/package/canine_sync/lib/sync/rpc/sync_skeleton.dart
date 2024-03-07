@@ -64,44 +64,41 @@ class SyncSkeleton implements SyncWorker {
   }
 
   @override
-  onMsg(List<dynamic> parts) {
-    switch (parts) {
-      case [SendPort sendPort, MsgSubscribeProc subscribe]:
-        final newSub = Subscription.fromMsg(subscribe, sendPort);
-        _procMap[subscribe.key] = newSub;
+  onMsg(Msg msg) {
+    switch (msg) {
+      case MsgSubscribeProc():
+        final newSub = Subscription.fromMsg(msg, msg.sendPort);
+        _procMap[msg.key] = newSub;
         final initial = newSub.proc.init(_cache); // send initial state
         if (initial != null) {
-          sendPort.send(initial);
+          msg.sendPort.send(initial);
         }
-      case [MsgUnsubscribeProc unsubscribe]:
-        final sub = _procMap[unsubscribe.key]!;
-        sub.sendPort.send(MsgUnsubscribeProcAck(unsubscribe.key));
-        _procMap.remove(unsubscribe.key);
-      case [SendPort sendPort, MsgAuthStatusSubscribe subscribe]:
+      case MsgUnsubscribeProc():
+        final sub = _procMap[msg.key]!;
+        sub.sendPort.send(MsgOutUnsubscribeAck());
+        _procMap.remove(msg.key);
+      case MsgAuthStatusSubscribe():
         final sub = _apiClient.authStatus.listen((status) {
-          sendPort.send(MsgAuthStatusUpdate(status));
+          msg.sendPort.send(status);
         });
-        _authStatusSubs[subscribe.key] = (sendPort, sub);
-      case [MsgAuthStatusUnsubscribe unsubscribe]:
-        final sub = _authStatusSubs[unsubscribe.key]!;
+        _authStatusSubs[msg.key] = (msg.sendPort, sub);
+      case MsgAuthStatusUnsubscribe():
+        final sub = _authStatusSubs[msg.key]!;
         sub.$2.cancel();
-        sub.$1.send(MsgAuthStatusUnsubscribeAck());
-        _authStatusSubs.remove(unsubscribe.key);
-      case [SendPort sendPort, MsgLogin login]:
+        sub.$1.send(MsgOutUnsubscribeAck());
+        _authStatusSubs.remove(msg.key);
+      case MsgLogin():
         _apiClient
-            .login(login.workspaceId, login.username, login.password)
-            .then((_) => sendPort.send(null))
+            .login(msg.workspaceId, msg.username, msg.password)
+            .then((_) => msg.sendPort.send(null))
             // I could set the user on the cache
-            .catchError((e) => sendPort.send(e));
-      case [SendPort sendPort, MsgLogout _]:
+            .catchError((e) => msg.sendPort.send(e));
+      case MsgLogout():
         _stopController.add(null);
         _apiClient
             .logout()
-            .then((_) => sendPort.send(null))
-            .catchError((e) => sendPort.send(e));
-
-      default:
-        throw Exception('Unknown message type $parts');
+            .then((_) => msg.sendPort.send(null))
+            .catchError((e) => msg.sendPort.send(e));
     }
   }
 

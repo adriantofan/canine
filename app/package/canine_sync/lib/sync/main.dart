@@ -6,6 +6,7 @@ import '../api/main.dart';
 import '../cache/in_memory_cache.dart';
 import '../secure_storage/secure_storage_skeleton.dart';
 import '../secure_storage/secure_storages_stub.dart';
+import 'rpc/msg.dart';
 import 'rpc/sync_skeleton.dart';
 import 'rpc/sync_stub.dart';
 import 'sync.dart';
@@ -58,7 +59,8 @@ _runner(SendPort sendPort) async {
     // running in the same isolate, so onMsg and onUpdate are not running
     // concurrently with each other (they are synchronized by the event loop)
     try {
-      sync.onMsg(data);
+      final msg = data as Msg;
+      sync.onMsg(msg);
     } catch (e) {
       logger.severe('Error in onMsg', e);
     }

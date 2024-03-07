@@ -17,13 +17,13 @@ class SyncStub extends Sync {
 
   Stream<R> addProc<R>(ProcBuilder<R> procBuilder) {
     StreamController<R> controller = StreamController();
-    MsgSubscribeProc msg = MsgSubscribeProc(procBuilder, uuid.v4());
     ReceivePort receivePort = ReceivePort();
+    String msgKey = uuid.v4();
     StreamSubscription? streamSubscription;
 
     controller.onListen = () {
       streamSubscription = receivePort.listen((data) {
-        if (data is MsgUnsubscribeProcAck) {
+        if (data is MsgOutUnsubscribeAck) {
           controller.close();
           streamSubscription!.cancel();
         }
@@ -31,10 +31,11 @@ class SyncStub extends Sync {
           controller.add(data);
         }
       });
-      _sendPort.send([receivePort.sendPort, msg]);
+      _sendPort
+          .send(Msg.subscribeProc(receivePort.sendPort, procBuilder, msgKey));
     };
     controller.onCancel = () {
-      _sendPort.send([msg.unsubscribe()]);
+      _sendPort.send(Msg.unsubscribeProc(msgKey));
     };
 
     return controller.stream;
@@ -48,24 +49,28 @@ class SyncStub extends Sync {
   @override
   Stream<AuthenticationStatus> get authStatus {
     StreamController<AuthenticationStatus> controller = StreamController();
-    MsgAuthStatusSubscribe msg = MsgAuthStatusSubscribe(uuid.v4());
+    final key = uuid.v4();
     ReceivePort receivePort = ReceivePort();
     StreamSubscription? streamSubscription;
     controller.onListen = () {
       streamSubscription = receivePort.listen((data) {
-        if (data is MsgAuthStatusUnsubscribeAck) {
+        if (data is MsgOutUnsubscribeAck) {
           controller.close();
           streamSubscription!.cancel();
+          return;
         }
-        if (data is MsgAuthStatusUpdate) {
-          controller.add(data.status);
+        if (data is AuthenticationStatus) {
+          controller.add(data);
+          return;
         }
+        throw ArgumentError.value(
+            data, "Invalid response from canine_sync on authStatus");
       });
-      _sendPort.send([receivePort.sendPort, msg]);
+      _sendPort.send(Msg.authStatusSubscribe(receivePort.sendPort, key));
     };
 
     controller.onCancel = () {
-      _sendPort.send([msg.unsubscribe()]);
+      _sendPort.send(Msg.authStatusUnsubscribe(key));
     };
 
     return controller.stream;
@@ -74,8 +79,8 @@ class SyncStub extends Sync {
   @override
   Future<void> login(int workspaceId, String username, String password) async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(
-        [receivePort.sendPort, MsgLogin(workspaceId, username, password)]);
+    _sendPort
+        .send(Msg.login(receivePort.sendPort, workspaceId, username, password));
     await for (var data in receivePort) {
       if (data == null) {
         return;
@@ -95,7 +100,7 @@ class SyncStub extends Sync {
   @override
   Future<void> logout() async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send([receivePort.sendPort, MsgLogout()]);
+    _sendPort.send(Msg.logout(receivePort.sendPort));
     await for (var data in receivePort) {
       if (data == null) {
         return;

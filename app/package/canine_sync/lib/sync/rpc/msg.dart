@@ -1,53 +1,27 @@
+import 'dart:isolate';
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../api/main.dart';
 import '../proc.dart';
 
-class Msg {}
+part 'msg.freezed.dart';
 
-class MsgLogin extends Msg {
-  final int workspaceId;
-  final String username;
-  final String password;
-  MsgLogin(this.workspaceId, this.username, this.password);
+@freezed
+sealed class Msg {
+  const factory Msg.login(SendPort sendPort, int workspaceId, String username,
+      String password) = MsgLogin;
+  const factory Msg.logout(SendPort sendPort) = MsgLogout;
+  const factory Msg.authStatusSubscribe(SendPort sendPort, String key) =
+      MsgAuthStatusSubscribe;
+  const factory Msg.authStatusUnsubscribe(String key) =
+      MsgAuthStatusUnsubscribe;
+  const factory Msg.subscribeProc(
+          SendPort sendPort, ProcBuilder procBuilder, String key) =
+      MsgSubscribeProc;
+  const factory Msg.unsubscribeProc(String key) = MsgUnsubscribeProc;
 }
 
-class MsgLogout extends Msg {}
-
-class MsgAuthStatusSubscribe extends Msg {
-  String key;
-  MsgAuthStatusSubscribe(this.key);
-  MsgAuthStatusUnsubscribe unsubscribe() {
-    return MsgAuthStatusUnsubscribe(key);
-  }
-}
-
-class MsgAuthStatusUnsubscribe extends Msg {
-  String key;
-  MsgAuthStatusUnsubscribe(this.key);
-}
-
-class MsgAuthStatusUnsubscribeAck extends Msg {
-  MsgAuthStatusUnsubscribeAck();
-}
-
-class MsgAuthStatusUpdate extends Msg {
-  final AuthenticationStatus status;
-  MsgAuthStatusUpdate(this.status);
-}
-
-class MsgSubscribeProc<R> extends Msg {
-  ProcBuilder<R> procBuilder;
-  String key;
-  MsgSubscribeProc(this.procBuilder, this.key);
-  MsgUnsubscribeProc unsubscribe() {
-    return MsgUnsubscribeProc(key);
-  }
-}
-
-class MsgUnsubscribeProc extends Msg {
-  String key;
-  MsgUnsubscribeProc(this.key);
-}
-
-class MsgUnsubscribeProcAck extends MsgUnsubscribeProc {
-  MsgUnsubscribeProcAck(super.key);
+class MsgOutUnsubscribeAck {
+  MsgOutUnsubscribeAck();
 }
