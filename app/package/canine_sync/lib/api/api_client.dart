@@ -6,6 +6,8 @@ import 'package:logging/logging.dart';
 
 import '../constants/constants.dart';
 import '../models/api_error.dart';
+import '../models/message.dart';
+import '../models/paginated.dart';
 import '../models/rtc_remote.dart';
 import '../models/rtc_remote_update.dart';
 import '../secure_storage/secure_storage.dart';
@@ -32,6 +34,83 @@ class APIClient {
     await for (var status in _controller.stream) {
       yield status;
     }
+  }
+
+  Future<Paginated<Message>> getConversationMessages(int conversationId) async {
+    final response =
+        await _getJSON('/$_workspaceId/conversations/$conversationId/messages');
+    return Paginated<Message>.fromJson(
+        response, (json) => Message.fromJson(json as Map<String, dynamic>));
+  }
+
+  Future<RTCRemoteUpdate> rtcSession(RtcRemote state) async {
+    final response =
+        await _postJSON('/$_workspaceId/users/$_userId/rtc/session', state);
+    return RTCRemoteUpdate.fromJson(response);
+  }
+
+  Uri rtcConnectionUri(String syncToken) {
+    return Uri.parse(
+        '$_wsBase/$_workspaceId/users/$_userId/rtc/connect?sync_token=$syncToken&token=$_token');
+  }
+
+  Future<void> logout() async {
+    _updateCredential(null);
+    _authStatus = AuthenticationStatus.unauthenticated(null);
+    _controller.add(_authStatus);
+  }
+
+  Future<void> login(int workspaceId, String username, String password) async {
+    // TODO: handle login/logout/refresh race conditions
+    final response = await _postJSON(
+      '/login',
+      {
+        'workspace_id': workspaceId,
+        'username': username,
+        'password': password,
+      },
+    );
+
+    try {
+      _updateCredential(CredentialSet.fromJWT(response['token'], username));
+      _authStatus = AuthenticationStatus.authenticated(_credential!.identity);
+      _controller.add(_authStatus);
+      return;
+    } catch (e) {
+      throw APIError.invalidResponse(e.toString());
+    }
+  }
+
+  Future<void>? _refreshTokenFuture;
+
+  Future<void> refreshToken() async {
+    if (_refreshTokenFuture != null) {
+      return _refreshTokenFuture;
+    }
+    _refreshTokenFuture = () async {
+      try {
+        final response = await _postJSON('/$_workspaceId/refresh_token', {},
+            skipRefresh: true);
+        _updateCredential(CredentialSet.fromJWT(
+            response['token'], _credential!.identity.username));
+      } on APIError catch (e) {
+        if (e.code == kServerUnauthorized || e.code == kServerInvalidRequest) {
+          if (e.code == kServerInvalidRequest) {
+            _logger.severe(
+                'Invalid request during token refresh - this is a bug in the client',
+                e);
+          }
+          _authStatus =
+              AuthenticationStatus.unauthenticated(_credential?.identity);
+          _controller.add(_authStatus);
+          return;
+        }
+        rethrow;
+      } finally {
+        _refreshTokenFuture = null;
+      }
+    }();
+    return _refreshTokenFuture;
   }
 
   Future<void> init() async {
@@ -79,91 +158,11 @@ class APIClient {
   get _userId => _credential?.identity.userId;
   get _token => _credential?.token;
 
-  Future<void> logout() async {
-    updateCredential(null);
-    _authStatus = AuthenticationStatus.unauthenticated(null);
-    _controller.add(_authStatus);
-  }
-
-  Future<void> updateCredential(CredentialSet? credential) async {
+  Future<void> _updateCredential(CredentialSet? credential) async {
     _credential = credential;
     await _secureStorage.setCredentials(credential);
     _logger.fine(
         'Credential updated in storage: $_workspaceId/$_userId expiration ${credential?.tokenExpiration}');
-  }
-
-  Future<RTCRemoteUpdate> rtcSession(RtcRemote state) async {
-    final response =
-        await postJSON('/$_workspaceId/users/$_userId/rtc/session', state);
-    return RTCRemoteUpdate.fromJson(response);
-  }
-
-  Uri rtcConnectionUri(String syncToken) {
-    return Uri.parse(
-        '$_wsBase/$_workspaceId/users/$_userId/rtc/connect?sync_token=$syncToken&token=$_token');
-  }
-
-  Future<void> login(int workspaceId, String username, String password) async {
-    // TODO: handle login/logout/refresh race conditions
-    final response = await postJSON(
-      '/login',
-      {
-        'workspace_id': workspaceId,
-        'username': username,
-        'password': password,
-      },
-    );
-
-    try {
-      updateCredential(CredentialSet.fromJWT(response['token'], username));
-      _authStatus = AuthenticationStatus.authenticated(_credential!.identity);
-      _controller.add(_authStatus);
-      return;
-    } catch (e) {
-      throw APIError.invalidResponse(e.toString());
-    }
-  }
-
-  Future<void>? _refreshTokenFuture;
-
-  Future<void> refreshToken() async {
-    if (_refreshTokenFuture != null) {
-      return _refreshTokenFuture;
-    }
-    _refreshTokenFuture = () async {
-      try {
-        final response = await postJSON('/$_workspaceId/refresh_token', {},
-            skipRefresh: true);
-        updateCredential(CredentialSet.fromJWT(
-            response['token'], _credential!.identity.username));
-      } on APIError catch (e) {
-        if (e.code == kServerUnauthorized || e.code == kServerInvalidRequest) {
-          if (e.code == kServerInvalidRequest) {
-            _logger.severe(
-                'Invalid request during token refresh - this is a bug in the client',
-                e);
-          }
-          _authStatus =
-              AuthenticationStatus.unauthenticated(_credential?.identity);
-          _controller.add(_authStatus);
-          return;
-        }
-        rethrow;
-      } finally {
-        _refreshTokenFuture = null;
-      }
-    }();
-    return _refreshTokenFuture;
-  }
-
-  Future<dynamic> postJSON(String path, Object? body,
-      {bool skipRefresh = false}) async {
-    try {
-      return await _postJSON(path, body, skipRefresh: skipRefresh);
-    } catch (e) {
-      _logger.fine('Error POST $path: $e');
-      rethrow;
-    }
   }
 
   Future<void> _refreshTokenIfNeeded() async {
@@ -176,6 +175,26 @@ class APIClient {
   }
 
   Future<dynamic> _postJSON(String path, Object? body,
+      {bool skipRefresh = false}) async {
+    try {
+      return _makeRequest(HttpMethod.post, path, body,
+          skipRefresh: skipRefresh);
+    } catch (e) {
+      _logger.finer("Failed POST request to $path", e);
+      rethrow;
+    }
+  }
+
+  Future<dynamic> _getJSON(String path) async {
+    try {
+      return _makeRequest(HttpMethod.get, path, null);
+    } catch (e) {
+      _logger.finer("Failed GET request to $path", e);
+      rethrow;
+    }
+  }
+
+  Future<dynamic> _makeRequest(HttpMethod method, String path, Object? body,
       {bool skipRefresh = false}) async {
     assert(path.startsWith('/'));
 
@@ -192,11 +211,18 @@ class APIClient {
     };
     final http.Response response;
     try {
-      response = await http.post(
-        Uri.parse('$_apiBase$path'),
-        headers: headers,
-        body: jsonEncode(body),
-      );
+      final url = Uri.parse('$_apiBase$path');
+      response = switch (method) {
+        HttpMethod.post => await http.post(
+            url,
+            headers: headers,
+            body: jsonEncode(body),
+          ),
+        HttpMethod.get => await http.get(
+            url,
+            headers: headers,
+          )
+      };
     } catch (e) {
       throw APIError.unableToMakeRequest(e);
     }
@@ -216,3 +242,5 @@ class APIClient {
     }
   }
 }
+
+enum HttpMethod { get, post }

@@ -23,7 +23,7 @@ type GetConversationMessagesParams struct {
 	Limit     int
 }
 
-type PaginationInfo struct {
+type PaginationMeta struct {
 	Limit  int   `json:"limit"`
 	PrevID int64 `json:"prev_id"`
 	NextID int64 `json:"next_id"`
