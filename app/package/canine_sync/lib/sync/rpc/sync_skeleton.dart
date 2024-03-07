@@ -67,40 +67,68 @@ class SyncSkeleton implements SyncWorker {
   onMsg(Msg msg) {
     switch (msg) {
       case MsgSubscribeProc():
-        final newSub = Subscription.fromMsg(msg, msg.sendPort);
-        _procMap[msg.key] = newSub;
-        final initial = newSub.proc.init(_cache); // send initial state
-        if (initial != null) {
-          msg.sendPort.send(initial);
-        }
+        _subscribeProc(msg);
       case MsgUnsubscribeProc():
-        final sub = _procMap[msg.key]!;
-        sub.sendPort.send(MsgOutUnsubscribeAck());
-        _procMap.remove(msg.key);
+        _unsubscribeProc(msg);
       case MsgAuthStatusSubscribe():
-        final sub = _apiClient.authStatus.listen((status) {
-          msg.sendPort.send(status);
-        });
-        _authStatusSubs[msg.key] = (msg.sendPort, sub);
+        _authStatusSubscribe(msg);
       case MsgAuthStatusUnsubscribe():
-        final sub = _authStatusSubs[msg.key]!;
-        sub.$2.cancel();
-        sub.$1.send(MsgOutUnsubscribeAck());
-        _authStatusSubs.remove(msg.key);
+        _authStatusUnsubscribe(msg);
       case MsgLogin():
-        _apiClient
-            .login(msg.workspaceId, msg.username, msg.password)
-            .then((_) => msg.sendPort.send(null))
-            // I could set the user on the cache
-            .catchError((e) => msg.sendPort.send(e));
+        _login(msg);
       case MsgLogout():
-        _stopController.add(null);
-        _apiClient
-            .logout()
-            .then((_) => msg.sendPort.send(null))
-            .catchError((e) => msg.sendPort.send(e));
+        _logout(msg);
     }
   }
+
+  // Section: Message handlers
+
+  void _logout(MsgLogout msg) {
+    _stopController.add(null);
+    _apiClient
+        .logout()
+        .then((_) => msg.sendPort.send(null))
+        .catchError((e) => msg.sendPort.send(e));
+  }
+
+  void _login(MsgLogin msg) {
+    _apiClient
+        .login(msg.workspaceId, msg.username, msg.password)
+        .then((_) => msg.sendPort.send(null))
+        // I could set the user on the cache
+        .catchError((e) => msg.sendPort.send(e));
+  }
+
+  void _authStatusUnsubscribe(MsgAuthStatusUnsubscribe msg) {
+    final sub = _authStatusSubs[msg.key]!;
+    sub.$2.cancel();
+    sub.$1.send(MsgOutUnsubscribeAck());
+    _authStatusSubs.remove(msg.key);
+  }
+
+  void _authStatusSubscribe(MsgAuthStatusSubscribe msg) {
+    final sub = _apiClient.authStatus.listen((status) {
+      msg.sendPort.send(status);
+    });
+    _authStatusSubs[msg.key] = (msg.sendPort, sub);
+  }
+
+  void _unsubscribeProc(MsgUnsubscribeProc msg) {
+    final sub = _procMap[msg.key]!;
+    sub.sendPort.send(MsgOutUnsubscribeAck());
+    _procMap.remove(msg.key);
+  }
+
+  void _subscribeProc(MsgSubscribeProc msg) {
+    final newSub = Subscription.fromMsg(msg, msg.sendPort);
+    _procMap[msg.key] = newSub;
+    final initial = newSub.proc.init(_cache); // send initial state
+    if (initial != null) {
+      msg.sendPort.send(initial);
+    }
+  }
+
+  // End Section: Message handlers
 
   @override
   onUpdate(APIServerMessage message) {
