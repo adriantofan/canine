@@ -2,7 +2,6 @@ import 'dart:isolate';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../api/main.dart';
 import '../proc.dart';
 
 part 'msg.freezed.dart';
@@ -20,6 +19,14 @@ sealed class Msg {
           SendPort sendPort, ProcBuilder procBuilder, String key) =
       MsgSubscribeProc;
   const factory Msg.unsubscribeProc(String key) = MsgUnsubscribeProc;
+  const factory Msg.conversationMessagesHistorySubscribe(
+          SendPort sendPort, int conversationId, String key) =
+      MsgConversationMessagesHistory;
+  const factory Msg.conversationMessagesHistoryUnsubscribe(String key) =
+      MsgConversationMessagesHistoryUnsubscribe;
+  const factory Msg.conversationMessagesHistoryLoadPast(
+          SendPort sendPort, int conversationId) =
+      MsgConversationMessagesHistoryLoadPast;
 }
 
 class MsgOutUnsubscribeAck {

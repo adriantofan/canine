@@ -19,6 +19,8 @@ class SyncSkeleton implements SyncWorker {
   final Map<String, Subscription> _procMap = {};
   final Map<String, (SendPort, StreamSubscription<AuthenticationStatus>)>
       _authStatusSubs = {};
+  final Map<String, (SendPort, StreamSubscription<dynamic>)>
+      _conversationMessagesHistorySubs = {};
 
   final StreamController<void> _stopController =
       StreamController<void>.broadcast();
@@ -78,10 +80,75 @@ class SyncSkeleton implements SyncWorker {
         _login(msg);
       case MsgLogout():
         _logout(msg);
+      case MsgConversationMessagesHistory():
+        _conversationMessagesHistory(msg);
+      case MsgConversationMessagesHistoryUnsubscribe():
+        _conversationMessagesHistoryUnsubscribe(msg);
+      case MsgConversationMessagesHistoryLoadPast():
+        _conversationMessagesHistoryLoadPast(msg);
     }
   }
 
   // Section: Message handlers
+  void _conversationMessagesHistoryLoadPast(
+      MsgConversationMessagesHistoryLoadPast msg) {
+    final crtHistory = _cache.conversationHistory(msg.conversationId);
+    final status = crtHistory.startStatus;
+    final RemoteDataStatusLoading newHistory;
+    switch (status) {
+      case RemoteDataStatusUndetermined():
+        newHistory = status.load;
+      case RemoteDataStatusComplete():
+        msg.sendPort.send(null);
+        return;
+      case RemoteDataStatusLoading():
+        _cache.conversationHistoryStream(msg.conversationId).skip(1).first.then(
+            (state) => msg.sendPort.send(state.startStatus),
+            onError: (error, stackTrace) =>
+                msg.sendPort.send(error.toString()));
+        return;
+      case RemoteDataStatusFailed():
+        newHistory = status.retry;
+    }
+    _cache.updateConversationHistory(msg.conversationId, newHistory, null);
+
+    _apiClient.getConversationMessages(msg.conversationId).then((data) {
+      if (data.data.isEmpty) {
+        _cache.updateConversationHistory(
+            msg.conversationId, newHistory.complete, null);
+        msg.sendPort.send(newHistory.complete);
+        return;
+      }
+      // TODO: need to update cache and make sure that it doesn't run concurrently
+      //  with another update
+      //  Then need to update conversation history to set the last id and
+      //  status to complete
+
+      msg.sendPort.send(newHistory.loaded);
+    }).catchError((e) {
+      _cache.updateConversationHistory(
+          msg.conversationId, newHistory.failed, null);
+      msg.sendPort.send(e);
+    });
+  }
+
+  void _conversationMessagesHistory(MsgConversationMessagesHistory msg) {
+    final subscription = ConcatStream([
+      _cache
+          .conversationHistoryStream(msg.conversationId)
+          .takeUntil(_stopController.stream),
+      Stream.value(null).map((event) => throw LogoutException())
+    ]).listen((state) => msg.sendPort.send(state));
+    _conversationMessagesHistorySubs[msg.key] = (msg.sendPort, subscription);
+  }
+
+  void _conversationMessagesHistoryUnsubscribe(
+      MsgConversationMessagesHistoryUnsubscribe msg) {
+    final sub = _conversationMessagesHistorySubs[msg.key]!;
+    sub.$2.cancel();
+    sub.$1.send(MsgOutUnsubscribeAck());
+    _conversationMessagesHistorySubs.remove(msg.key);
+  }
 
   void _logout(MsgLogout msg) {
     _stopController.add(null);

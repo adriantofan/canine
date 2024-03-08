@@ -9,3 +9,7 @@ abstract class Sync {
   Future<void> logout();
   Stream<AuthenticationStatus> get authStatus;
 }
+
+class LogoutException implements Exception {
+  LogoutException();
+}

@@ -11,6 +11,13 @@ abstract class Cache {
   User? getUser(int userId);
   Conversation? getConversation(int conversationId);
   Update? doUpdate(APIServerMessage message);
+
+  Stream<HistoryState> conversationHistoryStream<HistoryState>(
+      int conversationId);
+  HistoryState conversationHistory(int conversationId);
+  updateConversationHistory(
+      int conversationId, RemoteDataStatus startStatus, final int? startId);
+
   void reset();
   void init(RTCRemoteUpdate remoteUpdate);
 }
