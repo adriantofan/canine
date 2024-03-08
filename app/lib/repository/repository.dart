@@ -15,11 +15,11 @@ class SyncRepository {
   SyncRepository(Sync sync) : _sync = sync;
 
   Stream<ListChange<ConversationInfo, int>> conversations() {
-    return _sync.addProcRef(UpdateConversationsProcRef());
+    return _sync.subscribeProcRef(UpdateConversationsProcRef());
   }
 
   Stream<ListChange<ChatMessage, int>> chatMessages(int conversationId) {
-    return _sync.addProcRef(UpdateMessagesProcRef(conversationId));
+    return _sync.subscribeProcRef(UpdateMessagesProcRef(conversationId));
   }
 
   Stream<AuthenticationStatus> get authStatus => _sync.authStatus;
@@ -28,4 +28,12 @@ class SyncRepository {
       _sync.login(workspaceId, username, password);
 
   Future<void> logout() => _sync.logout();
+
+  Stream<HistoryState> conversationHistoryStream(int conversationId) {
+    return _sync.conversationHistoryStream(conversationId);
+  }
+
+  Future<RemoteDataStatus> conversationHistoryLoadPast(int conversationId) {
+    return _sync.conversationHistoryLoadPast(conversationId);
+  }
 }

@@ -10,6 +10,7 @@ import 'rpc/msg.dart';
 import 'rpc/sync_skeleton.dart';
 import 'rpc/sync_stub.dart';
 import 'sync.dart';
+import 'sync_service.dart';
 
 Future<Sync> start() async {
   var receivePortStorage = ReceivePort();
@@ -52,7 +53,10 @@ _runner(SendPort sendPort) async {
   APIClient apiClient = APIClient(stub);
   await apiClient.init(); // loads credentials from disk
 
-  final sync = SyncSkeleton(cache, apiClient);
+  final syncService = SyncService(cache, apiClient);
+
+  // Communicates with SyncStub and delegates actual work to SyncService
+  final syncSkeleton = SyncSkeleton(syncService);
 
   final cancelOnMsg = receivePort.listen((data) {
     // even if this is running async with respect to _work, it is still
@@ -60,13 +64,13 @@ _runner(SendPort sendPort) async {
     // concurrently with each other (they are synchronized by the event loop)
     try {
       final msg = data as Msg;
-      sync.onMsg(msg);
+      syncSkeleton.onMsg(msg);
     } catch (e) {
       logger.severe('Error in onMsg', e);
     }
   });
   try {
-    await sync.websocketListen();
+    await syncService.websocketListen();
   } finally {
     await cancelOnMsg.cancel();
   }

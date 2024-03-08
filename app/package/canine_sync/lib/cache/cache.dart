@@ -10,14 +10,11 @@ abstract class Cache {
   List<Message> getConversationMessages(int conversationId);
   User? getUser(int userId);
   Conversation? getConversation(int conversationId);
-  Update? doUpdate(APIServerMessage message);
 
-  Stream<HistoryState> conversationHistoryStream<HistoryState>(
-      int conversationId);
-  HistoryState conversationHistory(int conversationId);
-  updateConversationHistory(
-      int conversationId, RemoteDataStatus startStatus, final int? startId);
-
-  void reset();
+  //
   void init(RTCRemoteUpdate remoteUpdate);
+  Update? serverDidUpdate(APIServerMessage message);
+  Update? conversationMessagesLoaded(
+      int conversationId, List<Message> newMessages);
+  void reset();
 }

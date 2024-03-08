@@ -27,7 +27,7 @@ class FakeInMemoryCache implements Cache {
   }
 
   @override
-  Update? doUpdate(APIServerMessage message) {
+  Update? serverDidUpdate(APIServerMessage message) {
     return null;
   }
 
@@ -36,4 +36,11 @@ class FakeInMemoryCache implements Cache {
 
   @override
   void init(RTCRemoteUpdate) {}
+
+  @override
+  Update? conversationMessagesLoaded(
+      int conversationId, List<Message> newMessages) {
+    // TODO: implement conversationMessagesLoaded
+    throw UnimplementedError();
+  }
 }
