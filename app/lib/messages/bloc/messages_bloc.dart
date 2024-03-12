@@ -36,17 +36,26 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   FutureOr<void> _onMessagesEventStarted(event, emit) async {
     _log.fine("waiting for changes");
+    var conversationMessagesSyncStateStream = _repository
+        .conversationMessagesSyncStateStream(_conversationinfo.conversationId);
     final changes = MergeStream([
       _repository.chatMessages(_conversationinfo.conversationId),
-      _repository
-          .conversationMessagesSyncStateStream(_conversationinfo.conversationId)
+      conversationMessagesSyncStateStream
     ]);
+    var isFirst = true;
     await emit.forEach(changes, onData: (changes) {
       _log.fine("MessagesBloc: got changes ${changes}");
       switch (changes) {
         case List<ChatMessage>():
           return state.copyWith(messages: changes);
         case ListSyncState():
+          if (isFirst) {
+            isFirst = false;
+            if (changes.startStatus is! RemoteDataStatusComplete) {
+              // TODO: this load more should probably be retried if it fails
+              add(const MessagesEventLoadMore());
+            }
+          }
           return state.copyWith(syncState: changes);
         default:
           throw ArgumentError.value(changes, "Invalid change type");
