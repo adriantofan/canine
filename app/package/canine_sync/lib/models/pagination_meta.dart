@@ -9,6 +9,7 @@ class PaginationMeta with _$PaginationMeta {
     required int limit,
     required int prevId,
     required int nextId,
+    required bool hasMore,
   }) = _PaginationMeta;
 
   factory PaginationMeta.fromJson(Map<String, dynamic> json) =>

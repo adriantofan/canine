@@ -30,11 +30,11 @@ mixin _$Msg {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,10 +50,10 @@ mixin _$Msg {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -69,10 +69,10 @@ mixin _$Msg {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -85,12 +85,12 @@ mixin _$Msg {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -101,12 +101,12 @@ mixin _$Msg {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -117,12 +117,12 @@ mixin _$Msg {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -251,11 +251,11 @@ class _$MsgLoginImpl implements MsgLogin {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return login(sendPort, workspaceId, username, password);
   }
@@ -274,10 +274,10 @@ class _$MsgLoginImpl implements MsgLogin {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return login?.call(sendPort, workspaceId, username, password);
   }
@@ -296,10 +296,10 @@ class _$MsgLoginImpl implements MsgLogin {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (login != null) {
@@ -318,12 +318,12 @@ class _$MsgLoginImpl implements MsgLogin {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return login(this);
   }
@@ -337,12 +337,12 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return login?.call(this);
   }
@@ -356,12 +356,12 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (login != null) {
@@ -461,11 +461,11 @@ class _$MsgLogoutImpl implements MsgLogout {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return logout(sendPort);
   }
@@ -484,10 +484,10 @@ class _$MsgLogoutImpl implements MsgLogout {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return logout?.call(sendPort);
   }
@@ -506,10 +506,10 @@ class _$MsgLogoutImpl implements MsgLogout {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -528,12 +528,12 @@ class _$MsgLogoutImpl implements MsgLogout {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return logout(this);
   }
@@ -547,12 +547,12 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return logout?.call(this);
   }
@@ -566,12 +566,12 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -678,11 +678,11 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return authStatusSubscribe(sendPort, key);
   }
@@ -701,10 +701,10 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return authStatusSubscribe?.call(sendPort, key);
   }
@@ -723,10 +723,10 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (authStatusSubscribe != null) {
@@ -745,12 +745,12 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return authStatusSubscribe(this);
   }
@@ -764,12 +764,12 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return authStatusSubscribe?.call(this);
   }
@@ -783,12 +783,12 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (authStatusSubscribe != null) {
@@ -888,11 +888,11 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return authStatusUnsubscribe(key);
   }
@@ -911,10 +911,10 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return authStatusUnsubscribe?.call(key);
   }
@@ -933,10 +933,10 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (authStatusUnsubscribe != null) {
@@ -955,12 +955,12 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return authStatusUnsubscribe(this);
   }
@@ -974,12 +974,12 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return authStatusUnsubscribe?.call(this);
   }
@@ -993,12 +993,12 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (authStatusUnsubscribe != null) {
@@ -1113,11 +1113,11 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return subscribeProc(sendPort, procBuilder, key);
   }
@@ -1136,10 +1136,10 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return subscribeProc?.call(sendPort, procBuilder, key);
   }
@@ -1158,10 +1158,10 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (subscribeProc != null) {
@@ -1180,12 +1180,12 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return subscribeProc(this);
   }
@@ -1199,12 +1199,12 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return subscribeProc?.call(this);
   }
@@ -1218,12 +1218,12 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (subscribeProc != null) {
@@ -1324,11 +1324,11 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return unsubscribeProc(key);
   }
@@ -1347,10 +1347,10 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
     return unsubscribeProc?.call(key);
   }
@@ -1369,10 +1369,10 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (unsubscribeProc != null) {
@@ -1391,12 +1391,12 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
     return unsubscribeProc(this);
   }
@@ -1410,12 +1410,12 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
     return unsubscribeProc?.call(this);
   }
@@ -1429,12 +1429,12 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
     if (unsubscribeProc != null) {
@@ -1454,22 +1454,23 @@ abstract class MsgUnsubscribeProc implements Msg {
 }
 
 /// @nodoc
-abstract class _$$MsgConversationMessagesHistoryImplCopyWith<$Res> {
-  factory _$$MsgConversationMessagesHistoryImplCopyWith(
-          _$MsgConversationMessagesHistoryImpl value,
-          $Res Function(_$MsgConversationMessagesHistoryImpl) then) =
-      __$$MsgConversationMessagesHistoryImplCopyWithImpl<$Res>;
+abstract class _$$MsgConversationMessagesSyncStateSubscribeImplCopyWith<$Res> {
+  factory _$$MsgConversationMessagesSyncStateSubscribeImplCopyWith(
+          _$MsgConversationMessagesSyncStateSubscribeImpl value,
+          $Res Function(_$MsgConversationMessagesSyncStateSubscribeImpl) then) =
+      __$$MsgConversationMessagesSyncStateSubscribeImplCopyWithImpl<$Res>;
   @useResult
   $Res call({SendPort sendPort, int conversationId, String key});
 }
 
 /// @nodoc
-class __$$MsgConversationMessagesHistoryImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res, _$MsgConversationMessagesHistoryImpl>
-    implements _$$MsgConversationMessagesHistoryImplCopyWith<$Res> {
-  __$$MsgConversationMessagesHistoryImplCopyWithImpl(
-      _$MsgConversationMessagesHistoryImpl _value,
-      $Res Function(_$MsgConversationMessagesHistoryImpl) _then)
+class __$$MsgConversationMessagesSyncStateSubscribeImplCopyWithImpl<$Res>
+    extends _$MsgCopyWithImpl<$Res,
+        _$MsgConversationMessagesSyncStateSubscribeImpl>
+    implements _$$MsgConversationMessagesSyncStateSubscribeImplCopyWith<$Res> {
+  __$$MsgConversationMessagesSyncStateSubscribeImplCopyWithImpl(
+      _$MsgConversationMessagesSyncStateSubscribeImpl _value,
+      $Res Function(_$MsgConversationMessagesSyncStateSubscribeImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1479,7 +1480,7 @@ class __$$MsgConversationMessagesHistoryImplCopyWithImpl<$Res>
     Object? conversationId = null,
     Object? key = null,
   }) {
-    return _then(_$MsgConversationMessagesHistoryImpl(
+    return _then(_$MsgConversationMessagesSyncStateSubscribeImpl(
       null == sendPort
           ? _value.sendPort
           : sendPort // ignore: cast_nullable_to_non_nullable
@@ -1498,9 +1499,9 @@ class __$$MsgConversationMessagesHistoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MsgConversationMessagesHistoryImpl
-    implements MsgConversationMessagesHistory {
-  const _$MsgConversationMessagesHistoryImpl(
+class _$MsgConversationMessagesSyncStateSubscribeImpl
+    implements MsgConversationMessagesSyncStateSubscribe {
+  const _$MsgConversationMessagesSyncStateSubscribeImpl(
       this.sendPort, this.conversationId, this.key);
 
   @override
@@ -1512,14 +1513,14 @@ class _$MsgConversationMessagesHistoryImpl
 
   @override
   String toString() {
-    return 'Msg.conversationMessagesHistorySubscribe(sendPort: $sendPort, conversationId: $conversationId, key: $key)';
+    return 'Msg.conversationMessagesSyncStateSubscribe(sendPort: $sendPort, conversationId: $conversationId, key: $key)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MsgConversationMessagesHistoryImpl &&
+            other is _$MsgConversationMessagesSyncStateSubscribeImpl &&
             (identical(other.sendPort, sendPort) ||
                 other.sendPort == sendPort) &&
             (identical(other.conversationId, conversationId) ||
@@ -1533,229 +1534,11 @@ class _$MsgConversationMessagesHistoryImpl
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MsgConversationMessagesHistoryImplCopyWith<
-          _$MsgConversationMessagesHistoryImpl>
-      get copyWith => __$$MsgConversationMessagesHistoryImplCopyWithImpl<
-          _$MsgConversationMessagesHistoryImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
-    required TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
-        subscribeProc,
-    required TResult Function(String key) unsubscribeProc,
-    required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
-  }) {
-    return conversationMessagesHistorySubscribe(sendPort, conversationId, key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
-    TResult? Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult? Function(String key)? unsubscribeProc,
-    TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
-    TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
-  }) {
-    return conversationMessagesHistorySubscribe?.call(
-        sendPort, conversationId, key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
-    TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult Function(String key)? unsubscribeProc,
-    TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
-    TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
-    required TResult orElse(),
-  }) {
-    if (conversationMessagesHistorySubscribe != null) {
-      return conversationMessagesHistorySubscribe(
-          sendPort, conversationId, key);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
-    required TResult Function(MsgSubscribeProc value) subscribeProc,
-    required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
-  }) {
-    return conversationMessagesHistorySubscribe(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult? Function(MsgSubscribeProc value)? subscribeProc,
-    TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
-  }) {
-    return conversationMessagesHistorySubscribe?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult Function(MsgSubscribeProc value)? subscribeProc,
-    TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
-    required TResult orElse(),
-  }) {
-    if (conversationMessagesHistorySubscribe != null) {
-      return conversationMessagesHistorySubscribe(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MsgConversationMessagesHistory implements Msg {
-  const factory MsgConversationMessagesHistory(
-          final SendPort sendPort, final int conversationId, final String key) =
-      _$MsgConversationMessagesHistoryImpl;
-
-  SendPort get sendPort;
-  int get conversationId;
-  String get key;
-  @JsonKey(ignore: true)
-  _$$MsgConversationMessagesHistoryImplCopyWith<
-          _$MsgConversationMessagesHistoryImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MsgConversationMessagesHistoryUnsubscribeImplCopyWith<$Res> {
-  factory _$$MsgConversationMessagesHistoryUnsubscribeImplCopyWith(
-          _$MsgConversationMessagesHistoryUnsubscribeImpl value,
-          $Res Function(_$MsgConversationMessagesHistoryUnsubscribeImpl) then) =
-      __$$MsgConversationMessagesHistoryUnsubscribeImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String key});
-}
-
-/// @nodoc
-class __$$MsgConversationMessagesHistoryUnsubscribeImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res,
-        _$MsgConversationMessagesHistoryUnsubscribeImpl>
-    implements _$$MsgConversationMessagesHistoryUnsubscribeImplCopyWith<$Res> {
-  __$$MsgConversationMessagesHistoryUnsubscribeImplCopyWithImpl(
-      _$MsgConversationMessagesHistoryUnsubscribeImpl _value,
-      $Res Function(_$MsgConversationMessagesHistoryUnsubscribeImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-  }) {
-    return _then(_$MsgConversationMessagesHistoryUnsubscribeImpl(
-      null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$MsgConversationMessagesHistoryUnsubscribeImpl
-    implements MsgConversationMessagesHistoryUnsubscribe {
-  const _$MsgConversationMessagesHistoryUnsubscribeImpl(this.key);
-
-  @override
-  final String key;
-
-  @override
-  String toString() {
-    return 'Msg.conversationMessagesHistoryUnsubscribe(key: $key)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MsgConversationMessagesHistoryUnsubscribeImpl &&
-            (identical(other.key, key) || other.key == key));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, key);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MsgConversationMessagesHistoryUnsubscribeImplCopyWith<
-          _$MsgConversationMessagesHistoryUnsubscribeImpl>
+  _$$MsgConversationMessagesSyncStateSubscribeImplCopyWith<
+          _$MsgConversationMessagesSyncStateSubscribeImpl>
       get copyWith =>
-          __$$MsgConversationMessagesHistoryUnsubscribeImplCopyWithImpl<
-                  _$MsgConversationMessagesHistoryUnsubscribeImpl>(
+          __$$MsgConversationMessagesSyncStateSubscribeImplCopyWithImpl<
+                  _$MsgConversationMessagesSyncStateSubscribeImpl>(
               this, _$identity);
 
   @override
@@ -1773,13 +1556,14 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryUnsubscribe(key);
+    return conversationMessagesSyncStateSubscribe(
+        sendPort, conversationId, key);
   }
 
   @override
@@ -1796,12 +1580,13 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryUnsubscribe?.call(key);
+    return conversationMessagesSyncStateSubscribe?.call(
+        sendPort, conversationId, key);
   }
 
   @override
@@ -1818,14 +1603,15 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
-    if (conversationMessagesHistoryUnsubscribe != null) {
-      return conversationMessagesHistoryUnsubscribe(key);
+    if (conversationMessagesSyncStateSubscribe != null) {
+      return conversationMessagesSyncStateSubscribe(
+          sendPort, conversationId, key);
     }
     return orElse();
   }
@@ -1840,14 +1626,14 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryUnsubscribe(this);
+    return conversationMessagesSyncStateSubscribe(this);
   }
 
   @override
@@ -1859,14 +1645,14 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryUnsubscribe?.call(this);
+    return conversationMessagesSyncStateSubscribe?.call(this);
   }
 
   @override
@@ -1878,110 +1664,106 @@ class _$MsgConversationMessagesHistoryUnsubscribeImpl
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
-    if (conversationMessagesHistoryUnsubscribe != null) {
-      return conversationMessagesHistoryUnsubscribe(this);
+    if (conversationMessagesSyncStateSubscribe != null) {
+      return conversationMessagesSyncStateSubscribe(this);
     }
     return orElse();
   }
 }
 
-abstract class MsgConversationMessagesHistoryUnsubscribe implements Msg {
-  const factory MsgConversationMessagesHistoryUnsubscribe(final String key) =
-      _$MsgConversationMessagesHistoryUnsubscribeImpl;
+abstract class MsgConversationMessagesSyncStateSubscribe implements Msg {
+  const factory MsgConversationMessagesSyncStateSubscribe(
+          final SendPort sendPort, final int conversationId, final String key) =
+      _$MsgConversationMessagesSyncStateSubscribeImpl;
 
+  SendPort get sendPort;
+  int get conversationId;
   String get key;
   @JsonKey(ignore: true)
-  _$$MsgConversationMessagesHistoryUnsubscribeImplCopyWith<
-          _$MsgConversationMessagesHistoryUnsubscribeImpl>
+  _$$MsgConversationMessagesSyncStateSubscribeImplCopyWith<
+          _$MsgConversationMessagesSyncStateSubscribeImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MsgConversationMessagesHistoryLoadPastImplCopyWith<$Res> {
-  factory _$$MsgConversationMessagesHistoryLoadPastImplCopyWith(
-          _$MsgConversationMessagesHistoryLoadPastImpl value,
-          $Res Function(_$MsgConversationMessagesHistoryLoadPastImpl) then) =
-      __$$MsgConversationMessagesHistoryLoadPastImplCopyWithImpl<$Res>;
+abstract class _$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWith<
+    $Res> {
+  factory _$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWith(
+          _$MsgConversationMessagesSyncStateUnsubscribeImpl value,
+          $Res Function(_$MsgConversationMessagesSyncStateUnsubscribeImpl)
+              then) =
+      __$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({SendPort sendPort, int conversationId});
+  $Res call({String key});
 }
 
 /// @nodoc
-class __$$MsgConversationMessagesHistoryLoadPastImplCopyWithImpl<$Res>
+class __$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWithImpl<$Res>
     extends _$MsgCopyWithImpl<$Res,
-        _$MsgConversationMessagesHistoryLoadPastImpl>
-    implements _$$MsgConversationMessagesHistoryLoadPastImplCopyWith<$Res> {
-  __$$MsgConversationMessagesHistoryLoadPastImplCopyWithImpl(
-      _$MsgConversationMessagesHistoryLoadPastImpl _value,
-      $Res Function(_$MsgConversationMessagesHistoryLoadPastImpl) _then)
+        _$MsgConversationMessagesSyncStateUnsubscribeImpl>
+    implements
+        _$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWith<$Res> {
+  __$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWithImpl(
+      _$MsgConversationMessagesSyncStateUnsubscribeImpl _value,
+      $Res Function(_$MsgConversationMessagesSyncStateUnsubscribeImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? sendPort = null,
-    Object? conversationId = null,
+    Object? key = null,
   }) {
-    return _then(_$MsgConversationMessagesHistoryLoadPastImpl(
-      null == sendPort
-          ? _value.sendPort
-          : sendPort // ignore: cast_nullable_to_non_nullable
-              as SendPort,
-      null == conversationId
-          ? _value.conversationId
-          : conversationId // ignore: cast_nullable_to_non_nullable
-              as int,
+    return _then(_$MsgConversationMessagesSyncStateUnsubscribeImpl(
+      null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 
-class _$MsgConversationMessagesHistoryLoadPastImpl
-    implements MsgConversationMessagesHistoryLoadPast {
-  const _$MsgConversationMessagesHistoryLoadPastImpl(
-      this.sendPort, this.conversationId);
+class _$MsgConversationMessagesSyncStateUnsubscribeImpl
+    implements MsgConversationMessagesSyncStateUnsubscribe {
+  const _$MsgConversationMessagesSyncStateUnsubscribeImpl(this.key);
 
   @override
-  final SendPort sendPort;
-  @override
-  final int conversationId;
+  final String key;
 
   @override
   String toString() {
-    return 'Msg.conversationMessagesHistoryLoadPast(sendPort: $sendPort, conversationId: $conversationId)';
+    return 'Msg.conversationMessagesSyncStateUnsubscribe(key: $key)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MsgConversationMessagesHistoryLoadPastImpl &&
-            (identical(other.sendPort, sendPort) ||
-                other.sendPort == sendPort) &&
-            (identical(other.conversationId, conversationId) ||
-                other.conversationId == conversationId));
+            other is _$MsgConversationMessagesSyncStateUnsubscribeImpl &&
+            (identical(other.key, key) || other.key == key));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sendPort, conversationId);
+  int get hashCode => Object.hash(runtimeType, key);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MsgConversationMessagesHistoryLoadPastImplCopyWith<
-          _$MsgConversationMessagesHistoryLoadPastImpl>
+  _$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWith<
+          _$MsgConversationMessagesSyncStateUnsubscribeImpl>
       get copyWith =>
-          __$$MsgConversationMessagesHistoryLoadPastImplCopyWithImpl<
-              _$MsgConversationMessagesHistoryLoadPastImpl>(this, _$identity);
+          __$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWithImpl<
+                  _$MsgConversationMessagesSyncStateUnsubscribeImpl>(
+              this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1998,13 +1780,13 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
         subscribeProc,
     required TResult Function(String key) unsubscribeProc,
     required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesHistorySubscribe,
+        conversationMessagesSyncStateSubscribe,
     required TResult Function(String key)
-        conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryLoadPast(sendPort, conversationId);
+    return conversationMessagesSyncStateUnsubscribe(key);
   }
 
   @override
@@ -2021,12 +1803,12 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
         subscribeProc,
     TResult? Function(String key)? unsubscribeProc,
     TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryLoadPast?.call(sendPort, conversationId);
+    return conversationMessagesSyncStateUnsubscribe?.call(key);
   }
 
   @override
@@ -2043,14 +1825,14 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
         subscribeProc,
     TResult Function(String key)? unsubscribeProc,
     TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(String key)? conversationMessagesHistoryUnsubscribe,
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesHistoryLoadPast,
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
-    if (conversationMessagesHistoryLoadPast != null) {
-      return conversationMessagesHistoryLoadPast(sendPort, conversationId);
+    if (conversationMessagesSyncStateUnsubscribe != null) {
+      return conversationMessagesSyncStateUnsubscribe(key);
     }
     return orElse();
   }
@@ -2065,14 +1847,14 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
         authStatusUnsubscribe,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesHistory value)
-        conversationMessagesHistorySubscribe,
-    required TResult Function(MsgConversationMessagesHistoryUnsubscribe value)
-        conversationMessagesHistoryUnsubscribe,
-    required TResult Function(MsgConversationMessagesHistoryLoadPast value)
-        conversationMessagesHistoryLoadPast,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryLoadPast(this);
+    return conversationMessagesSyncStateUnsubscribe(this);
   }
 
   @override
@@ -2084,14 +1866,14 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
     TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult? Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult? Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
   }) {
-    return conversationMessagesHistoryLoadPast?.call(this);
+    return conversationMessagesSyncStateUnsubscribe?.call(this);
   }
 
   @override
@@ -2103,30 +1885,253 @@ class _$MsgConversationMessagesHistoryLoadPastImpl
     TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesHistory value)?
-        conversationMessagesHistorySubscribe,
-    TResult Function(MsgConversationMessagesHistoryUnsubscribe value)?
-        conversationMessagesHistoryUnsubscribe,
-    TResult Function(MsgConversationMessagesHistoryLoadPast value)?
-        conversationMessagesHistoryLoadPast,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
     required TResult orElse(),
   }) {
-    if (conversationMessagesHistoryLoadPast != null) {
-      return conversationMessagesHistoryLoadPast(this);
+    if (conversationMessagesSyncStateUnsubscribe != null) {
+      return conversationMessagesSyncStateUnsubscribe(this);
     }
     return orElse();
   }
 }
 
-abstract class MsgConversationMessagesHistoryLoadPast implements Msg {
-  const factory MsgConversationMessagesHistoryLoadPast(
+abstract class MsgConversationMessagesSyncStateUnsubscribe implements Msg {
+  const factory MsgConversationMessagesSyncStateUnsubscribe(final String key) =
+      _$MsgConversationMessagesSyncStateUnsubscribeImpl;
+
+  String get key;
+  @JsonKey(ignore: true)
+  _$$MsgConversationMessagesSyncStateUnsubscribeImplCopyWith<
+          _$MsgConversationMessagesSyncStateUnsubscribeImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$MsgConversationMessagesLoadPastImplCopyWith<$Res> {
+  factory _$$MsgConversationMessagesLoadPastImplCopyWith(
+          _$MsgConversationMessagesLoadPastImpl value,
+          $Res Function(_$MsgConversationMessagesLoadPastImpl) then) =
+      __$$MsgConversationMessagesLoadPastImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({SendPort sendPort, int conversationId});
+}
+
+/// @nodoc
+class __$$MsgConversationMessagesLoadPastImplCopyWithImpl<$Res>
+    extends _$MsgCopyWithImpl<$Res, _$MsgConversationMessagesLoadPastImpl>
+    implements _$$MsgConversationMessagesLoadPastImplCopyWith<$Res> {
+  __$$MsgConversationMessagesLoadPastImplCopyWithImpl(
+      _$MsgConversationMessagesLoadPastImpl _value,
+      $Res Function(_$MsgConversationMessagesLoadPastImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? sendPort = null,
+    Object? conversationId = null,
+  }) {
+    return _then(_$MsgConversationMessagesLoadPastImpl(
+      null == sendPort
+          ? _value.sendPort
+          : sendPort // ignore: cast_nullable_to_non_nullable
+              as SendPort,
+      null == conversationId
+          ? _value.conversationId
+          : conversationId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$MsgConversationMessagesLoadPastImpl
+    implements MsgConversationMessagesLoadPast {
+  const _$MsgConversationMessagesLoadPastImpl(
+      this.sendPort, this.conversationId);
+
+  @override
+  final SendPort sendPort;
+  @override
+  final int conversationId;
+
+  @override
+  String toString() {
+    return 'Msg.conversationMessagesLoadPast(sendPort: $sendPort, conversationId: $conversationId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MsgConversationMessagesLoadPastImpl &&
+            (identical(other.sendPort, sendPort) ||
+                other.sendPort == sendPort) &&
+            (identical(other.conversationId, conversationId) ||
+                other.conversationId == conversationId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, sendPort, conversationId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MsgConversationMessagesLoadPastImplCopyWith<
+          _$MsgConversationMessagesLoadPastImpl>
+      get copyWith => __$$MsgConversationMessagesLoadPastImplCopyWithImpl<
+          _$MsgConversationMessagesLoadPastImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(SendPort sendPort, int workspaceId,
+            String username, String password)
+        login,
+    required TResult Function(SendPort sendPort) logout,
+    required TResult Function(SendPort sendPort, String key)
+        authStatusSubscribe,
+    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
+        subscribeProc,
+    required TResult Function(String key) unsubscribeProc,
+    required TResult Function(SendPort sendPort, int conversationId, String key)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(String key)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(SendPort sendPort, int conversationId)
+        conversationMessagesLoadPast,
+  }) {
+    return conversationMessagesLoadPast(sendPort, conversationId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(SendPort sendPort, int workspaceId, String username,
+            String password)?
+        login,
+    TResult? Function(SendPort sendPort)? logout,
+    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
+    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
+        subscribeProc,
+    TResult? Function(String key)? unsubscribeProc,
+    TResult? Function(SendPort sendPort, int conversationId, String key)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(SendPort sendPort, int conversationId)?
+        conversationMessagesLoadPast,
+  }) {
+    return conversationMessagesLoadPast?.call(sendPort, conversationId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(SendPort sendPort, int workspaceId, String username,
+            String password)?
+        login,
+    TResult Function(SendPort sendPort)? logout,
+    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
+    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
+        subscribeProc,
+    TResult Function(String key)? unsubscribeProc,
+    TResult Function(SendPort sendPort, int conversationId, String key)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
+    TResult Function(SendPort sendPort, int conversationId)?
+        conversationMessagesLoadPast,
+    required TResult orElse(),
+  }) {
+    if (conversationMessagesLoadPast != null) {
+      return conversationMessagesLoadPast(sendPort, conversationId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MsgLogin value) login,
+    required TResult Function(MsgLogout value) logout,
+    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
+    required TResult Function(MsgAuthStatusUnsubscribe value)
+        authStatusUnsubscribe,
+    required TResult Function(MsgSubscribeProc value) subscribeProc,
+    required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
+  }) {
+    return conversationMessagesLoadPast(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MsgLogin value)? login,
+    TResult? Function(MsgLogout value)? logout,
+    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
+    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgSubscribeProc value)? subscribeProc,
+    TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
+  }) {
+    return conversationMessagesLoadPast?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(MsgLogin value)? login,
+    TResult Function(MsgLogout value)? logout,
+    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
+    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgSubscribeProc value)? subscribeProc,
+    TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
+    required TResult orElse(),
+  }) {
+    if (conversationMessagesLoadPast != null) {
+      return conversationMessagesLoadPast(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class MsgConversationMessagesLoadPast implements Msg {
+  const factory MsgConversationMessagesLoadPast(
           final SendPort sendPort, final int conversationId) =
-      _$MsgConversationMessagesHistoryLoadPastImpl;
+      _$MsgConversationMessagesLoadPastImpl;
 
   SendPort get sendPort;
   int get conversationId;
   @JsonKey(ignore: true)
-  _$$MsgConversationMessagesHistoryLoadPastImplCopyWith<
-          _$MsgConversationMessagesHistoryLoadPastImpl>
+  _$$MsgConversationMessagesLoadPastImplCopyWith<
+          _$MsgConversationMessagesLoadPastImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

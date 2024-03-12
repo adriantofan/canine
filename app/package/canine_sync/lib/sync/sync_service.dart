@@ -13,7 +13,6 @@ class SyncService implements Sync {
   final Cache _cache;
   final Logger _logger = Logger('SyncService');
   final APIClient _apiClient;
-
   final StreamController<void> _stopController =
       StreamController<void>.broadcast();
 
@@ -60,12 +59,13 @@ class SyncService implements Sync {
   @override
   Stream<AuthenticationStatus> get authStatus => _apiClient.authStatus;
 
-  final _conversationHistoryLoadPastFutures =
+  final _conversationMessagesLoadPastFutures =
       <int, (Completer<void>, Future<RemoteDataStatus>)>{};
   @override
-  Future<RemoteDataStatus> conversationHistoryLoadPast(int conversationId) {
-    final crtHistory = _conversationHistorySubject(conversationId).valueOrNull!;
-    final status = crtHistory.startStatus;
+  Future<RemoteDataStatus> conversationMessagesLoadPast(int conversationId) {
+    final crtSyncState =
+        _conversationSyncStateSubject(conversationId).valueOrNull!;
+    final status = crtSyncState.startStatus;
     final RemoteDataStatusLoading loadingStatus;
 
     switch (status) {
@@ -74,59 +74,64 @@ class SyncService implements Sync {
       case RemoteDataStatusComplete():
         return Future.value(status);
       case RemoteDataStatusLoading():
-        return _conversationHistoryLoadPastFutures[conversationId]!.$2;
+        return _conversationMessagesLoadPastFutures[conversationId]!.$2;
       case RemoteDataStatusFailed():
         loadingStatus = status.retry;
     }
-    _updateConversationHistoryStartStatus(conversationId, loadingStatus);
+    _updateConversationSyncStateStartStatus(conversationId, loadingStatus);
 
     final completer = Completer<void>();
 
-    final future =
-        _apiClient.getConversationMessages(conversationId).then((result) {
+    final conversationMessageState =
+        _cache.getConversationMessagesState(conversationId);
+    final lastId = switch (conversationMessageState) {
+      ListStateCached() => conversationMessageState.startId,
+      _ => null,
+    };
+    final future = _apiClient
+        .getConversationMessages(conversationId, lastId)
+        .then((result) {
       if (completer.isCompleted) {
         return loadingStatus.failed;
       }
 
-      if (result.data.isEmpty) {
-        _updateConversationHistoryStartStatus(
-            conversationId, loadingStatus.complete);
-        return loadingStatus.complete as RemoteDataStatus;
-      }
+      final update = _cache.conversationMessagesLoaded(
+          conversationId, result.data, result.meta.hasMore);
 
-      final update =
-          _cache.conversationMessagesLoaded(conversationId, result.data);
       if (update != null) {
         // normally it should be always true
         _forEachProc((p) => p.update(update, _cache));
       }
 
-      final crtHistory = _conversationHistorySubject(conversationId);
-      crtHistory.value = crtHistory.value.copyWith(
-          startId: result.meta.prevId, startStatus: loadingStatus.loaded);
+      final finalLoadingStatus =
+          result.meta.hasMore ? loadingStatus.loaded : loadingStatus.complete;
 
-      return loadingStatus.loaded;
+      final crtSyncState = _conversationSyncStateSubject(conversationId);
+      crtSyncState.value =
+          crtSyncState.value.copyWith(startStatus: finalLoadingStatus);
+
+      return finalLoadingStatus;
     }).catchError((e) {
       if (!completer.isCompleted) {
-        _updateConversationHistoryStartStatus(
+        _updateConversationSyncStateStartStatus(
             conversationId, loadingStatus.failed);
       }
       return loadingStatus.failed;
     }).then((value) {
       if (!completer.isCompleted) {
-        _conversationHistoryLoadPastFutures.remove(conversationId);
+        _conversationMessagesLoadPastFutures.remove(conversationId);
       }
       return value;
     });
-    _conversationHistoryLoadPastFutures[conversationId] = (completer, future);
+    _conversationMessagesLoadPastFutures[conversationId] = (completer, future);
     return future;
   }
 
   @override
-  Stream<HistoryState> conversationHistoryStream<HistoryState>(
+  Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId) {
-    return _conversationHistorySubject(conversationId).stream
-        as Stream<HistoryState>;
+    return _conversationSyncStateSubject(conversationId).stream
+        as Stream<ListSyncState>;
   }
 
   @override
@@ -138,13 +143,13 @@ class SyncService implements Sync {
   Future<void> logout() {
     // (eventually) stops the websocket
     _stopController.add(null);
-    // Make sure ongoing history loads won't change the state after completing
-    _conversationHistoryLoadPastFutures.forEach((_, value) {
+    // Make sure ongoing message loads won't change the state after completing
+    _conversationMessagesLoadPastFutures.forEach((_, value) {
       var (completer, _) = value;
       completer.complete();
     });
     // Forget about them, so they won't remain in memory potentially with new ones
-    _conversationHistoryLoadPastFutures.clear();
+    _conversationMessagesLoadPastFutures.clear();
     return _apiClient.logout();
   }
 
@@ -193,26 +198,24 @@ class SyncService implements Sync {
     });
   }
 
-  final _conversationHistory = <int, BehaviorSubject<HistoryState>>{};
+  final _conversationSyncState = <int, BehaviorSubject<ListSyncState>>{};
 
-  void _updateConversationHistoryStartStatus(
+  void _updateConversationSyncStateStartStatus(
       int conversationId, RemoteDataStatus startStatus) {
-    final crtHistory = _conversationHistorySubject(conversationId);
-    crtHistory.value = crtHistory.value.copyWith(startStatus: startStatus);
+    final crtSyncState = _conversationSyncStateSubject(conversationId);
+    crtSyncState.value = crtSyncState.value.copyWith(startStatus: startStatus);
   }
 
-  BehaviorSubject<HistoryState> _conversationHistorySubject(
+  BehaviorSubject<ListSyncState> _conversationSyncStateSubject(
       int conversationId) {
-    if (_conversationHistory.containsKey(conversationId)) {
-      return _conversationHistory[conversationId]!;
+    if (_conversationSyncState.containsKey(conversationId)) {
+      return _conversationSyncState[conversationId]!;
     }
-    final messages = _cache.getConversationMessages(conversationId);
-    final initialState = messages.isEmpty
-        ? const HistoryState(0, RemoteDataStatus.undetermined())
-        : HistoryState(messages[0].id, const RemoteDataStatus.undetermined());
+    final initialState = ListSyncState.fromCacheListState(
+        _cache.getConversationMessagesState(conversationId));
 
-    final controller = BehaviorSubject<HistoryState>.seeded(initialState);
-    _conversationHistory[conversationId] = controller;
+    final controller = BehaviorSubject<ListSyncState>.seeded(initialState);
+    _conversationSyncState[conversationId] = controller;
     return controller;
   }
 }

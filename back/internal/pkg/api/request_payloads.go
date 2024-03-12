@@ -24,9 +24,10 @@ type GetConversationMessagesParams struct {
 }
 
 type PaginationMeta struct {
-	Limit  int   `json:"limit"`
-	PrevID int64 `json:"prev_id"`
-	NextID int64 `json:"next_id"`
+	Limit   int   `json:"limit"`
+	PrevID  int64 `json:"prev_id"`
+	NextID  int64 `json:"next_id"`
+	HasMore bool  `json:"has_more"`
 }
 
 func ParseGetConversationMessagesParams(values url.Values) (GetConversationMessagesParams, error) {

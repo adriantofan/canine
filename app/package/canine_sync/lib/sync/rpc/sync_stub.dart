@@ -117,11 +117,11 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<RemoteDataStatus> conversationHistoryLoadPast(
+  Future<RemoteDataStatus> conversationMessagesLoadPast(
       int conversationId) async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(Msg.conversationMessagesHistoryLoadPast(
-        receivePort.sendPort, conversationId));
+    _sendPort.send(
+        Msg.conversationMessagesLoadPast(receivePort.sendPort, conversationId));
     await for (var data in receivePort) {
       if (data is RemoteDataStatus) {
         return data;
@@ -129,23 +129,23 @@ class SyncStub extends Sync {
 
       // Unclear what to do with API error ... should it be thrown? displayed?
       throw ArgumentError.value(data,
-          "Invalid response from canine_sync on conversationHistoryLoadPast");
+          "Invalid response from canine_sync on conversationMessagesLoadPast");
     }
 
     throw AssertionError(
-        "canine_sync did not respond to conversationHistoryLoadPast");
+        "canine_sync did not respond to conversationMessagesLoadPast");
   }
 
   @override
-  Stream<HistoryState> conversationHistoryStream<HistoryState>(
+  Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId) {
-    StreamController<HistoryState> controller = StreamController();
+    StreamController<ListSyncState> controller = StreamController();
     final key = uuid.v4();
     ReceivePort receivePort = ReceivePort();
     StreamSubscription? streamSubscription;
     controller.onListen = () {
       streamSubscription = receivePort.listen((data) {
-        if (data is HistoryState) {
+        if (data is ListSyncState) {
           controller.add(data);
           return;
         }
@@ -155,9 +155,9 @@ class SyncStub extends Sync {
           return;
         }
         throw ArgumentError.value(data,
-            "Invalid response from canine_sync on conversationHistoryStream");
+            "Invalid response from canine_sync on conversationMessagesSyncStateStream");
       });
-      _sendPort.send(Msg.conversationMessagesHistorySubscribe(
+      _sendPort.send(Msg.conversationMessagesSyncStateSubscribe(
           receivePort.sendPort, conversationId, key));
     };
     controller.onCancel = () {

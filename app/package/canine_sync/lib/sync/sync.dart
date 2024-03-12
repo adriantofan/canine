@@ -10,9 +10,9 @@ abstract class Sync {
   Future<void> logout();
   Stream<AuthenticationStatus> get authStatus;
 
-  Stream<HistoryState> conversationHistoryStream<HistoryState>(
+  Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId);
-  Future<RemoteDataStatus> conversationHistoryLoadPast(int conversationId);
+  Future<RemoteDataStatus> conversationMessagesLoadPast(int conversationId);
 }
 
 class LogoutException implements Exception {

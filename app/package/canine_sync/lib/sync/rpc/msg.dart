@@ -19,14 +19,13 @@ sealed class Msg {
           SendPort sendPort, ProcBuilder procBuilder, String key) =
       MsgSubscribeProc;
   const factory Msg.unsubscribeProc(String key) = MsgUnsubscribeProc;
-  const factory Msg.conversationMessagesHistorySubscribe(
+  const factory Msg.conversationMessagesSyncStateSubscribe(
           SendPort sendPort, int conversationId, String key) =
-      MsgConversationMessagesHistory;
-  const factory Msg.conversationMessagesHistoryUnsubscribe(String key) =
-      MsgConversationMessagesHistoryUnsubscribe;
-  const factory Msg.conversationMessagesHistoryLoadPast(
-          SendPort sendPort, int conversationId) =
-      MsgConversationMessagesHistoryLoadPast;
+      MsgConversationMessagesSyncStateSubscribe;
+  const factory Msg.conversationMessagesSyncStateUnsubscribe(String key) =
+      MsgConversationMessagesSyncStateUnsubscribe;
+  const factory Msg.conversationMessagesLoadPast(
+      SendPort sendPort, int conversationId) = MsgConversationMessagesLoadPast;
 }
 
 class MsgOutUnsubscribeAck {

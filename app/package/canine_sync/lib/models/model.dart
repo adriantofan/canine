@@ -1,6 +1,6 @@
 export 'api_error.dart';
 export 'conversation.dart';
-export 'history/history.dart';
-export 'history/remote_data_status.dart';
 export 'message.dart';
+export 'sync/list_sync_state.dart';
+export 'sync/remote_data_status.dart';
 export 'user.dart';

@@ -17,6 +17,7 @@ import 'credential_set.dart';
 // enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class APIClient {
+  static int kItemsPerPage = 25;
   final _apiBase = 'http://localhost:8080';
   final _wsBase = 'ws://localhost:8080';
   final _logger = Logger('APIClient');
@@ -36,17 +37,31 @@ class APIClient {
     }
   }
 
-  Future<Paginated<Message>> getConversationMessages(int conversationId) async {
-    final response =
-        await _getJSON('/$_workspaceId/conversations/$conversationId/messages');
-    return Paginated<Message>.fromJson(
-        response, (json) => Message.fromJson(json as Map<String, dynamic>));
+  Future<Paginated<Message>> getConversationMessages(
+      int conversationId, int? lastId) async {
+    final response = await _getJSON(
+        '/$_workspaceId/conversations/$conversationId/messages?lower_than=$lastId');
+    try {
+      final result = Paginated<Message>.fromJson(
+          response, (json) => Message.fromJson(json as Map<String, dynamic>));
+      return result;
+    } catch (e) {
+      _logger.severe('Failed to parse paginated response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
+    }
   }
 
   Future<RTCRemoteUpdate> rtcSession(RtcRemote state) async {
     final response =
         await _postJSON('/$_workspaceId/users/$_userId/rtc/session', state);
-    return RTCRemoteUpdate.fromJson(response);
+    try {
+      return RTCRemoteUpdate.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse rtc session response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
+    }
   }
 
   Uri rtcConnectionUri(String syncToken) {

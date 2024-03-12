@@ -19,24 +19,24 @@ mixin _$MessagesEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(ListChange<ChatMessage, int> messages) changes,
-    required TResult Function(HistoryState history) historyChanged,
+    required TResult Function(ListUpdate<ChatMessage> messages) changes,
+    required TResult Function(ListSyncState syncState) syncStateChanged,
     required TResult Function() loadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult? Function(HistoryState history)? historyChanged,
+    TResult? Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult? Function(ListSyncState syncState)? syncStateChanged,
     TResult? Function()? loadPast,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult Function(HistoryState history)? historyChanged,
+    TResult Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult Function(ListSyncState syncState)? syncStateChanged,
     TResult Function()? loadPast,
     required TResult orElse(),
   }) =>
@@ -45,7 +45,8 @@ mixin _$MessagesEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(MessagesEventStarted value) started,
     required TResult Function(MessagesEventChanges value) changes,
-    required TResult Function(MessagesEventHistoryChanged value) historyChanged,
+    required TResult Function(MessagesEventSyncStateChanged value)
+        syncStateChanged,
     required TResult Function(MessagesEventLoadMore value) loadPast,
   }) =>
       throw _privateConstructorUsedError;
@@ -53,7 +54,7 @@ mixin _$MessagesEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MessagesEventStarted value)? started,
     TResult? Function(MessagesEventChanges value)? changes,
-    TResult? Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult? Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult? Function(MessagesEventLoadMore value)? loadPast,
   }) =>
       throw _privateConstructorUsedError;
@@ -61,7 +62,7 @@ mixin _$MessagesEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MessagesEventStarted value)? started,
     TResult Function(MessagesEventChanges value)? changes,
-    TResult Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult Function(MessagesEventLoadMore value)? loadPast,
     required TResult orElse(),
   }) =>
@@ -126,8 +127,8 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(ListChange<ChatMessage, int> messages) changes,
-    required TResult Function(HistoryState history) historyChanged,
+    required TResult Function(ListUpdate<ChatMessage> messages) changes,
+    required TResult Function(ListSyncState syncState) syncStateChanged,
     required TResult Function() loadPast,
   }) {
     return started();
@@ -137,8 +138,8 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult? Function(HistoryState history)? historyChanged,
+    TResult? Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult? Function(ListSyncState syncState)? syncStateChanged,
     TResult? Function()? loadPast,
   }) {
     return started?.call();
@@ -148,8 +149,8 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult Function(HistoryState history)? historyChanged,
+    TResult Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult Function(ListSyncState syncState)? syncStateChanged,
     TResult Function()? loadPast,
     required TResult orElse(),
   }) {
@@ -164,7 +165,8 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   TResult map<TResult extends Object?>({
     required TResult Function(MessagesEventStarted value) started,
     required TResult Function(MessagesEventChanges value) changes,
-    required TResult Function(MessagesEventHistoryChanged value) historyChanged,
+    required TResult Function(MessagesEventSyncStateChanged value)
+        syncStateChanged,
     required TResult Function(MessagesEventLoadMore value) loadPast,
   }) {
     return started(this);
@@ -175,7 +177,7 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MessagesEventStarted value)? started,
     TResult? Function(MessagesEventChanges value)? changes,
-    TResult? Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult? Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult? Function(MessagesEventLoadMore value)? loadPast,
   }) {
     return started?.call(this);
@@ -186,7 +188,7 @@ class _$MessagesEventStartedImpl implements MessagesEventStarted {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MessagesEventStarted value)? started,
     TResult Function(MessagesEventChanges value)? changes,
-    TResult Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult Function(MessagesEventLoadMore value)? loadPast,
     required TResult orElse(),
   }) {
@@ -207,7 +209,7 @@ abstract class _$$MessagesEventChangesImplCopyWith<$Res> {
           $Res Function(_$MessagesEventChangesImpl) then) =
       __$$MessagesEventChangesImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({ListChange<ChatMessage, int> messages});
+  $Res call({ListUpdate<ChatMessage> messages});
 }
 
 /// @nodoc
@@ -227,7 +229,7 @@ class __$$MessagesEventChangesImplCopyWithImpl<$Res>
       null == messages
           ? _value.messages
           : messages // ignore: cast_nullable_to_non_nullable
-              as ListChange<ChatMessage, int>,
+              as ListUpdate<ChatMessage>,
     ));
   }
 }
@@ -238,7 +240,7 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   const _$MessagesEventChangesImpl(this.messages);
 
   @override
-  final ListChange<ChatMessage, int> messages;
+  final ListUpdate<ChatMessage> messages;
 
   @override
   String toString() {
@@ -269,8 +271,8 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(ListChange<ChatMessage, int> messages) changes,
-    required TResult Function(HistoryState history) historyChanged,
+    required TResult Function(ListUpdate<ChatMessage> messages) changes,
+    required TResult Function(ListSyncState syncState) syncStateChanged,
     required TResult Function() loadPast,
   }) {
     return changes(messages);
@@ -280,8 +282,8 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult? Function(HistoryState history)? historyChanged,
+    TResult? Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult? Function(ListSyncState syncState)? syncStateChanged,
     TResult? Function()? loadPast,
   }) {
     return changes?.call(messages);
@@ -291,8 +293,8 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult Function(HistoryState history)? historyChanged,
+    TResult Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult Function(ListSyncState syncState)? syncStateChanged,
     TResult Function()? loadPast,
     required TResult orElse(),
   }) {
@@ -307,7 +309,8 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   TResult map<TResult extends Object?>({
     required TResult Function(MessagesEventStarted value) started,
     required TResult Function(MessagesEventChanges value) changes,
-    required TResult Function(MessagesEventHistoryChanged value) historyChanged,
+    required TResult Function(MessagesEventSyncStateChanged value)
+        syncStateChanged,
     required TResult Function(MessagesEventLoadMore value) loadPast,
   }) {
     return changes(this);
@@ -318,7 +321,7 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MessagesEventStarted value)? started,
     TResult? Function(MessagesEventChanges value)? changes,
-    TResult? Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult? Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult? Function(MessagesEventLoadMore value)? loadPast,
   }) {
     return changes?.call(this);
@@ -329,7 +332,7 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MessagesEventStarted value)? started,
     TResult Function(MessagesEventChanges value)? changes,
-    TResult Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult Function(MessagesEventLoadMore value)? loadPast,
     required TResult orElse(),
   }) {
@@ -341,122 +344,126 @@ class _$MessagesEventChangesImpl implements MessagesEventChanges {
 }
 
 abstract class MessagesEventChanges implements MessagesEvent {
-  const factory MessagesEventChanges(
-      final ListChange<ChatMessage, int> messages) = _$MessagesEventChangesImpl;
+  const factory MessagesEventChanges(final ListUpdate<ChatMessage> messages) =
+      _$MessagesEventChangesImpl;
 
-  ListChange<ChatMessage, int> get messages;
+  ListUpdate<ChatMessage> get messages;
   @JsonKey(ignore: true)
   _$$MessagesEventChangesImplCopyWith<_$MessagesEventChangesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MessagesEventHistoryChangedImplCopyWith<$Res> {
-  factory _$$MessagesEventHistoryChangedImplCopyWith(
-          _$MessagesEventHistoryChangedImpl value,
-          $Res Function(_$MessagesEventHistoryChangedImpl) then) =
-      __$$MessagesEventHistoryChangedImplCopyWithImpl<$Res>;
+abstract class _$$MessagesEventSyncStateChangedImplCopyWith<$Res> {
+  factory _$$MessagesEventSyncStateChangedImplCopyWith(
+          _$MessagesEventSyncStateChangedImpl value,
+          $Res Function(_$MessagesEventSyncStateChangedImpl) then) =
+      __$$MessagesEventSyncStateChangedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({HistoryState history});
+  $Res call({ListSyncState syncState});
 
-  $HistoryStateCopyWith<$Res> get history;
+  $ListSyncStateCopyWith<$Res> get syncState;
 }
 
 /// @nodoc
-class __$$MessagesEventHistoryChangedImplCopyWithImpl<$Res>
-    extends _$MessagesEventCopyWithImpl<$Res, _$MessagesEventHistoryChangedImpl>
-    implements _$$MessagesEventHistoryChangedImplCopyWith<$Res> {
-  __$$MessagesEventHistoryChangedImplCopyWithImpl(
-      _$MessagesEventHistoryChangedImpl _value,
-      $Res Function(_$MessagesEventHistoryChangedImpl) _then)
+class __$$MessagesEventSyncStateChangedImplCopyWithImpl<$Res>
+    extends _$MessagesEventCopyWithImpl<$Res,
+        _$MessagesEventSyncStateChangedImpl>
+    implements _$$MessagesEventSyncStateChangedImplCopyWith<$Res> {
+  __$$MessagesEventSyncStateChangedImplCopyWithImpl(
+      _$MessagesEventSyncStateChangedImpl _value,
+      $Res Function(_$MessagesEventSyncStateChangedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? history = null,
+    Object? syncState = null,
   }) {
-    return _then(_$MessagesEventHistoryChangedImpl(
-      null == history
-          ? _value.history
-          : history // ignore: cast_nullable_to_non_nullable
-              as HistoryState,
+    return _then(_$MessagesEventSyncStateChangedImpl(
+      null == syncState
+          ? _value.syncState
+          : syncState // ignore: cast_nullable_to_non_nullable
+              as ListSyncState,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $HistoryStateCopyWith<$Res> get history {
-    return $HistoryStateCopyWith<$Res>(_value.history, (value) {
-      return _then(_value.copyWith(history: value));
+  $ListSyncStateCopyWith<$Res> get syncState {
+    return $ListSyncStateCopyWith<$Res>(_value.syncState, (value) {
+      return _then(_value.copyWith(syncState: value));
     });
   }
 }
 
 /// @nodoc
 
-class _$MessagesEventHistoryChangedImpl implements MessagesEventHistoryChanged {
-  const _$MessagesEventHistoryChangedImpl(this.history);
+class _$MessagesEventSyncStateChangedImpl
+    implements MessagesEventSyncStateChanged {
+  const _$MessagesEventSyncStateChangedImpl(this.syncState);
 
   @override
-  final HistoryState history;
+  final ListSyncState syncState;
 
   @override
   String toString() {
-    return 'MessagesEvent.historyChanged(history: $history)';
+    return 'MessagesEvent.syncStateChanged(syncState: $syncState)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MessagesEventHistoryChangedImpl &&
-            (identical(other.history, history) || other.history == history));
+            other is _$MessagesEventSyncStateChangedImpl &&
+            (identical(other.syncState, syncState) ||
+                other.syncState == syncState));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, history);
+  int get hashCode => Object.hash(runtimeType, syncState);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MessagesEventHistoryChangedImplCopyWith<_$MessagesEventHistoryChangedImpl>
-      get copyWith => __$$MessagesEventHistoryChangedImplCopyWithImpl<
-          _$MessagesEventHistoryChangedImpl>(this, _$identity);
+  _$$MessagesEventSyncStateChangedImplCopyWith<
+          _$MessagesEventSyncStateChangedImpl>
+      get copyWith => __$$MessagesEventSyncStateChangedImplCopyWithImpl<
+          _$MessagesEventSyncStateChangedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(ListChange<ChatMessage, int> messages) changes,
-    required TResult Function(HistoryState history) historyChanged,
+    required TResult Function(ListUpdate<ChatMessage> messages) changes,
+    required TResult Function(ListSyncState syncState) syncStateChanged,
     required TResult Function() loadPast,
   }) {
-    return historyChanged(history);
+    return syncStateChanged(syncState);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult? Function(HistoryState history)? historyChanged,
+    TResult? Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult? Function(ListSyncState syncState)? syncStateChanged,
     TResult? Function()? loadPast,
   }) {
-    return historyChanged?.call(history);
+    return syncStateChanged?.call(syncState);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult Function(HistoryState history)? historyChanged,
+    TResult Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult Function(ListSyncState syncState)? syncStateChanged,
     TResult Function()? loadPast,
     required TResult orElse(),
   }) {
-    if (historyChanged != null) {
-      return historyChanged(history);
+    if (syncStateChanged != null) {
+      return syncStateChanged(syncState);
     }
     return orElse();
   }
@@ -466,10 +473,11 @@ class _$MessagesEventHistoryChangedImpl implements MessagesEventHistoryChanged {
   TResult map<TResult extends Object?>({
     required TResult Function(MessagesEventStarted value) started,
     required TResult Function(MessagesEventChanges value) changes,
-    required TResult Function(MessagesEventHistoryChanged value) historyChanged,
+    required TResult Function(MessagesEventSyncStateChanged value)
+        syncStateChanged,
     required TResult Function(MessagesEventLoadMore value) loadPast,
   }) {
-    return historyChanged(this);
+    return syncStateChanged(this);
   }
 
   @override
@@ -477,10 +485,10 @@ class _$MessagesEventHistoryChangedImpl implements MessagesEventHistoryChanged {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MessagesEventStarted value)? started,
     TResult? Function(MessagesEventChanges value)? changes,
-    TResult? Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult? Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult? Function(MessagesEventLoadMore value)? loadPast,
   }) {
-    return historyChanged?.call(this);
+    return syncStateChanged?.call(this);
   }
 
   @override
@@ -488,24 +496,25 @@ class _$MessagesEventHistoryChangedImpl implements MessagesEventHistoryChanged {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MessagesEventStarted value)? started,
     TResult Function(MessagesEventChanges value)? changes,
-    TResult Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult Function(MessagesEventLoadMore value)? loadPast,
     required TResult orElse(),
   }) {
-    if (historyChanged != null) {
-      return historyChanged(this);
+    if (syncStateChanged != null) {
+      return syncStateChanged(this);
     }
     return orElse();
   }
 }
 
-abstract class MessagesEventHistoryChanged implements MessagesEvent {
-  const factory MessagesEventHistoryChanged(final HistoryState history) =
-      _$MessagesEventHistoryChangedImpl;
+abstract class MessagesEventSyncStateChanged implements MessagesEvent {
+  const factory MessagesEventSyncStateChanged(final ListSyncState syncState) =
+      _$MessagesEventSyncStateChangedImpl;
 
-  HistoryState get history;
+  ListSyncState get syncState;
   @JsonKey(ignore: true)
-  _$$MessagesEventHistoryChangedImplCopyWith<_$MessagesEventHistoryChangedImpl>
+  _$$MessagesEventSyncStateChangedImplCopyWith<
+          _$MessagesEventSyncStateChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -550,8 +559,8 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(ListChange<ChatMessage, int> messages) changes,
-    required TResult Function(HistoryState history) historyChanged,
+    required TResult Function(ListUpdate<ChatMessage> messages) changes,
+    required TResult Function(ListSyncState syncState) syncStateChanged,
     required TResult Function() loadPast,
   }) {
     return loadPast();
@@ -561,8 +570,8 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult? Function(HistoryState history)? historyChanged,
+    TResult? Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult? Function(ListSyncState syncState)? syncStateChanged,
     TResult? Function()? loadPast,
   }) {
     return loadPast?.call();
@@ -572,8 +581,8 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(ListChange<ChatMessage, int> messages)? changes,
-    TResult Function(HistoryState history)? historyChanged,
+    TResult Function(ListUpdate<ChatMessage> messages)? changes,
+    TResult Function(ListSyncState syncState)? syncStateChanged,
     TResult Function()? loadPast,
     required TResult orElse(),
   }) {
@@ -588,7 +597,8 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   TResult map<TResult extends Object?>({
     required TResult Function(MessagesEventStarted value) started,
     required TResult Function(MessagesEventChanges value) changes,
-    required TResult Function(MessagesEventHistoryChanged value) historyChanged,
+    required TResult Function(MessagesEventSyncStateChanged value)
+        syncStateChanged,
     required TResult Function(MessagesEventLoadMore value) loadPast,
   }) {
     return loadPast(this);
@@ -599,7 +609,7 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MessagesEventStarted value)? started,
     TResult? Function(MessagesEventChanges value)? changes,
-    TResult? Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult? Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult? Function(MessagesEventLoadMore value)? loadPast,
   }) {
     return loadPast?.call(this);
@@ -610,7 +620,7 @@ class _$MessagesEventLoadMoreImpl implements MessagesEventLoadMore {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MessagesEventStarted value)? started,
     TResult Function(MessagesEventChanges value)? changes,
-    TResult Function(MessagesEventHistoryChanged value)? historyChanged,
+    TResult Function(MessagesEventSyncStateChanged value)? syncStateChanged,
     TResult Function(MessagesEventLoadMore value)? loadPast,
     required TResult orElse(),
   }) {
@@ -628,7 +638,7 @@ abstract class MessagesEventLoadMore implements MessagesEvent {
 /// @nodoc
 mixin _$MessagesState {
   List<ChatMessage> get messages => throw _privateConstructorUsedError;
-  HistoryState? get historyState => throw _privateConstructorUsedError;
+  ListSyncState? get syncState => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MessagesStateCopyWith<MessagesState> get copyWith =>
@@ -641,9 +651,9 @@ abstract class $MessagesStateCopyWith<$Res> {
           MessagesState value, $Res Function(MessagesState) then) =
       _$MessagesStateCopyWithImpl<$Res, MessagesState>;
   @useResult
-  $Res call({List<ChatMessage> messages, HistoryState? historyState});
+  $Res call({List<ChatMessage> messages, ListSyncState? syncState});
 
-  $HistoryStateCopyWith<$Res>? get historyState;
+  $ListSyncStateCopyWith<$Res>? get syncState;
 }
 
 /// @nodoc
@@ -660,29 +670,29 @@ class _$MessagesStateCopyWithImpl<$Res, $Val extends MessagesState>
   @override
   $Res call({
     Object? messages = null,
-    Object? historyState = freezed,
+    Object? syncState = freezed,
   }) {
     return _then(_value.copyWith(
       messages: null == messages
           ? _value.messages
           : messages // ignore: cast_nullable_to_non_nullable
               as List<ChatMessage>,
-      historyState: freezed == historyState
-          ? _value.historyState
-          : historyState // ignore: cast_nullable_to_non_nullable
-              as HistoryState?,
+      syncState: freezed == syncState
+          ? _value.syncState
+          : syncState // ignore: cast_nullable_to_non_nullable
+              as ListSyncState?,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $HistoryStateCopyWith<$Res>? get historyState {
-    if (_value.historyState == null) {
+  $ListSyncStateCopyWith<$Res>? get syncState {
+    if (_value.syncState == null) {
       return null;
     }
 
-    return $HistoryStateCopyWith<$Res>(_value.historyState!, (value) {
-      return _then(_value.copyWith(historyState: value) as $Val);
+    return $ListSyncStateCopyWith<$Res>(_value.syncState!, (value) {
+      return _then(_value.copyWith(syncState: value) as $Val);
     });
   }
 }
@@ -695,10 +705,10 @@ abstract class _$$MessageStateImplCopyWith<$Res>
       __$$MessageStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<ChatMessage> messages, HistoryState? historyState});
+  $Res call({List<ChatMessage> messages, ListSyncState? syncState});
 
   @override
-  $HistoryStateCopyWith<$Res>? get historyState;
+  $ListSyncStateCopyWith<$Res>? get syncState;
 }
 
 /// @nodoc
@@ -713,17 +723,17 @@ class __$$MessageStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? messages = null,
-    Object? historyState = freezed,
+    Object? syncState = freezed,
   }) {
     return _then(_$MessageStateImpl(
       null == messages
           ? _value._messages
           : messages // ignore: cast_nullable_to_non_nullable
               as List<ChatMessage>,
-      freezed == historyState
-          ? _value.historyState
-          : historyState // ignore: cast_nullable_to_non_nullable
-              as HistoryState?,
+      freezed == syncState
+          ? _value.syncState
+          : syncState // ignore: cast_nullable_to_non_nullable
+              as ListSyncState?,
     ));
   }
 }
@@ -731,7 +741,7 @@ class __$$MessageStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$MessageStateImpl implements _MessageState {
-  const _$MessageStateImpl(final List<ChatMessage> messages, this.historyState)
+  const _$MessageStateImpl(final List<ChatMessage> messages, this.syncState)
       : _messages = messages;
 
   final List<ChatMessage> _messages;
@@ -743,11 +753,11 @@ class _$MessageStateImpl implements _MessageState {
   }
 
   @override
-  final HistoryState? historyState;
+  final ListSyncState? syncState;
 
   @override
   String toString() {
-    return 'MessagesState(messages: $messages, historyState: $historyState)';
+    return 'MessagesState(messages: $messages, syncState: $syncState)';
   }
 
   @override
@@ -756,13 +766,13 @@ class _$MessageStateImpl implements _MessageState {
         (other.runtimeType == runtimeType &&
             other is _$MessageStateImpl &&
             const DeepCollectionEquality().equals(other._messages, _messages) &&
-            (identical(other.historyState, historyState) ||
-                other.historyState == historyState));
+            (identical(other.syncState, syncState) ||
+                other.syncState == syncState));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_messages), historyState);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_messages), syncState);
 
   @JsonKey(ignore: true)
   @override
@@ -773,13 +783,13 @@ class _$MessageStateImpl implements _MessageState {
 
 abstract class _MessageState implements MessagesState {
   const factory _MessageState(
-          final List<ChatMessage> messages, final HistoryState? historyState) =
+          final List<ChatMessage> messages, final ListSyncState? syncState) =
       _$MessageStateImpl;
 
   @override
   List<ChatMessage> get messages;
   @override
-  HistoryState? get historyState;
+  ListSyncState? get syncState;
   @override
   @JsonKey(ignore: true)
   _$$MessageStateImplCopyWith<_$MessageStateImpl> get copyWith =>

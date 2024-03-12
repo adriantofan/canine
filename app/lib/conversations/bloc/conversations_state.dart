@@ -24,10 +24,7 @@ final class ConversationsState {
             conversationId: conversation.conversationId));
   }
 
-  withChanges(
-      ListChange<ConversationInfo, int> update, SyncRepository repository) {
-    final List<ConversationInfo> items = update.items;
-
+  withChanges(List<ConversationInfo> items, SyncRepository repository) {
     Selection? newSelection = currentSelection;
     if (currentSelection != null) {
       final conversationIndex = items.indexWhere((element) =>

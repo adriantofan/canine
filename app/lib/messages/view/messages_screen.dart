@@ -1,8 +1,5 @@
 import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/messages/bloc/messages_bloc.dart';
-import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'messages_list.dart';
 
@@ -19,16 +16,12 @@ class MessagesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // resizes based to include virtual keyboard
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Text('Messages ${_conversationInfo.conversationId}'),
-        ),
-        body: BlocProvider(
-          create: (context) =>
-              MessagesBloc(context.read<SyncRepository>(), _conversationInfo)
-                ..add(const MessagesEvent.started()),
-          child: const MessagesList(),
-        ));
+      // resizes based to include virtual keyboard
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text('Messages ${_conversationInfo.conversationId}'),
+      ),
+      body: MessagesList(_conversationInfo),
+    );
   }
 }

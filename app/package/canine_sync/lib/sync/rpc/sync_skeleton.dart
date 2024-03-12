@@ -27,42 +27,43 @@ class SyncSkeleton {
         _login(msg);
       case MsgLogout():
         _logout(msg);
-      case MsgConversationMessagesHistory():
-        _conversationMessagesHistory(msg);
-      case MsgConversationMessagesHistoryUnsubscribe():
-        _conversationMessagesHistoryUnsubscribe(msg);
-      case MsgConversationMessagesHistoryLoadPast():
-        _conversationMessagesHistoryLoadPast(msg);
+      case MsgConversationMessagesSyncStateSubscribe():
+        _conversationMessagesSyncStateSubscribe(msg);
+      case MsgConversationMessagesSyncStateUnsubscribe():
+        _conversationMessagesSyncStateUnsubscribe(msg);
+      case MsgConversationMessagesLoadPast():
+        _conversationMessagesLoadPast(msg);
     }
   }
 
   // Section: Message handlers
-  void _conversationMessagesHistoryLoadPast(
-      MsgConversationMessagesHistoryLoadPast msg) {
-    _service.conversationHistoryLoadPast(msg.conversationId).then(
+  void _conversationMessagesLoadPast(MsgConversationMessagesLoadPast msg) {
+    _service.conversationMessagesLoadPast(msg.conversationId).then(
         (RemoteDataStatus s) => msg.sendPort.send(s),
         onError: (error, stackTrace) => msg.sendPort.send(error.toString()));
   }
 
   final Map<String, (StreamSubscription, SendPort)>
-      _conversationMessagesHistorySubscriptions = {};
+      _conversationMessagesSyncStateSubscriptions = {};
 
-  void _conversationMessagesHistory(MsgConversationMessagesHistory msg) {
-    if (_conversationMessagesHistorySubscriptions.containsKey(msg.key)) {
+  void _conversationMessagesSyncStateSubscribe(
+      MsgConversationMessagesSyncStateSubscribe msg) {
+    if (_conversationMessagesSyncStateSubscriptions.containsKey(msg.key)) {
       _log.severe('Already subscribed to $msg');
       return;
     }
-    final subscription =
-        _service.conversationHistoryStream(msg.conversationId).listen((state) {
+    final subscription = _service
+        .conversationMessagesSyncStateStream(msg.conversationId)
+        .listen((state) {
       msg.sendPort.send(state);
     });
-    _conversationMessagesHistorySubscriptions[msg.key] =
+    _conversationMessagesSyncStateSubscriptions[msg.key] =
         (subscription, msg.sendPort);
   }
 
-  void _conversationMessagesHistoryUnsubscribe(
-      MsgConversationMessagesHistoryUnsubscribe msg) {
-    if (_conversationMessagesHistorySubscriptions.remove(msg.key)
+  void _conversationMessagesSyncStateUnsubscribe(
+      MsgConversationMessagesSyncStateUnsubscribe msg) {
+    if (_conversationMessagesSyncStateSubscriptions.remove(msg.key)
         case (final subscription, final sendPort)) {
       subscription.cancel();
       sendPort.send(MsgOutUnsubscribeAck());

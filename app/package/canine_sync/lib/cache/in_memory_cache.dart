@@ -8,11 +8,17 @@ class InMemoryCache implements Cache {
   @override
   List<Conversation> conversations = [];
   Map<int, User> _usersById = {};
-  Map<int, List<Message>> conversationMessages = {};
+  Map<int, ListState<Message>> conversationMessages = {};
+
+  @override
+  ListState<Message> getConversationMessagesState(int conversationId) {
+    return conversationMessages[conversationId] ??
+        const ListStateUnknown<Message>();
+  }
 
   @override
   List<Message> getConversationMessages(int conversationId) {
-    return conversationMessages[conversationId] ?? [];
+    return getConversationMessagesState(conversationId).items;
   }
 
   @override
@@ -36,8 +42,8 @@ class InMemoryCache implements Cache {
   void init(RTCRemoteUpdate updates) {
     conversations = updates.conversations;
     _usersById = Map.fromEntries(updates.users.map((u) => MapEntry(u.id, u)));
-    conversationMessages = Map.fromEntries(
-        updates.messages.map((m) => MapEntry(m.conversationId, m.messages)));
+    conversationMessages = Map.fromEntries(updates.messages.map((m) => MapEntry(
+        m.conversationId, ListState.fromItems(m.messages, (m) => m.id, true))));
   }
 
   @override
@@ -49,13 +55,21 @@ class InMemoryCache implements Cache {
 
   @override
   Update? conversationMessagesLoaded(
-      int conversationId, List<Message> newMessages) {
+      int conversationId, List<Message> newMessages, bool moreBeforeStart) {
+    if (newMessages.isEmpty) {
+      return null;
+    }
     // Assumes newMessages are sorted
     if (conversationMessages.containsKey(conversationId)) {
-      conversationMessages[conversationId]!.insertAll(0, newMessages);
+      conversationMessages[conversationId] =
+          conversationMessages[conversationId]!
+              .addLeft(newMessages, (m) => m.id, moreBeforeStart);
     } else {
-      conversationMessages[conversationId] = newMessages;
+      conversationMessages[conversationId] =
+          ListState.fromItems(newMessages, (m) => m.id, moreBeforeStart);
     }
-    throw UnimplementedError();
+
+    return Update.messages(conversationId,
+        ListUpdate(conversationMessages[conversationId]!.items));
   }
 }

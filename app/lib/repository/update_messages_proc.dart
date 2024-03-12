@@ -3,41 +3,62 @@ import 'package:app/messages/model/chat_message.dart';
 import 'package:canine_sync/canine_sync.dart';
 import 'package:logging/logging.dart';
 
-class UpdateMessagesProcRef
-    implements ProcBuilder<ListChange<ChatMessage, int>> {
+class UpdateMessagesProcRef implements ProcBuilder<List<ChatMessage>> {
   final int _conversationId;
 
   const UpdateMessagesProcRef(this._conversationId);
 
   @override
-  Proc<ListChange<ChatMessage, int>> build() {
+  Proc<List<ChatMessage>> build() {
     return UpdateMessagesProc(_conversationId);
   }
 }
 
-class UpdateMessagesProc implements Proc<ListChange<ChatMessage, int>> {
+class UpdateMessagesProc implements Proc<List<ChatMessage>> {
   final _log = Logger('UpdateMessagesProc');
   final int _conversationId;
 
   UpdateMessagesProc(this._conversationId);
 
   @override
-  ListChange<ChatMessage, int>? init(Cache cache) {
+  List<ChatMessage>? init(Cache cache) {
     return _prev = bootstrap(cache);
   }
 
   @override
-  ListChange<ChatMessage, int>? update(Update changes, Cache cache) {
+  List<ChatMessage>? update(Update changes, Cache cache) {
     if (_prev == null) {
       return _prev = bootstrap(cache);
     }
+    switch (changes) {
+      case MessagesUpdate():
+        return _prev = _handleMessagesUpdate(changes, cache);
+      case UsersUpdate():
+        _log.warning(
+            "UpdateMessagesProc.update UsersUpdate: 🟡UNIMPLEMENTED $changes");
+        return _prev = _prev!;
+      case ConversationsUpdate():
+    }
+
     _log.warning("UpdateMessagesProc.update: 🟡UNIMPLEMENTED $changes");
     return null;
   }
 
-  ListChange<ChatMessage, int>? _prev;
+  List<ChatMessage> _handleMessagesUpdate(MessagesUpdate changes, Cache cache) {
+    final messages = cache.getConversationMessages(_conversationId);
+    _log.warning(
+        "UpdateMessagesProc._handleMessagesUpdate: 🟡handle messages update efficiently $changes");
+    final conversationItems = messages
+        .map((c) => makeChatMessage(c, cache))
+        .nonNulls
+        .toList()
+      ..sort(ChatMessage.compareByTimeThenId);
+    return conversationItems;
+  }
 
-  // ListChange<ChatMessage, int> updateConversationInfo(
+  List<ChatMessage>? _prev;
+
+  // List<ChatMessage> updateConversationInfo(
   //     Update changes, Cache cache) {
   //   switch (changes) {
   //     case ConversationsUpdate conversationsUpdate:
@@ -51,14 +72,14 @@ class UpdateMessagesProc implements Proc<ListChange<ChatMessage, int>> {
   //   }
   // }
 
-  ListChange<ChatMessage, int> bootstrap(Cache cache) {
+  List<ChatMessage> bootstrap(Cache cache) {
     final messages = cache.getConversationMessages(_conversationId);
     final conversationItems = messages
         .map((c) => makeChatMessage(c, cache))
         .nonNulls
         .toList()
       ..sort(ChatMessage.compareByTimeThenId);
-    return ListChange([], [], [], conversationItems);
+    return conversationItems;
   }
 }
 

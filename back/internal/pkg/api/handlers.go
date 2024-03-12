@@ -171,14 +171,15 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 		nextId = conversations[len(conversations)-1].ID
 	}
 	response := struct {
-		Data []model.Conversation `json:"Data"`
+		Data []model.Conversation `json:"data"`
 		Meta PaginationMeta       `json:"meta"`
 	}{
 		Data: conversations,
 		Meta: PaginationMeta{
-			Limit:  limit,
-			PrevID: prevId,
-			NextID: nextId,
+			Limit:   limit,
+			PrevID:  prevId,
+			NextID:  nextId,
+			HasMore: len(conversations) == limit,
 		},
 	}
 	c.JSON(http.StatusOK, response)
@@ -216,14 +217,15 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 		nextId = messages[len(messages)-1].ID
 	}
 	response := struct {
-		Data []model.Message `json:"Data"`
+		Data []model.Message `json:"data"`
 		Meta PaginationMeta  `json:"meta"`
 	}{
 		Data: messages,
 		Meta: PaginationMeta{
-			Limit:  limit,
-			PrevID: prevId,
-			NextID: nextId,
+			Limit:   limit,
+			PrevID:  prevId,
+			NextID:  nextId,
+			HasMore: len(messages) == limit,
 		},
 	}
 	c.JSON(http.StatusOK, response)
