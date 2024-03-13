@@ -48,7 +48,7 @@ class SyncService implements Sync {
         _logger.severe('API error', e);
       } on Object catch (e) {
         _logger.fine('Retrying websocket connection in 3s', e);
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
 
         // Todo: add exponential backoff
         // TODO: what is going to happen with ongoing procs ?

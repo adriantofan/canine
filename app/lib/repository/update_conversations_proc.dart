@@ -24,8 +24,46 @@ class UpdateConversationsProc extends Proc<List<ConversationInfo>> {
     if (_prev == null) {
       return _prev = bootstrap(cache);
     }
-    _log.warning("UpdateConversationsProc.update: 🟡UNIMPLEMENTED $changes");
-    return null;
+    switch (changes) {
+      case UpdateMessagesAdded():
+        // TODO: maybe deal with empty conversations ? (should not exist in principle)
+        return null;
+      case UpdateServer():
+        final message = changes.message;
+        switch (message) {
+          case APIServerUpdateInvalid():
+          case APIServerUpdateUsers():
+          case APIServerUpdateConversation():
+            _log.warning(
+                "UpdateConversationsProc.handleUpdateServer: 🟡UNIMPLEMENTED $message");
+            return null;
+          case APIServerUpdateMessage():
+            // new message added
+            return _prev = _handleServerUpdateMessage(_prev!, message, cache);
+        }
+    }
+  }
+
+  List<ConversationInfo> _handleServerUpdateMessage(List<ConversationInfo> prev,
+      APIServerUpdateMessage message, Cache cache) {
+    final conversationId = message.data.conversationId;
+    final conversationItem = conversationItemBuilder(cache)(conversationId);
+    if (conversationItem == null) {
+      return prev;
+    }
+    final index = prev.indexWhere((c) => c.conversationId == conversationId);
+    if (index == -1) {
+      // new conversation <- should not happen, new conversations should be added by the server before
+      // a message is added to it
+      _log.warning(
+          "UpdateConversationsProc._handleServerUpdateMessage: conversation not found for message $message. "
+          "Server should have added the conversation before adding a message to it.");
+      prev.add(conversationItem);
+    } else {
+      prev[index] = conversationItem;
+    }
+    prev.sort(ConversationInfo.compareByLastMessageTime);
+    return prev;
   }
 
   List<ConversationInfo>? _prev;
@@ -148,7 +186,7 @@ ConversationInfo? makeConversationItem(int conversationId, Cache cache) {
   if (messages.isEmpty) {
     return null;
   }
-  final lastMessage = messages.last;
+  final lastMessage = messages.first;
   // Fixme: assumes consistent db. All required info is there.
   // How to deal with inconsistencies?
 
