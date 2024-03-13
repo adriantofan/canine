@@ -37,4 +37,8 @@ class SyncRepository {
   Future<RemoteDataStatus> conversationMessagesLoadPast(int conversationId) {
     return _sync.conversationMessagesLoadPast(conversationId);
   }
+
+  Future<Message> createMessage(int conversationId, String text, String idempotencyId) {
+   return _sync.createMessage(conversationId, text, idempotencyId);
+  }
 }

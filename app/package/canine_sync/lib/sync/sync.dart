@@ -5,6 +5,8 @@ import '../models/model.dart';
 import 'proc.dart';
 
 abstract class Sync {
+  Future<Message> createMessage(
+      int conversationId, String text, String idempotencyId);
   Stream<R> subscribeProcRef<R>(ProcBuilder<R> proc);
   Future<void> login(int workspaceId, String username, String password);
   Future<void> logout();

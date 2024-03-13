@@ -33,10 +33,20 @@ class SyncSkeleton {
         _conversationMessagesSyncStateUnsubscribe(msg);
       case MsgConversationMessagesLoadPast():
         _conversationMessagesLoadPast(msg);
+      case MsgCreateMessage():
+        _createMessage(msg);
     }
   }
 
   // Section: Message handlers
+  void _createMessage(MsgCreateMessage msg) {
+    _service
+        .createMessage(msg.conversationId, msg.text, msg.idempotencyId)
+        .then((m) => msg.sendPort.send(m),
+            onError: (error, stackTrace) =>
+                msg.sendPort.send(error.toString()));
+  }
+
   void _conversationMessagesLoadPast(MsgConversationMessagesLoadPast msg) {
     _service.conversationMessagesLoadPast(msg.conversationId).then(
         (RemoteDataStatus s) => msg.sendPort.send(s),

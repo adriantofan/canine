@@ -14,9 +14,9 @@ const (
 )
 
 const (
-	DataUpdateTypeMessage      DataUpdateType = "message_update"
+	DataUpdateTypeMessage      DataUpdateType = "message"
 	DataUpdateTypeUser         DataUpdateType = "user"
-	DataUpdateTypeConversation DataUpdateType = "conversation_update"
+	DataUpdateTypeConversation DataUpdateType = "conversation"
 )
 
 type DataUpdate struct {

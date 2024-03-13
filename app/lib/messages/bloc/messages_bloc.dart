@@ -35,7 +35,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   }
 
   FutureOr<void> _onMessagesEventStarted(event, emit) async {
-    _log.fine("waiting for changes");
     var conversationMessagesSyncStateStream = _repository
         .conversationMessagesSyncStateStream(_conversationinfo.conversationId);
     final changes = MergeStream([
@@ -44,7 +43,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     ]);
     var isFirst = true;
     await emit.forEach(changes, onData: (changes) {
-      _log.fine("MessagesBloc: got changes ${changes}");
       switch (changes) {
         case List<ChatMessage>():
           return state.copyWith(messages: changes);

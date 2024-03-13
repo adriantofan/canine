@@ -33,6 +33,19 @@ sealed class ListState<T> with _$ListState {
         ListStateEmpty() => [],
         ListStateCached() => this.items,
       };
+  ListState<T> addRight(List<T> items, int Function(T) idFunc) {
+    if (items.isEmpty) {
+      return this;
+    }
+    if (this is ListStateCached<T>) {
+      return ListState.cached(
+          items: items + (this as ListStateCached<T>).items,
+          startId: idFunc(items.first),
+          endId: (this as ListStateCached<T>).endId,
+          moreBeforeStart: (this as ListStateCached<T>).moreBeforeStart);
+    }
+    return ListState.fromItems(items, idFunc, true);
+  }
 
   ListState<T> addLeft(
       List<T> items, int Function(T) idFunc, bool moreBeforeStart) {
@@ -41,7 +54,7 @@ sealed class ListState<T> with _$ListState {
     }
     if (this is ListStateCached<T>) {
       return ListState.cached(
-          items: items + (this as ListStateCached<T>).items,
+          items: (this as ListStateCached<T>).items + items,
           startId: idFunc(items.first),
           endId: (this as ListStateCached<T>).endId,
           moreBeforeStart: moreBeforeStart);

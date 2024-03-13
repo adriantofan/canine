@@ -1,12 +1,16 @@
+import 'package:logging/logging.dart';
+
 import '../models/model.dart';
 import '../models/rtc_remote_update.dart';
-import '../ws/model/api_server_message.dart';
+import '../ws/ws.dart';
 import 'cache.dart';
 
 // package internal
 class InMemoryCache implements Cache {
+  final _log = Logger('InMemoryCache');
+
   @override
-  List<Conversation> conversations = [];
+  List<Conversation> conversations = []; // sorted by id
   Map<int, User> _usersById = {};
   Map<int, ListState<Message>> conversationMessages = {};
 
@@ -32,8 +36,42 @@ class InMemoryCache implements Cache {
   }
 
   @override
-  Update? serverDidUpdate(APIServerMessage message) {
-    return null;
+  Update? serverDidUpdate(APIServerUpdate message) {
+    // TODO: Either create granular updates  or make a update that holds a APIServerMessage
+    //
+    switch (message) {
+      case APIServerUpdateInvalid():
+        return null;
+      case APIServerUpdateUsers():
+        _log.warning("InMemoryCache.serverDidUpdate: 🟡UNIMPLEMENTED $message");
+        return null;
+      case APIServerUpdateMessage():
+        return _handleAPIServerUpdateMessage(message);
+      case APIServerUpdateConversation():
+        _log.warning("InMemoryCache.serverDidUpdate: 🟡UNIMPLEMENTED $message");
+        return null;
+    }
+  }
+
+  Update? _handleAPIServerUpdateMessage(APIServerUpdateMessage message) {
+    final update = Update.server(message);
+    if (message.kind != APIServerUpdateKind.create) {
+      _log.warning(
+          "InMemoryCache._handleAPIServerUpdateMessage: ${message.kind} not supposed to be sent by server $message");
+      return update;
+    }
+    // Create case
+    final conversationId = message.data.conversationId;
+    final conversationMessagesState = conversationMessages[conversationId];
+    if (conversationMessagesState == null) {
+      _log.warning(
+          "InMemoryCache._handleAPIServerUpdateMessage: conversationMessagesState not found for $conversationId."
+          " Message sent without sending it's corresponding conversation?");
+      return update;
+    }
+    conversationMessages[conversationId] =
+        conversationMessagesState.addRight([message.data], (m) => m.id);
+    return update;
   }
 
   // Changes
@@ -69,7 +107,6 @@ class InMemoryCache implements Cache {
           ListState.fromItems(newMessages, (m) => m.id, moreBeforeStart);
     }
 
-    return Update.messages(conversationId,
-        ListUpdate(conversationMessages[conversationId]!.items));
+    return Update.messagesAdded(conversationId, newMessages);
   }
 }

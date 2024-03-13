@@ -27,6 +27,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   easy_refresh: ^3.3.4
   flutter_spinkit: ^5.2.0
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:app/messages/bloc/messages_bloc.dart';
+import 'package:app/messages/view/send_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../conversations/model/conversation_info.dart';
 import '../../repository/repository.dart';
 import 'message_row.dart';
-import 'send_field.dart';
 
 class MessagesList extends StatefulWidget {
   final ConversationInfo _conversationInfo;
@@ -50,7 +50,6 @@ class _MessagesListState extends State<MessagesList> {
   void _onHeaderChange() {
     final state = _listenable.value;
     if (state != null) {
-      print("${state.result} ${state.mode}");
       final position = state.notifier.position;
       _viewportDimension ??= position.viewportDimension;
       final shrinkWrap = state.notifier.position.maxScrollExtent == 0;
@@ -94,11 +93,8 @@ class _MessagesListState extends State<MessagesList> {
                   context
                       .read<MessagesBloc>()
                       .add(const MessagesEvent.loadPast());
-                  print("onLoad");
                 },
-                onRefresh: () {
-                  print("onRefresh");
-                },
+                onRefresh: () {},
                 // Actually on the bottom because list is reversed
                 header: ListenerHeader(
                   listenable: _listenable,
@@ -166,7 +162,7 @@ class _MessagesListState extends State<MessagesList> {
               );
             },
           )),
-          const SendField(),
+          SendWidget(widget._conversationInfo.conversationId),
         ],
       ),
     );

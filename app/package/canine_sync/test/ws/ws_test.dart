@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 void main() {
   test('decode json', () {
     var jsontxt = """{
-      "kind": "messages",
+      "kind": "message",
       "data": [
         {
           "id": 1,
@@ -19,21 +19,7 @@ void main() {
       ]
     }""";
 
-    var msg = APIServerMessage.fromJson(jsonDecode(jsontxt));
-    expect(msg, isA<APIServerMessageMessages>());
-    switch (msg) {
-      case APIServerMessageConversations():
-        print(msg);
-      case APIServerMessageMessages():
-        takesM(msg);
-      case APIServerMessageInvalid():
-        print("Invalid");
-      default:
-        throw Exception("not tested");
-    }
+    var msg = APIServerUpdate.fromJson(jsonDecode(jsontxt));
+    expect(msg, isA<APIServerUpdateMessage>());
   });
-}
-
-void takesM(APIServerMessageMessages msg) {
-  print(msg.data);
 }

@@ -35,6 +35,9 @@ mixin _$Msg {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -54,6 +57,9 @@ mixin _$Msg {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -73,6 +79,9 @@ mixin _$Msg {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -91,6 +100,7 @@ mixin _$Msg {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -107,6 +117,7 @@ mixin _$Msg {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -123,6 +134,7 @@ mixin _$Msg {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -256,6 +268,9 @@ class _$MsgLoginImpl implements MsgLogin {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return login(sendPort, workspaceId, username, password);
   }
@@ -278,6 +293,9 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return login?.call(sendPort, workspaceId, username, password);
   }
@@ -300,6 +318,9 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (login != null) {
@@ -324,6 +345,7 @@ class _$MsgLoginImpl implements MsgLogin {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return login(this);
   }
@@ -343,6 +365,7 @@ class _$MsgLoginImpl implements MsgLogin {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return login?.call(this);
   }
@@ -362,6 +385,7 @@ class _$MsgLoginImpl implements MsgLogin {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (login != null) {
@@ -466,6 +490,9 @@ class _$MsgLogoutImpl implements MsgLogout {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return logout(sendPort);
   }
@@ -488,6 +515,9 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return logout?.call(sendPort);
   }
@@ -510,6 +540,9 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -534,6 +567,7 @@ class _$MsgLogoutImpl implements MsgLogout {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return logout(this);
   }
@@ -553,6 +587,7 @@ class _$MsgLogoutImpl implements MsgLogout {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return logout?.call(this);
   }
@@ -572,6 +607,7 @@ class _$MsgLogoutImpl implements MsgLogout {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -683,6 +719,9 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return authStatusSubscribe(sendPort, key);
   }
@@ -705,6 +744,9 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return authStatusSubscribe?.call(sendPort, key);
   }
@@ -727,6 +769,9 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (authStatusSubscribe != null) {
@@ -751,6 +796,7 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return authStatusSubscribe(this);
   }
@@ -770,6 +816,7 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return authStatusSubscribe?.call(this);
   }
@@ -789,6 +836,7 @@ class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (authStatusSubscribe != null) {
@@ -893,6 +941,9 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return authStatusUnsubscribe(key);
   }
@@ -915,6 +966,9 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return authStatusUnsubscribe?.call(key);
   }
@@ -937,6 +991,9 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (authStatusUnsubscribe != null) {
@@ -961,6 +1018,7 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return authStatusUnsubscribe(this);
   }
@@ -980,6 +1038,7 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return authStatusUnsubscribe?.call(this);
   }
@@ -999,6 +1058,7 @@ class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (authStatusUnsubscribe != null) {
@@ -1118,6 +1178,9 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return subscribeProc(sendPort, procBuilder, key);
   }
@@ -1140,6 +1203,9 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return subscribeProc?.call(sendPort, procBuilder, key);
   }
@@ -1162,6 +1228,9 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (subscribeProc != null) {
@@ -1186,6 +1255,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return subscribeProc(this);
   }
@@ -1205,6 +1275,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return subscribeProc?.call(this);
   }
@@ -1224,6 +1295,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (subscribeProc != null) {
@@ -1329,6 +1401,9 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return unsubscribeProc(key);
   }
@@ -1351,6 +1426,9 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return unsubscribeProc?.call(key);
   }
@@ -1373,6 +1451,9 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (unsubscribeProc != null) {
@@ -1397,6 +1478,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return unsubscribeProc(this);
   }
@@ -1416,6 +1498,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return unsubscribeProc?.call(this);
   }
@@ -1435,6 +1518,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (unsubscribeProc != null) {
@@ -1561,6 +1645,9 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return conversationMessagesSyncStateSubscribe(
         sendPort, conversationId, key);
@@ -1584,6 +1671,9 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return conversationMessagesSyncStateSubscribe?.call(
         sendPort, conversationId, key);
@@ -1607,6 +1697,9 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesSyncStateSubscribe != null) {
@@ -1632,6 +1725,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return conversationMessagesSyncStateSubscribe(this);
   }
@@ -1651,6 +1745,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return conversationMessagesSyncStateSubscribe?.call(this);
   }
@@ -1670,6 +1765,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesSyncStateSubscribe != null) {
@@ -1785,6 +1881,9 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return conversationMessagesSyncStateUnsubscribe(key);
   }
@@ -1807,6 +1906,9 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return conversationMessagesSyncStateUnsubscribe?.call(key);
   }
@@ -1829,6 +1931,9 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesSyncStateUnsubscribe != null) {
@@ -1853,6 +1958,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return conversationMessagesSyncStateUnsubscribe(this);
   }
@@ -1872,6 +1978,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return conversationMessagesSyncStateUnsubscribe?.call(this);
   }
@@ -1891,6 +1998,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesSyncStateUnsubscribe != null) {
@@ -2008,6 +2116,9 @@ class _$MsgConversationMessagesLoadPastImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(SendPort sendPort, int conversationId)
         conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
   }) {
     return conversationMessagesLoadPast(sendPort, conversationId);
   }
@@ -2030,6 +2141,9 @@ class _$MsgConversationMessagesLoadPastImpl
     TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult? Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
   }) {
     return conversationMessagesLoadPast?.call(sendPort, conversationId);
   }
@@ -2052,6 +2166,9 @@ class _$MsgConversationMessagesLoadPastImpl
     TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
     TResult Function(SendPort sendPort, int conversationId)?
         conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesLoadPast != null) {
@@ -2076,6 +2193,7 @@ class _$MsgConversationMessagesLoadPastImpl
         conversationMessagesSyncStateUnsubscribe,
     required TResult Function(MsgConversationMessagesLoadPast value)
         conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
   }) {
     return conversationMessagesLoadPast(this);
   }
@@ -2095,6 +2213,7 @@ class _$MsgConversationMessagesLoadPastImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult? Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
   }) {
     return conversationMessagesLoadPast?.call(this);
   }
@@ -2114,6 +2233,7 @@ class _$MsgConversationMessagesLoadPastImpl
         conversationMessagesSyncStateUnsubscribe,
     TResult Function(MsgConversationMessagesLoadPast value)?
         conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
     required TResult orElse(),
   }) {
     if (conversationMessagesLoadPast != null) {
@@ -2134,4 +2254,262 @@ abstract class MsgConversationMessagesLoadPast implements Msg {
   _$$MsgConversationMessagesLoadPastImplCopyWith<
           _$MsgConversationMessagesLoadPastImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$MsgCreateMessageImplCopyWith<$Res> {
+  factory _$$MsgCreateMessageImplCopyWith(_$MsgCreateMessageImpl value,
+          $Res Function(_$MsgCreateMessageImpl) then) =
+      __$$MsgCreateMessageImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call(
+      {SendPort sendPort,
+      int conversationId,
+      String text,
+      String idempotencyId});
+}
+
+/// @nodoc
+class __$$MsgCreateMessageImplCopyWithImpl<$Res>
+    extends _$MsgCopyWithImpl<$Res, _$MsgCreateMessageImpl>
+    implements _$$MsgCreateMessageImplCopyWith<$Res> {
+  __$$MsgCreateMessageImplCopyWithImpl(_$MsgCreateMessageImpl _value,
+      $Res Function(_$MsgCreateMessageImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? sendPort = null,
+    Object? conversationId = null,
+    Object? text = null,
+    Object? idempotencyId = null,
+  }) {
+    return _then(_$MsgCreateMessageImpl(
+      null == sendPort
+          ? _value.sendPort
+          : sendPort // ignore: cast_nullable_to_non_nullable
+              as SendPort,
+      null == conversationId
+          ? _value.conversationId
+          : conversationId // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == idempotencyId
+          ? _value.idempotencyId
+          : idempotencyId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$MsgCreateMessageImpl implements MsgCreateMessage {
+  const _$MsgCreateMessageImpl(
+      this.sendPort, this.conversationId, this.text, this.idempotencyId);
+
+  @override
+  final SendPort sendPort;
+  @override
+  final int conversationId;
+  @override
+  final String text;
+  @override
+  final String idempotencyId;
+
+  @override
+  String toString() {
+    return 'Msg.createMessage(sendPort: $sendPort, conversationId: $conversationId, text: $text, idempotencyId: $idempotencyId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MsgCreateMessageImpl &&
+            (identical(other.sendPort, sendPort) ||
+                other.sendPort == sendPort) &&
+            (identical(other.conversationId, conversationId) ||
+                other.conversationId == conversationId) &&
+            (identical(other.text, text) || other.text == text) &&
+            (identical(other.idempotencyId, idempotencyId) ||
+                other.idempotencyId == idempotencyId));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, sendPort, conversationId, text, idempotencyId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MsgCreateMessageImplCopyWith<_$MsgCreateMessageImpl> get copyWith =>
+      __$$MsgCreateMessageImplCopyWithImpl<_$MsgCreateMessageImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(SendPort sendPort, int workspaceId,
+            String username, String password)
+        login,
+    required TResult Function(SendPort sendPort) logout,
+    required TResult Function(SendPort sendPort, String key)
+        authStatusSubscribe,
+    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
+        subscribeProc,
+    required TResult Function(String key) unsubscribeProc,
+    required TResult Function(SendPort sendPort, int conversationId, String key)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(String key)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(SendPort sendPort, int conversationId)
+        conversationMessagesLoadPast,
+    required TResult Function(SendPort sendPort, int conversationId,
+            String text, String idempotencyId)
+        createMessage,
+  }) {
+    return createMessage(sendPort, conversationId, text, idempotencyId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(SendPort sendPort, int workspaceId, String username,
+            String password)?
+        login,
+    TResult? Function(SendPort sendPort)? logout,
+    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
+    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
+        subscribeProc,
+    TResult? Function(String key)? unsubscribeProc,
+    TResult? Function(SendPort sendPort, int conversationId, String key)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(SendPort sendPort, int conversationId)?
+        conversationMessagesLoadPast,
+    TResult? Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
+  }) {
+    return createMessage?.call(sendPort, conversationId, text, idempotencyId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(SendPort sendPort, int workspaceId, String username,
+            String password)?
+        login,
+    TResult Function(SendPort sendPort)? logout,
+    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
+    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(
+            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
+        subscribeProc,
+    TResult Function(String key)? unsubscribeProc,
+    TResult Function(SendPort sendPort, int conversationId, String key)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
+    TResult Function(SendPort sendPort, int conversationId)?
+        conversationMessagesLoadPast,
+    TResult Function(SendPort sendPort, int conversationId, String text,
+            String idempotencyId)?
+        createMessage,
+    required TResult orElse(),
+  }) {
+    if (createMessage != null) {
+      return createMessage(sendPort, conversationId, text, idempotencyId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MsgLogin value) login,
+    required TResult Function(MsgLogout value) logout,
+    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
+    required TResult Function(MsgAuthStatusUnsubscribe value)
+        authStatusUnsubscribe,
+    required TResult Function(MsgSubscribeProc value) subscribeProc,
+    required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
+    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
+        conversationMessagesSyncStateSubscribe,
+    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
+        conversationMessagesSyncStateUnsubscribe,
+    required TResult Function(MsgConversationMessagesLoadPast value)
+        conversationMessagesLoadPast,
+    required TResult Function(MsgCreateMessage value) createMessage,
+  }) {
+    return createMessage(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MsgLogin value)? login,
+    TResult? Function(MsgLogout value)? logout,
+    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
+    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgSubscribeProc value)? subscribeProc,
+    TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
+    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult? Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
+    TResult? Function(MsgCreateMessage value)? createMessage,
+  }) {
+    return createMessage?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(MsgLogin value)? login,
+    TResult Function(MsgLogout value)? logout,
+    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
+    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgSubscribeProc value)? subscribeProc,
+    TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
+    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
+        conversationMessagesSyncStateSubscribe,
+    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
+        conversationMessagesSyncStateUnsubscribe,
+    TResult Function(MsgConversationMessagesLoadPast value)?
+        conversationMessagesLoadPast,
+    TResult Function(MsgCreateMessage value)? createMessage,
+    required TResult orElse(),
+  }) {
+    if (createMessage != null) {
+      return createMessage(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class MsgCreateMessage implements Msg {
+  const factory MsgCreateMessage(
+      final SendPort sendPort,
+      final int conversationId,
+      final String text,
+      final String idempotencyId) = _$MsgCreateMessageImpl;
+
+  SendPort get sendPort;
+  int get conversationId;
+  String get text;
+  String get idempotencyId;
+  @JsonKey(ignore: true)
+  _$$MsgCreateMessageImplCopyWith<_$MsgCreateMessageImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

@@ -37,6 +37,20 @@ class APIClient {
     }
   }
 
+  Future<Message> createMessage(
+      int conversationId, String text, String idempotencyId) async {
+    final response = await _postJSON(
+        '/$_workspaceId/conversations/$conversationId/messages',
+        {'message': text});
+    try {
+      return Message.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse createMessage response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
+    }
+  }
+
   Future<Paginated<Message>> getConversationMessages(
       int conversationId, int? lastId) async {
     final response = await _getJSON(

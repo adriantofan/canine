@@ -59,7 +59,8 @@ type CreateUserData struct {
 }
 
 type CreateMessageData struct {
-	Message string `json:"message"`
+	Message       string `json:"message"`
+	IdempotencyID string `json:"idempotency_id"`
 }
 
 type WorkspaceWithUser struct {

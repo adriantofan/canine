@@ -39,7 +39,7 @@ class SyncService implements Sync {
 
         await for (var data
             in channel.stream.takeUntil(_stopController.stream)) {
-          var msg = APIServerMessage.fromJson(jsonDecode(data));
+          final msg = _decodeApiServerMessage(data);
           onUpdate(msg);
         }
 
@@ -53,6 +53,16 @@ class SyncService implements Sync {
         // Todo: add exponential backoff
         // TODO: what is going to happen with ongoing procs ?
       }
+    }
+  }
+
+  APIServerUpdate _decodeApiServerMessage(data) {
+    final decoded = jsonDecode(data);
+    try {
+      return APIServerUpdate.fromJson(decoded);
+    } catch (_) {
+      _logger.fine('Failed to decode message', decoded);
+      rethrow;
     }
   }
 
@@ -128,6 +138,12 @@ class SyncService implements Sync {
   }
 
   @override
+  Future<Message> createMessage(
+      int conversationId, String text, String idempotencyId) {
+    return _apiClient.createMessage(conversationId, text, idempotencyId);
+  }
+
+  @override
   Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId) {
     return _conversationSyncStateSubject(conversationId).stream
@@ -171,7 +187,7 @@ class SyncService implements Sync {
     return controller.stream;
   }
 
-  onUpdate(APIServerMessage message) {
+  onUpdate(APIServerUpdate message) {
     final update = _cache.serverDidUpdate(message);
     if (update == null) {
       return;
@@ -181,11 +197,15 @@ class SyncService implements Sync {
 
   initCache(RTCRemoteUpdate message) {
     _cache.init(message);
+    // stop any ongoing message load, so they won't change the _cache after completing
+    _conversationMessagesReset();
+    // There are other side effects such as updating the conversation sync state
     _forEachProc((p) => p.init(_cache));
   }
 
   resetCache() {
     _cache.reset();
+    _conversationMessagesReset();
     _forEachProc((p) => p.init(_cache));
   }
 
@@ -217,5 +237,19 @@ class SyncService implements Sync {
     final controller = BehaviorSubject<ListSyncState>.seeded(initialState);
     _conversationSyncState[conversationId] = controller;
     return controller;
+  }
+
+  void _conversationMessagesReset() {
+    _conversationMessagesLoadPastFutures
+        .forEach((conversationId, completerFuturePair) {
+      var (completer, _) = completerFuturePair;
+      completer.complete();
+    });
+    _conversationMessagesLoadPastFutures.clear();
+
+    _conversationSyncState.forEach((conversationId, s) {
+      s.value = ListSyncState.fromCacheListState(
+          _cache.getConversationMessagesState(conversationId));
+    });
   }
 }

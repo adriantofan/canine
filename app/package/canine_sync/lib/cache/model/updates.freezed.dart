@@ -16,49 +16,44 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Update {
-  ListUpdate<Object> get update => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ListUpdate<Conversation> update) conversations,
-    required TResult Function(int conversationId, ListUpdate<Message> update)
-        messages,
-    required TResult Function(ListUpdate<User> update) users,
+    required TResult Function(int conversationId, List<Message> newMessages)
+        messagesAdded,
+    required TResult Function(APIServerUpdate message) server,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ListUpdate<Conversation> update)? conversations,
-    TResult? Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult? Function(ListUpdate<User> update)? users,
+    TResult? Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult? Function(APIServerUpdate message)? server,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ListUpdate<Conversation> update)? conversations,
-    TResult Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult Function(ListUpdate<User> update)? users,
+    TResult Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult Function(APIServerUpdate message)? server,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ConversationsUpdate value) conversations,
-    required TResult Function(MessagesUpdate value) messages,
-    required TResult Function(UsersUpdate value) users,
+    required TResult Function(UpdateMessagesAdded value) messagesAdded,
+    required TResult Function(UpdateServer value) server,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ConversationsUpdate value)? conversations,
-    TResult? Function(MessagesUpdate value)? messages,
-    TResult? Function(UsersUpdate value)? users,
+    TResult? Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult? Function(UpdateServer value)? server,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ConversationsUpdate value)? conversations,
-    TResult Function(MessagesUpdate value)? messages,
-    TResult Function(UsersUpdate value)? users,
+    TResult Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult Function(UpdateServer value)? server,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -82,250 +77,115 @@ class _$UpdateCopyWithImpl<$Res, $Val extends Update>
 }
 
 /// @nodoc
-abstract class _$$ConversationsUpdateImplCopyWith<$Res> {
-  factory _$$ConversationsUpdateImplCopyWith(_$ConversationsUpdateImpl value,
-          $Res Function(_$ConversationsUpdateImpl) then) =
-      __$$ConversationsUpdateImplCopyWithImpl<$Res>;
+abstract class _$$UpdateMessagesAddedImplCopyWith<$Res> {
+  factory _$$UpdateMessagesAddedImplCopyWith(_$UpdateMessagesAddedImpl value,
+          $Res Function(_$UpdateMessagesAddedImpl) then) =
+      __$$UpdateMessagesAddedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({ListUpdate<Conversation> update});
+  $Res call({int conversationId, List<Message> newMessages});
 }
 
 /// @nodoc
-class __$$ConversationsUpdateImplCopyWithImpl<$Res>
-    extends _$UpdateCopyWithImpl<$Res, _$ConversationsUpdateImpl>
-    implements _$$ConversationsUpdateImplCopyWith<$Res> {
-  __$$ConversationsUpdateImplCopyWithImpl(_$ConversationsUpdateImpl _value,
-      $Res Function(_$ConversationsUpdateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? update = null,
-  }) {
-    return _then(_$ConversationsUpdateImpl(
-      null == update
-          ? _value.update
-          : update // ignore: cast_nullable_to_non_nullable
-              as ListUpdate<Conversation>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$ConversationsUpdateImpl implements ConversationsUpdate {
-  const _$ConversationsUpdateImpl(this.update);
-
-  @override
-  final ListUpdate<Conversation> update;
-
-  @override
-  String toString() {
-    return 'Update.conversations(update: $update)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ConversationsUpdateImpl &&
-            (identical(other.update, update) || other.update == update));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, update);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ConversationsUpdateImplCopyWith<_$ConversationsUpdateImpl> get copyWith =>
-      __$$ConversationsUpdateImplCopyWithImpl<_$ConversationsUpdateImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ListUpdate<Conversation> update) conversations,
-    required TResult Function(int conversationId, ListUpdate<Message> update)
-        messages,
-    required TResult Function(ListUpdate<User> update) users,
-  }) {
-    return conversations(update);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ListUpdate<Conversation> update)? conversations,
-    TResult? Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult? Function(ListUpdate<User> update)? users,
-  }) {
-    return conversations?.call(update);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ListUpdate<Conversation> update)? conversations,
-    TResult Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult Function(ListUpdate<User> update)? users,
-    required TResult orElse(),
-  }) {
-    if (conversations != null) {
-      return conversations(update);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ConversationsUpdate value) conversations,
-    required TResult Function(MessagesUpdate value) messages,
-    required TResult Function(UsersUpdate value) users,
-  }) {
-    return conversations(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ConversationsUpdate value)? conversations,
-    TResult? Function(MessagesUpdate value)? messages,
-    TResult? Function(UsersUpdate value)? users,
-  }) {
-    return conversations?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ConversationsUpdate value)? conversations,
-    TResult Function(MessagesUpdate value)? messages,
-    TResult Function(UsersUpdate value)? users,
-    required TResult orElse(),
-  }) {
-    if (conversations != null) {
-      return conversations(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ConversationsUpdate implements Update {
-  const factory ConversationsUpdate(final ListUpdate<Conversation> update) =
-      _$ConversationsUpdateImpl;
-
-  @override
-  ListUpdate<Conversation> get update;
-  @JsonKey(ignore: true)
-  _$$ConversationsUpdateImplCopyWith<_$ConversationsUpdateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MessagesUpdateImplCopyWith<$Res> {
-  factory _$$MessagesUpdateImplCopyWith(_$MessagesUpdateImpl value,
-          $Res Function(_$MessagesUpdateImpl) then) =
-      __$$MessagesUpdateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int conversationId, ListUpdate<Message> update});
-}
-
-/// @nodoc
-class __$$MessagesUpdateImplCopyWithImpl<$Res>
-    extends _$UpdateCopyWithImpl<$Res, _$MessagesUpdateImpl>
-    implements _$$MessagesUpdateImplCopyWith<$Res> {
-  __$$MessagesUpdateImplCopyWithImpl(
-      _$MessagesUpdateImpl _value, $Res Function(_$MessagesUpdateImpl) _then)
+class __$$UpdateMessagesAddedImplCopyWithImpl<$Res>
+    extends _$UpdateCopyWithImpl<$Res, _$UpdateMessagesAddedImpl>
+    implements _$$UpdateMessagesAddedImplCopyWith<$Res> {
+  __$$UpdateMessagesAddedImplCopyWithImpl(_$UpdateMessagesAddedImpl _value,
+      $Res Function(_$UpdateMessagesAddedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? conversationId = null,
-    Object? update = null,
+    Object? newMessages = null,
   }) {
-    return _then(_$MessagesUpdateImpl(
+    return _then(_$UpdateMessagesAddedImpl(
       null == conversationId
           ? _value.conversationId
           : conversationId // ignore: cast_nullable_to_non_nullable
               as int,
-      null == update
-          ? _value.update
-          : update // ignore: cast_nullable_to_non_nullable
-              as ListUpdate<Message>,
+      null == newMessages
+          ? _value._newMessages
+          : newMessages // ignore: cast_nullable_to_non_nullable
+              as List<Message>,
     ));
   }
 }
 
 /// @nodoc
 
-class _$MessagesUpdateImpl implements MessagesUpdate {
-  const _$MessagesUpdateImpl(this.conversationId, this.update);
+class _$UpdateMessagesAddedImpl implements UpdateMessagesAdded {
+  const _$UpdateMessagesAddedImpl(
+      this.conversationId, final List<Message> newMessages)
+      : _newMessages = newMessages;
 
   @override
   final int conversationId;
+  final List<Message> _newMessages;
   @override
-  final ListUpdate<Message> update;
+  List<Message> get newMessages {
+    if (_newMessages is EqualUnmodifiableListView) return _newMessages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_newMessages);
+  }
 
   @override
   String toString() {
-    return 'Update.messages(conversationId: $conversationId, update: $update)';
+    return 'Update.messagesAdded(conversationId: $conversationId, newMessages: $newMessages)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MessagesUpdateImpl &&
+            other is _$UpdateMessagesAddedImpl &&
             (identical(other.conversationId, conversationId) ||
                 other.conversationId == conversationId) &&
-            (identical(other.update, update) || other.update == update));
+            const DeepCollectionEquality()
+                .equals(other._newMessages, _newMessages));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, conversationId, update);
+  int get hashCode => Object.hash(runtimeType, conversationId,
+      const DeepCollectionEquality().hash(_newMessages));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MessagesUpdateImplCopyWith<_$MessagesUpdateImpl> get copyWith =>
-      __$$MessagesUpdateImplCopyWithImpl<_$MessagesUpdateImpl>(
+  _$$UpdateMessagesAddedImplCopyWith<_$UpdateMessagesAddedImpl> get copyWith =>
+      __$$UpdateMessagesAddedImplCopyWithImpl<_$UpdateMessagesAddedImpl>(
           this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ListUpdate<Conversation> update) conversations,
-    required TResult Function(int conversationId, ListUpdate<Message> update)
-        messages,
-    required TResult Function(ListUpdate<User> update) users,
+    required TResult Function(int conversationId, List<Message> newMessages)
+        messagesAdded,
+    required TResult Function(APIServerUpdate message) server,
   }) {
-    return messages(conversationId, update);
+    return messagesAdded(conversationId, newMessages);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ListUpdate<Conversation> update)? conversations,
-    TResult? Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult? Function(ListUpdate<User> update)? users,
+    TResult? Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult? Function(APIServerUpdate message)? server,
   }) {
-    return messages?.call(conversationId, update);
+    return messagesAdded?.call(conversationId, newMessages);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ListUpdate<Conversation> update)? conversations,
-    TResult Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult Function(ListUpdate<User> update)? users,
+    TResult Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult Function(APIServerUpdate message)? server,
     required TResult orElse(),
   }) {
-    if (messages != null) {
-      return messages(conversationId, update);
+    if (messagesAdded != null) {
+      return messagesAdded(conversationId, newMessages);
     }
     return orElse();
   }
@@ -333,143 +193,148 @@ class _$MessagesUpdateImpl implements MessagesUpdate {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ConversationsUpdate value) conversations,
-    required TResult Function(MessagesUpdate value) messages,
-    required TResult Function(UsersUpdate value) users,
+    required TResult Function(UpdateMessagesAdded value) messagesAdded,
+    required TResult Function(UpdateServer value) server,
   }) {
-    return messages(this);
+    return messagesAdded(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ConversationsUpdate value)? conversations,
-    TResult? Function(MessagesUpdate value)? messages,
-    TResult? Function(UsersUpdate value)? users,
+    TResult? Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult? Function(UpdateServer value)? server,
   }) {
-    return messages?.call(this);
+    return messagesAdded?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ConversationsUpdate value)? conversations,
-    TResult Function(MessagesUpdate value)? messages,
-    TResult Function(UsersUpdate value)? users,
+    TResult Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult Function(UpdateServer value)? server,
     required TResult orElse(),
   }) {
-    if (messages != null) {
-      return messages(this);
+    if (messagesAdded != null) {
+      return messagesAdded(this);
     }
     return orElse();
   }
 }
 
-abstract class MessagesUpdate implements Update {
-  const factory MessagesUpdate(
-          final int conversationId, final ListUpdate<Message> update) =
-      _$MessagesUpdateImpl;
+abstract class UpdateMessagesAdded implements Update {
+  const factory UpdateMessagesAdded(
+          final int conversationId, final List<Message> newMessages) =
+      _$UpdateMessagesAddedImpl;
 
   int get conversationId;
-  @override
-  ListUpdate<Message> get update;
+  List<Message> get newMessages;
   @JsonKey(ignore: true)
-  _$$MessagesUpdateImplCopyWith<_$MessagesUpdateImpl> get copyWith =>
+  _$$UpdateMessagesAddedImplCopyWith<_$UpdateMessagesAddedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$UsersUpdateImplCopyWith<$Res> {
-  factory _$$UsersUpdateImplCopyWith(
-          _$UsersUpdateImpl value, $Res Function(_$UsersUpdateImpl) then) =
-      __$$UsersUpdateImplCopyWithImpl<$Res>;
+abstract class _$$UpdateServerImplCopyWith<$Res> {
+  factory _$$UpdateServerImplCopyWith(
+          _$UpdateServerImpl value, $Res Function(_$UpdateServerImpl) then) =
+      __$$UpdateServerImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({ListUpdate<User> update});
+  $Res call({APIServerUpdate message});
+
+  $APIServerUpdateCopyWith<$Res> get message;
 }
 
 /// @nodoc
-class __$$UsersUpdateImplCopyWithImpl<$Res>
-    extends _$UpdateCopyWithImpl<$Res, _$UsersUpdateImpl>
-    implements _$$UsersUpdateImplCopyWith<$Res> {
-  __$$UsersUpdateImplCopyWithImpl(
-      _$UsersUpdateImpl _value, $Res Function(_$UsersUpdateImpl) _then)
+class __$$UpdateServerImplCopyWithImpl<$Res>
+    extends _$UpdateCopyWithImpl<$Res, _$UpdateServerImpl>
+    implements _$$UpdateServerImplCopyWith<$Res> {
+  __$$UpdateServerImplCopyWithImpl(
+      _$UpdateServerImpl _value, $Res Function(_$UpdateServerImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? update = null,
+    Object? message = null,
   }) {
-    return _then(_$UsersUpdateImpl(
-      null == update
-          ? _value.update
-          : update // ignore: cast_nullable_to_non_nullable
-              as ListUpdate<User>,
+    return _then(_$UpdateServerImpl(
+      null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as APIServerUpdate,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $APIServerUpdateCopyWith<$Res> get message {
+    return $APIServerUpdateCopyWith<$Res>(_value.message, (value) {
+      return _then(_value.copyWith(message: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$UsersUpdateImpl implements UsersUpdate {
-  const _$UsersUpdateImpl(this.update);
+class _$UpdateServerImpl implements UpdateServer {
+  const _$UpdateServerImpl(this.message);
 
   @override
-  final ListUpdate<User> update;
+  final APIServerUpdate message;
 
   @override
   String toString() {
-    return 'Update.users(update: $update)';
+    return 'Update.server(message: $message)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UsersUpdateImpl &&
-            (identical(other.update, update) || other.update == update));
+            other is _$UpdateServerImpl &&
+            (identical(other.message, message) || other.message == message));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, update);
+  int get hashCode => Object.hash(runtimeType, message);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$UsersUpdateImplCopyWith<_$UsersUpdateImpl> get copyWith =>
-      __$$UsersUpdateImplCopyWithImpl<_$UsersUpdateImpl>(this, _$identity);
+  _$$UpdateServerImplCopyWith<_$UpdateServerImpl> get copyWith =>
+      __$$UpdateServerImplCopyWithImpl<_$UpdateServerImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ListUpdate<Conversation> update) conversations,
-    required TResult Function(int conversationId, ListUpdate<Message> update)
-        messages,
-    required TResult Function(ListUpdate<User> update) users,
+    required TResult Function(int conversationId, List<Message> newMessages)
+        messagesAdded,
+    required TResult Function(APIServerUpdate message) server,
   }) {
-    return users(update);
+    return server(message);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ListUpdate<Conversation> update)? conversations,
-    TResult? Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult? Function(ListUpdate<User> update)? users,
+    TResult? Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult? Function(APIServerUpdate message)? server,
   }) {
-    return users?.call(update);
+    return server?.call(message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ListUpdate<Conversation> update)? conversations,
-    TResult Function(int conversationId, ListUpdate<Message> update)? messages,
-    TResult Function(ListUpdate<User> update)? users,
+    TResult Function(int conversationId, List<Message> newMessages)?
+        messagesAdded,
+    TResult Function(APIServerUpdate message)? server,
     required TResult orElse(),
   }) {
-    if (users != null) {
-      return users(update);
+    if (server != null) {
+      return server(message);
     }
     return orElse();
   }
@@ -477,44 +342,41 @@ class _$UsersUpdateImpl implements UsersUpdate {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ConversationsUpdate value) conversations,
-    required TResult Function(MessagesUpdate value) messages,
-    required TResult Function(UsersUpdate value) users,
+    required TResult Function(UpdateMessagesAdded value) messagesAdded,
+    required TResult Function(UpdateServer value) server,
   }) {
-    return users(this);
+    return server(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ConversationsUpdate value)? conversations,
-    TResult? Function(MessagesUpdate value)? messages,
-    TResult? Function(UsersUpdate value)? users,
+    TResult? Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult? Function(UpdateServer value)? server,
   }) {
-    return users?.call(this);
+    return server?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ConversationsUpdate value)? conversations,
-    TResult Function(MessagesUpdate value)? messages,
-    TResult Function(UsersUpdate value)? users,
+    TResult Function(UpdateMessagesAdded value)? messagesAdded,
+    TResult Function(UpdateServer value)? server,
     required TResult orElse(),
   }) {
-    if (users != null) {
-      return users(this);
+    if (server != null) {
+      return server(this);
     }
     return orElse();
   }
 }
 
-abstract class UsersUpdate implements Update {
-  const factory UsersUpdate(final ListUpdate<User> update) = _$UsersUpdateImpl;
+abstract class UpdateServer implements Update {
+  const factory UpdateServer(final APIServerUpdate message) =
+      _$UpdateServerImpl;
 
-  @override
-  ListUpdate<User> get update;
+  APIServerUpdate get message;
   @JsonKey(ignore: true)
-  _$$UsersUpdateImplCopyWith<_$UsersUpdateImpl> get copyWith =>
+  _$$UpdateServerImplCopyWith<_$UpdateServerImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

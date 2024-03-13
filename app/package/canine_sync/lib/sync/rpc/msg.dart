@@ -26,6 +26,8 @@ sealed class Msg {
       MsgConversationMessagesSyncStateUnsubscribe;
   const factory Msg.conversationMessagesLoadPast(
       SendPort sendPort, int conversationId) = MsgConversationMessagesLoadPast;
+  const factory Msg.createMessage(SendPort sendPort, int conversationId,
+      String text, String idempotencyId) = MsgCreateMessage;
 }
 
 class MsgOutUnsubscribeAck {

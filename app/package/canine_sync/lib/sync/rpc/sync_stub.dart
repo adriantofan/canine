@@ -165,4 +165,26 @@ class SyncStub extends Sync {
     };
     return controller.stream;
   }
+
+  @override
+  Future<Message> createMessage(
+      int conversationId, String text, String idempotencyId) async {
+    ReceivePort receivePort = ReceivePort();
+    _sendPort.send(Msg.createMessage(
+        receivePort.sendPort, conversationId, text, idempotencyId));
+    await for (var data in receivePort) {
+      if (data is Message) {
+        return data;
+      }
+
+      if (data is APIError) {
+        throw data;
+      }
+
+      throw ArgumentError.value(
+          data, "Invalid response from canine_sync on createMessage");
+    }
+
+    throw AssertionError("canine_sync did not respond to createMessage");
+  }
 }
