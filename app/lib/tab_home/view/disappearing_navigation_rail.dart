@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../destinations.dart';
+import '../../destinations.dart';
 
 class DisappearingNavigationRail extends StatelessWidget {
+  final void Function(BuildContext) onAddCallback;
   const DisappearingNavigationRail({
     super.key,
+    required this.onAddCallback,
     required this.backgroundColor,
     required this.selectedIndex,
     this.onDestinationSelected,
@@ -37,7 +39,7 @@ class DisappearingNavigationRail extends StatelessWidget {
             ),
             backgroundColor: colorScheme.tertiaryContainer,
             foregroundColor: colorScheme.onTertiaryContainer,
-            onPressed: () {},
+            onPressed: () => onAddCallback(context),
             child: const Icon(Icons.add),
           ),
         ],

@@ -1,8 +1,11 @@
+import 'package:app/conversation_create/conversation_create.dart';
 import 'package:app/conversations/screen.dart';
+import 'package:app/repository/repository.dart';
 import 'package:app/settings/screen.dart';
-import 'package:app/widgets/disappearing_bottom_navigation_bar.dart';
-import 'package:app/widgets/disappearing_navigation_rail.dart';
+import 'package:app/tab_home/view/disappearing_bottom_navigation_bar.dart';
+import 'package:app/tab_home/view/disappearing_navigation_rail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TabHome extends StatefulWidget {
   const TabHome({super.key});
@@ -38,6 +41,7 @@ class _TabHomeState extends State<TabHome> {
         children: [
           if (wideScreen)
             DisappearingNavigationRail(
+              onAddCallback: _addConversation,
               selectedIndex: selectedIndex,
               backgroundColor: _backgroundColor,
               onDestinationSelected: (index) {
@@ -59,7 +63,7 @@ class _TabHomeState extends State<TabHome> {
           : FloatingActionButton(
               backgroundColor: _colorScheme.tertiaryContainer,
               foregroundColor: _colorScheme.onTertiaryContainer,
-              onPressed: () {},
+              onPressed: () => _addConversation(context),
               child: const Icon(Icons.add),
             ),
       bottomNavigationBar: wideScreen
@@ -83,5 +87,17 @@ class _TabHomeState extends State<TabHome> {
         SettingsScreen(),
       ],
     );
+  }
+
+  void _addConversation(BuildContext rootContext) {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              child: ConversationCreatePage(
+                  repository: context.read<SyncRepository>(),
+                  didSelectConversation: (conversation) {
+                    Navigator.of(rootContext, rootNavigator: true).pop();
+                  }),
+            ));
   }
 }

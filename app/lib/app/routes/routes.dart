@@ -5,7 +5,7 @@ import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../re_login/re_login.dart';
 import '../../splash/splash.dart';
-import '../../tab_home.dart';
+import '../../tab_home/tab_home.dart';
 import '../bloc/app_bloc.dart';
 
 List<Page> onGenerateAppViewPages(
@@ -20,6 +20,7 @@ List<Page> onGenerateAppViewPages(
     case Running():
       return [TabHome.page()];
     case RunningRefresh():
+      // TODO:
       return [TabHome.page(), ReLoginPage.page()]; // try to add refresh
     case LoggingOut():
       return [LogoutPage.page()];

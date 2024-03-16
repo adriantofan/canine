@@ -109,4 +109,8 @@ class InMemoryCache implements Cache {
 
     return Update.messagesAdded(conversationId, newMessages);
   }
+
+  @override
+  // TODO: implement users
+  List<User> get users => _usersById.values.toList();
 }

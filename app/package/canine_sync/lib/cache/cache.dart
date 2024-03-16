@@ -6,6 +6,7 @@ import 'model/models.dart';
 export 'model/models.dart';
 
 abstract class Cache {
+  List<User> get users;
   List<Conversation> get conversations;
   List<Message> getConversationMessages(int conversationId);
   ListState<Message> getConversationMessagesState(int conversationId);

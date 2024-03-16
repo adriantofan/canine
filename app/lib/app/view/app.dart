@@ -34,10 +34,12 @@ class MainAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(useMaterial3: true),
-      home: FlowBuilder<AppState>(
-        state: context.select((AppBloc bloc) => bloc.state),
-        onGeneratePages: onGenerateAppViewPages,
-      ),
+      home: Builder(builder: (context) {
+        return FlowBuilder<AppState>(
+          state: context.select((AppBloc bloc) => bloc.state),
+          onGeneratePages: onGenerateAppViewPages,
+        );
+      }),
     );
   }
 }

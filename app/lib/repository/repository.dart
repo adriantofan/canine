@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/repository/update_messages_proc.dart';
+import 'package:app/repository/users_proc.dart';
 import 'package:canine_sync/canine_sync.dart';
 
 import '../messages/messages.dart';
@@ -13,6 +14,9 @@ class SyncRepository {
   final Sync _sync;
 
   SyncRepository(Sync sync) : _sync = sync;
+  Stream<List<User>> users() {
+    return _sync.subscribeProcRef(UsersProcRef());
+  }
 
   Stream<List<ConversationInfo>> conversations() {
     return _sync.subscribeProcRef(UpdateConversationsProcRef());
@@ -38,7 +42,12 @@ class SyncRepository {
     return _sync.conversationMessagesLoadPast(conversationId);
   }
 
-  Future<Message> createMessage(int conversationId, String text, String idempotencyId) {
-   return _sync.createMessage(conversationId, text, idempotencyId);
+  Future<Message> createMessage(
+      int conversationId, String text, String idempotencyId) {
+    return _sync.createMessage(conversationId, text, idempotencyId);
+  }
+
+  Future<Conversation> createConversation(int externalUserId) {
+    throw UnimplementedError();
   }
 }
