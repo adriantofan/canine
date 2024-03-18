@@ -14,7 +14,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
   final SyncRepository _syncRepository;
 
   SendMessageBloc(this._syncRepository, int conversationId)
-      : super(SendMessageState(conversationId, Uuid().v4())) {
+      : super(SendMessageState(conversationId, const Uuid().v4())) {
     on<SendMessageEventTextChanged>(_onTextChanged);
     on<SendMessageEventSend>(_onSend);
   }
@@ -29,7 +29,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
               status: FormzSubmissionStatus.success,
               message: const MessageInput.pure(),
               idempotencyId:
-                  Uuid().v4(), // new idempotency id after successful send
+                  const Uuid().v4(), // new idempotency id after successful send
               isValid: false,
             )))
         .catchError((e) => emit(state.copyWith(

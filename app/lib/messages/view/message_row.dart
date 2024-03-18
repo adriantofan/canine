@@ -10,6 +10,7 @@ class MessageRow extends StatelessWidget {
     required this.chatMessage,
   });
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -25,7 +26,7 @@ class MessageRow extends StatelessWidget {
             // Placeholder for an avatar image. You might want to use a network image or similar.
             child: Text(chatMessage.avatarInitials),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,18 +41,18 @@ class MessageRow extends StatelessWidget {
                             .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      TextSpan(text: '  '),
+                      const TextSpan(text: '  '),
                       TextSpan(
                         text: chatMessage.timeFormatted,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyMedium
                             ?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   chatMessage.message,
                   style: Theme.of(context).textTheme.bodyMedium,

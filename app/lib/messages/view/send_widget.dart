@@ -20,7 +20,7 @@ class SendWidget extends StatelessWidget {
 }
 
 class _SendField extends StatefulWidget {
-  const _SendField({super.key});
+  const _SendField();
 
   @override
   State<_SendField> createState() => _SendFieldState();

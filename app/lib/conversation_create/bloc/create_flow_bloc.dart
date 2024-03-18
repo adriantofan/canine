@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../repository/repository.dart';
@@ -13,17 +14,22 @@ class CreateFlowBloc extends Bloc<CreateFlowEvent, CreateFlowState> {
   CreateFlowBloc(this._repository, this._didSelectConversation)
       : super(const CreateFlowState.nothingSelected()) {
     on<CreateFlowEventDidSelectUser>((event, emit) {
-      emit(CreateFlowState.creatingWithUser(event.user));
+      emit(CreateFlowState.withUser(event.user));
     });
     on<CreateFlowEventFilePressed>((event, emit) {
-      emit(const CreateFlowState.uploadDevis());
+      emit(const CreateFlowState.withDevis(CreateFlowDevisState.form()));
     });
     on<CreateFlowEventDevisUploaded>((event, emit) {
-      emit(const CreateFlowState.createDevisUser());
+      if (state case CreateFlowStateWithDevis(:final devisFlow)) {
+        emit(CreateFlowState.withDevis(devisFlow.copyWith(
+          step: CreateFlowDevisStep.createDevisUser,
+          file: event.file,
+        )));
+        return;
+      }
+      throw UnimplementedError('Unknown state CreateFlowBloc: $state');
     });
-    on<CreateFlowEventUserCreated>((event, emit) {
-      emit(const CreateFlowState.creatingWithDevis());
-    });
+    on<CreateFlowEventUserCreated>((event, emit) {});
     on<CreateFlowEventCreateFlowd>((event, emit) {
       emit(const CreateFlowState.nothingSelected());
     });
@@ -32,6 +38,10 @@ class CreateFlowBloc extends Bloc<CreateFlowEvent, CreateFlowState> {
     });
     on<CreateFlowEventCancel>((event, emit) {
       _didSelectConversation(null);
+    });
+
+    on<CreateFlowEventDidPop>((event, emit) {
+      emit(state.previous);
     });
   }
 }

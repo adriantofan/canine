@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:canine_sync/models/api_error.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

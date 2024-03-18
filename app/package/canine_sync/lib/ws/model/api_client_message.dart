@@ -4,7 +4,7 @@ part 'api_client_message.freezed.dart';
 part 'api_client_message.g.dart';
 
 @Freezed(unionKey: 'kind', unionValueCase: FreezedUnionCase.pascal)
-class ClientMessage {
+class ClientMessage with _$ClientMessage {
   const factory ClientMessage() = ClientMessageInvalid;
 
   @FreezedUnionValue('sync')

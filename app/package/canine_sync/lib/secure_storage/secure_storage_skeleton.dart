@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logging/logging.dart';
 
 import '../api/credential_set.dart';
 import 'msg_get_credential.dart';
@@ -11,6 +12,7 @@ import 'msg_set_credential.dart';
 const kSecureStorageCredentialKey = 'canine_credential';
 
 class SecureStorageSkeleton {
+  final _log = Logger('SecureStorageSkeleton');
   // TODO: deal with WEB
   final _storage =
       const FlutterSecureStorage(); // TODO: maybe we can remove the package requirement here
@@ -40,7 +42,7 @@ class SecureStorageSkeleton {
             msg.sendPort.send(Exception(e.toString()));
           }
         default:
-          print('SecureStorageSkeleton: unknown message: $msg');
+          _log.severe('SecureStorageSkeleton: unknown message: $msg');
       }
     });
   }
@@ -69,7 +71,7 @@ class SecureStorageSkeleton {
       try {
         return CredentialSet.fromJson(jsonDecode(credentialStr));
       } catch (e) {
-        print('Error reading credential from storage: $e. Deleted.');
+        _log.warning('Error reading credential from storage: $e. Deleted.');
         await _storage.delete(key: kSecureStorageCredentialKey);
       }
     }

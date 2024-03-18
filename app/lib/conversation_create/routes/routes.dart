@@ -1,4 +1,3 @@
-import 'package:app/conversation_create/view/users_list.dart';
 import 'package:flutter/material.dart';
 
 import '../bloc/create_flow_bloc.dart';
@@ -8,13 +7,22 @@ List<Page> onGeneratePages(CreateFlowState state, List<Page<dynamic>> pages) {
   switch (state) {
     case CreateFlowStateNothingSelected():
       return [UserListPage.page()];
-    case CreateFlowStateCreatingWithUser():
+    case CreateFlowStateWithUser():
       return [];
-    case CreateFlowStateUploadDevis():
-      return [];
-    case CreateFlowStateCreateDevisUser():
-      return [];
-    case CreateFlowStateCreatingWithDevis():
-      return [];
+    case CreateFlowStateWithDevis(:final devisFlow):
+      switch (devisFlow.step) {
+        case CreateFlowDevisStep.uploadDevis:
+          return [UserListPage.page(), DevisUploadPage.page()];
+        case CreateFlowDevisStep.createDevisUser:
+          return [
+            UserListPage.page(),
+            DevisUploadPage.page(),
+            UserCreatePage.page()
+          ];
+        case CreateFlowDevisStep.creatingWithDevis:
+          return [];
+      }
+    default:
+      throw UnimplementedError('Unknown state: $state');
   }
 }

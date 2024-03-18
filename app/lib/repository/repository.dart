@@ -4,6 +4,7 @@ import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/repository/update_messages_proc.dart';
 import 'package:app/repository/users_proc.dart';
 import 'package:canine_sync/canine_sync.dart';
+import 'package:file_selector/file_selector.dart';
 
 import '../messages/messages.dart';
 import 'update_conversations_proc.dart';
@@ -49,5 +50,11 @@ class SyncRepository {
 
   Future<Conversation> createConversation(int externalUserId) {
     throw UnimplementedError();
+  }
+
+  Future<DevisRecipient> analyseDevis(XFile file) async {
+    await Future.delayed(Duration(seconds: 2));
+    return DevisRecipient(
+        firstName: 'John', lastName: 'Doe', email: 'email', phone: 'phone');
   }
 }

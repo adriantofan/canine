@@ -8,7 +8,7 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  SyncRepository _syncRepository;
+  final SyncRepository _syncRepository;
   AppBloc(this._syncRepository) : super(const AppState.unknown()) {
     on<StatusChanged>((event, emit) {
       final status = event.status;

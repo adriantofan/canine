@@ -1,5 +1,6 @@
-import 'package:canine_sync/models/range.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'range.dart';
 
 part 'message_range.freezed.dart';
 part 'message_range.g.dart';

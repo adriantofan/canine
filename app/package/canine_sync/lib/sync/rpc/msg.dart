@@ -7,7 +7,7 @@ import '../proc.dart';
 part 'msg.freezed.dart';
 
 @freezed
-sealed class Msg {
+sealed class Msg with _$Msg {
   const factory Msg.login(SendPort sendPort, int workspaceId, String username,
       String password) = MsgLogin;
   const factory Msg.logout(SendPort sendPort) = MsgLogout;

@@ -13,11 +13,11 @@ part 'messages_event.dart';
 part 'messages_state.dart';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
-  SyncRepository _repository;
-  ConversationInfo _conversationinfo;
+  final SyncRepository _repository;
+  final ConversationInfo _conversationInfo;
 
   final _log = Logger('MessagesBloc');
-  MessagesBloc(this._repository, this._conversationinfo)
+  MessagesBloc(this._repository, this._conversationInfo)
       : super(const MessagesState([], null)) {
     on<MessagesEventStarted>(_onMessagesEventStarted);
     on<MessagesEventSyncStateChanged>((event, emit) {
@@ -31,14 +31,14 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   Future<void> _onMessagesEventLoadMore(
       MessagesEventLoadMore event, Emitter<MessagesState> emit) async {
-    _repository.conversationMessagesLoadPast(_conversationinfo.conversationId);
+    _repository.conversationMessagesLoadPast(_conversationInfo.conversationId);
   }
 
   FutureOr<void> _onMessagesEventStarted(event, emit) async {
     var conversationMessagesSyncStateStream = _repository
-        .conversationMessagesSyncStateStream(_conversationinfo.conversationId);
+        .conversationMessagesSyncStateStream(_conversationInfo.conversationId);
     final changes = MergeStream([
-      _repository.chatMessages(_conversationinfo.conversationId),
+      _repository.chatMessages(_conversationInfo.conversationId),
       conversationMessagesSyncStateStream
     ]);
     var isFirst = true;

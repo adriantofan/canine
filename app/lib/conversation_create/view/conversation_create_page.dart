@@ -39,9 +39,32 @@ class ConversationCreateWidget extends StatelessWidget {
       builder: (context, state) {
         // Seems to have it's own Navigator
         return FlowBuilder(
-            state: context.select((CreateFlowBloc bloc) => bloc.state),
-            onGeneratePages: onGeneratePages);
+          state: context.select((CreateFlowBloc bloc) => bloc.state),
+          onGeneratePages: onGeneratePages,
+          observers: [
+            // this is used to change state on the back button press to work with
+            // onGeneratePages
+            _PopObserver(
+                onPop: () => context
+                    .read<CreateFlowBloc>()
+                    .add(const CreateFlowEvent.didPop()))
+          ],
+        );
       },
     );
+  }
+}
+
+class _PopObserver extends NavigatorObserver {
+  _PopObserver({
+    this.onPop,
+  });
+
+  final VoidCallback? onPop;
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    onPop?.call();
   }
 }

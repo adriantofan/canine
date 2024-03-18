@@ -6,7 +6,7 @@ import 'msg_get_credential.dart';
 import 'msg_set_credential.dart';
 
 class SecureStoragesStub implements SecureStorage {
-  SendPort _sendPort;
+  final SendPort _sendPort;
   SecureStoragesStub(this._sendPort);
 
   @override

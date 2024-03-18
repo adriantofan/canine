@@ -6,8 +6,9 @@ import '../../app/app.dart';
 import '../cubit/re_login_cubit.dart';
 
 class ReLoginForm extends StatelessWidget {
-  const ReLoginForm({Key? key}) : super(key: key);
+  const ReLoginForm({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return BlocListener<ReLoginCubit, ReLoginState>(
       listener: (context, state) {
