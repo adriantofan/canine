@@ -1,4 +1,4 @@
-part of 'create_flow_bloc.dart';
+part of 'create_flow_cubit.dart';
 
 @freezed
 sealed class CreateFlowState with _$CreateFlowState {

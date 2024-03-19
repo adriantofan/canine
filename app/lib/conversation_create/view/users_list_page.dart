@@ -1,4 +1,3 @@
-import 'package:app/conversation_create/bloc/create_flow_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,9 +18,7 @@ class UserListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CloseButton(onPressed: () {
-          context.read<CreateFlowBloc>().add(const CreateFlowEvent.cancel());
-        }),
+        leading: CloseButton(onPressed: () => onFlowCancelled?.call(context)),
         title: const Text('Select a user'),
       ),
       body: UsersList(

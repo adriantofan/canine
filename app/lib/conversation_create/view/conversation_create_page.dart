@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repository/repository.dart';
-import '../bloc/create_flow_bloc.dart';
+import '../bloc/create_flow_cubit.dart';
 import '../routes/routes.dart';
 
 class ConversationCreatePage extends StatelessWidget {
@@ -22,7 +22,7 @@ class ConversationCreatePage extends StatelessWidget {
     return RepositoryProvider.value(
       value: _repository,
       child: BlocProvider(
-        create: (c) => CreateFlowBloc(c.read(), _didSelectConversation),
+        create: (c) => CreateFlowCubit(c.read(), _didSelectConversation),
         child: const ConversationCreateWidget(),
       ),
     );
@@ -34,20 +34,17 @@ class ConversationCreateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreateFlowBloc, CreateFlowState>(
+    return BlocConsumer<CreateFlowCubit, CreateFlowState>(
       listener: (context, state) {},
       builder: (context, state) {
         // Seems to have it's own Navigator
         return FlowBuilder(
-          state: context.select((CreateFlowBloc bloc) => bloc.state),
+          state: context.select((CreateFlowCubit bloc) => bloc.state),
           onGeneratePages: onGeneratePages,
           observers: [
             // this is used to change state on the back button press to work with
             // onGeneratePages
-            _PopObserver(
-                onPop: () => context
-                    .read<CreateFlowBloc>()
-                    .add(const CreateFlowEvent.didPop()))
+            _PopObserver(onPop: () => context.read<CreateFlowCubit>().onPop())
           ],
         );
       },

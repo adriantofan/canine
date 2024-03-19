@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repository/repository.dart';
-import '../bloc/create_flow_bloc.dart';
+import '../bloc/create_flow_cubit.dart';
 import '../view/view.dart';
 
 List<Page> onGeneratePages(CreateFlowState state, List<Page<dynamic>> pages) {
@@ -40,21 +40,19 @@ Page<void> _userListPage() =>
     UserListPage.page(_onFlowCancelled, _userListPageFilePressed);
 
 void _onFlowCancelled(BuildContext context) {
-  context.read<CreateFlowBloc>().add(const CreateFlowEvent.cancel());
+  context.read<CreateFlowCubit>().onCanceled();
 }
 
 void _userListPageFilePressed(BuildContext context) {
-  context.read<CreateFlowBloc>().add(const CreateFlowEvent.filePressed());
+  context.read<CreateFlowCubit>().filePressed();
 }
 
 void _devisUploadPageCallback((BuildContext, XFile, DevisRecipient) result) {
   final (context, file, recipient) = result;
-  context
-      .read<CreateFlowBloc>()
-      .add(CreateFlowEvent.devisUploaded(file, recipient));
+  context.read<CreateFlowCubit>().devisUploaded(file, recipient);
 }
 
 void _userCreatePageCallback((BuildContext, User) result) {
   final (context, user) = result;
-  context.read<CreateFlowBloc>().add(CreateFlowEvent.userCreated(user));
+  context.read<CreateFlowCubit>().userCreated(user);
 }
