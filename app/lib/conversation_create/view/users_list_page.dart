@@ -5,10 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/repository.dart';
 
 class UserListPage extends StatelessWidget {
-  const UserListPage({super.key});
+  const UserListPage(this.onFlowCancelled, this.onFilePressed, {super.key});
+  final ValueSetter<BuildContext>? onFlowCancelled;
+  final ValueSetter<BuildContext>? onFilePressed;
 
-  static Page<void> page() {
-    return const MaterialPage<void>(child: UserListPage());
+  static Page<void> page(ValueSetter<BuildContext>? onFlowCancelled,
+      ValueSetter<BuildContext>? onFilePressed) {
+    return MaterialPage<void>(
+        child: UserListPage(onFlowCancelled, onFilePressed));
   }
 
   @override
@@ -21,6 +25,7 @@ class UserListPage extends StatelessWidget {
         title: const Text('Select a user'),
       ),
       body: UsersList(
+        onFilePressed: onFilePressed,
         onUserSelected: (user) {},
       ),
     );
@@ -28,9 +33,12 @@ class UserListPage extends StatelessWidget {
 }
 
 class UsersList extends StatelessWidget {
+  final ValueSetter<BuildContext>? onFilePressed;
+
   final Function(User) onUserSelected;
 
-  const UsersList({super.key, required this.onUserSelected});
+  const UsersList(
+      {super.key, required this.onUserSelected, this.onFilePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +70,10 @@ class UsersList extends StatelessWidget {
         title: const Text('Start with devis'),
         subtitle: const Text(
             'Upload a devis to start a conversation with its recipient'),
-        onTap: () {
-          context
-              .read<CreateFlowBloc>()
-              .add(const CreateFlowEvent.filePressed());
-        });
+        onTap: onFilePressed != null
+            ? () {
+                onFilePressed!(context);
+              }
+            : null);
   }
 }

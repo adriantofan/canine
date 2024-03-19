@@ -53,8 +53,22 @@ class SyncRepository {
   }
 
   Future<DevisRecipient> analyseDevis(XFile file) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 200));
     return DevisRecipient(
-        firstName: 'John', lastName: 'Doe', email: 'email', phone: 'phone');
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'email@example.com',
+        phone: '06');
+  }
+
+  Future<User> createUser() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return User(
+        id: 1,
+        workspaceId: 1,
+        messagingAddress: 'messagingAddress',
+        type: 'internal',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
   }
 }

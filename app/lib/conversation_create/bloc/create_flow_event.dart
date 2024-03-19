@@ -7,7 +7,8 @@ class CreateFlowEvent with _$CreateFlowEvent {
   const factory CreateFlowEvent.filePressed() = CreateFlowEventFilePressed;
   const factory CreateFlowEvent.devisUploaded(
       XFile file, DevisRecipient recipient) = CreateFlowEventDevisUploaded;
-  const factory CreateFlowEvent.userCreated() = CreateFlowEventUserCreated;
+  const factory CreateFlowEvent.userCreated(User user) =
+      CreateFlowEventUserCreated;
   const factory CreateFlowEvent.createFlowd() = CreateFlowEventCreateFlowd;
   const factory CreateFlowEvent.cancelStep() = CreateFlowEventCancelStep;
   const factory CreateFlowEvent.cancel() = CreateFlowEventCancel;

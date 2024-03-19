@@ -24,6 +24,7 @@ class CreateFlowBloc extends Bloc<CreateFlowEvent, CreateFlowState> {
         emit(CreateFlowState.withDevis(devisFlow.copyWith(
           step: CreateFlowDevisStep.createDevisUser,
           file: event.file,
+          recipient: event.recipient,
         )));
         return;
       }

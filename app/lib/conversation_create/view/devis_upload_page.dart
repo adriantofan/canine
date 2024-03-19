@@ -5,67 +5,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
-import '../bloc/create_flow_bloc.dart';
-
 class DevisUploadPage extends StatelessWidget {
-  const DevisUploadPage({super.key});
+  final ValueSetter<(BuildContext, XFile, DevisRecipient)> _devisUploaded;
+  const DevisUploadPage(this._devisUploaded, {super.key});
 
-  static Page<void> page() => MaterialPage<void>(
-          child: BlocProvider(
-        create: (context) => DevisUploadCubit(context.read<SyncRepository>())
-          ..requireUploadDialog(),
-        child: const DevisUploadPage(),
-      ));
+  static Page<void> page(
+          ValueSetter<(BuildContext, XFile, DevisRecipient)> devisUploaded) =>
+      MaterialPage<void>(
+        child: DevisUploadPage(devisUploaded),
+      );
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Upload devis')),
-      body: BlocConsumer<DevisUploadCubit, DevisUploadState>(
-        listener: (context, state) async {
-          // TODO: This requires a future.microtask to work when the initial state is generated, clarify why
-          if (state.showFileDialog) {
-            final file = await _showUploadDialog(context);
-            if (file != null && context.mounted) {
-              context.read<DevisUploadCubit>().didUploadFile(file);
+    return BlocProvider(
+      create: (context) => DevisUploadCubit(context.read<SyncRepository>())
+        ..requireUploadDialog(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Upload devis')),
+        body: BlocConsumer<DevisUploadCubit, DevisUploadState>(
+          listener: (context, state) async {
+            // TODO: This requires a future.microtask to work when the initial state is generated, clarify why
+            if (state.showFileDialog) {
+              final file = await _showUploadDialog(context);
+              if (context.mounted) {
+                context.read<DevisUploadCubit>().didUploadFile(file);
+              }
+              return;
             }
-            return;
-          }
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage ?? 'Analyse Failure'),
-                ),
-              );
-          }
-          if (state.status.isSuccess) {
-            context.read<CreateFlowBloc>().add(CreateFlowEvent.devisUploaded(
-                state.file.value!, state.recipient!));
-          }
-        },
-        builder: (context, state) {
-          return PopScope(
-            canPop: !state.status.isInProgress,
-            child: Align(
-              alignment: const Alignment(0, -1 / 3),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 16),
-                    _FileInput(),
-                    const SizedBox(height: 8),
-                    _ChoseFileButton(),
-                    const SizedBox(height: 4),
-                    _UploadButton(),
-                  ],
+            switch (state.status) {
+              case FormzSubmissionStatus.failure:
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Text(state.errorMessage ?? 'Analyse Failure'),
+                    ),
+                  );
+              case FormzSubmissionStatus.success:
+                _devisUploaded((context, state.file.value!, state.recipient!));
+              default:
+            }
+          },
+          builder: (context, state) {
+            return PopScope(
+              canPop: !state.status.isInProgress,
+              child: Align(
+                alignment: const Alignment(0, -1 / 3),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 16),
+                      _FileInput(),
+                      const SizedBox(height: 8),
+                      _ChoseFileButton(),
+                      const SizedBox(height: 4),
+                      _UploadButton(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

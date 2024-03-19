@@ -22,7 +22,7 @@ mixin _$CreateFlowEvent {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -34,7 +34,7 @@ mixin _$CreateFlowEvent {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -46,7 +46,7 @@ mixin _$CreateFlowEvent {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -195,7 +195,7 @@ class _$CreateFlowEventDidSelectUserImpl
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -210,7 +210,7 @@ class _$CreateFlowEventDidSelectUserImpl
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -225,7 +225,7 @@ class _$CreateFlowEventDidSelectUserImpl
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -345,7 +345,7 @@ class _$CreateFlowEventFilePressedImpl implements CreateFlowEventFilePressed {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -360,7 +360,7 @@ class _$CreateFlowEventFilePressedImpl implements CreateFlowEventFilePressed {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -375,7 +375,7 @@ class _$CreateFlowEventFilePressedImpl implements CreateFlowEventFilePressed {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -535,7 +535,7 @@ class _$CreateFlowEventDevisUploadedImpl
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -550,7 +550,7 @@ class _$CreateFlowEventDevisUploadedImpl
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -565,7 +565,7 @@ class _$CreateFlowEventDevisUploadedImpl
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -647,6 +647,10 @@ abstract class _$$CreateFlowEventUserCreatedImplCopyWith<$Res> {
           _$CreateFlowEventUserCreatedImpl value,
           $Res Function(_$CreateFlowEventUserCreatedImpl) then) =
       __$$CreateFlowEventUserCreatedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({User user});
+
+  $UserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -658,27 +662,59 @@ class __$$CreateFlowEventUserCreatedImplCopyWithImpl<$Res>
       _$CreateFlowEventUserCreatedImpl _value,
       $Res Function(_$CreateFlowEventUserCreatedImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+  }) {
+    return _then(_$CreateFlowEventUserCreatedImpl(
+      null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as User,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get user {
+    return $UserCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value));
+    });
+  }
 }
 
 /// @nodoc
 
 class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
-  const _$CreateFlowEventUserCreatedImpl();
+  const _$CreateFlowEventUserCreatedImpl(this.user);
+
+  @override
+  final User user;
 
   @override
   String toString() {
-    return 'CreateFlowEvent.userCreated()';
+    return 'CreateFlowEvent.userCreated(user: $user)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateFlowEventUserCreatedImpl);
+            other is _$CreateFlowEventUserCreatedImpl &&
+            (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, user);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CreateFlowEventUserCreatedImplCopyWith<_$CreateFlowEventUserCreatedImpl>
+      get copyWith => __$$CreateFlowEventUserCreatedImplCopyWithImpl<
+          _$CreateFlowEventUserCreatedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -687,13 +723,13 @@ class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
     required TResult Function() didPop,
   }) {
-    return userCreated();
+    return userCreated(user);
   }
 
   @override
@@ -702,13 +738,13 @@ class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
     TResult? Function()? didPop,
   }) {
-    return userCreated?.call();
+    return userCreated?.call(user);
   }
 
   @override
@@ -717,7 +753,7 @@ class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -725,7 +761,7 @@ class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
     required TResult orElse(),
   }) {
     if (userCreated != null) {
-      return userCreated();
+      return userCreated(user);
     }
     return orElse();
   }
@@ -781,7 +817,13 @@ class _$CreateFlowEventUserCreatedImpl implements CreateFlowEventUserCreated {
 }
 
 abstract class CreateFlowEventUserCreated implements CreateFlowEvent {
-  const factory CreateFlowEventUserCreated() = _$CreateFlowEventUserCreatedImpl;
+  const factory CreateFlowEventUserCreated(final User user) =
+      _$CreateFlowEventUserCreatedImpl;
+
+  User get user;
+  @JsonKey(ignore: true)
+  _$$CreateFlowEventUserCreatedImplCopyWith<_$CreateFlowEventUserCreatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -830,7 +872,7 @@ class _$CreateFlowEventCreateFlowdImpl implements CreateFlowEventCreateFlowd {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -845,7 +887,7 @@ class _$CreateFlowEventCreateFlowdImpl implements CreateFlowEventCreateFlowd {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -860,7 +902,7 @@ class _$CreateFlowEventCreateFlowdImpl implements CreateFlowEventCreateFlowd {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -972,7 +1014,7 @@ class _$CreateFlowEventCancelStepImpl implements CreateFlowEventCancelStep {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -987,7 +1029,7 @@ class _$CreateFlowEventCancelStepImpl implements CreateFlowEventCancelStep {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -1002,7 +1044,7 @@ class _$CreateFlowEventCancelStepImpl implements CreateFlowEventCancelStep {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -1113,7 +1155,7 @@ class _$CreateFlowEventCancelImpl implements CreateFlowEventCancel {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -1128,7 +1170,7 @@ class _$CreateFlowEventCancelImpl implements CreateFlowEventCancel {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -1143,7 +1185,7 @@ class _$CreateFlowEventCancelImpl implements CreateFlowEventCancel {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
@@ -1254,7 +1296,7 @@ class _$CreateFlowEventDidPopImpl implements CreateFlowEventDidPop {
     required TResult Function() filePressed,
     required TResult Function(XFile file, DevisRecipient recipient)
         devisUploaded,
-    required TResult Function() userCreated,
+    required TResult Function(User user) userCreated,
     required TResult Function() createFlowd,
     required TResult Function() cancelStep,
     required TResult Function() cancel,
@@ -1269,7 +1311,7 @@ class _$CreateFlowEventDidPopImpl implements CreateFlowEventDidPop {
     TResult? Function(User user)? didSelectUser,
     TResult? Function()? filePressed,
     TResult? Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult? Function()? userCreated,
+    TResult? Function(User user)? userCreated,
     TResult? Function()? createFlowd,
     TResult? Function()? cancelStep,
     TResult? Function()? cancel,
@@ -1284,7 +1326,7 @@ class _$CreateFlowEventDidPopImpl implements CreateFlowEventDidPop {
     TResult Function(User user)? didSelectUser,
     TResult Function()? filePressed,
     TResult Function(XFile file, DevisRecipient recipient)? devisUploaded,
-    TResult Function()? userCreated,
+    TResult Function(User user)? userCreated,
     TResult Function()? createFlowd,
     TResult Function()? cancelStep,
     TResult Function()? cancel,
