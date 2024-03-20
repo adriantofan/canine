@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 import 'app/app.dart';
+import 'app/routes/routes.dart';
 
 void main() async {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
@@ -18,6 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sync = await start();
   final repository = SyncRepository(sync);
+  AppRouter.instance; // Make sure the router is initialized when app starts
   runApp(MainApp(
     repository: repository,
   ));

@@ -30,6 +30,7 @@ class MainApp extends StatelessWidget {
                 '/login', // TODO: see how to trigger modal confirm password
               LoggingOut() => '/logout',
             };
+            // This model ws explained here https://github.com/flutter/flutter/issues/116651#issuecomment-1956528322
             AppRouter.router.go(path);
           },
           child: MaterialApp.router(

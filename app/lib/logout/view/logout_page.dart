@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LogoutPage extends StatelessWidget {
   const LogoutPage({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(child: LogoutPage());
-
   @override
   Widget build(BuildContext context) {
     // Access the AuthRepository from the context

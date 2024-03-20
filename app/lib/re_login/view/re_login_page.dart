@@ -8,8 +8,6 @@ import 're_login_form.dart';
 class ReLoginPage extends StatelessWidget {
   const ReLoginPage({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(child: ReLoginPage());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

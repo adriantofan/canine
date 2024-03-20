@@ -10,10 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class TabHome extends StatefulWidget {
   const TabHome({super.key});
 
-  static Page<void> page() => const MaterialPage<void>(
-        child: TabHome(),
-      );
-
   @override
   State<TabHome> createState() => _TabHomeState();
 }

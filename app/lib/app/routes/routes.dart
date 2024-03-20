@@ -7,49 +7,95 @@ import '../../logout/logout.dart';
 import '../../re_login/re_login.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
-import '../bloc/app_bloc.dart';
 
-List<Page> onGenerateAppViewPages(
-    AppState appState, List<Page<dynamic>> pages) {
-  switch (appState) {
-    case Unknown():
-      return [SplashPage.page()];
-    case LoginRegisterFlow():
-      return [LoginPage.page()];
-
-    case Login():
-      return [ReLoginPage.page()];
-    case Running():
-      return [TabHome.page()];
-    case RunningRefresh():
-      // TODO:
-      return [TabHome.page(), ReLoginPage.page()]; // try to add refresh
-    case LoggingOut():
-      return [LogoutPage.page()];
-  }
-}
+// List<Page> onGenerateAppViewPages(
+//     AppState appState, List<Page<dynamic>> pages) {
+//   switch (appState) {
+//     case Unknown():
+//       return [SplashPage.page()];
+//     case LoginRegisterFlow():
+//       return [LoginPage.page()];
+//
+//     case Login():
+//       return [ReLoginPage.page()];
+//     case Running():
+//       return [TabHome.page()];
+//     case RunningRefresh():
+//       // TODO:
+//       return [TabHome.page(), ReLoginPage.page()]; // try to add refresh
+//     case LoggingOut():
+//       return [LogoutPage.page()];
+//   }
+// }
 
 // see https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
-abstract class AppRouter {
-  static GoRouter router = GoRouter(
-    routes: [
+//  about making a modal route and dealing with transiations
+
+class AppRouter {
+  static final AppRouter _instance = AppRouter._internal();
+  factory AppRouter() => _instance;
+  static late final GoRouter router;
+  static AppRouter get instance => _instance;
+
+  static const String slashPath = '/';
+  static const String loginPath = '/login';
+  static const String confirmPasswordPath = '/confirm-password';
+  static const String homePath = '/home';
+  static const String logoutPath = '/logout';
+
+  static final GlobalKey<NavigatorState> parentNavigatorKey =
+      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> conversationsTabNavigatorKey =
+      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> settingsTabNavigatorKey =
+      GlobalKey<NavigatorState>();
+
+  AppRouter._internal() {
+    final routes = [
       GoRoute(
-        path: '/',
-        builder: (context, state) => const SplashPage(),
-      ),
-      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-      GoRoute(
-        path: '/confirm-password',
-        builder: (context, state) => const ReLoginPage(),
+        parentNavigatorKey: parentNavigatorKey,
+        path: slashPath,
+        pageBuilder: (context, state) =>
+            getPage(child: const SplashPage(), state: state),
       ),
       GoRoute(
-        path: '/home',
-        builder: (context, state) => const TabHome(),
+          parentNavigatorKey: parentNavigatorKey,
+          path: loginPath,
+          pageBuilder: (context, state) =>
+              getPage(child: const LoginPage(), state: state)),
+      GoRoute(
+        parentNavigatorKey: parentNavigatorKey,
+        path: confirmPasswordPath,
+        pageBuilder: (context, state) =>
+            getPage(child: const ReLoginPage(), state: state),
       ),
       GoRoute(
-        path: '/logout',
-        builder: (context, state) => const LogoutPage(),
+        parentNavigatorKey: parentNavigatorKey,
+        path: homePath,
+        pageBuilder: (context, state) =>
+            getPage(child: const TabHome(), state: state),
       ),
-    ],
-  );
+      GoRoute(
+        parentNavigatorKey: parentNavigatorKey,
+        path: logoutPath,
+        pageBuilder: (context, state) =>
+            getPage(child: const LogoutPage(), state: state),
+      ),
+    ];
+
+    router = GoRouter(
+      navigatorKey: parentNavigatorKey,
+      routes: routes,
+    );
+  }
+
+  static Page getPage({
+    required Widget child,
+    required GoRouterState state,
+  }) {
+    return MaterialPage(
+      key: state.pageKey,
+      child: child,
+    );
+  }
 }
