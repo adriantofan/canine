@@ -95,8 +95,13 @@ class _TabHomeState extends State<TabHome> {
         builder: (context) => Dialog(
               child: ConversationCreatePage(
                   repository: context.read<SyncRepository>(),
-                  didSelectConversation: (conversation) {
+                  endWithCreate: (result) {
+                    final (user, file) = result;
+                    print('TABHOME user: $user, file: $file');
+
                     Navigator.of(rootContext, rootNavigator: true).pop();
+                    // Select conversation screen
+                    // give user to MessagesPage who would decide to open the new conversation
                   }),
             ));
   }

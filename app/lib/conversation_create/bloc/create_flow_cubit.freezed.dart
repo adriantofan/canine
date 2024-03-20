@@ -20,21 +20,18 @@ mixin _$CreateFlowState {
   TResult when<TResult extends Object?>({
     required TResult Function() nothingSelected,
     required TResult Function(CreateFlowDevisState devisFlow) withDevis,
-    required TResult Function(User? user) withUser,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? nothingSelected,
     TResult? Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult? Function(User? user)? withUser,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? nothingSelected,
     TResult Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult Function(User? user)? withUser,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,21 +40,18 @@ mixin _$CreateFlowState {
     required TResult Function(CreateFlowStateNothingSelected value)
         nothingSelected,
     required TResult Function(CreateFlowStateWithDevis value) withDevis,
-    required TResult Function(CreateFlowStateWithUser value) withUser,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult? Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult? Function(CreateFlowStateWithUser value)? withUser,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult Function(CreateFlowStateWithUser value)? withUser,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -126,7 +120,6 @@ class _$CreateFlowStateNothingSelectedImpl
   TResult when<TResult extends Object?>({
     required TResult Function() nothingSelected,
     required TResult Function(CreateFlowDevisState devisFlow) withDevis,
-    required TResult Function(User? user) withUser,
   }) {
     return nothingSelected();
   }
@@ -136,7 +129,6 @@ class _$CreateFlowStateNothingSelectedImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? nothingSelected,
     TResult? Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult? Function(User? user)? withUser,
   }) {
     return nothingSelected?.call();
   }
@@ -146,7 +138,6 @@ class _$CreateFlowStateNothingSelectedImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? nothingSelected,
     TResult Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult Function(User? user)? withUser,
     required TResult orElse(),
   }) {
     if (nothingSelected != null) {
@@ -161,7 +152,6 @@ class _$CreateFlowStateNothingSelectedImpl
     required TResult Function(CreateFlowStateNothingSelected value)
         nothingSelected,
     required TResult Function(CreateFlowStateWithDevis value) withDevis,
-    required TResult Function(CreateFlowStateWithUser value) withUser,
   }) {
     return nothingSelected(this);
   }
@@ -171,7 +161,6 @@ class _$CreateFlowStateNothingSelectedImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult? Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult? Function(CreateFlowStateWithUser value)? withUser,
   }) {
     return nothingSelected?.call(this);
   }
@@ -181,7 +170,6 @@ class _$CreateFlowStateNothingSelectedImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult Function(CreateFlowStateWithUser value)? withUser,
     required TResult orElse(),
   }) {
     if (nothingSelected != null) {
@@ -277,7 +265,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
   TResult when<TResult extends Object?>({
     required TResult Function() nothingSelected,
     required TResult Function(CreateFlowDevisState devisFlow) withDevis,
-    required TResult Function(User? user) withUser,
   }) {
     return withDevis(devisFlow);
   }
@@ -287,7 +274,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? nothingSelected,
     TResult? Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult? Function(User? user)? withUser,
   }) {
     return withDevis?.call(devisFlow);
   }
@@ -297,7 +283,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? nothingSelected,
     TResult Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult Function(User? user)? withUser,
     required TResult orElse(),
   }) {
     if (withDevis != null) {
@@ -312,7 +297,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
     required TResult Function(CreateFlowStateNothingSelected value)
         nothingSelected,
     required TResult Function(CreateFlowStateWithDevis value) withDevis,
-    required TResult Function(CreateFlowStateWithUser value) withUser,
   }) {
     return withDevis(this);
   }
@@ -322,7 +306,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult? Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult? Function(CreateFlowStateWithUser value)? withUser,
   }) {
     return withDevis?.call(this);
   }
@@ -332,7 +315,6 @@ class _$CreateFlowStateWithDevisImpl extends CreateFlowStateWithDevis {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CreateFlowStateNothingSelected value)? nothingSelected,
     TResult Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult Function(CreateFlowStateWithUser value)? withUser,
     required TResult orElse(),
   }) {
     if (withDevis != null) {
@@ -354,188 +336,28 @@ abstract class CreateFlowStateWithDevis extends CreateFlowState {
 }
 
 /// @nodoc
-abstract class _$$CreateFlowStateWithUserImplCopyWith<$Res> {
-  factory _$$CreateFlowStateWithUserImplCopyWith(
-          _$CreateFlowStateWithUserImpl value,
-          $Res Function(_$CreateFlowStateWithUserImpl) then) =
-      __$$CreateFlowStateWithUserImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({User? user});
-
-  $UserCopyWith<$Res>? get user;
-}
-
-/// @nodoc
-class __$$CreateFlowStateWithUserImplCopyWithImpl<$Res>
-    extends _$CreateFlowStateCopyWithImpl<$Res, _$CreateFlowStateWithUserImpl>
-    implements _$$CreateFlowStateWithUserImplCopyWith<$Res> {
-  __$$CreateFlowStateWithUserImplCopyWithImpl(
-      _$CreateFlowStateWithUserImpl _value,
-      $Res Function(_$CreateFlowStateWithUserImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? user = freezed,
-  }) {
-    return _then(_$CreateFlowStateWithUserImpl(
-      freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
-    ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res>? get user {
-    if (_value.user == null) {
-      return null;
-    }
-
-    return $UserCopyWith<$Res>(_value.user!, (value) {
-      return _then(_value.copyWith(user: value));
-    });
-  }
-}
-
-/// @nodoc
-
-class _$CreateFlowStateWithUserImpl extends CreateFlowStateWithUser {
-  const _$CreateFlowStateWithUserImpl(this.user) : super._();
-
-  @override
-  final User? user;
-
-  @override
-  String toString() {
-    return 'CreateFlowState.withUser(user: $user)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateFlowStateWithUserImpl &&
-            (identical(other.user, user) || other.user == user));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, user);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateFlowStateWithUserImplCopyWith<_$CreateFlowStateWithUserImpl>
-      get copyWith => __$$CreateFlowStateWithUserImplCopyWithImpl<
-          _$CreateFlowStateWithUserImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() nothingSelected,
-    required TResult Function(CreateFlowDevisState devisFlow) withDevis,
-    required TResult Function(User? user) withUser,
-  }) {
-    return withUser(user);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? nothingSelected,
-    TResult? Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult? Function(User? user)? withUser,
-  }) {
-    return withUser?.call(user);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? nothingSelected,
-    TResult Function(CreateFlowDevisState devisFlow)? withDevis,
-    TResult Function(User? user)? withUser,
-    required TResult orElse(),
-  }) {
-    if (withUser != null) {
-      return withUser(user);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CreateFlowStateNothingSelected value)
-        nothingSelected,
-    required TResult Function(CreateFlowStateWithDevis value) withDevis,
-    required TResult Function(CreateFlowStateWithUser value) withUser,
-  }) {
-    return withUser(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CreateFlowStateNothingSelected value)? nothingSelected,
-    TResult? Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult? Function(CreateFlowStateWithUser value)? withUser,
-  }) {
-    return withUser?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CreateFlowStateNothingSelected value)? nothingSelected,
-    TResult Function(CreateFlowStateWithDevis value)? withDevis,
-    TResult Function(CreateFlowStateWithUser value)? withUser,
-    required TResult orElse(),
-  }) {
-    if (withUser != null) {
-      return withUser(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CreateFlowStateWithUser extends CreateFlowState {
-  const factory CreateFlowStateWithUser(final User? user) =
-      _$CreateFlowStateWithUserImpl;
-  const CreateFlowStateWithUser._() : super._();
-
-  User? get user;
-  @JsonKey(ignore: true)
-  _$$CreateFlowStateWithUserImplCopyWith<_$CreateFlowStateWithUserImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$CreateFlowDevisState {
   CreateFlowDevisStep get step => throw _privateConstructorUsedError;
   XFile? get file => throw _privateConstructorUsedError;
   DevisRecipient? get recipient => throw _privateConstructorUsedError;
-  User? get user => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)
+    required TResult Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)
         form,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)?
+    TResult? Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)?
         form,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)?
+    TResult Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)?
         form,
     required TResult orElse(),
   }) =>
@@ -568,14 +390,9 @@ abstract class $CreateFlowDevisStateCopyWith<$Res> {
           $Res Function(CreateFlowDevisState) then) =
       _$CreateFlowDevisStateCopyWithImpl<$Res, CreateFlowDevisState>;
   @useResult
-  $Res call(
-      {CreateFlowDevisStep step,
-      XFile? file,
-      DevisRecipient? recipient,
-      User? user});
+  $Res call({CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient});
 
   $DevisRecipientCopyWith<$Res>? get recipient;
-  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -595,7 +412,6 @@ class _$CreateFlowDevisStateCopyWithImpl<$Res,
     Object? step = null,
     Object? file = freezed,
     Object? recipient = freezed,
-    Object? user = freezed,
   }) {
     return _then(_value.copyWith(
       step: null == step
@@ -610,10 +426,6 @@ class _$CreateFlowDevisStateCopyWithImpl<$Res,
           ? _value.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
               as DevisRecipient?,
-      user: freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
     ) as $Val);
   }
 
@@ -628,18 +440,6 @@ class _$CreateFlowDevisStateCopyWithImpl<$Res,
       return _then(_value.copyWith(recipient: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res>? get user {
-    if (_value.user == null) {
-      return null;
-    }
-
-    return $UserCopyWith<$Res>(_value.user!, (value) {
-      return _then(_value.copyWith(user: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -651,16 +451,10 @@ abstract class _$$CreateFlowDevisStateFormImplCopyWith<$Res>
       __$$CreateFlowDevisStateFormImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {CreateFlowDevisStep step,
-      XFile? file,
-      DevisRecipient? recipient,
-      User? user});
+  $Res call({CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient});
 
   @override
   $DevisRecipientCopyWith<$Res>? get recipient;
-  @override
-  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -679,7 +473,6 @@ class __$$CreateFlowDevisStateFormImplCopyWithImpl<$Res>
     Object? step = null,
     Object? file = freezed,
     Object? recipient = freezed,
-    Object? user = freezed,
   }) {
     return _then(_$CreateFlowDevisStateFormImpl(
       null == step
@@ -694,10 +487,6 @@ class __$$CreateFlowDevisStateFormImplCopyWithImpl<$Res>
           ? _value.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
               as DevisRecipient?,
-      freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
     ));
   }
 }
@@ -708,8 +497,7 @@ class _$CreateFlowDevisStateFormImpl implements CreateFlowDevisStateForm {
   const _$CreateFlowDevisStateFormImpl(
       [this.step = CreateFlowDevisStep.uploadDevis,
       this.file = null,
-      this.recipient = null,
-      this.user = null]);
+      this.recipient = null]);
 
   @override
   @JsonKey()
@@ -720,13 +508,10 @@ class _$CreateFlowDevisStateFormImpl implements CreateFlowDevisStateForm {
   @override
   @JsonKey()
   final DevisRecipient? recipient;
-  @override
-  @JsonKey()
-  final User? user;
 
   @override
   String toString() {
-    return 'CreateFlowDevisState.form(step: $step, file: $file, recipient: $recipient, user: $user)';
+    return 'CreateFlowDevisState.form(step: $step, file: $file, recipient: $recipient)';
   }
 
   @override
@@ -737,12 +522,11 @@ class _$CreateFlowDevisStateFormImpl implements CreateFlowDevisStateForm {
             (identical(other.step, step) || other.step == step) &&
             (identical(other.file, file) || other.file == file) &&
             (identical(other.recipient, recipient) ||
-                other.recipient == recipient) &&
-            (identical(other.user, user) || other.user == user));
+                other.recipient == recipient));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, step, file, recipient, user);
+  int get hashCode => Object.hash(runtimeType, step, file, recipient);
 
   @JsonKey(ignore: true)
   @override
@@ -754,33 +538,33 @@ class _$CreateFlowDevisStateFormImpl implements CreateFlowDevisStateForm {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)
+    required TResult Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)
         form,
   }) {
-    return form(step, file, recipient, user);
+    return form(step, file, recipient);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)?
+    TResult? Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)?
         form,
   }) {
-    return form?.call(step, file, recipient, user);
+    return form?.call(step, file, recipient);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(CreateFlowDevisStep step, XFile? file,
-            DevisRecipient? recipient, User? user)?
+    TResult Function(
+            CreateFlowDevisStep step, XFile? file, DevisRecipient? recipient)?
         form,
     required TResult orElse(),
   }) {
     if (form != null) {
-      return form(step, file, recipient, user);
+      return form(step, file, recipient);
     }
     return orElse();
   }
@@ -818,8 +602,7 @@ abstract class CreateFlowDevisStateForm implements CreateFlowDevisState {
   const factory CreateFlowDevisStateForm(
       [final CreateFlowDevisStep step,
       final XFile? file,
-      final DevisRecipient? recipient,
-      final User? user]) = _$CreateFlowDevisStateFormImpl;
+      final DevisRecipient? recipient]) = _$CreateFlowDevisStateFormImpl;
 
   @override
   CreateFlowDevisStep get step;
@@ -827,8 +610,6 @@ abstract class CreateFlowDevisStateForm implements CreateFlowDevisState {
   XFile? get file;
   @override
   DevisRecipient? get recipient;
-  @override
-  User? get user;
   @override
   @JsonKey(ignore: true)
   _$$CreateFlowDevisStateFormImplCopyWith<_$CreateFlowDevisStateFormImpl>

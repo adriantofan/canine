@@ -8,14 +8,12 @@ sealed class CreateFlowState with _$CreateFlowState {
       CreateFlowStateNothingSelected;
   const factory CreateFlowState.withDevis(CreateFlowDevisState devisFlow) =
       CreateFlowStateWithDevis;
-  const factory CreateFlowState.withUser(User? user) = CreateFlowStateWithUser;
 
   CreateFlowState get previous {
     switch (this) {
       case CreateFlowStateNothingSelected():
         return const CreateFlowState.nothingSelected();
-      case CreateFlowStateWithUser():
-        return const CreateFlowState.nothingSelected();
+
       case CreateFlowStateWithDevis(:final devisFlow):
         switch (devisFlow.step) {
           case CreateFlowDevisStep.uploadDevis:
@@ -23,9 +21,6 @@ sealed class CreateFlowState with _$CreateFlowState {
           case CreateFlowDevisStep.createDevisUser:
             return CreateFlowState.withDevis(
                 devisFlow.copyWith(step: CreateFlowDevisStep.uploadDevis));
-          case CreateFlowDevisStep.creatingWithDevis:
-            return CreateFlowState.withDevis(
-                devisFlow.copyWith(step: CreateFlowDevisStep.createDevisUser));
         }
     }
   }
@@ -34,7 +29,6 @@ sealed class CreateFlowState with _$CreateFlowState {
 enum CreateFlowDevisStep {
   uploadDevis,
   createDevisUser,
-  creatingWithDevis,
 }
 
 @freezed
@@ -42,6 +36,5 @@ class CreateFlowDevisState with _$CreateFlowDevisState {
   const factory CreateFlowDevisState.form(
       [@Default(CreateFlowDevisStep.uploadDevis) CreateFlowDevisStep step,
       @Default(null) XFile? file,
-      @Default(null) DevisRecipient? recipient,
-      @Default(null) User? user]) = CreateFlowDevisStateForm;
+      @Default(null) DevisRecipient? recipient]) = CreateFlowDevisStateForm;
 }

@@ -4,14 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/repository.dart';
 
 class UserListPage extends StatelessWidget {
-  const UserListPage(this.onFlowCancelled, this.onFilePressed, {super.key});
+  const UserListPage(
+      {super.key,
+      this.onFlowCancelled,
+      this.onFilePressed,
+      this.onUserSelected});
   final ValueSetter<BuildContext>? onFlowCancelled;
   final ValueSetter<BuildContext>? onFilePressed;
+  final ValueSetter<(BuildContext, User)>? onUserSelected;
 
-  static Page<void> page(ValueSetter<BuildContext>? onFlowCancelled,
-      ValueSetter<BuildContext>? onFilePressed) {
+  static Page<void> page(
+      ValueSetter<BuildContext>? onFlowCancelled,
+      ValueSetter<BuildContext>? onFilePressed,
+      ValueSetter<(BuildContext, User)>? onUserSelected) {
     return MaterialPage<void>(
-        child: UserListPage(onFlowCancelled, onFilePressed));
+        child: UserListPage(
+      onFlowCancelled: onFlowCancelled,
+      onFilePressed: onFilePressed,
+      onUserSelected: onUserSelected,
+    ));
   }
 
   @override
@@ -23,7 +34,7 @@ class UserListPage extends StatelessWidget {
       ),
       body: UsersList(
         onFilePressed: onFilePressed,
-        onUserSelected: (user) {},
+        onUserSelected: onUserSelected,
       ),
     );
   }
@@ -32,7 +43,7 @@ class UserListPage extends StatelessWidget {
 class UsersList extends StatelessWidget {
   final ValueSetter<BuildContext>? onFilePressed;
 
-  final Function(User) onUserSelected;
+  final ValueSetter<(BuildContext, User)>? onUserSelected;
 
   const UsersList(
       {super.key, required this.onUserSelected, this.onFilePressed});
@@ -51,9 +62,8 @@ class UsersList extends StatelessWidget {
                     ? _makeButton(context)
                     : ListTile(
                         title: Text(users[index - 1].messagingAddress),
-                        onTap: () {
-                          onUserSelected(users[index - 1]);
-                        },
+                        onTap: () =>
+                            onUserSelected?.call((context, users[index - 1])),
                       );
               },
             );

@@ -1,3 +1,4 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,21 +9,21 @@ import '../routes/routes.dart';
 
 class ConversationCreatePage extends StatelessWidget {
   final SyncRepository _repository;
-  final Function(Conversation?) _didSelectConversation;
+  final ValueSetter<(User?, XFile?)> _endWithCreate;
 
   const ConversationCreatePage(
       {required SyncRepository repository,
-      required Function(Conversation?) didSelectConversation,
+      required ValueSetter<(User?, XFile?)> endWithCreate,
       super.key})
       : _repository = repository,
-        _didSelectConversation = didSelectConversation;
+        _endWithCreate = endWithCreate;
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: _repository,
       child: BlocProvider(
-        create: (c) => CreateFlowCubit(c.read(), _didSelectConversation),
+        create: (c) => CreateFlowCubit(_endWithCreate),
         child: const ConversationCreateWidget(),
       ),
     );

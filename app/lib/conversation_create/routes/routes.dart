@@ -1,4 +1,5 @@
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,8 +11,6 @@ List<Page> onGeneratePages(CreateFlowState state, List<Page<dynamic>> pages) {
   switch (state) {
     case CreateFlowStateNothingSelected():
       return [_userListPage()];
-    case CreateFlowStateWithUser():
-      return [];
     case CreateFlowStateWithDevis(:final devisFlow):
       switch (devisFlow.step) {
         case CreateFlowDevisStep.uploadDevis:
@@ -28,16 +27,19 @@ List<Page> onGeneratePages(CreateFlowState state, List<Page<dynamic>> pages) {
               _userCreatePageCallback,
             )
           ];
-        case CreateFlowDevisStep.creatingWithDevis:
-          return [];
       }
     default:
       throw UnimplementedError('Unknown state: $state');
   }
 }
 
-Page<void> _userListPage() =>
-    UserListPage.page(_onFlowCancelled, _userListPageFilePressed);
+Page<void> _userListPage() => UserListPage.page(
+    _onFlowCancelled, _userListPageFilePressed, _onUserSelected);
+
+void _onUserSelected((BuildContext, User) result) {
+  final (context, user) = result;
+  context.read<CreateFlowCubit>().didSelectUser(user);
+}
 
 void _onFlowCancelled(BuildContext context) {
   context.read<CreateFlowCubit>().onCanceled();
