@@ -1,3 +1,4 @@
+import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/re_login/view/re_login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../conversations/screen.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
+import '../../messages/messages.dart';
 import '../../re_login/re_login.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
@@ -52,6 +54,8 @@ class AppRouter {
       GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> settingsTabNavigatorKey =
       GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> messagesTabNavigatorKey =
+      GlobalKey<NavigatorState>();
 
   AppRouter._internal() {
     final routes = [
@@ -61,15 +65,39 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: conversationsTabNavigatorKey,
             routes: [
-              GoRoute(
-                path: homePath,
-                pageBuilder: (context, GoRouterState state) {
-                  return getPage(
-                    child: const ConversationsScreen(),
-                    state: state,
-                  );
-                },
-              ),
+              ShellRoute(
+                  parentNavigatorKey: conversationsTabNavigatorKey,
+                  navigatorKey: messagesTabNavigatorKey,
+                  routes: [
+                    GoRoute(
+                        path: homePath,
+                        parentNavigatorKey: messagesTabNavigatorKey,
+                        pageBuilder: (context, state) {
+                          return getPage(
+                            child: Scaffold(
+                              appBar: AppBar(),
+                              body: const Center(
+                                child: Text('Select a conversation'),
+                              ),
+                            ),
+                            state: state,
+                          );
+                        }),
+                    GoRoute(
+                      path: '$homePath/:id',
+                      parentNavigatorKey: messagesTabNavigatorKey,
+                      pageBuilder: (context, state) {
+                        return getPage(
+                          child: MessagesPage(state.extra! as ConversationInfo),
+                          state: state,
+                        );
+                      },
+                    ),
+                  ],
+                  pageBuilder: (context, state, child) {
+                    return getPage(
+                        child: ConversationsScreen(child: child), state: state);
+                  }),
             ],
           ),
           StatefulShellBranch(

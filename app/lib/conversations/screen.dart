@@ -1,15 +1,21 @@
+import 'package:app/app/routes/routes.dart';
 import 'package:app/conversations/bloc/conversations_bloc.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
-import 'package:app/conversations/conversation_row_widget.dart';
 import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../messages/messages.dart';
+import 'widget/conversations_list.dart';
 
-class ConversationsScreen extends StatelessWidget {
-  const ConversationsScreen({super.key});
+class ConversationsScreen extends StatefulWidget {
+  const ConversationsScreen({super.key, required this.child});
 
+  final Widget child;
+  @override
+  State<ConversationsScreen> createState() => _ConversationsScreenState();
+}
+
+class _ConversationsScreenState extends State<ConversationsScreen> {
   @override
   Widget build(BuildContext context) {
     const kListViewWidth = 300.0;
@@ -22,81 +28,28 @@ class ConversationsScreen extends StatelessWidget {
               listenWhen: (previous, current) =>
                   previous.currentSelection != current.currentSelection,
               listener: (context, state) {
-                if (state.currentSelection == null ||
-                    constraints.maxWidth > 600) {
-                  return;
-                }
-
-                Navigator.of(context).push(MessagesPage.page(
-                    state.conversations[state.currentSelection!.listIndex]));
+                final conversationInfo =
+                    state.conversations[state.currentSelection!.listIndex];
+                AppRouter.router.go('/home/${conversationInfo.conversationId}',
+                    extra: conversationInfo);
               },
               builder: (context, state) {
-                if (constraints.maxWidth > 600) {
-                  return Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: kListViewWidth,
-                        child: ConversationList(
-                            state.currentSelection?.conversationId),
-                      ),
-                      const VerticalDivider(
-                        width: 0,
-                      ),
-                      Expanded(
-                          child: (state.currentSelection == null)
-                              ? Scaffold(
-                                  appBar: AppBar(),
-                                  body: const Center(
-                                    child: Text('Select a conversation'),
-                                  ),
-                                )
-                              : MessagesPage(state.conversations[
-                                  state.currentSelection!.listIndex])),
-                    ],
-                  );
-                }
-                // TODO: when changing layout, we should preserve the selection
-                //  one solution might be in go_router ShellRoute
-                //  https://pub.dev/documentation/go_router/latest/go_router/ShellRoute-class.html
-                return ConversationList(state.currentSelection?.conversationId);
+                return Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: kListViewWidth,
+                      child: ConversationList(
+                          state.currentSelection?.conversationId),
+                    ),
+                    const VerticalDivider(
+                      width: 0,
+                    ),
+                    Expanded(child: widget.child),
+                  ],
+                );
               }),
         );
       },
-    );
-  }
-}
-
-class ConversationList extends StatelessWidget {
-  final int? selectedConversationId;
-
-  ConversationList(this.selectedConversationId);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: BlocConsumer<ConversationsBloc, ConversationsState>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemCount: state.conversations.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConversationRowWidget(
-                      conversationID: state.conversations[index].conversationId,
-                      conversationInfo: state.conversations[index],
-                      isSelected: selectedConversationId ==
-                          state.conversations[index].conversationId,
-                      onSelected: () {
-                        final bloc = context.read<ConversationsBloc>();
-                        bloc.add(ConversationsSelect(
-                            bloc.state.conversations[index]));
-                      }));
-            },
-          );
-        },
-        listener: (BuildContext context, ConversationsState state) {},
-      ),
     );
   }
 }

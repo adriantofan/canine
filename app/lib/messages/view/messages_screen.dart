@@ -8,9 +8,6 @@ import 'messages_list.dart';
 class MessagesPage extends StatelessWidget {
   final ConversationInfo _conversationInfo;
 
-  static MaterialPageRoute<void> page(ConversationInfo c) =>
-      MaterialPageRoute(builder: (_) => MessagesPage(c));
-
   const MessagesPage(this._conversationInfo, {super.key});
 
   @override
