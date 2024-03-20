@@ -1,14 +1,14 @@
 import 'package:app/conversation_create/conversation_create.dart';
-import 'package:app/conversations/screen.dart';
 import 'package:app/repository/repository.dart';
-import 'package:app/settings/screen.dart';
 import 'package:app/tab_home/view/disappearing_bottom_navigation_bar.dart';
 import 'package:app/tab_home/view/disappearing_navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class TabHome extends StatefulWidget {
-  const TabHome({super.key});
+  const TabHome({super.key, required this.child});
+  final StatefulNavigationShell child;
 
   @override
   State<TabHome> createState() => _TabHomeState();
@@ -18,8 +18,6 @@ class _TabHomeState extends State<TabHome> {
   late final _colorScheme = Theme.of(context).colorScheme;
   late final _backgroundColor = Color.alphaBlend(
       _colorScheme.primary.withOpacity(0.14), _colorScheme.surface);
-  int selectedIndex = 0;
-  // Add from here...
   bool wideScreen = false;
 
   @override
@@ -38,18 +36,20 @@ class _TabHomeState extends State<TabHome> {
           if (wideScreen)
             DisappearingNavigationRail(
               onAddCallback: _addConversation,
-              selectedIndex: selectedIndex,
+              selectedIndex: widget.child.currentIndex,
               backgroundColor: _backgroundColor,
               onDestinationSelected: (index) {
-                setState(() {
-                  selectedIndex = index;
-                });
+                widget.child.goBranch(
+                  index,
+                  initialLocation: index == widget.child.currentIndex,
+                );
+                setState(() {});
               },
             ),
           Expanded(
             child: Container(
               color: _backgroundColor,
-              child: buildBody(context),
+              child: SafeArea(child: widget.child),
             ),
           ),
         ],
@@ -65,23 +65,15 @@ class _TabHomeState extends State<TabHome> {
       bottomNavigationBar: wideScreen
           ? null
           : DisappearingBottomNavigationBar(
-              selectedIndex: selectedIndex,
+              selectedIndex: widget.child.currentIndex,
               onDestinationSelected: (index) {
-                setState(() {
-                  selectedIndex = index;
-                });
+                widget.child.goBranch(
+                  index,
+                  initialLocation: index == widget.child.currentIndex,
+                );
+                setState(() {});
               },
             ),
-    );
-  }
-
-  Widget buildBody(BuildContext context) {
-    return IndexedStack(
-      index: selectedIndex,
-      children: const [
-        ConversationsScreen(),
-        SettingsScreen(),
-      ],
     );
   }
 

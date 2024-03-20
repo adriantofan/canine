@@ -2,9 +2,11 @@ import 'package:app/re_login/view/re_login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../conversations/screen.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../re_login/re_login.dart';
+import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
 
@@ -41,6 +43,7 @@ class AppRouter {
   static const String loginPath = '/login';
   static const String confirmPasswordPath = '/confirm-password';
   static const String homePath = '/home';
+  static const String settingsPath = '/settings';
   static const String logoutPath = '/logout';
 
   static final GlobalKey<NavigatorState> parentNavigatorKey =
@@ -52,6 +55,51 @@ class AppRouter {
 
   AppRouter._internal() {
     final routes = [
+      StatefulShellRoute.indexedStack(
+        parentNavigatorKey: parentNavigatorKey,
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: conversationsTabNavigatorKey,
+            routes: [
+              GoRoute(
+                path: homePath,
+                pageBuilder: (context, GoRouterState state) {
+                  return getPage(
+                    child: const ConversationsScreen(),
+                    state: state,
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: settingsTabNavigatorKey,
+            routes: [
+              GoRoute(
+                path: settingsPath,
+                pageBuilder: (context, state) {
+                  return getPage(
+                    child: const SettingsScreen(),
+                    state: state,
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+        pageBuilder: (
+          BuildContext context,
+          GoRouterState state,
+          StatefulNavigationShell navigationShell,
+        ) {
+          return getPage(
+            child: TabHome(
+              child: navigationShell,
+            ),
+            state: state,
+          );
+        },
+      ),
       GoRoute(
         parentNavigatorKey: parentNavigatorKey,
         path: slashPath,
@@ -69,12 +117,12 @@ class AppRouter {
         pageBuilder: (context, state) =>
             getPage(child: const ReLoginPage(), state: state),
       ),
-      GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
-        path: homePath,
-        pageBuilder: (context, state) =>
-            getPage(child: const TabHome(), state: state),
-      ),
+      // GoRoute(
+      //   parentNavigatorKey: parentNavigatorKey,
+      //   path: homePath,
+      //   pageBuilder: (context, state) =>
+      //       getPage(child: const TabHome(), state: state),
+      // ),
       GoRoute(
         parentNavigatorKey: parentNavigatorKey,
         path: logoutPath,

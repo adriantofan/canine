@@ -21,6 +21,7 @@ class DisappearingNavigationRail extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return NavigationRail(
       selectedIndex: selectedIndex,
+      selectedIconTheme: IconThemeData(color: colorScheme.primary),
       backgroundColor: backgroundColor,
       onDestinationSelected: onDestinationSelected,
       leading: Column(
