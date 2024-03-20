@@ -1,4 +1,3 @@
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,6 +7,7 @@ import '../routes/routes.dart';
 
 class MainApp extends StatelessWidget {
   final SyncRepository _repository;
+
   const MainApp({
     required SyncRepository repository,
     super.key,
@@ -19,7 +19,23 @@ class MainApp extends StatelessWidget {
       value: _repository,
       child: BlocProvider(
         create: (c) => AppBloc(c.read()),
-        child: const MainAppView(),
+        child: BlocListener<AppBloc, AppState>(
+          listener: (context, state) {
+            final path = switch (state) {
+              Unknown() => '/',
+              LoginRegisterFlow() => '/login',
+              Login() => '/confirm-password',
+              Running() => '/home',
+              RunningRefresh() =>
+                '/login', // TODO: see how to trigger modal confirm password
+              LoggingOut() => '/logout',
+            };
+            AppRouter.router.go(path);
+          },
+          child: MaterialApp.router(
+              theme: ThemeData.light(useMaterial3: true),
+              routerConfig: AppRouter.router),
+        ),
       ),
     );
   }
@@ -32,14 +48,8 @@ class MainAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light(useMaterial3: true),
-      home: Builder(builder: (context) {
-        return FlowBuilder<AppState>(
-          state: context.select((AppBloc bloc) => bloc.state),
-          onGeneratePages: onGenerateAppViewPages,
-        );
-      }),
-    );
+    return MaterialApp.router(
+        theme: ThemeData.light(useMaterial3: true),
+        routerConfig: AppRouter.router);
   }
 }
