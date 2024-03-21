@@ -1,3 +1,4 @@
+import 'package:app/app/routes/routes.dart';
 import 'package:app/conversation_create/conversation_create.dart';
 import 'package:app/repository/repository.dart';
 import 'package:app/tab_home/view/disappearing_bottom_navigation_bar.dart';
@@ -85,9 +86,11 @@ class _TabHomeState extends State<TabHome> {
                   repository: context.read<SyncRepository>(),
                   endWithCreate: (result) {
                     final (user, file) = result;
-                    print('TABHOME user: $user, file: $file');
 
                     Navigator.of(rootContext, rootNavigator: true).pop();
+                    if (user != null) {
+                      AppRouter.goConversationWithUser(user, file);
+                    }
                     // Select conversation screen
                     // give user to MessagesPage who would decide to open the new conversation
                   }),

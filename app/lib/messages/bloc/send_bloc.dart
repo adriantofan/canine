@@ -4,27 +4,28 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../repository/repository.dart';
+import '../model/new_message.dart';
 
-part 'send_message_bloc.freezed.dart';
-part 'send_message_event.dart';
-part 'send_message_state.dart';
+part 'send_bloc.freezed.dart';
+part 'send_event.dart';
+part 'send_state.dart';
 
-class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
-  final SyncRepository _syncRepository;
-
-  SendMessageBloc(this._syncRepository, int conversationId)
-      : super(SendMessageState(conversationId, const Uuid().v4())) {
-    on<SendMessageEventTextChanged>(_onTextChanged);
-    on<SendMessageEventSend>(_onSend);
+class SendBloc extends Bloc<SendEvent, SendState> {
+  SendBloc() : super(SendState(const Uuid().v4())) {
+    on<SendEventTextChanged>(_onTextChanged);
+    on<SendEventSend>(_onSend);
   }
 
-  void _onSend(
-      SendMessageEventSend event, Emitter<SendMessageState> emit) async {
+  void _onSend(SendEventSend event, Emitter<SendState> emit) async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    await _syncRepository
-        .createMessage(
-            state.conversationId, state.message.value, state.idempotencyId)
+    final msg = NewMessage(
+      text: state.message.value,
+      idempotencyId: state.idempotencyId,
+      attachment: null,
+    );
+
+    await event
+        .sendMessage(msg)
         .then((value) => emit(state.copyWith(
               status: FormzSubmissionStatus.success,
               message: const MessageInput.pure(),
@@ -37,8 +38,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
             )));
   }
 
-  void _onTextChanged(
-      SendMessageEventTextChanged event, Emitter<SendMessageState> emit) {
+  void _onTextChanged(SendEventTextChanged event, Emitter<SendState> emit) {
     final message = MessageInput.dirty(event.text);
     emit(state.copyWith(
       message: message,

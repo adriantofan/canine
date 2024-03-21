@@ -28,10 +28,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
               listenWhen: (previous, current) =>
                   previous.currentSelection != current.currentSelection,
               listener: (context, state) {
+                if (state.currentSelection == null) {
+                  return;
+                }
                 final conversationInfo =
                     state.conversations[state.currentSelection!.listIndex];
-                AppRouter.router.go('/home/${conversationInfo.conversationId}',
-                    extra: conversationInfo);
+                AppRouter.goConversationWithInfo(conversationInfo);
               },
               builder: (context, state) {
                 return Row(

@@ -1,19 +1,17 @@
-import 'package:app/messages/bloc/send_message_bloc.dart';
-import 'package:app/repository/repository.dart';
+import 'package:app/messages/bloc/messages_screen_cubit.dart';
+import 'package:app/messages/bloc/send_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
 
 class SendWidget extends StatelessWidget {
-  final int conversationId;
-  const SendWidget(this.conversationId, {super.key});
+  const SendWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          SendMessageBloc(context.read<SyncRepository>(), conversationId),
+      create: (context) => SendBloc(),
       child: const _SendField(),
     );
   }
@@ -34,8 +32,8 @@ class _SendFieldState extends State<_SendField> {
     super.initState();
     _inputController = TextEditingController();
     _inputController.addListener(() {
-      context.read<SendMessageBloc>().add(
-            SendMessageEvent.textChanged(_inputController.text),
+      context.read<SendBloc>().add(
+            SendEvent.textChanged(_inputController.text),
           );
     });
   }
@@ -63,7 +61,7 @@ class _SendFieldState extends State<_SendField> {
           ),
           color: themeData.colorScheme.onInverseSurface,
         ),
-        child: BlocConsumer<SendMessageBloc, SendMessageState>(
+        child: BlocConsumer<SendBloc, SendState>(
           buildWhen: (previous, current) => previous != current,
           listener: (context, state) {
             if (state.status == FormzSubmissionStatus.success) {
@@ -120,8 +118,10 @@ class _SendFieldState extends State<_SendField> {
                     onPressed: state.isValid &&
                             state.status != FormzSubmissionStatus.inProgress
                         ? () {
-                            context.read<SendMessageBloc>().add(
-                                  const SendMessageEvent.send(),
+                            context.read<SendBloc>().add(
+                                  SendEvent.send(context
+                                      .read<MessagesScreenCubit>()
+                                      .sendMessage),
                                 );
                           }
                         : null, //context.read<ChatController>().onFieldSubmitted,

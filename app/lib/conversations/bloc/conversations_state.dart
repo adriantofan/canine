@@ -9,7 +9,10 @@ final class ConversationsState {
   const ConversationsState(this.conversations, this.currentSelection);
   static empty() => const ConversationsState([], null);
 
-  withSelection(ConversationInfo conversation) {
+  withSelection(ConversationInfo? conversation) {
+    if (conversation == null) {
+      return ConversationsState(conversations, null);
+    }
     final conversationIndex = conversations.indexWhere(
         (element) => element.conversationId == conversation.conversationId);
     if (conversationIndex == -1) {

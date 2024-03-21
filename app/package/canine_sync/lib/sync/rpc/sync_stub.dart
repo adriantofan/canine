@@ -161,7 +161,7 @@ class SyncStub extends Sync {
           receivePort.sendPort, conversationId, key));
     };
     controller.onCancel = () {
-      _sendPort.send(Msg.authStatusUnsubscribe(key));
+      _sendPort.send(Msg.conversationMessagesSyncStateUnsubscribe(key));
     };
     return controller.stream;
   }

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'send_message_bloc.dart';
+part of 'send_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,58 +15,58 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$SendMessageEvent {
+mixin _$SendEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function() send,
+    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+        send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function()? send,
+    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function()? send,
+    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(SendMessageEventTextChanged value) textChanged,
-    required TResult Function(SendMessageEventSend value) send,
+    required TResult Function(SendEventTextChanged value) textChanged,
+    required TResult Function(SendEventSend value) send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SendMessageEventTextChanged value)? textChanged,
-    TResult? Function(SendMessageEventSend value)? send,
+    TResult? Function(SendEventTextChanged value)? textChanged,
+    TResult? Function(SendEventSend value)? send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(SendMessageEventTextChanged value)? textChanged,
-    TResult Function(SendMessageEventSend value)? send,
+    TResult Function(SendEventTextChanged value)? textChanged,
+    TResult Function(SendEventSend value)? send,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SendMessageEventCopyWith<$Res> {
-  factory $SendMessageEventCopyWith(
-          SendMessageEvent value, $Res Function(SendMessageEvent) then) =
-      _$SendMessageEventCopyWithImpl<$Res, SendMessageEvent>;
+abstract class $SendEventCopyWith<$Res> {
+  factory $SendEventCopyWith(SendEvent value, $Res Function(SendEvent) then) =
+      _$SendEventCopyWithImpl<$Res, SendEvent>;
 }
 
 /// @nodoc
-class _$SendMessageEventCopyWithImpl<$Res, $Val extends SendMessageEvent>
-    implements $SendMessageEventCopyWith<$Res> {
-  _$SendMessageEventCopyWithImpl(this._value, this._then);
+class _$SendEventCopyWithImpl<$Res, $Val extends SendEvent>
+    implements $SendEventCopyWith<$Res> {
+  _$SendEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -75,23 +75,20 @@ class _$SendMessageEventCopyWithImpl<$Res, $Val extends SendMessageEvent>
 }
 
 /// @nodoc
-abstract class _$$SendMessageEventTextChangedImplCopyWith<$Res> {
-  factory _$$SendMessageEventTextChangedImplCopyWith(
-          _$SendMessageEventTextChangedImpl value,
-          $Res Function(_$SendMessageEventTextChangedImpl) then) =
-      __$$SendMessageEventTextChangedImplCopyWithImpl<$Res>;
+abstract class _$$SendEventTextChangedImplCopyWith<$Res> {
+  factory _$$SendEventTextChangedImplCopyWith(_$SendEventTextChangedImpl value,
+          $Res Function(_$SendEventTextChangedImpl) then) =
+      __$$SendEventTextChangedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String text});
 }
 
 /// @nodoc
-class __$$SendMessageEventTextChangedImplCopyWithImpl<$Res>
-    extends _$SendMessageEventCopyWithImpl<$Res,
-        _$SendMessageEventTextChangedImpl>
-    implements _$$SendMessageEventTextChangedImplCopyWith<$Res> {
-  __$$SendMessageEventTextChangedImplCopyWithImpl(
-      _$SendMessageEventTextChangedImpl _value,
-      $Res Function(_$SendMessageEventTextChangedImpl) _then)
+class __$$SendEventTextChangedImplCopyWithImpl<$Res>
+    extends _$SendEventCopyWithImpl<$Res, _$SendEventTextChangedImpl>
+    implements _$$SendEventTextChangedImplCopyWith<$Res> {
+  __$$SendEventTextChangedImplCopyWithImpl(_$SendEventTextChangedImpl _value,
+      $Res Function(_$SendEventTextChangedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -99,7 +96,7 @@ class __$$SendMessageEventTextChangedImplCopyWithImpl<$Res>
   $Res call({
     Object? text = null,
   }) {
-    return _then(_$SendMessageEventTextChangedImpl(
+    return _then(_$SendEventTextChangedImpl(
       null == text
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
@@ -110,22 +107,22 @@ class __$$SendMessageEventTextChangedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
-  const _$SendMessageEventTextChangedImpl(this.text);
+class _$SendEventTextChangedImpl implements SendEventTextChanged {
+  const _$SendEventTextChangedImpl(this.text);
 
   @override
   final String text;
 
   @override
   String toString() {
-    return 'SendMessageEvent.textChanged(text: $text)';
+    return 'SendEvent.textChanged(text: $text)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SendMessageEventTextChangedImpl &&
+            other is _$SendEventTextChangedImpl &&
             (identical(other.text, text) || other.text == text));
   }
 
@@ -135,15 +132,17 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SendMessageEventTextChangedImplCopyWith<_$SendMessageEventTextChangedImpl>
-      get copyWith => __$$SendMessageEventTextChangedImplCopyWithImpl<
-          _$SendMessageEventTextChangedImpl>(this, _$identity);
+  _$$SendEventTextChangedImplCopyWith<_$SendEventTextChangedImpl>
+      get copyWith =>
+          __$$SendEventTextChangedImplCopyWithImpl<_$SendEventTextChangedImpl>(
+              this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function() send,
+    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+        send,
   }) {
     return textChanged(text);
   }
@@ -152,7 +151,7 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function()? send,
+    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
   }) {
     return textChanged?.call(text);
   }
@@ -161,7 +160,7 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function()? send,
+    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
     required TResult orElse(),
   }) {
     if (textChanged != null) {
@@ -173,8 +172,8 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(SendMessageEventTextChanged value) textChanged,
-    required TResult Function(SendMessageEventSend value) send,
+    required TResult Function(SendEventTextChanged value) textChanged,
+    required TResult Function(SendEventSend value) send,
   }) {
     return textChanged(this);
   }
@@ -182,8 +181,8 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SendMessageEventTextChanged value)? textChanged,
-    TResult? Function(SendMessageEventSend value)? send,
+    TResult? Function(SendEventTextChanged value)? textChanged,
+    TResult? Function(SendEventSend value)? send,
   }) {
     return textChanged?.call(this);
   }
@@ -191,8 +190,8 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(SendMessageEventTextChanged value)? textChanged,
-    TResult Function(SendMessageEventSend value)? send,
+    TResult Function(SendEventTextChanged value)? textChanged,
+    TResult Function(SendEventSend value)? send,
     required TResult orElse(),
   }) {
     if (textChanged != null) {
@@ -202,79 +201,106 @@ class _$SendMessageEventTextChangedImpl implements SendMessageEventTextChanged {
   }
 }
 
-abstract class SendMessageEventTextChanged implements SendMessageEvent {
-  const factory SendMessageEventTextChanged(final String text) =
-      _$SendMessageEventTextChangedImpl;
+abstract class SendEventTextChanged implements SendEvent {
+  const factory SendEventTextChanged(final String text) =
+      _$SendEventTextChangedImpl;
 
   String get text;
   @JsonKey(ignore: true)
-  _$$SendMessageEventTextChangedImplCopyWith<_$SendMessageEventTextChangedImpl>
+  _$$SendEventTextChangedImplCopyWith<_$SendEventTextChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$SendMessageEventSendImplCopyWith<$Res> {
-  factory _$$SendMessageEventSendImplCopyWith(_$SendMessageEventSendImpl value,
-          $Res Function(_$SendMessageEventSendImpl) then) =
-      __$$SendMessageEventSendImplCopyWithImpl<$Res>;
+abstract class _$$SendEventSendImplCopyWith<$Res> {
+  factory _$$SendEventSendImplCopyWith(
+          _$SendEventSendImpl value, $Res Function(_$SendEventSendImpl) then) =
+      __$$SendEventSendImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Future<void> Function(NewMessage) sendMessage});
 }
 
 /// @nodoc
-class __$$SendMessageEventSendImplCopyWithImpl<$Res>
-    extends _$SendMessageEventCopyWithImpl<$Res, _$SendMessageEventSendImpl>
-    implements _$$SendMessageEventSendImplCopyWith<$Res> {
-  __$$SendMessageEventSendImplCopyWithImpl(_$SendMessageEventSendImpl _value,
-      $Res Function(_$SendMessageEventSendImpl) _then)
+class __$$SendEventSendImplCopyWithImpl<$Res>
+    extends _$SendEventCopyWithImpl<$Res, _$SendEventSendImpl>
+    implements _$$SendEventSendImplCopyWith<$Res> {
+  __$$SendEventSendImplCopyWithImpl(
+      _$SendEventSendImpl _value, $Res Function(_$SendEventSendImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? sendMessage = null,
+  }) {
+    return _then(_$SendEventSendImpl(
+      null == sendMessage
+          ? _value.sendMessage
+          : sendMessage // ignore: cast_nullable_to_non_nullable
+              as Future<void> Function(NewMessage),
+    ));
+  }
 }
 
 /// @nodoc
 
-class _$SendMessageEventSendImpl implements SendMessageEventSend {
-  const _$SendMessageEventSendImpl();
+class _$SendEventSendImpl implements SendEventSend {
+  const _$SendEventSendImpl(this.sendMessage);
+
+  @override
+  final Future<void> Function(NewMessage) sendMessage;
 
   @override
   String toString() {
-    return 'SendMessageEvent.send()';
+    return 'SendEvent.send(sendMessage: $sendMessage)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SendMessageEventSendImpl);
+            other is _$SendEventSendImpl &&
+            (identical(other.sendMessage, sendMessage) ||
+                other.sendMessage == sendMessage));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, sendMessage);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SendEventSendImplCopyWith<_$SendEventSendImpl> get copyWith =>
+      __$$SendEventSendImplCopyWithImpl<_$SendEventSendImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function() send,
+    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+        send,
   }) {
-    return send();
+    return send(sendMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function()? send,
+    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
   }) {
-    return send?.call();
+    return send?.call(sendMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function()? send,
+    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
     required TResult orElse(),
   }) {
     if (send != null) {
-      return send();
+      return send(sendMessage);
     }
     return orElse();
   }
@@ -282,8 +308,8 @@ class _$SendMessageEventSendImpl implements SendMessageEventSend {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(SendMessageEventTextChanged value) textChanged,
-    required TResult Function(SendMessageEventSend value) send,
+    required TResult Function(SendEventTextChanged value) textChanged,
+    required TResult Function(SendEventSend value) send,
   }) {
     return send(this);
   }
@@ -291,8 +317,8 @@ class _$SendMessageEventSendImpl implements SendMessageEventSend {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SendMessageEventTextChanged value)? textChanged,
-    TResult? Function(SendMessageEventSend value)? send,
+    TResult? Function(SendEventTextChanged value)? textChanged,
+    TResult? Function(SendEventSend value)? send,
   }) {
     return send?.call(this);
   }
@@ -300,8 +326,8 @@ class _$SendMessageEventSendImpl implements SendMessageEventSend {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(SendMessageEventTextChanged value)? textChanged,
-    TResult Function(SendMessageEventSend value)? send,
+    TResult Function(SendEventTextChanged value)? textChanged,
+    TResult Function(SendEventSend value)? send,
     required TResult orElse(),
   }) {
     if (send != null) {
@@ -311,41 +337,45 @@ class _$SendMessageEventSendImpl implements SendMessageEventSend {
   }
 }
 
-abstract class SendMessageEventSend implements SendMessageEvent {
-  const factory SendMessageEventSend() = _$SendMessageEventSendImpl;
+abstract class SendEventSend implements SendEvent {
+  const factory SendEventSend(
+          final Future<void> Function(NewMessage) sendMessage) =
+      _$SendEventSendImpl;
+
+  Future<void> Function(NewMessage) get sendMessage;
+  @JsonKey(ignore: true)
+  _$$SendEventSendImplCopyWith<_$SendEventSendImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$SendMessageState {
-  int get conversationId => throw _privateConstructorUsedError;
+mixin _$SendState {
   String get idempotencyId => throw _privateConstructorUsedError;
   FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   MessageInput get message => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $SendMessageStateCopyWith<SendMessageState> get copyWith =>
+  $SendStateCopyWith<SendState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SendMessageStateCopyWith<$Res> {
-  factory $SendMessageStateCopyWith(
-          SendMessageState value, $Res Function(SendMessageState) then) =
-      _$SendMessageStateCopyWithImpl<$Res, SendMessageState>;
+abstract class $SendStateCopyWith<$Res> {
+  factory $SendStateCopyWith(SendState value, $Res Function(SendState) then) =
+      _$SendStateCopyWithImpl<$Res, SendState>;
   @useResult
   $Res call(
-      {int conversationId,
-      String idempotencyId,
+      {String idempotencyId,
       FormzSubmissionStatus status,
       MessageInput message,
       bool isValid});
 }
 
 /// @nodoc
-class _$SendMessageStateCopyWithImpl<$Res, $Val extends SendMessageState>
-    implements $SendMessageStateCopyWith<$Res> {
-  _$SendMessageStateCopyWithImpl(this._value, this._then);
+class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
+    implements $SendStateCopyWith<$Res> {
+  _$SendStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -355,17 +385,12 @@ class _$SendMessageStateCopyWithImpl<$Res, $Val extends SendMessageState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? conversationId = null,
     Object? idempotencyId = null,
     Object? status = null,
     Object? message = null,
     Object? isValid = null,
   }) {
     return _then(_value.copyWith(
-      conversationId: null == conversationId
-          ? _value.conversationId
-          : conversationId // ignore: cast_nullable_to_non_nullable
-              as int,
       idempotencyId: null == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
@@ -387,43 +412,37 @@ class _$SendMessageStateCopyWithImpl<$Res, $Val extends SendMessageState>
 }
 
 /// @nodoc
-abstract class _$$SendMessageStateImplCopyWith<$Res>
-    implements $SendMessageStateCopyWith<$Res> {
-  factory _$$SendMessageStateImplCopyWith(_$SendMessageStateImpl value,
-          $Res Function(_$SendMessageStateImpl) then) =
-      __$$SendMessageStateImplCopyWithImpl<$Res>;
+abstract class _$$SendStateImplCopyWith<$Res>
+    implements $SendStateCopyWith<$Res> {
+  factory _$$SendStateImplCopyWith(
+          _$SendStateImpl value, $Res Function(_$SendStateImpl) then) =
+      __$$SendStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {int conversationId,
-      String idempotencyId,
+      {String idempotencyId,
       FormzSubmissionStatus status,
       MessageInput message,
       bool isValid});
 }
 
 /// @nodoc
-class __$$SendMessageStateImplCopyWithImpl<$Res>
-    extends _$SendMessageStateCopyWithImpl<$Res, _$SendMessageStateImpl>
-    implements _$$SendMessageStateImplCopyWith<$Res> {
-  __$$SendMessageStateImplCopyWithImpl(_$SendMessageStateImpl _value,
-      $Res Function(_$SendMessageStateImpl) _then)
+class __$$SendStateImplCopyWithImpl<$Res>
+    extends _$SendStateCopyWithImpl<$Res, _$SendStateImpl>
+    implements _$$SendStateImplCopyWith<$Res> {
+  __$$SendStateImplCopyWithImpl(
+      _$SendStateImpl _value, $Res Function(_$SendStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? conversationId = null,
     Object? idempotencyId = null,
     Object? status = null,
     Object? message = null,
     Object? isValid = null,
   }) {
-    return _then(_$SendMessageStateImpl(
-      null == conversationId
-          ? _value.conversationId
-          : conversationId // ignore: cast_nullable_to_non_nullable
-              as int,
+    return _then(_$SendStateImpl(
       null == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
@@ -446,15 +465,13 @@ class __$$SendMessageStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SendMessageStateImpl extends _SendMessageState {
-  const _$SendMessageStateImpl(this.conversationId, this.idempotencyId,
+class _$SendStateImpl extends _SendState {
+  const _$SendStateImpl(this.idempotencyId,
       [this.status = FormzSubmissionStatus.initial,
       this.message = const MessageInput.pure(),
       this.isValid = false])
       : super._();
 
-  @override
-  final int conversationId;
   @override
   final String idempotencyId;
   @override
@@ -469,16 +486,14 @@ class _$SendMessageStateImpl extends _SendMessageState {
 
   @override
   String toString() {
-    return 'SendMessageState(conversationId: $conversationId, idempotencyId: $idempotencyId, status: $status, message: $message, isValid: $isValid)';
+    return 'SendState(idempotencyId: $idempotencyId, status: $status, message: $message, isValid: $isValid)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SendMessageStateImpl &&
-            (identical(other.conversationId, conversationId) ||
-                other.conversationId == conversationId) &&
+            other is _$SendStateImpl &&
             (identical(other.idempotencyId, idempotencyId) ||
                 other.idempotencyId == idempotencyId) &&
             (identical(other.status, status) || other.status == status) &&
@@ -487,27 +502,23 @@ class _$SendMessageStateImpl extends _SendMessageState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, conversationId, idempotencyId, status, message, isValid);
+  int get hashCode =>
+      Object.hash(runtimeType, idempotencyId, status, message, isValid);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SendMessageStateImplCopyWith<_$SendMessageStateImpl> get copyWith =>
-      __$$SendMessageStateImplCopyWithImpl<_$SendMessageStateImpl>(
-          this, _$identity);
+  _$$SendStateImplCopyWith<_$SendStateImpl> get copyWith =>
+      __$$SendStateImplCopyWithImpl<_$SendStateImpl>(this, _$identity);
 }
 
-abstract class _SendMessageState extends SendMessageState {
-  const factory _SendMessageState(
-      final int conversationId, final String idempotencyId,
+abstract class _SendState extends SendState {
+  const factory _SendState(final String idempotencyId,
       [final FormzSubmissionStatus status,
       final MessageInput message,
-      final bool isValid]) = _$SendMessageStateImpl;
-  const _SendMessageState._() : super._();
+      final bool isValid]) = _$SendStateImpl;
+  const _SendState._() : super._();
 
-  @override
-  int get conversationId;
   @override
   String get idempotencyId;
   @override
@@ -518,6 +529,6 @@ abstract class _SendMessageState extends SendMessageState {
   bool get isValid;
   @override
   @JsonKey(ignore: true)
-  _$$SendMessageStateImplCopyWith<_$SendMessageStateImpl> get copyWith =>
+  _$$SendStateImplCopyWith<_$SendStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

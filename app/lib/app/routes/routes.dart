@@ -1,5 +1,7 @@
 import 'package:app/conversations/model/conversation_info.dart';
+import 'package:app/messages/model/conversation_container.dart';
 import 'package:app/re_login/view/re_login_page.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +10,7 @@ import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../messages/messages.dart';
 import '../../re_login/re_login.dart';
+import '../../repository/repository.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
@@ -88,7 +91,8 @@ class AppRouter {
                       parentNavigatorKey: messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         return getPage(
-                          child: MessagesPage(state.extra! as ConversationInfo),
+                          child: MessagesPage(
+                              state.extra! as ConversationContainer),
                           state: state,
                         );
                       },
@@ -163,6 +167,20 @@ class AppRouter {
       navigatorKey: parentNavigatorKey,
       routes: routes,
     );
+  }
+
+  static goConversationWithInfo(ConversationInfo conversationInfo) {
+    final ConversationContainer conversationContainer =
+        ConversationContainer.withConversation(
+            conversationInfo: conversationInfo);
+    router.go('/home/${conversationInfo.conversationId}',
+        extra: conversationContainer);
+  }
+
+  static goConversationWithUser(User user, XFile? file) {
+    final ConversationContainer conversationContainer =
+        ConversationContainer.withUser(user: user);
+    router.go('/home/new', extra: conversationContainer);
   }
 
   static Page getPage({

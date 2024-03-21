@@ -9,3 +9,5 @@ class ConversationsSelect extends ConversationsEvent {
   final ConversationInfo conversation;
   ConversationsSelect(this.conversation);
 }
+
+class ConversationsDeselect extends ConversationsEvent {}

@@ -1,5 +1,4 @@
 import 'package:app/messages/bloc/messages_bloc.dart';
-import 'package:app/messages/view/send_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +9,10 @@ import 'message_row.dart';
 
 class MessagesList extends StatefulWidget {
   final ConversationInfo _conversationInfo;
-
+  final Widget sendBar;
   const MessagesList(
-    this._conversationInfo, {
+    this._conversationInfo,
+    this.sendBar, {
     super.key,
   });
 
@@ -162,7 +162,7 @@ class _MessagesListState extends State<MessagesList> {
               );
             },
           )),
-          SendWidget(widget._conversationInfo.conversationId),
+          widget.sendBar,
         ],
       ),
     );

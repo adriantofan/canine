@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:app/app/routes/routes.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
 import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/repository/repository.dart';
@@ -9,10 +12,20 @@ part 'conversations_event.dart';
 
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   SyncRepository _repository;
+  late final VoidCallback listener;
+
   final _log = Logger('ConversationsBloc');
   ConversationsBloc(SyncRepository repository)
       : _repository = repository,
         super(ConversationsState.empty()) {
+    listener = () {
+      if (AppRouter.router.routeInformationProvider.value.uri.path
+          .endsWith("new")) {
+        add(ConversationsDeselect());
+      }
+    };
+
+    AppRouter.router.routeInformationProvider.addListener(listener);
     on<ConversationsInitial>((event, emit) async {
       await emit.forEach(_repository.conversations(), onData: (changes) {
         _log.fine("ConversationsBloc: got changes ${changes}");
@@ -22,5 +35,13 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
     on<ConversationsSelect>((event, emit) {
       emit(state.withSelection(event.conversation));
     });
+    on<ConversationsDeselect>((event, emit) {
+      emit(state.withSelection(null));
+    });
+  }
+  @override
+  Future<void> close() {
+    AppRouter.router.routeInformationProvider.removeListener(listener);
+    return super.close();
   }
 }
