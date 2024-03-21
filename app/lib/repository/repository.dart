@@ -48,7 +48,14 @@ class SyncRepository {
     return _sync.createMessage(conversationId, text, idempotencyId);
   }
 
-  Future<Conversation> createConversation(int externalUserId) {
+  Future<Conversation> createConversation(int externalUserId) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return Conversation(
+        id: 1,
+        externalUserId: 3,
+        name: 'kitty@example.com',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
     throw UnimplementedError();
   }
 

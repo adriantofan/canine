@@ -1,16 +1,11 @@
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/messages/model/conversation_container.dart';
-import 'package:app/re_login/view/re_login_page.dart';
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../conversations/screen.dart';
+import '../../conversations/conversations.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../messages/messages.dart';
 import '../../re_login/re_login.dart';
-import '../../repository/repository.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
@@ -48,6 +43,7 @@ class AppRouter {
   static const String loginPath = '/login';
   static const String confirmPasswordPath = '/confirm-password';
   static const String homePath = '/home';
+  static const String homePathNew = '$homePath/new';
   static const String settingsPath = '/settings';
   static const String logoutPath = '/logout';
 
@@ -87,12 +83,26 @@ class AppRouter {
                           );
                         }),
                     GoRoute(
+                      path: homePathNew,
+                      parentNavigatorKey: messagesTabNavigatorKey,
+                      pageBuilder: (context, state) {
+                        return getPage(
+                          child: DraftConversationPage(
+                            draftConversation:
+                                state.extra! as DraftConversation,
+                          ),
+                          state: state,
+                        );
+                      },
+                    ),
+                    GoRoute(
                       path: '$homePath/:id',
                       parentNavigatorKey: messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         return getPage(
                           child: MessagesPage(
-                              state.extra! as ConversationContainer),
+                            conversationInfo: state.extra! as ConversationInfo,
+                          ),
                           state: state,
                         );
                       },
@@ -169,18 +179,40 @@ class AppRouter {
     );
   }
 
+  static get onConversations =>
+      router.routeInformationProvider.value.uri.path.startsWith(homePath);
+  static get crtConversationRouteId =>
+      router.routeInformationProvider.value.uri.pathSegments.last;
+
   static goConversationWithInfo(ConversationInfo conversationInfo) {
-    final ConversationContainer conversationContainer =
-        ConversationContainer.withConversation(
-            conversationInfo: conversationInfo);
-    router.go('/home/${conversationInfo.conversationId}',
-        extra: conversationContainer);
+    final newPath = '$homePath/${conversationInfo.conversationId}';
+    // Seems like if go is called after a replace with the same uri
+    // it will still result in a double push because it not only checks
+    // the uri but also the type in go definition:
+    //   void go(String location, {Object? extra}) {
+    //     _setValue(
+    //       location,
+    //       RouteInformationState<void>(
+    //         extra: extra,
+    //         type: NavigatingType.go,
+    //       ),
+    //     );
+    //   }
+    if (router.routeInformationProvider.value.uri.path == newPath) {
+      // assumes conversationInfo irelevant
+      return;
+    }
+    router.go(newPath, extra: conversationInfo);
   }
 
-  static goConversationWithUser(User user, XFile? file) {
-    final ConversationContainer conversationContainer =
-        ConversationContainer.withUser(user: user);
-    router.go('/home/new', extra: conversationContainer);
+  static replaceConversationWithInfo(
+      ConversationInfo conversationInfo, DraftMessage draftMessage) {
+    router.replace('$homePath/${conversationInfo.conversationId}',
+        extra: conversationInfo);
+  }
+
+  static goConversationWithUser(DraftConversation draftConversation) {
+    router.go(homePathNew, extra: draftConversation);
   }
 
   static Page getPage({

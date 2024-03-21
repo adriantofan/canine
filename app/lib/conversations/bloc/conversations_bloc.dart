@@ -19,8 +19,14 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       : _repository = repository,
         super(ConversationsState.empty()) {
     listener = () {
-      if (AppRouter.router.routeInformationProvider.value.uri.path
-          .endsWith("new")) {
+      if (!AppRouter.onConversations) {
+        return;
+      }
+      final maybeConversationId = AppRouter.crtConversationRouteId;
+      final canBeParsed = int.tryParse(maybeConversationId) != null;
+      if (canBeParsed) {
+        add(ConversationsRouteChanged(maybeConversationId));
+      } else {
         add(ConversationsDeselect());
       }
     };
@@ -32,9 +38,15 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
         return state.withChanges(changes, _repository);
       });
     });
+
     on<ConversationsSelect>((event, emit) {
       emit(state.withSelection(event.conversation));
     });
+
+    on<ConversationsRouteChanged>((event, emit) {
+      emit(state.withConversationId(event.id));
+    });
+
     on<ConversationsDeselect>((event, emit) {
       emit(state.withSelection(null));
     });

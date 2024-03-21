@@ -9,12 +9,27 @@ final class ConversationsState {
   const ConversationsState(this.conversations, this.currentSelection);
   static empty() => const ConversationsState([], null);
 
+  withConversationId(String conversationId) {
+    try {
+      final targetConversationId = int.parse(conversationId);
+      return replaceSelection(targetConversationId);
+    } catch (e) {
+      print('Invalid conversation id: $conversationId');
+      return ConversationsState(conversations, null);
+    }
+  }
+
   withSelection(ConversationInfo? conversation) {
     if (conversation == null) {
       return ConversationsState(conversations, null);
     }
+    final targetConversationId = conversation.conversationId;
+    return replaceSelection(targetConversationId);
+  }
+
+  ConversationsState replaceSelection(int targetConversationId) {
     final conversationIndex = conversations.indexWhere(
-        (element) => element.conversationId == conversation.conversationId);
+        (element) => element.conversationId == targetConversationId);
     if (conversationIndex == -1) {
       print(
           'Conversation not found in list - FIXME'); // FIXME: should not happen
@@ -24,7 +39,7 @@ final class ConversationsState {
         conversations,
         Selection(
             listIndex: conversationIndex,
-            conversationId: conversation.conversationId));
+            conversationId: targetConversationId));
   }
 
   withChanges(List<ConversationInfo> items, SyncRepository repository) {

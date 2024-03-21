@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../model/new_message.dart';
+import '../model/draft_message.dart';
 
 part 'send_bloc.freezed.dart';
 part 'send_event.dart';
@@ -18,7 +18,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   void _onSend(SendEventSend event, Emitter<SendState> emit) async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    final msg = NewMessage(
+    final msg = DraftMessage(
       text: state.message.value,
       idempotencyId: state.idempotencyId,
       attachment: null,

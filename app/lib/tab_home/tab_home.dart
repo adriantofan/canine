@@ -1,5 +1,6 @@
 import 'package:app/app/routes/routes.dart';
 import 'package:app/conversation_create/conversation_create.dart';
+import 'package:app/messages/messages.dart';
 import 'package:app/repository/repository.dart';
 import 'package:app/tab_home/view/disappearing_bottom_navigation_bar.dart';
 import 'package:app/tab_home/view/disappearing_navigation_rail.dart';
@@ -89,7 +90,8 @@ class _TabHomeState extends State<TabHome> {
 
                     Navigator.of(rootContext, rootNavigator: true).pop();
                     if (user != null) {
-                      AppRouter.goConversationWithUser(user, file);
+                      AppRouter.goConversationWithUser(DraftConversation(
+                          user: user, message: DraftMessage(attachment: file)));
                     }
                     // Select conversation screen
                     // give user to MessagesPage who would decide to open the new conversation

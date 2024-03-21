@@ -1,11 +1,11 @@
-import 'package:app/app/routes/routes.dart';
 import 'package:app/conversations/bloc/conversations_bloc.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
 import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widget/conversations_list.dart';
+import '../../app/routes/routes.dart';
+import 'conversations_list.dart';
 
 class ConversationsScreen extends StatefulWidget {
   const ConversationsScreen({super.key, required this.child});

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'new_message.dart';
+part of 'draft_message.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,29 +15,29 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$NewMessage {
-  String get text => throw _privateConstructorUsedError;
+mixin _$DraftMessage {
+  String? get text => throw _privateConstructorUsedError;
   XFile? get attachment => throw _privateConstructorUsedError;
-  String get idempotencyId => throw _privateConstructorUsedError;
+  String? get idempotencyId => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $NewMessageCopyWith<NewMessage> get copyWith =>
+  $DraftMessageCopyWith<DraftMessage> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NewMessageCopyWith<$Res> {
-  factory $NewMessageCopyWith(
-          NewMessage value, $Res Function(NewMessage) then) =
-      _$NewMessageCopyWithImpl<$Res, NewMessage>;
+abstract class $DraftMessageCopyWith<$Res> {
+  factory $DraftMessageCopyWith(
+          DraftMessage value, $Res Function(DraftMessage) then) =
+      _$DraftMessageCopyWithImpl<$Res, DraftMessage>;
   @useResult
-  $Res call({String text, XFile? attachment, String idempotencyId});
+  $Res call({String? text, XFile? attachment, String? idempotencyId});
 }
 
 /// @nodoc
-class _$NewMessageCopyWithImpl<$Res, $Val extends NewMessage>
-    implements $NewMessageCopyWith<$Res> {
-  _$NewMessageCopyWithImpl(this._value, this._then);
+class _$DraftMessageCopyWithImpl<$Res, $Val extends DraftMessage>
+    implements $DraftMessageCopyWith<$Res> {
+  _$DraftMessageCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -47,95 +47,92 @@ class _$NewMessageCopyWithImpl<$Res, $Val extends NewMessage>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? text = null,
+    Object? text = freezed,
     Object? attachment = freezed,
-    Object? idempotencyId = null,
+    Object? idempotencyId = freezed,
   }) {
     return _then(_value.copyWith(
-      text: null == text
+      text: freezed == text
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       attachment: freezed == attachment
           ? _value.attachment
           : attachment // ignore: cast_nullable_to_non_nullable
               as XFile?,
-      idempotencyId: null == idempotencyId
+      idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$NewMessageImplCopyWith<$Res>
-    implements $NewMessageCopyWith<$Res> {
-  factory _$$NewMessageImplCopyWith(
-          _$NewMessageImpl value, $Res Function(_$NewMessageImpl) then) =
-      __$$NewMessageImplCopyWithImpl<$Res>;
+abstract class _$$DraftMessageImplCopyWith<$Res>
+    implements $DraftMessageCopyWith<$Res> {
+  factory _$$DraftMessageImplCopyWith(
+          _$DraftMessageImpl value, $Res Function(_$DraftMessageImpl) then) =
+      __$$DraftMessageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String text, XFile? attachment, String idempotencyId});
+  $Res call({String? text, XFile? attachment, String? idempotencyId});
 }
 
 /// @nodoc
-class __$$NewMessageImplCopyWithImpl<$Res>
-    extends _$NewMessageCopyWithImpl<$Res, _$NewMessageImpl>
-    implements _$$NewMessageImplCopyWith<$Res> {
-  __$$NewMessageImplCopyWithImpl(
-      _$NewMessageImpl _value, $Res Function(_$NewMessageImpl) _then)
+class __$$DraftMessageImplCopyWithImpl<$Res>
+    extends _$DraftMessageCopyWithImpl<$Res, _$DraftMessageImpl>
+    implements _$$DraftMessageImplCopyWith<$Res> {
+  __$$DraftMessageImplCopyWithImpl(
+      _$DraftMessageImpl _value, $Res Function(_$DraftMessageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? text = null,
+    Object? text = freezed,
     Object? attachment = freezed,
-    Object? idempotencyId = null,
+    Object? idempotencyId = freezed,
   }) {
-    return _then(_$NewMessageImpl(
-      text: null == text
+    return _then(_$DraftMessageImpl(
+      text: freezed == text
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       attachment: freezed == attachment
           ? _value.attachment
           : attachment // ignore: cast_nullable_to_non_nullable
               as XFile?,
-      idempotencyId: null == idempotencyId
+      idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$NewMessageImpl implements _NewMessage {
-  const _$NewMessageImpl(
-      {required this.text,
-      required this.attachment,
-      required this.idempotencyId});
+class _$DraftMessageImpl implements _DraftMessage {
+  const _$DraftMessageImpl({this.text, this.attachment, this.idempotencyId});
 
   @override
-  final String text;
+  final String? text;
   @override
   final XFile? attachment;
   @override
-  final String idempotencyId;
+  final String? idempotencyId;
 
   @override
   String toString() {
-    return 'NewMessage(text: $text, attachment: $attachment, idempotencyId: $idempotencyId)';
+    return 'DraftMessage(text: $text, attachment: $attachment, idempotencyId: $idempotencyId)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NewMessageImpl &&
+            other is _$DraftMessageImpl &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.attachment, attachment) ||
                 other.attachment == attachment) &&
@@ -149,24 +146,24 @@ class _$NewMessageImpl implements _NewMessage {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$NewMessageImplCopyWith<_$NewMessageImpl> get copyWith =>
-      __$$NewMessageImplCopyWithImpl<_$NewMessageImpl>(this, _$identity);
+  _$$DraftMessageImplCopyWith<_$DraftMessageImpl> get copyWith =>
+      __$$DraftMessageImplCopyWithImpl<_$DraftMessageImpl>(this, _$identity);
 }
 
-abstract class _NewMessage implements NewMessage {
-  const factory _NewMessage(
-      {required final String text,
-      required final XFile? attachment,
-      required final String idempotencyId}) = _$NewMessageImpl;
+abstract class _DraftMessage implements DraftMessage {
+  const factory _DraftMessage(
+      {final String? text,
+      final XFile? attachment,
+      final String? idempotencyId}) = _$DraftMessageImpl;
 
   @override
-  String get text;
+  String? get text;
   @override
   XFile? get attachment;
   @override
-  String get idempotencyId;
+  String? get idempotencyId;
   @override
   @JsonKey(ignore: true)
-  _$$NewMessageImplCopyWith<_$NewMessageImpl> get copyWith =>
+  _$$DraftMessageImplCopyWith<_$DraftMessageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -19,20 +19,20 @@ mixin _$SendEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
         send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -141,7 +141,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
         send,
   }) {
     return textChanged(text);
@@ -151,7 +151,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
   }) {
     return textChanged?.call(text);
   }
@@ -160,7 +160,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
     required TResult orElse(),
   }) {
     if (textChanged != null) {
@@ -217,7 +217,7 @@ abstract class _$$SendEventSendImplCopyWith<$Res> {
           _$SendEventSendImpl value, $Res Function(_$SendEventSendImpl) then) =
       __$$SendEventSendImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Future<void> Function(NewMessage) sendMessage});
+  $Res call({Future<void> Function(DraftMessage) sendMessage});
 }
 
 /// @nodoc
@@ -237,7 +237,7 @@ class __$$SendEventSendImplCopyWithImpl<$Res>
       null == sendMessage
           ? _value.sendMessage
           : sendMessage // ignore: cast_nullable_to_non_nullable
-              as Future<void> Function(NewMessage),
+              as Future<void> Function(DraftMessage),
     ));
   }
 }
@@ -248,7 +248,7 @@ class _$SendEventSendImpl implements SendEventSend {
   const _$SendEventSendImpl(this.sendMessage);
 
   @override
-  final Future<void> Function(NewMessage) sendMessage;
+  final Future<void> Function(DraftMessage) sendMessage;
 
   @override
   String toString() {
@@ -277,7 +277,7 @@ class _$SendEventSendImpl implements SendEventSend {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(NewMessage) sendMessage)
+    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
         send,
   }) {
     return send(sendMessage);
@@ -287,7 +287,7 @@ class _$SendEventSendImpl implements SendEventSend {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
   }) {
     return send?.call(sendMessage);
   }
@@ -296,7 +296,7 @@ class _$SendEventSendImpl implements SendEventSend {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(NewMessage) sendMessage)? send,
+    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
     required TResult orElse(),
   }) {
     if (send != null) {
@@ -339,10 +339,10 @@ class _$SendEventSendImpl implements SendEventSend {
 
 abstract class SendEventSend implements SendEvent {
   const factory SendEventSend(
-          final Future<void> Function(NewMessage) sendMessage) =
+          final Future<void> Function(DraftMessage) sendMessage) =
       _$SendEventSendImpl;
 
-  Future<void> Function(NewMessage) get sendMessage;
+  Future<void> Function(DraftMessage) get sendMessage;
   @JsonKey(ignore: true)
   _$$SendEventSendImplCopyWith<_$SendEventSendImpl> get copyWith =>
       throw _privateConstructorUsedError;

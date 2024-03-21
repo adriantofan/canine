@@ -1,12 +1,14 @@
-import 'package:app/messages/bloc/messages_screen_cubit.dart';
+import 'package:app/messages/bloc/draft_conversation_cubit.dart';
 import 'package:app/messages/bloc/send_bloc.dart';
+import 'package:app/messages/model/draft_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
 
 class SendWidget extends StatelessWidget {
-  const SendWidget({super.key});
+  final DraftMessage? message;
+  SendWidget(this.message) : super(key: ValueKey(message));
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,7 @@ class _SendFieldState extends State<_SendField> {
                         ? () {
                             context.read<SendBloc>().add(
                                   SendEvent.send(context
-                                      .read<MessagesScreenCubit>()
+                                      .read<DraftConversationCubit>()
                                       .sendMessage),
                                 );
                           }
