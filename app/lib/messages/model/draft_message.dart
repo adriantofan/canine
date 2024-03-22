@@ -6,5 +6,7 @@ part 'draft_message.freezed.dart';
 @freezed
 class DraftMessage with _$DraftMessage {
   const factory DraftMessage(
-      {String? text, XFile? attachment, String? idempotencyId}) = _DraftMessage;
+      {String? text,
+      @Default([]) List<XFile> attachment,
+      String? idempotencyId}) = _DraftMessage;
 }

@@ -12,7 +12,8 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc() : super(SendState(const Uuid().v4())) {
+  SendBloc(DraftMessage? message) : super(SendState(const Uuid().v4())) {
+    if (message != null) {}
     on<SendEventTextChanged>(_onTextChanged);
     on<SendEventSend>(_onSend);
     on<SendEventAttachmentAdded>(_onAttachmentAdded);
