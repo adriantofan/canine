@@ -7,5 +7,6 @@ class SendState with _$SendState {
   const factory SendState(String idempotencyId,
       [@Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
       @Default(MessageInput.pure()) MessageInput message,
+      @Default([]) List<XFile> attachments,
       @Default(false) bool isValid]) = _SendState;
 }

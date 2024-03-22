@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -14,6 +15,24 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   SendBloc() : super(SendState(const Uuid().v4())) {
     on<SendEventTextChanged>(_onTextChanged);
     on<SendEventSend>(_onSend);
+    on<SendEventAttachmentAdded>(_onAttachmentAdded);
+    on<SendEventAttachmentRemoved>(_onAttachmentRemoved);
+  }
+
+  void _onAttachmentAdded(
+      SendEventAttachmentAdded event, Emitter<SendState> emit) async {
+    emit(state.copyWith(
+      attachments: state.attachments + [event.attachment],
+    ));
+  }
+
+  void _onAttachmentRemoved(
+      SendEventAttachmentRemoved event, Emitter<SendState> emit) async {
+    final newAttachments = List<XFile>.from(state.attachments);
+    newAttachments.removeAt(event.index);
+    emit(state.copyWith(
+      attachments: newAttachments,
+    ));
   }
 
   void _onSend(SendEventSend event, Emitter<SendState> emit) async {
