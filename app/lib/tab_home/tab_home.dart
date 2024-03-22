@@ -91,7 +91,9 @@ class _TabHomeState extends State<TabHome> {
                     Navigator.of(rootContext, rootNavigator: true).pop();
                     if (user != null) {
                       AppRouter.goConversationWithUser(DraftConversation(
-                          user: user, message: DraftMessage(attachment: file)));
+                          user: user,
+                          message: DraftMessage(
+                              attachment: file != null ? [file] : [])));
                     }
                     // Select conversation screen
                     // give user to MessagesPage who would decide to open the new conversation

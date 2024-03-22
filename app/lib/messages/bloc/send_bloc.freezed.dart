@@ -19,8 +19,7 @@ mixin _$SendEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
-        send,
+    required TResult Function() send,
     required TResult Function(XFile attachment) attachmentAdded,
     required TResult Function(int index) attachmentRemoved,
   }) =>
@@ -28,7 +27,7 @@ mixin _$SendEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult? Function()? send,
     TResult? Function(XFile attachment)? attachmentAdded,
     TResult? Function(int index)? attachmentRemoved,
   }) =>
@@ -36,7 +35,7 @@ mixin _$SendEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult Function()? send,
     TResult Function(XFile attachment)? attachmentAdded,
     TResult Function(int index)? attachmentRemoved,
     required TResult orElse(),
@@ -154,8 +153,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
-        send,
+    required TResult Function() send,
     required TResult Function(XFile attachment) attachmentAdded,
     required TResult Function(int index) attachmentRemoved,
   }) {
@@ -166,7 +164,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult? Function()? send,
     TResult? Function(XFile attachment)? attachmentAdded,
     TResult? Function(int index)? attachmentRemoved,
   }) {
@@ -177,7 +175,7 @@ class _$SendEventTextChangedImpl implements SendEventTextChanged {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult Function()? send,
     TResult Function(XFile attachment)? attachmentAdded,
     TResult Function(int index)? attachmentRemoved,
     required TResult orElse(),
@@ -242,8 +240,6 @@ abstract class _$$SendEventSendImplCopyWith<$Res> {
   factory _$$SendEventSendImplCopyWith(
           _$SendEventSendImpl value, $Res Function(_$SendEventSendImpl) then) =
       __$$SendEventSendImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Future<void> Function(DraftMessage) sendMessage});
 }
 
 /// @nodoc
@@ -253,86 +249,60 @@ class __$$SendEventSendImplCopyWithImpl<$Res>
   __$$SendEventSendImplCopyWithImpl(
       _$SendEventSendImpl _value, $Res Function(_$SendEventSendImpl) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? sendMessage = null,
-  }) {
-    return _then(_$SendEventSendImpl(
-      null == sendMessage
-          ? _value.sendMessage
-          : sendMessage // ignore: cast_nullable_to_non_nullable
-              as Future<void> Function(DraftMessage),
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$SendEventSendImpl implements SendEventSend {
-  const _$SendEventSendImpl(this.sendMessage);
-
-  @override
-  final Future<void> Function(DraftMessage) sendMessage;
+  const _$SendEventSendImpl();
 
   @override
   String toString() {
-    return 'SendEvent.send(sendMessage: $sendMessage)';
+    return 'SendEvent.send()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SendEventSendImpl &&
-            (identical(other.sendMessage, sendMessage) ||
-                other.sendMessage == sendMessage));
+        (other.runtimeType == runtimeType && other is _$SendEventSendImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sendMessage);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SendEventSendImplCopyWith<_$SendEventSendImpl> get copyWith =>
-      __$$SendEventSendImplCopyWithImpl<_$SendEventSendImpl>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
-        send,
+    required TResult Function() send,
     required TResult Function(XFile attachment) attachmentAdded,
     required TResult Function(int index) attachmentRemoved,
   }) {
-    return send(sendMessage);
+    return send();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult? Function()? send,
     TResult? Function(XFile attachment)? attachmentAdded,
     TResult? Function(int index)? attachmentRemoved,
   }) {
-    return send?.call(sendMessage);
+    return send?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult Function()? send,
     TResult Function(XFile attachment)? attachmentAdded,
     TResult Function(int index)? attachmentRemoved,
     required TResult orElse(),
   }) {
     if (send != null) {
-      return send(sendMessage);
+      return send();
     }
     return orElse();
   }
@@ -377,14 +347,7 @@ class _$SendEventSendImpl implements SendEventSend {
 }
 
 abstract class SendEventSend implements SendEvent {
-  const factory SendEventSend(
-          final Future<void> Function(DraftMessage) sendMessage) =
-      _$SendEventSendImpl;
-
-  Future<void> Function(DraftMessage) get sendMessage;
-  @JsonKey(ignore: true)
-  _$$SendEventSendImplCopyWith<_$SendEventSendImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  const factory SendEventSend() = _$SendEventSendImpl;
 }
 
 /// @nodoc
@@ -456,8 +419,7 @@ class _$SendEventAttachmentAddedImpl implements SendEventAttachmentAdded {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
-        send,
+    required TResult Function() send,
     required TResult Function(XFile attachment) attachmentAdded,
     required TResult Function(int index) attachmentRemoved,
   }) {
@@ -468,7 +430,7 @@ class _$SendEventAttachmentAddedImpl implements SendEventAttachmentAdded {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult? Function()? send,
     TResult? Function(XFile attachment)? attachmentAdded,
     TResult? Function(int index)? attachmentRemoved,
   }) {
@@ -479,7 +441,7 @@ class _$SendEventAttachmentAddedImpl implements SendEventAttachmentAdded {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult Function()? send,
     TResult Function(XFile attachment)? attachmentAdded,
     TResult Function(int index)? attachmentRemoved,
     required TResult orElse(),
@@ -607,8 +569,7 @@ class _$SendEventAttachmentRemovedImpl implements SendEventAttachmentRemoved {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String text) textChanged,
-    required TResult Function(Future<void> Function(DraftMessage) sendMessage)
-        send,
+    required TResult Function() send,
     required TResult Function(XFile attachment) attachmentAdded,
     required TResult Function(int index) attachmentRemoved,
   }) {
@@ -619,7 +580,7 @@ class _$SendEventAttachmentRemovedImpl implements SendEventAttachmentRemoved {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String text)? textChanged,
-    TResult? Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult? Function()? send,
     TResult? Function(XFile attachment)? attachmentAdded,
     TResult? Function(int index)? attachmentRemoved,
   }) {
@@ -630,7 +591,7 @@ class _$SendEventAttachmentRemovedImpl implements SendEventAttachmentRemoved {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String text)? textChanged,
-    TResult Function(Future<void> Function(DraftMessage) sendMessage)? send,
+    TResult Function()? send,
     TResult Function(XFile attachment)? attachmentAdded,
     TResult Function(int index)? attachmentRemoved,
     required TResult orElse(),

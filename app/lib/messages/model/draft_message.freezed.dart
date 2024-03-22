@@ -17,8 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$DraftMessage {
   String? get text => throw _privateConstructorUsedError;
-  XFile? get attachment => throw _privateConstructorUsedError;
-  String? get idempotencyId => throw _privateConstructorUsedError;
+  List<XFile> get attachment => throw _privateConstructorUsedError;
+  String? get idempotencyId =>
+      throw _privateConstructorUsedError; // Internal for SendBloc
+  bool get sending => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DraftMessageCopyWith<DraftMessage> get copyWith =>
@@ -31,7 +33,11 @@ abstract class $DraftMessageCopyWith<$Res> {
           DraftMessage value, $Res Function(DraftMessage) then) =
       _$DraftMessageCopyWithImpl<$Res, DraftMessage>;
   @useResult
-  $Res call({String? text, XFile? attachment, String? idempotencyId});
+  $Res call(
+      {String? text,
+      List<XFile> attachment,
+      String? idempotencyId,
+      bool sending});
 }
 
 /// @nodoc
@@ -48,22 +54,27 @@ class _$DraftMessageCopyWithImpl<$Res, $Val extends DraftMessage>
   @override
   $Res call({
     Object? text = freezed,
-    Object? attachment = freezed,
+    Object? attachment = null,
     Object? idempotencyId = freezed,
+    Object? sending = null,
   }) {
     return _then(_value.copyWith(
       text: freezed == text
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String?,
-      attachment: freezed == attachment
+      attachment: null == attachment
           ? _value.attachment
           : attachment // ignore: cast_nullable_to_non_nullable
-              as XFile?,
+              as List<XFile>,
       idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
               as String?,
+      sending: null == sending
+          ? _value.sending
+          : sending // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -76,7 +87,11 @@ abstract class _$$DraftMessageImplCopyWith<$Res>
       __$$DraftMessageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? text, XFile? attachment, String? idempotencyId});
+  $Res call(
+      {String? text,
+      List<XFile> attachment,
+      String? idempotencyId,
+      bool sending});
 }
 
 /// @nodoc
@@ -91,22 +106,27 @@ class __$$DraftMessageImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? text = freezed,
-    Object? attachment = freezed,
+    Object? attachment = null,
     Object? idempotencyId = freezed,
+    Object? sending = null,
   }) {
     return _then(_$DraftMessageImpl(
       text: freezed == text
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String?,
-      attachment: freezed == attachment
-          ? _value.attachment
+      attachment: null == attachment
+          ? _value._attachment
           : attachment // ignore: cast_nullable_to_non_nullable
-              as XFile?,
+              as List<XFile>,
       idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
           : idempotencyId // ignore: cast_nullable_to_non_nullable
               as String?,
+      sending: null == sending
+          ? _value.sending
+          : sending // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -114,18 +134,34 @@ class __$$DraftMessageImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$DraftMessageImpl implements _DraftMessage {
-  const _$DraftMessageImpl({this.text, this.attachment, this.idempotencyId});
+  const _$DraftMessageImpl(
+      {this.text,
+      final List<XFile> attachment = const [],
+      this.idempotencyId,
+      this.sending = false})
+      : _attachment = attachment;
 
   @override
   final String? text;
+  final List<XFile> _attachment;
   @override
-  final XFile? attachment;
+  @JsonKey()
+  List<XFile> get attachment {
+    if (_attachment is EqualUnmodifiableListView) return _attachment;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_attachment);
+  }
+
   @override
   final String? idempotencyId;
+// Internal for SendBloc
+  @override
+  @JsonKey()
+  final bool sending;
 
   @override
   String toString() {
-    return 'DraftMessage(text: $text, attachment: $attachment, idempotencyId: $idempotencyId)';
+    return 'DraftMessage(text: $text, attachment: $attachment, idempotencyId: $idempotencyId, sending: $sending)';
   }
 
   @override
@@ -134,14 +170,16 @@ class _$DraftMessageImpl implements _DraftMessage {
         (other.runtimeType == runtimeType &&
             other is _$DraftMessageImpl &&
             (identical(other.text, text) || other.text == text) &&
-            (identical(other.attachment, attachment) ||
-                other.attachment == attachment) &&
+            const DeepCollectionEquality()
+                .equals(other._attachment, _attachment) &&
             (identical(other.idempotencyId, idempotencyId) ||
-                other.idempotencyId == idempotencyId));
+                other.idempotencyId == idempotencyId) &&
+            (identical(other.sending, sending) || other.sending == sending));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, text, attachment, idempotencyId);
+  int get hashCode => Object.hash(runtimeType, text,
+      const DeepCollectionEquality().hash(_attachment), idempotencyId, sending);
 
   @JsonKey(ignore: true)
   @override
@@ -153,15 +191,18 @@ class _$DraftMessageImpl implements _DraftMessage {
 abstract class _DraftMessage implements DraftMessage {
   const factory _DraftMessage(
       {final String? text,
-      final XFile? attachment,
-      final String? idempotencyId}) = _$DraftMessageImpl;
+      final List<XFile> attachment,
+      final String? idempotencyId,
+      final bool sending}) = _$DraftMessageImpl;
 
   @override
   String? get text;
   @override
-  XFile? get attachment;
+  List<XFile> get attachment;
   @override
   String? get idempotencyId;
+  @override // Internal for SendBloc
+  bool get sending;
   @override
   @JsonKey(ignore: true)
   _$$DraftMessageImplCopyWith<_$DraftMessageImpl> get copyWith =>

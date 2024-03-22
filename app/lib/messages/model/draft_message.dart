@@ -8,5 +8,7 @@ class DraftMessage with _$DraftMessage {
   const factory DraftMessage(
       {String? text,
       @Default([]) List<XFile> attachment,
-      String? idempotencyId}) = _DraftMessage;
+      String? idempotencyId,
+      // Internal for SendBloc
+      @Default(false) bool sending}) = _DraftMessage;
 }

@@ -1,4 +1,3 @@
-import 'package:app/messages/bloc/draft_conversation_cubit.dart';
 import 'package:app/messages/bloc/send_bloc.dart';
 import 'package:app/messages/model/draft_message.dart';
 import 'package:file_selector/file_selector.dart';
@@ -8,23 +7,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
 
 class SendWidget extends StatelessWidget {
+  final Future<void> Function(DraftMessage msg) sendMessage;
   final DraftMessage? message;
-  SendWidget(this.message) : super(key: ValueKey(message));
+  const SendWidget(this.message, this.sendMessage, {super.key});
   // TODO: tomonrow:
   // 1. make sure draft message is used
+  // 2. deal with errors
   // 2. try to invoke send when required (coming from create)
   // 3. see about completing the repository and removing the mock
   // 4. there is a pagination problem :-(
 
   @override
   Widget build(BuildContext context) {
-    return _SendField(message);
+    return _SendField(message, sendMessage);
   }
 }
 
 class _SendField extends StatefulWidget {
   final DraftMessage? message;
-  const _SendField(this.message, {super.key});
+  final Future<void> Function(DraftMessage msg) sendMessage;
+
+  _SendField(this.message, this.sendMessage) : super(key: ValueKey(message));
 
   @override
   State<_SendField> createState() => _SendFieldState();
@@ -37,7 +40,7 @@ class _SendFieldState extends State<_SendField> {
   @override
   void initState() {
     super.initState();
-    _sendBloc = SendBloc();
+    _sendBloc = SendBloc(widget.message, widget.sendMessage);
     _inputController = TextEditingController();
     _inputController.text = widget.message?.text ?? '';
     _inputController.addListener(() {
@@ -45,6 +48,11 @@ class _SendFieldState extends State<_SendField> {
         SendEvent.textChanged(_inputController.text),
       );
     });
+
+    if (_sendBloc.state.status == FormzSubmissionStatus.inProgress) {
+      // TODO: this needs to be tested
+      _sendBloc.add(const SendEvent.send());
+    }
   }
 
   @override
@@ -154,8 +162,7 @@ class _SendFieldState extends State<_SendField> {
           state.isValid && state.status != FormzSubmissionStatus.inProgress
               ? () {
                   context.read<SendBloc>().add(
-                        SendEvent.send(
-                            context.read<DraftConversationCubit>().sendMessage),
+                        const SendEvent.send(),
                       );
                 }
               : null, //context.read<ChatController>().onFieldSubmitted,

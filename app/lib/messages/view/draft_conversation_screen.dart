@@ -70,7 +70,9 @@ class MessagesWidget extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context, DraftMessage draftMessage) {
-    return EmptyMessagesList(sendBar: SendWidget(draftMessage));
+    return EmptyMessagesList(
+        sendBar: SendWidget(
+            draftMessage, context.read<DraftConversationCubit>().sendMessage));
   }
 }
 

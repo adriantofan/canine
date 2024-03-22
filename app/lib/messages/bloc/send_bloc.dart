@@ -12,8 +12,9 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc(DraftMessage? message) : super(SendState(const Uuid().v4())) {
-    if (message != null) {}
+  final Future<void> Function(DraftMessage msg) sendMessage;
+  SendBloc(DraftMessage? message, this.sendMessage)
+      : super(SendState.fromMessage(message)) {
     on<SendEventTextChanged>(_onTextChanged);
     on<SendEventSend>(_onSend);
     on<SendEventAttachmentAdded>(_onAttachmentAdded);
@@ -41,11 +42,12 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     final msg = DraftMessage(
       text: state.message.value,
       idempotencyId: state.idempotencyId,
-      attachment: null,
+      attachment: state.attachments,
+      // This might create a conversation first, so we need to know to take over from here
+      sending: true,
     );
 
-    await event
-        .sendMessage(msg)
+    await sendMessage(msg)
         .then((value) => emit(state.copyWith(
               status: FormzSubmissionStatus.success,
               message: const MessageInput.pure(),

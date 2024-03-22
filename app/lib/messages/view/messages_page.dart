@@ -1,5 +1,7 @@
 import 'package:app/messages/model/draft_message.dart';
+import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../conversations/model/conversation_info.dart';
 import 'messages_list.dart';
@@ -22,7 +24,12 @@ class MessagesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(conversationInfo.name),
       ),
-      body: MessagesList(conversationInfo, SendWidget(draftMessage)),
+      body: MessagesList(
+          conversationInfo,
+          SendWidget(draftMessage, (msg) async {
+            await context.read<SyncRepository>().createMessage(
+                conversationInfo.conversationId, msg.text!, msg.idempotencyId!);
+          })),
     );
   }
 }
