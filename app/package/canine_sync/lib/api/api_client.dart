@@ -15,7 +15,7 @@ import 'credential_set.dart';
 // enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class APIClient {
-  static int kItemsPerPage = 25;
+  static int kItemsPerPage = 5;
   final _apiBase = 'http://localhost:8080';
   final _wsBase = 'ws://localhost:8080';
   final _logger = Logger('APIClient');
@@ -84,7 +84,7 @@ class APIClient {
   Future<Paginated<Message>> getConversationMessages(
       int conversationId, int? lastId) async {
     final response = await _getJSON(
-        '/$_workspaceId/conversations/$conversationId/messages?lower_than=$lastId');
+        '/$_workspaceId/conversations/$conversationId/messages?lower_than=$lastId&limit=$kItemsPerPage');
     try {
       final result = Paginated<Message>.fromJson(
           response, (json) => Message.fromJson(json as Map<String, dynamic>));

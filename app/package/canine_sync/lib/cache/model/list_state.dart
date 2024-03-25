@@ -55,7 +55,7 @@ sealed class ListState<T> with _$ListState {
     if (this is ListStateCached<T>) {
       return ListState.cached(
           items: (this as ListStateCached<T>).items + items,
-          startId: idFunc(items.first),
+          startId: idFunc(items.last),
           endId: (this as ListStateCached<T>).endId,
           moreBeforeStart: moreBeforeStart);
     }
