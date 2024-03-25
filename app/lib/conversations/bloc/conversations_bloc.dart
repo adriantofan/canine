@@ -34,7 +34,6 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
     AppRouter.router.routeInformationProvider.addListener(listener);
     on<ConversationsInitial>((event, emit) async {
       await emit.forEach(_repository.conversations(), onData: (changes) {
-        _log.fine("ConversationsBloc: got changes ${changes}");
         return state.withChanges(changes, _repository);
       });
     });

@@ -14,7 +14,7 @@ class MessagesPage extends StatelessWidget {
   final ConversationInfo conversationInfo;
 
   MessagesPage({required this.conversationInfo, this.draftMessage})
-      : super(key: ValueKey(draftMessage));
+      : super(key: ValueKey(conversationInfo.conversationId));
 
   @override
   Widget build(BuildContext context) {

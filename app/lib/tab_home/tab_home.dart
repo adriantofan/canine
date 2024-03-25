@@ -85,18 +85,22 @@ class _TabHomeState extends State<TabHome> {
         builder: (context) => Dialog(
               child: ConversationCreatePage(
                   repository: context.read<SyncRepository>(),
-                  endWithCreate: (result) {
-                    final (user, file) = result;
-
+                  didCreate: (result) {
                     Navigator.of(rootContext, rootNavigator: true).pop();
-                    if (user != null) {
-                      AppRouter.goConversationWithUser(DraftConversation(
-                          user: user,
-                          message: DraftMessage(
-                              attachment: file != null ? [file] : [])));
+                    switch (result) {
+                      case CreateFlowResultCancel():
+                        return;
+                      case CreateFlowResultDevis():
+                        AppRouter.goConversationWithUser(DraftConversation(
+                            user: result.user,
+                            message: DraftMessage(attachment: [result.file])));
+                      case CreateFlowResultUser():
+                        AppRouter.goConversationWithUser(DraftConversation(
+                            user: result.user, message: const DraftMessage()));
+                      case CreateFlowResultConversation():
+                        AppRouter.replaceConversationWithInfo(
+                            result.conversation, const DraftMessage());
                     }
-                    // Select conversation screen
-                    // give user to MessagesPage who would decide to open the new conversation
                   }),
             ));
   }

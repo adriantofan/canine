@@ -3,18 +3,30 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../conversations/model/conversation_info.dart';
 import '../../repository/repository.dart';
+import '../model/create_result.dart';
 
 part 'create_flow_cubit.freezed.dart';
 part 'create_flow_state.dart';
 
 class CreateFlowCubit extends Cubit<CreateFlowState> {
-  final ValueSetter<(User?, XFile?)> _endWithCreate;
-  CreateFlowCubit(this._endWithCreate)
+  final ValueSetter<CreateFlowResult> _didCreate;
+  final SyncRepository _repository;
+  CreateFlowCubit(this._didCreate, this._repository)
       : super(const CreateFlowState.nothingSelected());
 
   void didSelectUser(User user) {
-    _endWithCreate((user, null));
+    _repository.conversations().first.then((conversations) {
+      try {
+        final ConversationInfo conversation = conversations.firstWhere(
+          (element) => element.userId == user.id,
+        );
+        _didCreate(CreateFlowResult.conversation(conversation));
+      } on StateError {
+        _didCreate(CreateFlowResult.user(user));
+      }
+    });
   }
 
   void filePressed() {
@@ -34,7 +46,7 @@ class CreateFlowCubit extends Cubit<CreateFlowState> {
   }
 
   void onCanceled() {
-    _endWithCreate((null, null));
+    _didCreate(CreateFlowResult.cancel());
   }
 
   void onPop() {
@@ -43,7 +55,11 @@ class CreateFlowCubit extends Cubit<CreateFlowState> {
 
   void userCreated(User user) {
     if (state case CreateFlowStateWithDevis(:final devisFlow)) {
-      _endWithCreate((user, devisFlow.file));
+      if (devisFlow.file != null) {
+        _didCreate(CreateFlowResult.devis(devisFlow.file!, user));
+      } else {
+        _didCreate(CreateFlowResult.user(user));
+      }
       return;
     }
     throw UnimplementedError('Unknown state CreateFlowBloc: $state');
