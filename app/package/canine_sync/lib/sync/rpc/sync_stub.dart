@@ -187,4 +187,48 @@ class SyncStub extends Sync {
 
     throw AssertionError("canine_sync did not respond to createMessage");
   }
+
+  @override
+  Future<Conversation> createConversation(
+      {required String recipientMessagingAddress}) {
+    ReceivePort receivePort = ReceivePort();
+    _sendPort.send(Msg.createConversation(receivePort.sendPort,
+        recipientMessagingAddress: recipientMessagingAddress));
+    return receivePort.first.then((data) {
+      if (data is Conversation) {
+        return data;
+      }
+
+      if (data is APIError) {
+        throw data;
+      }
+
+      throw ArgumentError.value(
+          data, "Invalid response from canine_sync on createConversation");
+    });
+  }
+
+  @override
+  Future<User> createUser(
+      {required String messagingAddress,
+      required userType,
+      required password}) {
+    ReceivePort receivePort = ReceivePort();
+    _sendPort.send(Msg.createUser(receivePort.sendPort,
+        messagingAddress: messagingAddress,
+        userType: userType,
+        password: password));
+    return receivePort.first.then((data) {
+      if (data is User) {
+        return data;
+      }
+
+      if (data is APIError) {
+        throw data;
+      }
+
+      throw ArgumentError.value(
+          data, "Invalid response from canine_sync on createUser");
+    });
+  }
 }

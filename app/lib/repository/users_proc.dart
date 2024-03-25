@@ -22,8 +22,33 @@ class UsersProc implements Proc<List<User>> {
     if (_prev == null) {
       return _prev = bootstrap(cache);
     }
-    _log.warning("UpdateUsersProc.update: 🟡UNIMPLEMENTED $changes");
-    return _prev;
+    switch (changes) {
+      case UpdateMessagesAdded():
+        return null;
+      case UpdateServer():
+        return _prev = _handelUpdateServer(_prev!, changes, cache);
+    }
+  }
+
+  List<User> _handelUpdateServer(
+      List<User> prev, UpdateServer changes, Cache cache) {
+    final message = changes.message;
+    switch (message) {
+      case APIServerUpdateInvalid():
+      case APIServerUpdateMessage():
+      case APIServerUpdateConversation():
+        return prev;
+      case APIServerUpdateUsers():
+        if (message.kind == APIServerUpdateKind.create) {
+          final user = message.data;
+          return [...prev, user]
+            ..sort((a, b) => a.messagingAddress.compareTo(b.messagingAddress));
+        } else {
+          _log.warning(
+              "UsersProc._handelUpdateServer: 🟡UNIMPLEMENTED $message");
+          return prev;
+        }
+    }
   }
 
   List<User> bootstrap(Cache cache) {

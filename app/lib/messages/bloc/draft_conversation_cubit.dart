@@ -21,14 +21,14 @@ class DraftConversationCubit extends Cubit<DraftConversationState> {
       emit(DraftConversationState.initial(
           draftConversation.copyWith(message: msg)));
 
-      final conversation =
-          await repository.createConversation(draftConversation.user.id);
+      final conversation = await repository.createConversation(
+          recipientMessagingAddress: draftConversation.user.messagingAddress);
       final conversationInfo = ConversationInfo(
           conversationId: conversation.id,
           name: draftConversation.user.messagingAddress,
           userId: draftConversation.user.id,
           lastMessageTime: DateTime.now(),
-          lastMessage: DateTime.now().toString());
+          lastMessage: msg.text ?? '');
       emit(DraftConversationState.created(msg, conversationInfo));
     }
   }

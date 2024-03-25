@@ -31,8 +31,6 @@ final class ConversationsState {
     final conversationIndex = conversations.indexWhere(
         (element) => element.conversationId == targetConversationId);
     if (conversationIndex == -1) {
-      print(
-          'Conversation not found in list - FIXME'); // FIXME: should not happen
       return ConversationsState(conversations, null);
     }
     return ConversationsState(

@@ -17,6 +17,7 @@ class SyncService implements Sync {
       StreamController<void>.broadcast();
 
   SyncService(this._cache, this._apiClient);
+
   websocketListen() async {
     for (;;) {
       try {
@@ -58,10 +59,11 @@ class SyncService implements Sync {
 
   APIServerUpdate _decodeApiServerMessage(data) {
     final decoded = jsonDecode(data);
+    _logger.fine('🪽Server change:', decoded);
     try {
       return APIServerUpdate.fromJson(decoded);
     } catch (_) {
-      _logger.fine('Failed to decode message', decoded);
+      _logger.fine('🪽Failed to decode message', decoded);
       rethrow;
     }
   }
@@ -71,6 +73,7 @@ class SyncService implements Sync {
 
   final _conversationMessagesLoadPastFutures =
       <int, (Completer<void>, Future<RemoteDataStatus>)>{};
+
   @override
   Future<RemoteDataStatus> conversationMessagesLoadPast(int conversationId) {
     final crtSyncState =
@@ -144,6 +147,24 @@ class SyncService implements Sync {
   }
 
   @override
+  Future<Conversation> createConversation(
+      {required String recipientMessagingAddress}) {
+    return _apiClient.createConversation(
+        recipientMessagingAddress: recipientMessagingAddress);
+  }
+
+  @override
+  Future<User> createUser(
+      {required String messagingAddress,
+      required UserType userType,
+      required String password}) {
+    return _apiClient.createUser(
+        messagingAddress: messagingAddress,
+        userType: userType,
+        password: password);
+  }
+
+  @override
   Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId) {
     return _conversationSyncStateSubject(conversationId).stream
@@ -170,6 +191,7 @@ class SyncService implements Sync {
   }
 
   final Map<Proc, StreamController> _procs = {};
+
   @override
   Stream<R> subscribeProcRef<R>(ProcBuilder<R> builder) {
     final proc = builder.build();

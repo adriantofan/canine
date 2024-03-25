@@ -43,14 +43,37 @@ class InMemoryCache implements Cache {
       case APIServerUpdateInvalid():
         return null;
       case APIServerUpdateUsers():
-        _log.warning("InMemoryCache.serverDidUpdate: 🟡UNIMPLEMENTED $message");
-        return null;
+        return _handleAPIServerUpdateUsers(message);
       case APIServerUpdateMessage():
         return _handleAPIServerUpdateMessage(message);
       case APIServerUpdateConversation():
-        _log.warning("InMemoryCache.serverDidUpdate: 🟡UNIMPLEMENTED $message");
-        return null;
+        return _handleAPIServerUpdateConversation(message);
     }
+  }
+
+  Update? _handleAPIServerUpdateConversation(
+      APIServerUpdateConversation message) {
+    final update = Update.server(message);
+    switch (message.kind) {
+      case APIServerUpdateKind.create:
+        conversations = [...conversations, message.data];
+        conversationMessages[message.data.id] = const ListState.empty();
+      case APIServerUpdateKind.update:
+        conversations = conversations
+            .map((c) => c.id == message.data.id ? message.data : c)
+            .toList();
+      case APIServerUpdateKind.delete:
+        conversations =
+            conversations.where((c) => c.id != message.data.id).toList();
+    }
+    return update;
+  }
+
+  Update? _handleAPIServerUpdateUsers(APIServerUpdateUsers message) {
+    final update = Update.server(message);
+    final user = message.data;
+    _usersById[user.id] = user;
+    return update;
   }
 
   Update? _handleAPIServerUpdateMessage(APIServerUpdateMessage message) {

@@ -200,7 +200,8 @@ func (s *MessageRepository) CreateUser(
 	messagingAddress string,
 	userType genModel.UserType,
 	passwordHash string) (model.User, error) {
-	if !strings.HasPrefix(passwordHash, "$argon2id$v") {
+	// TODO: check empty hashes in db
+	if passwordHash != "" && !strings.HasPrefix(passwordHash, "$argon2id$v") {
 		return model.User{}, ErrInvalidPasswordHash
 	}
 	var user model.User

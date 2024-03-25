@@ -65,7 +65,9 @@ class UserCreateCubit extends Cubit<UserCreateState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      final user = await _repository.createUser();
+      // TODO: add remaining fields
+      final user =
+          await _repository.createUser(messagingAddress: state.email.value);
       emit(state.copyWith(status: FormzSubmissionStatus.success, user: user));
     } on APIError catch (e) {
       emit(state.copyWith(

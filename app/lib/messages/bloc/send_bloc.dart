@@ -3,6 +3,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
 
 import '../model/draft_message.dart';
@@ -12,6 +13,7 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
+  final _log = Logger('SendBloc');
   final Future<void> Function(DraftMessage msg) sendMessage;
   SendBloc(DraftMessage? message, this.sendMessage)
       : super(SendState.fromMessage(message)) {
@@ -48,16 +50,22 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     );
 
     await sendMessage(msg)
-        .then((value) => emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
-              message: const MessageInput.pure(),
-              idempotencyId:
-                  const Uuid().v4(), // new idempotency id after successful send
-              isValid: false,
-            )))
-        .catchError((e) => emit(state.copyWith(
+        .then((value) => (emit.isDone)
+            ? null
+            : emit(state.copyWith(
+                status: FormzSubmissionStatus.success,
+                message: const MessageInput.pure(),
+                idempotencyId: const Uuid()
+                    .v4(), // new idempotency id after successful send
+                isValid: false,
+              )))
+        .catchError((e) {
+      (emit.isDone)
+          ? _log.warning('Failed to send message', e)
+          : emit(state.copyWith(
               status: FormzSubmissionStatus.failure,
-            )));
+            ));
+    });
   }
 
   void _onTextChanged(SendEventTextChanged event, Emitter<SendState> emit) {

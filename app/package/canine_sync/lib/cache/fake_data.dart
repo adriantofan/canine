@@ -46,7 +46,7 @@ final Map<int, User> fakeUsers = {
         id: userID,
         messagingAddress: 'user $userID',
         workspaceId: 0,
-        type: '',
+        type: UserType.external,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now())
 };

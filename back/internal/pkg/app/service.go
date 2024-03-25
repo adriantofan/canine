@@ -55,7 +55,7 @@ type CreateWorkspaceData struct {
 type CreateUserData struct {
 	MessagingAddress string            `binding:"required" json:"messaging_address"`
 	UserType         genModel.UserType `binding:"required" json:"user_type"         validate:"oneof=external internal"`
-	Password         string            `binding:"required" json:"password"`
+	Password         string            `json:"password"`
 }
 
 type CreateMessageData struct {
@@ -215,9 +215,13 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 		return user, ErrForbidden
 	}
 
-	hashedPassword, err := hash.CreateHash(userData.Password)
-	if err != nil {
-		return user, fmt.Errorf("CreateUser hash password: %w", err)
+	// TODO: allow empty password for resetting them later
+	var hashedPassword string
+	if userData.Password != "" {
+		hashedPassword, err = hash.CreateHash(userData.Password)
+		if err != nil {
+			return user, fmt.Errorf("CreateUser hash password: %w", err)
+		}
 	}
 
 	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.MessagingAddress, userData.UserType, hashedPassword)

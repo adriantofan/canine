@@ -99,6 +99,27 @@ class AppRouter {
                       path: '$homePath/:id',
                       parentNavigatorKey: messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
+                        switch (state.extra) {
+                          case ConversationInfo():
+                            return getPage(
+                              child: MessagesPage(
+                                conversationInfo:
+                                    state.extra! as ConversationInfo,
+                              ),
+                              state: state,
+                            );
+                          case (
+                              ConversationInfo conversationInfo,
+                              DraftMessage draftMessage
+                            ):
+                            return getPage(
+                              child: MessagesPage(
+                                conversationInfo: conversationInfo,
+                                draftMessage: draftMessage,
+                              ),
+                              state: state,
+                            );
+                        }
                         return getPage(
                           child: MessagesPage(
                             conversationInfo: state.extra! as ConversationInfo,
@@ -208,7 +229,7 @@ class AppRouter {
   static replaceConversationWithInfo(
       ConversationInfo conversationInfo, DraftMessage draftMessage) {
     router.replace('$homePath/${conversationInfo.conversationId}',
-        extra: conversationInfo);
+        extra: (conversationInfo, draftMessage));
   }
 
   static goConversationWithUser(DraftConversation draftConversation) {

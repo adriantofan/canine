@@ -23,7 +23,7 @@ mixin _$User {
   int get id => throw _privateConstructorUsedError;
   int get workspaceId => throw _privateConstructorUsedError;
   String get messagingAddress => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  UserType get type => throw _privateConstructorUsedError;
   @TimestampSerializer()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampSerializer()
@@ -43,7 +43,7 @@ abstract class $UserCopyWith<$Res> {
       {int id,
       int workspaceId,
       String messagingAddress,
-      String type,
+      UserType type,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
 }
@@ -84,7 +84,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as String,
+              as UserType,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -108,7 +108,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       {int id,
       int workspaceId,
       String messagingAddress,
-      String type,
+      UserType type,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
 }
@@ -146,7 +146,7 @@ class __$$UserImplCopyWithImpl<$Res>
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as String,
+              as UserType,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -180,7 +180,7 @@ class _$UserImpl implements _User {
   @override
   final String messagingAddress;
   @override
-  final String type;
+  final UserType type;
   @override
   @TimestampSerializer()
   final DateTime createdAt;
@@ -234,7 +234,7 @@ abstract class _User implements User {
       {required final int id,
       required final int workspaceId,
       required final String messagingAddress,
-      required final String type,
+      required final UserType type,
       @TimestampSerializer() required final DateTime createdAt,
       @TimestampSerializer() required final DateTime updatedAt}) = _$UserImpl;
 
@@ -247,7 +247,7 @@ abstract class _User implements User {
   @override
   String get messagingAddress;
   @override
-  String get type;
+  UserType get type;
   @override
   @TimestampSerializer()
   DateTime get createdAt;

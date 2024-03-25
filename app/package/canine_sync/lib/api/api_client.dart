@@ -4,14 +4,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
+import '../canine_sync.dart';
 import '../constants/constants.dart';
-import '../models/api_error.dart';
-import '../models/message.dart';
 import '../models/paginated.dart';
 import '../models/rtc_remote.dart';
 import '../models/rtc_remote_update.dart';
 import '../secure_storage/secure_storage.dart';
-import 'authentication_status.dart';
 import 'credential_set.dart';
 
 // enum AuthenticationStatus { unknown, authenticated, unauthenticated }
@@ -34,6 +32,38 @@ class APIClient {
     yield _authStatus;
     await for (var status in _controller.stream) {
       yield status;
+    }
+  }
+
+  Future<Conversation> createConversation(
+      {required String recipientMessagingAddress}) async {
+    final response = await _postJSON('/$_workspaceId/conversations',
+        {'recipient_messaging_address': recipientMessagingAddress});
+    try {
+      return Conversation.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse createConversation response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
+    }
+  }
+
+  Future<User> createUser(
+      {required String messagingAddress,
+      required UserType userType,
+      required String password}) async {
+    final response = await _postJSON('/$_workspaceId/users', {
+      'messaging_address': messagingAddress,
+      'user_type': userType,
+      'password': password,
+    });
+
+    try {
+      return User.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse createUser response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
     }
   }
 
@@ -241,6 +271,8 @@ class APIClient {
     final http.Response response;
     try {
       final url = Uri.parse('$_apiBase$path');
+      _logger.fine('🌐🚀${methodLog(method)} $path body $body');
+
       response = switch (method) {
         HttpMethod.post => await http.post(
             url,
@@ -259,8 +291,11 @@ class APIClient {
     final dynamic decoded;
     try {
       decoded = jsonDecode(response.body);
+      _logger.fine('🌐📩${methodLog(method)} $path body $body: $decoded');
     } catch (e) {
-      _logger.finer('Invalid response: ${response.body}', e);
+      _logger.finer(
+          '🌐💥Invalid response ${methodLog(method)} $path : ${response.body}',
+          e);
       throw APIError.invalidResponse(e.toString());
     }
 
@@ -269,6 +304,15 @@ class APIClient {
     } else {
       throw APIError.serverError(decoded);
     }
+  }
+}
+
+String methodLog(HttpMethod method) {
+  switch (method) {
+    case HttpMethod.get:
+      return 'GET';
+    case HttpMethod.post:
+      return 'POST';
   }
 }
 

@@ -10,7 +10,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       id: json['id'] as int,
       workspaceId: json['workspace_id'] as int,
       messagingAddress: json['messaging_address'] as String,
-      type: json['type'] as String,
+      type: $enumDecode(_$UserTypeEnumMap, json['type']),
       createdAt: const TimestampSerializer().fromJson(json['created_at']),
       updatedAt: const TimestampSerializer().fromJson(json['updated_at']),
     );
@@ -24,3 +24,9 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'created_at': const TimestampSerializer().toJson(instance.createdAt),
       'updated_at': const TimestampSerializer().toJson(instance.updatedAt),
     };
+
+const _$UserTypeEnumMap = {
+  UserType.external: 'external',
+  UserType.internal: 'internal',
+  UserType.bot: 'bot',
+};

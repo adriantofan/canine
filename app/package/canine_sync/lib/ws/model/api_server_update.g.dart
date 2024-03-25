@@ -22,9 +22,7 @@ _$APIServerUpdateUsersImpl _$$APIServerUpdateUsersImplFromJson(
         Map<String, dynamic> json) =>
     _$APIServerUpdateUsersImpl(
       const APIServerUpdateKindConverter().fromJson(json['kind'] as String),
-      (json['data'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      User.fromJson(json['data'] as Map<String, dynamic>),
       $type: json['type'] as String?,
     );
 
@@ -56,9 +54,7 @@ _$APIServerUpdateConversationImpl _$$APIServerUpdateConversationImplFromJson(
         Map<String, dynamic> json) =>
     _$APIServerUpdateConversationImpl(
       const APIServerUpdateKindConverter().fromJson(json['kind'] as String),
-      (json['data'] as List<dynamic>)
-          .map((e) => Conversation.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      Conversation.fromJson(json['data'] as Map<String, dynamic>),
       $type: json['type'] as String?,
     );
 

@@ -37,8 +37,7 @@ mixin _$APIServerUpdate {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function(
-            @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)
+            @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data)
         users,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
@@ -46,7 +45,7 @@ mixin _$APIServerUpdate {
         message,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)
+            Conversation data)
         conversations,
   }) =>
       throw _privateConstructorUsedError;
@@ -54,13 +53,13 @@ mixin _$APIServerUpdate {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
   }) =>
       throw _privateConstructorUsedError;
@@ -68,13 +67,13 @@ mixin _$APIServerUpdate {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
     required TResult orElse(),
   }) =>
@@ -176,8 +175,7 @@ class _$APIServerUpdateInvalidImpl implements APIServerUpdateInvalid {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function(
-            @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)
+            @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data)
         users,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
@@ -185,7 +183,7 @@ class _$APIServerUpdateInvalidImpl implements APIServerUpdateInvalid {
         message,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)
+            Conversation data)
         conversations,
   }) {
     return $default();
@@ -196,13 +194,13 @@ class _$APIServerUpdateInvalidImpl implements APIServerUpdateInvalid {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
   }) {
     return $default?.call();
@@ -213,13 +211,13 @@ class _$APIServerUpdateInvalidImpl implements APIServerUpdateInvalid {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
     required TResult orElse(),
   }) {
@@ -288,8 +286,9 @@ abstract class _$$APIServerUpdateUsersImplCopyWith<$Res> {
       __$$APIServerUpdateUsersImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-      List<User> data});
+      {@APIServerUpdateKindConverter() APIServerUpdateKind kind, User data});
+
+  $UserCopyWith<$Res> get data;
 }
 
 /// @nodoc
@@ -312,10 +311,18 @@ class __$$APIServerUpdateUsersImplCopyWithImpl<$Res>
           : kind // ignore: cast_nullable_to_non_nullable
               as APIServerUpdateKind,
       null == data
-          ? _value._data
+          ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+              as User,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get data {
+    return $UserCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value));
+    });
   }
 }
 
@@ -323,10 +330,9 @@ class __$$APIServerUpdateUsersImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
   const _$APIServerUpdateUsersImpl(
-      @APIServerUpdateKindConverter() this.kind, final List<User> data,
+      @APIServerUpdateKindConverter() this.kind, this.data,
       {final String? $type})
-      : _data = data,
-        $type = $type ?? 'user';
+      : $type = $type ?? 'user';
 
   factory _$APIServerUpdateUsersImpl.fromJson(Map<String, dynamic> json) =>
       _$$APIServerUpdateUsersImplFromJson(json);
@@ -334,13 +340,8 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
   @override
   @APIServerUpdateKindConverter()
   final APIServerUpdateKind kind;
-  final List<User> _data;
   @override
-  List<User> get data {
-    if (_data is EqualUnmodifiableListView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_data);
-  }
+  final User data;
 
   @JsonKey(name: 'type')
   final String $type;
@@ -356,13 +357,12 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
         (other.runtimeType == runtimeType &&
             other is _$APIServerUpdateUsersImpl &&
             (identical(other.kind, kind) || other.kind == kind) &&
-            const DeepCollectionEquality().equals(other._data, _data));
+            (identical(other.data, data) || other.data == data));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, kind, const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(runtimeType, kind, data);
 
   @JsonKey(ignore: true)
   @override
@@ -377,8 +377,7 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function(
-            @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)
+            @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data)
         users,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
@@ -386,7 +385,7 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
         message,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)
+            Conversation data)
         conversations,
   }) {
     return users(kind, data);
@@ -397,13 +396,13 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
   }) {
     return users?.call(kind, data);
@@ -414,13 +413,13 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
     required TResult orElse(),
   }) {
@@ -478,14 +477,14 @@ class _$APIServerUpdateUsersImpl implements APIServerUpdateUsers {
 abstract class APIServerUpdateUsers implements APIServerUpdate {
   const factory APIServerUpdateUsers(
       @APIServerUpdateKindConverter() final APIServerUpdateKind kind,
-      final List<User> data) = _$APIServerUpdateUsersImpl;
+      final User data) = _$APIServerUpdateUsersImpl;
 
   factory APIServerUpdateUsers.fromJson(Map<String, dynamic> json) =
       _$APIServerUpdateUsersImpl.fromJson;
 
   @APIServerUpdateKindConverter()
   APIServerUpdateKind get kind;
-  List<User> get data;
+  User get data;
   @JsonKey(ignore: true)
   _$$APIServerUpdateUsersImplCopyWith<_$APIServerUpdateUsersImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -590,8 +589,7 @@ class _$APIServerUpdateMessageImpl implements APIServerUpdateMessage {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function(
-            @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)
+            @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data)
         users,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
@@ -599,7 +597,7 @@ class _$APIServerUpdateMessageImpl implements APIServerUpdateMessage {
         message,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)
+            Conversation data)
         conversations,
   }) {
     return message(kind, data);
@@ -610,13 +608,13 @@ class _$APIServerUpdateMessageImpl implements APIServerUpdateMessage {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
   }) {
     return message?.call(kind, data);
@@ -627,13 +625,13 @@ class _$APIServerUpdateMessageImpl implements APIServerUpdateMessage {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
     required TResult orElse(),
   }) {
@@ -713,7 +711,9 @@ abstract class _$$APIServerUpdateConversationImplCopyWith<$Res> {
   @useResult
   $Res call(
       {@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-      List<Conversation> data});
+      Conversation data});
+
+  $ConversationCopyWith<$Res> get data;
 }
 
 /// @nodoc
@@ -738,10 +738,18 @@ class __$$APIServerUpdateConversationImplCopyWithImpl<$Res>
           : kind // ignore: cast_nullable_to_non_nullable
               as APIServerUpdateKind,
       null == data
-          ? _value._data
+          ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as List<Conversation>,
+              as Conversation,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ConversationCopyWith<$Res> get data {
+    return $ConversationCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value));
+    });
   }
 }
 
@@ -749,10 +757,9 @@ class __$$APIServerUpdateConversationImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
   const _$APIServerUpdateConversationImpl(
-      @APIServerUpdateKindConverter() this.kind, final List<Conversation> data,
+      @APIServerUpdateKindConverter() this.kind, this.data,
       {final String? $type})
-      : _data = data,
-        $type = $type ?? 'conversation';
+      : $type = $type ?? 'conversation';
 
   factory _$APIServerUpdateConversationImpl.fromJson(
           Map<String, dynamic> json) =>
@@ -761,13 +768,8 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
   @override
   @APIServerUpdateKindConverter()
   final APIServerUpdateKind kind;
-  final List<Conversation> _data;
   @override
-  List<Conversation> get data {
-    if (_data is EqualUnmodifiableListView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_data);
-  }
+  final Conversation data;
 
   @JsonKey(name: 'type')
   final String $type;
@@ -783,13 +785,12 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
         (other.runtimeType == runtimeType &&
             other is _$APIServerUpdateConversationImpl &&
             (identical(other.kind, kind) || other.kind == kind) &&
-            const DeepCollectionEquality().equals(other._data, _data));
+            (identical(other.data, data) || other.data == data));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, kind, const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(runtimeType, kind, data);
 
   @JsonKey(ignore: true)
   @override
@@ -803,8 +804,7 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function(
-            @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)
+            @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data)
         users,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
@@ -812,7 +812,7 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
         message,
     required TResult Function(
             @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)
+            Conversation data)
         conversations,
   }) {
     return conversations(kind, data);
@@ -823,13 +823,13 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult? Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
   }) {
     return conversations?.call(kind, data);
@@ -840,13 +840,13 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<User> data)?
+            User data)?
         users,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
             Message data)?
         message,
     TResult Function(@APIServerUpdateKindConverter() APIServerUpdateKind kind,
-            List<Conversation> data)?
+            Conversation data)?
         conversations,
     required TResult orElse(),
   }) {
@@ -904,14 +904,14 @@ class _$APIServerUpdateConversationImpl implements APIServerUpdateConversation {
 abstract class APIServerUpdateConversation implements APIServerUpdate {
   const factory APIServerUpdateConversation(
       @APIServerUpdateKindConverter() final APIServerUpdateKind kind,
-      final List<Conversation> data) = _$APIServerUpdateConversationImpl;
+      final Conversation data) = _$APIServerUpdateConversationImpl;
 
   factory APIServerUpdateConversation.fromJson(Map<String, dynamic> json) =
       _$APIServerUpdateConversationImpl.fromJson;
 
   @APIServerUpdateKindConverter()
   APIServerUpdateKind get kind;
-  List<Conversation> get data;
+  Conversation get data;
   @JsonKey(ignore: true)
   _$$APIServerUpdateConversationImplCopyWith<_$APIServerUpdateConversationImpl>
       get copyWith => throw _privateConstructorUsedError;

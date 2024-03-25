@@ -48,15 +48,10 @@ class SyncRepository {
     return _sync.createMessage(conversationId, text, idempotencyId);
   }
 
-  Future<Conversation> createConversation(int externalUserId) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return Conversation(
-        id: 1,
-        externalUserId: 3,
-        name: 'kitty@example.com',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
-    throw UnimplementedError();
+  Future<Conversation> createConversation(
+      {required String recipientMessagingAddress}) async {
+    return _sync.createConversation(
+        recipientMessagingAddress: recipientMessagingAddress);
   }
 
   Future<DevisRecipient> analyseDevis(XFile file) async {
@@ -68,14 +63,13 @@ class SyncRepository {
         phone: '06');
   }
 
-  Future<User> createUser() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return User(
-        id: 1,
-        workspaceId: 1,
-        messagingAddress: 'messagingAddress',
-        type: 'internal',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+  Future<User> createUser(
+      {required String messagingAddress,
+      UserType userType = UserType.external,
+      String password = ''}) async {
+    return _sync.createUser(
+        messagingAddress: messagingAddress,
+        userType: userType,
+        password: password);
   }
 }

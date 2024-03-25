@@ -27,7 +27,7 @@ class _SendField extends StatefulWidget {
   final DraftMessage? message;
   final Future<void> Function(DraftMessage msg) sendMessage;
 
-  _SendField(this.message, this.sendMessage) : super(key: ValueKey(message));
+  const _SendField(this.message, this.sendMessage) : super();
 
   @override
   State<_SendField> createState() => _SendFieldState();
@@ -91,7 +91,7 @@ class _SendFieldState extends State<_SendField> {
             builder: (context, state) {
               return Column(
                 children: [
-                  FileChips(),
+                  const FileChips(),
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -108,6 +108,10 @@ class _SendFieldState extends State<_SendField> {
                             top: 18,
                           ),
                           hintText: 'message',
+                          errorText:
+                              state.status == FormzSubmissionStatus.failure
+                                  ? 'failed to send. retry?'
+                                  : null,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(8.0),

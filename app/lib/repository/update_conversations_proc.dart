@@ -33,15 +33,36 @@ class UpdateConversationsProc extends Proc<List<ConversationInfo>> {
         switch (message) {
           case APIServerUpdateInvalid():
           case APIServerUpdateUsers():
-          case APIServerUpdateConversation():
             _log.warning(
                 "UpdateConversationsProc.handleUpdateServer: 🟡UNIMPLEMENTED $message");
             return null;
+          case APIServerUpdateConversation():
+            return _prev =
+                _handleServerUpdateConversation(_prev!, message, cache);
           case APIServerUpdateMessage():
             // new message added
             return _prev = _handleServerUpdateMessage(_prev!, message, cache);
         }
     }
+  }
+
+  List<ConversationInfo> _handleServerUpdateConversation(
+      List<ConversationInfo> prev,
+      APIServerUpdateConversation message,
+      Cache cache) {
+    final conversationId = message.data.id;
+    final conversationItem = conversationItemBuilder(cache)(conversationId);
+    if (conversationItem == null) {
+      return prev;
+    }
+    final index = prev.indexWhere((c) => c.conversationId == conversationId);
+    if (index == -1) {
+      prev.add(conversationItem);
+    } else {
+      prev[index] = conversationItem;
+    }
+    prev.sort(ConversationInfo.compareByLastMessageTime);
+    return prev;
   }
 
   List<ConversationInfo> _handleServerUpdateMessage(List<ConversationInfo> prev,

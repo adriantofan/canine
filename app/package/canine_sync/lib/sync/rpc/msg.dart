@@ -2,6 +2,7 @@ import 'dart:isolate';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../models/model.dart';
 import '../proc.dart';
 
 part 'msg.freezed.dart';
@@ -28,6 +29,12 @@ sealed class Msg with _$Msg {
       SendPort sendPort, int conversationId) = MsgConversationMessagesLoadPast;
   const factory Msg.createMessage(SendPort sendPort, int conversationId,
       String text, String idempotencyId) = MsgCreateMessage;
+  const factory Msg.createConversation(SendPort sendPort,
+      {required String recipientMessagingAddress}) = MsgCreateConversation;
+  const factory Msg.createUser(SendPort sendPort,
+      {required String messagingAddress,
+      required UserType userType,
+      required String password}) = MsgCreateUser;
 }
 
 class MsgOutUnsubscribeAck {

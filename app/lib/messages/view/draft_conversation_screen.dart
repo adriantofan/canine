@@ -57,12 +57,9 @@ class MessagesWidget extends StatelessWidget {
                 :final draftConversation,
               ):
               return buildBody(context, draftConversation.message);
-            case DraftConversationStateCreated(
-                :final conversationInfo,
-                :final draftMessage,
-              ):
+            case DraftConversationStateCreated():
               // This is not expected to be reached, but it is here for completeness
-              return buildBody(context, draftMessage);
+              return const Text('...');
           }
         },
       ),

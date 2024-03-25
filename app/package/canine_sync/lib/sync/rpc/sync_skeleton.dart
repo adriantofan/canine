@@ -35,22 +35,52 @@ class SyncSkeleton {
         _conversationMessagesLoadPast(msg);
       case MsgCreateMessage():
         _createMessage(msg);
+      case MsgCreateConversation():
+        _createConversation(msg);
+      case MsgCreateUser():
+        _createUser(msg);
     }
   }
 
   // Section: Message handlers
+
+  void _createConversation(MsgCreateConversation msg) {
+    _service
+        .createConversation(
+            recipientMessagingAddress: msg.recipientMessagingAddress)
+        .then((c) => msg.sendPort.send(c),
+            onError: (error, stackTrace) => (error is APIError)
+                ? msg.sendPort.send(error)
+                : msg.sendPort.send(error.toString()));
+  }
+
+  void _createUser(MsgCreateUser msg) {
+    _service
+        .createUser(
+            messagingAddress: msg.messagingAddress,
+            userType: msg.userType,
+            password: msg.password)
+        .then((u) => msg.sendPort.send(u),
+            onError: (error, stackTrace) => (error is APIError)
+                ? msg.sendPort.send(error)
+                : msg.sendPort.send(error.toString()));
+  }
+
   void _createMessage(MsgCreateMessage msg) {
     _service
         .createMessage(msg.conversationId, msg.text, msg.idempotencyId)
         .then((m) => msg.sendPort.send(m),
-            onError: (error, stackTrace) =>
-                msg.sendPort.send(error.toString()));
+            onError: (error, stackTrace) => (error is APIError)
+                ? msg.sendPort.send(error)
+                : msg.sendPort.send(error.toString()));
   }
 
   void _conversationMessagesLoadPast(MsgConversationMessagesLoadPast msg) {
     _service.conversationMessagesLoadPast(msg.conversationId).then(
         (RemoteDataStatus s) => msg.sendPort.send(s),
-        onError: (error, stackTrace) => msg.sendPort.send(error.toString()));
+        onError: (error, stackTrace) => (error is APIError)
+            ? msg.sendPort.send(error)
+            : msg.sendPort.send(error.toString()));
   }
 
   final Map<String, (StreamSubscription, SendPort)>
@@ -84,13 +114,17 @@ class SyncSkeleton {
 
   void _logout(MsgLogout msg) {
     _service.logout().then((_) => msg.sendPort.send(null),
-        onError: (error, stackTrace) => msg.sendPort.send(error.toString()));
+        onError: (error, stackTrace) => (error is APIError)
+            ? msg.sendPort.send(error)
+            : msg.sendPort.send(error.toString()));
   }
 
   void _login(MsgLogin msg) {
     _service.login(msg.workspaceId, msg.username, msg.password).then(
         (_) => msg.sendPort.send(null),
-        onError: (error, stackTrace) => msg.sendPort.send(error.toString()));
+        onError: (error, stackTrace) => (error is APIError)
+            ? msg.sendPort.send(error)
+            : msg.sendPort.send(error.toString()));
   }
 
   final Map<String, (StreamSubscription, SendPort)> _authStatusSubscriptions =

@@ -14,8 +14,8 @@ sealed class APIServerUpdate with _$APIServerUpdate {
 
   @FreezedUnionValue('user')
   const factory APIServerUpdate.users(
-      @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-      List<User> data) = APIServerUpdateUsers;
+          @APIServerUpdateKindConverter() APIServerUpdateKind kind, User data) =
+      APIServerUpdateUsers;
 
   @FreezedUnionValue('message')
   const factory APIServerUpdate.message(
@@ -25,7 +25,7 @@ sealed class APIServerUpdate with _$APIServerUpdate {
   @FreezedUnionValue('conversation')
   const factory APIServerUpdate.conversations(
       @APIServerUpdateKindConverter() APIServerUpdateKind kind,
-      List<Conversation> data) = APIServerUpdateConversation;
+      Conversation data) = APIServerUpdateConversation;
 
   factory APIServerUpdate.fromJson(Map<String, dynamic> json) =>
       _$APIServerUpdateFromJson(json);

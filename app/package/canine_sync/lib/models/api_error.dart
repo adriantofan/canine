@@ -29,7 +29,9 @@ class APIError with _$APIError {
   }
 
   factory APIError.invalidResponse(String e) {
-    return APIError(kClientInvalidResponse, '', '', debug: e);
+    return APIError(
+        kClientInvalidResponse, 'Server error, please retry later.', '',
+        debug: e);
   }
 
   factory APIError.fromJson(Map<String, dynamic> json) =>
