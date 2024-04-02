@@ -89,7 +89,8 @@ type ChatRepository interface {
 		conversationID int64,
 		senderID int64,
 		message string,
-		messageType genModel.MessageType) (model.Message, error)
+		messageType genModel.MessageType,
+		attachments []string) (model.Message, error)
 
 	GetSyncState(
 		ctx context.Context,

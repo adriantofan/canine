@@ -35,7 +35,20 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+  gcs-emulator:
+    build:
+      target: gcsemulator
+      context: https://github.com/adriantofan/emulators.git
+      args:
+        VERSION: 1.0.0
+    ports:
+      - "9000:9000"
+    volumes:
+      - gcs-data:/data
+
 
 volumes:
     pg-data:
     redis-data:
+    gcs-data:
+

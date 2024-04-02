@@ -323,7 +323,8 @@ func (s *MessageRepository) CreateMessage(
 	conversationID int64,
 	senderID int64,
 	message string,
-	messageType genModel.MessageType) (model.Message, error) {
+	messageType genModel.MessageType,
+	attachments []string) (model.Message, error) {
 
 	var msg model.Message
 	stmt := table.
@@ -331,12 +332,15 @@ func (s *MessageRepository) CreateMessage(
 		table.Message.ConversationID,
 		table.Message.SenderID,
 		table.Message.Message,
-		table.Message.Type).
+		table.Message.Type,
+		table.Message.Attachments).
 		VALUES(
 			Int64(conversationID),
 			Int64(senderID),
 			String(message),
-			messageType).
+			messageType,
+			pq.Array(attachments),
+		).
 		RETURNING(table.Message.AllColumns)
 	err := stmt.QueryContext(ctx, s.db, &msg)
 

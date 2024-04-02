@@ -5,6 +5,7 @@ import (
 	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
+	"back/internal/pkg/domain/service"
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
 	"context"
@@ -18,18 +19,24 @@ import (
 var ()
 
 type Service struct {
-	t                domain.Transaction
-	eventsOutput     eventlog.Output
-	eventLogFatalErr func(error)
-	timeService      infrastructure.TimeService
+	t                  domain.Transaction
+	eventsOutput       eventlog.Output
+	eventLogFatalErr   func(error)
+	timeService        infrastructure.TimeService
+	attachmentsService service.Attachments
 }
 
-func NewService(t domain.Transaction, eventsOutput eventlog.Output, fatalErr func(error)) *Service {
+func NewService(
+	t domain.Transaction,
+	eventsOutput eventlog.Output,
+	fatalErr func(error),
+	attachmentsService service.Attachments) *Service {
 	return &Service{
-		t:                t,
-		eventsOutput:     eventsOutput,
-		eventLogFatalErr: fatalErr,
-		timeService:      infrastructure.NewRealTimeService(),
+		t:                  t,
+		eventsOutput:       eventsOutput,
+		eventLogFatalErr:   fatalErr,
+		timeService:        infrastructure.NewRealTimeService(),
+		attachmentsService: attachmentsService,
 	}
 }
 
@@ -175,8 +182,14 @@ func (s *Service) CreateMessage(
 	if sender.Type == genModel.UserType_External && conversation.ExternalUserID != sender.ID {
 		return message, ErrForbidden
 	}
+	attachments, err := s.attachmentsService.UploadMultipart(ctx, conversationID, messageData.Attachments)
 
-	message, err = repo.CreateMessage(ctx, conversationID, sender.ID, messageData.Message, genModel.MessageType_Msg)
+	if err != nil {
+		return message, fmt.Errorf("CreateMessage failed upload attachments: %w", err)
+	}
+
+	// FIXME: Starting here we should introduce the total ordering of messages
+	message, err = repo.CreateMessage(ctx, conversationID, sender.ID, messageData.Message, genModel.MessageType_Msg, attachments)
 	if err != nil {
 		return message, fmt.Errorf("CreateMessage create message: %w", err)
 	}

@@ -5,7 +5,9 @@ import (
 	"back/internal/pkg/app"
 	"back/internal/pkg/auth"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
+	domainServices "back/internal/pkg/domain/infrastructure/service"
 	"back/internal/pkg/env"
+	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
 	"context"
 	"errors"
@@ -33,6 +35,7 @@ func Run(args []string) {
 	dsn := fs.String("postgres-dsn", "", "database connection string")
 	authSecret := fs.String("auth-secret", "", "auth secret")
 	authRealm := fs.String("auth-realm", "", "auth realm")
+	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
 
 	if err := env.SetFlagsFromEnvironment(fs); err != nil {
 		log.Fatal(err)
@@ -52,10 +55,19 @@ func Run(args []string) {
 
 	fatalCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	// TODO: make sure this is the right context to provide to the cloud storage client
+	csClient, err := infrastructure.NewCloudStorageClient(fatalCtx, []string{*attachmentsBucket})
+	if err != nil {
+		log.Panicf("failed to create cloud storage client: %v", err)
+	}
+
+	attachmentService := domainServices.NewCloudStorageAttachments(csClient, *attachmentsBucket)
+
 	service := app.NewService(transactionFactory, inMemoryEventLog, func(err error) {
 		log.Printf("event output fatal error: %v", err)
 		cancel() // WTF
-	})
+	}, attachmentService)
 
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)

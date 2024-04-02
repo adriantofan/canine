@@ -166,7 +166,7 @@ start-dependencies:
 	docker compose up \
 		--abort-on-container-exit \
 		--remove-orphans \
-		db rdb
+		db rdb gcs-emulator
 
 .PHONY: start-ci-dependencies-background
 start-ci-dependencies-background:
