@@ -133,7 +133,7 @@ func (h ChatHandlers) CreateMessage(ctx *gin.Context) {
 
 	var payload CreateMessagePayload
 
-	err := ctx.ShouldBindJSON(&payload)
+	err := ctx.ShouldBind(&payload)
 	if err != nil {
 		abortBadRequest(ctx, err)
 

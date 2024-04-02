@@ -18,4 +18,5 @@ type Message struct {
 	Type           MessageType
 	Message        string
 	CreatedAt      time.Time
+	Attachments    *string
 }

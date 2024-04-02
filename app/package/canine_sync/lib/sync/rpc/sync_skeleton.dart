@@ -68,7 +68,8 @@ class SyncSkeleton {
 
   void _createMessage(MsgCreateMessage msg) {
     _service
-        .createMessage(msg.conversationId, msg.text, msg.idempotencyId)
+        .createMessage(
+            msg.conversationId, msg.text, msg.idempotencyId, msg.attachments)
         .then((m) => msg.sendPort.send(m),
             onError: (error, stackTrace) => (error is APIError)
                 ? msg.sendPort.send(error)

@@ -7,7 +7,7 @@ part 'draft_message.freezed.dart';
 class DraftMessage with _$DraftMessage {
   const factory DraftMessage(
       {String? text,
-      @Default([]) List<XFile> attachment,
+      @Default([]) List<XFile> attachments,
       String? idempotencyId,
       // Internal for SendBloc
       @Default(false) bool sending}) = _DraftMessage;

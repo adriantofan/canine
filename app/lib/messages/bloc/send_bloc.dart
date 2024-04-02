@@ -44,7 +44,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     final msg = DraftMessage(
       text: state.message.value,
       idempotencyId: state.idempotencyId,
-      attachment: state.attachments,
+      attachments: state.attachments,
       // This might create a conversation first, so we need to know to take over from here
       sending: true,
     );
@@ -55,6 +55,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             : emit(state.copyWith(
                 status: FormzSubmissionStatus.success,
                 message: const MessageInput.pure(),
+                attachments: [],
                 idempotencyId: const Uuid()
                     .v4(), // new idempotency id after successful send
                 isValid: false,

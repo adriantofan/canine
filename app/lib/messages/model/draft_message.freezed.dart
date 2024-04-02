@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$DraftMessage {
   String? get text => throw _privateConstructorUsedError;
-  List<XFile> get attachment => throw _privateConstructorUsedError;
+  List<XFile> get attachments => throw _privateConstructorUsedError;
   String? get idempotencyId =>
       throw _privateConstructorUsedError; // Internal for SendBloc
   bool get sending => throw _privateConstructorUsedError;
@@ -35,7 +35,7 @@ abstract class $DraftMessageCopyWith<$Res> {
   @useResult
   $Res call(
       {String? text,
-      List<XFile> attachment,
+      List<XFile> attachments,
       String? idempotencyId,
       bool sending});
 }
@@ -54,7 +54,7 @@ class _$DraftMessageCopyWithImpl<$Res, $Val extends DraftMessage>
   @override
   $Res call({
     Object? text = freezed,
-    Object? attachment = null,
+    Object? attachments = null,
     Object? idempotencyId = freezed,
     Object? sending = null,
   }) {
@@ -63,9 +63,9 @@ class _$DraftMessageCopyWithImpl<$Res, $Val extends DraftMessage>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String?,
-      attachment: null == attachment
-          ? _value.attachment
-          : attachment // ignore: cast_nullable_to_non_nullable
+      attachments: null == attachments
+          ? _value.attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
               as List<XFile>,
       idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
@@ -89,7 +89,7 @@ abstract class _$$DraftMessageImplCopyWith<$Res>
   @useResult
   $Res call(
       {String? text,
-      List<XFile> attachment,
+      List<XFile> attachments,
       String? idempotencyId,
       bool sending});
 }
@@ -106,7 +106,7 @@ class __$$DraftMessageImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? text = freezed,
-    Object? attachment = null,
+    Object? attachments = null,
     Object? idempotencyId = freezed,
     Object? sending = null,
   }) {
@@ -115,9 +115,9 @@ class __$$DraftMessageImplCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String?,
-      attachment: null == attachment
-          ? _value._attachment
-          : attachment // ignore: cast_nullable_to_non_nullable
+      attachments: null == attachments
+          ? _value._attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
               as List<XFile>,
       idempotencyId: freezed == idempotencyId
           ? _value.idempotencyId
@@ -136,20 +136,20 @@ class __$$DraftMessageImplCopyWithImpl<$Res>
 class _$DraftMessageImpl implements _DraftMessage {
   const _$DraftMessageImpl(
       {this.text,
-      final List<XFile> attachment = const [],
+      final List<XFile> attachments = const [],
       this.idempotencyId,
       this.sending = false})
-      : _attachment = attachment;
+      : _attachments = attachments;
 
   @override
   final String? text;
-  final List<XFile> _attachment;
+  final List<XFile> _attachments;
   @override
   @JsonKey()
-  List<XFile> get attachment {
-    if (_attachment is EqualUnmodifiableListView) return _attachment;
+  List<XFile> get attachments {
+    if (_attachments is EqualUnmodifiableListView) return _attachments;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_attachment);
+    return EqualUnmodifiableListView(_attachments);
   }
 
   @override
@@ -161,7 +161,7 @@ class _$DraftMessageImpl implements _DraftMessage {
 
   @override
   String toString() {
-    return 'DraftMessage(text: $text, attachment: $attachment, idempotencyId: $idempotencyId, sending: $sending)';
+    return 'DraftMessage(text: $text, attachments: $attachments, idempotencyId: $idempotencyId, sending: $sending)';
   }
 
   @override
@@ -171,15 +171,19 @@ class _$DraftMessageImpl implements _DraftMessage {
             other is _$DraftMessageImpl &&
             (identical(other.text, text) || other.text == text) &&
             const DeepCollectionEquality()
-                .equals(other._attachment, _attachment) &&
+                .equals(other._attachments, _attachments) &&
             (identical(other.idempotencyId, idempotencyId) ||
                 other.idempotencyId == idempotencyId) &&
             (identical(other.sending, sending) || other.sending == sending));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, text,
-      const DeepCollectionEquality().hash(_attachment), idempotencyId, sending);
+  int get hashCode => Object.hash(
+      runtimeType,
+      text,
+      const DeepCollectionEquality().hash(_attachments),
+      idempotencyId,
+      sending);
 
   @JsonKey(ignore: true)
   @override
@@ -191,14 +195,14 @@ class _$DraftMessageImpl implements _DraftMessage {
 abstract class _DraftMessage implements DraftMessage {
   const factory _DraftMessage(
       {final String? text,
-      final List<XFile> attachment,
+      final List<XFile> attachments,
       final String? idempotencyId,
       final bool sending}) = _$DraftMessageImpl;
 
   @override
   String? get text;
   @override
-  List<XFile> get attachment;
+  List<XFile> get attachments;
   @override
   String? get idempotencyId;
   @override // Internal for SendBloc

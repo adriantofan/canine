@@ -39,6 +39,7 @@ type Message struct {
 	Type           genModel.MessageType `json:"type" db:"type"`
 	Message        string               `json:"message" db:"message"`
 	CreatedAt      MillisecondsTime     `json:"created_at" db:"created_at"`
+	Attachments    *string              `json:"attachments" db:"attachments"`
 }
 type Workspace struct {
 	ID        int64            `json:"id" sql:"primary_key"`

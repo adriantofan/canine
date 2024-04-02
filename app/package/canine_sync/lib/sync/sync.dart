@@ -1,12 +1,14 @@
 import 'dart:core';
 
+import 'package:file_selector/file_selector.dart';
+
 import '../api/main.dart';
 import '../models/model.dart';
 import 'proc.dart';
 
 abstract class Sync {
-  Future<Message> createMessage(
-      int conversationId, String text, String idempotencyId);
+  Future<Message> createMessage(int conversationId, String text,
+      String idempotencyId, List<XFile> attachments);
 
   Future<Conversation> createConversation(
       {required String recipientMessagingAddress});

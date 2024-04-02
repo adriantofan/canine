@@ -25,7 +25,7 @@ class SendState with _$SendState {
       message.idempotencyId ?? const Uuid().v4(),
       status,
       textInput,
-      message.attachment,
+      message.attachments,
       isValid,
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
@@ -67,11 +68,13 @@ class APIClient {
     }
   }
 
-  Future<Message> createMessage(
-      int conversationId, String text, String idempotencyId) async {
-    final response = await _postJSON(
+  Future<Message> createMessage(int conversationId, String text,
+      String idempotencyId, List<XFile> attachments) async {
+    final response = await _multipart(
         '/$_workspaceId/conversations/$conversationId/messages',
-        {'message': text});
+        {'message': text, 'idempotency_id': idempotencyId},
+        attachments,
+        'attachments');
     try {
       return Message.fromJson(response);
     } catch (e) {
@@ -233,11 +236,36 @@ class APIClient {
     }
   }
 
-  Future<dynamic> _postJSON(String path, Object? body,
-      {bool skipRefresh = false}) async {
+  Future<dynamic> _multipart(
+    String path,
+    Map<String, String>? fields,
+    List<XFile> attachments,
+    String attachmentField,
+  ) async {
     try {
-      return _makeRequest(HttpMethod.post, path, body,
-          skipRefresh: skipRefresh);
+      return _makeRequest(HttpMethod.multipart, path, null, fields,
+          skipRefresh: false,
+          attachments: attachments,
+          attachmentField: attachmentField);
+    } catch (e) {
+      _logger.finer("Failed POST request to $path", e);
+      rethrow;
+    }
+  }
+
+  Future<dynamic> _postJSON(
+    String path,
+    Object? body, {
+    bool skipRefresh = false,
+  }) async {
+    try {
+      return _makeRequest(
+        HttpMethod.post,
+        path,
+        body,
+        null,
+        skipRefresh: skipRefresh,
+      );
     } catch (e) {
       _logger.finer("Failed POST request to $path", e);
       rethrow;
@@ -246,15 +274,18 @@ class APIClient {
 
   Future<dynamic> _getJSON(String path) async {
     try {
-      return _makeRequest(HttpMethod.get, path, null);
+      return _makeRequest(HttpMethod.get, path, null, null);
     } catch (e) {
       _logger.finer("Failed GET request to $path", e);
       rethrow;
     }
   }
 
-  Future<dynamic> _makeRequest(HttpMethod method, String path, Object? body,
-      {bool skipRefresh = false}) async {
+  Future<dynamic> _makeRequest(
+      HttpMethod method, String path, Object? body, Map<String, String>? fields,
+      {bool skipRefresh = false,
+      List<XFile>? attachments,
+      String? attachmentField}) async {
     assert(path.startsWith('/'));
 
     // proactively refresh the token if it's about to expire except when
@@ -269,21 +300,51 @@ class APIClient {
         'Authorization': 'Bearer ${_credential!.token}'
     };
     final http.Response response;
+    final fileNames = attachments?.map((e) => e.name).join(', ');
+    final fileNamesLog =
+        fileNames != null ? '$attachmentField: $fileNames' : '';
+    final bodyOrFieldsLog = body != null ? 'body: $body' : 'fields: $fields';
+
     try {
       final url = Uri.parse('$_apiBase$path');
-      _logger.fine('🌐🚀${methodLog(method)} $path body $body');
+      _logger.fine(
+          '🌐🚀${methodLog(method)} $path $fileNamesLog $bodyOrFieldsLog');
 
-      response = switch (method) {
-        HttpMethod.post => await http.post(
+      switch (method) {
+        case HttpMethod.post:
+          response = await http.post(
             url,
             headers: headers,
             body: jsonEncode(body),
-          ),
-        HttpMethod.get => await http.get(
+          );
+        case HttpMethod.get:
+          response = await http.get(
             url,
             headers: headers,
+          );
+        case HttpMethod.multipart:
+          final multipartFiles = <http.MultipartFile>[];
+          for (var attachment in attachments!) {
+            final file = await attachment.readAsBytes();
+            final multipartFile = http.MultipartFile.fromBytes(
+              attachmentField!,
+              file,
+              filename: attachment.name,
+            );
+            multipartFiles.add(multipartFile);
+          }
+
+          final request = http.MultipartRequest(
+            'POST',
+            url,
           )
-      };
+            ..headers.addAll(headers)
+            ..fields.addAll(fields ?? {})
+            ..files.addAll(multipartFiles);
+
+          final multipartResponse = await request.send();
+          response = await http.Response.fromStream(multipartResponse);
+      }
     } catch (e) {
       throw APIError.unableToMakeRequest(e);
     }
@@ -291,7 +352,8 @@ class APIClient {
     final dynamic decoded;
     try {
       decoded = jsonDecode(response.body);
-      _logger.fine('🌐📩${methodLog(method)} $path body $body: $decoded');
+      _logger.fine(
+          '🌐📩${methodLog(method)} $path $fileNamesLog $bodyOrFieldsLog: $decoded');
     } catch (e) {
       _logger.finer(
           '🌐💥Invalid response ${methodLog(method)} $path : ${response.body}',
@@ -313,7 +375,9 @@ String methodLog(HttpMethod method) {
       return 'GET';
     case HttpMethod.post:
       return 'POST';
+    case HttpMethod.multipart:
+      return 'POST MULTIPART';
   }
 }
 
-enum HttpMethod { get, post }
+enum HttpMethod { get, post, multipart }

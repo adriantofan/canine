@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const kDefaultFileUploadSize = 10 << 20 // 10 MiB
 func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware *jwt.GinJWTMiddleware) {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.POST("/workspaces", handlers.CreateWorkspace)
 	workspaceGroup := router.Group("/:workspace_id")

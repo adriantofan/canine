@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../api/main.dart';
@@ -167,11 +168,11 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<Message> createMessage(
-      int conversationId, String text, String idempotencyId) async {
+  Future<Message> createMessage(int conversationId, String text,
+      String idempotencyId, List<XFile> attachments) async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(Msg.createMessage(
-        receivePort.sendPort, conversationId, text, idempotencyId));
+    _sendPort.send(Msg.createMessage(receivePort.sendPort, conversationId, text,
+        idempotencyId, attachments));
     await for (var data in receivePort) {
       if (data is Message) {
         return data;

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -141,9 +142,10 @@ class SyncService implements Sync {
   }
 
   @override
-  Future<Message> createMessage(
-      int conversationId, String text, String idempotencyId) {
-    return _apiClient.createMessage(conversationId, text, idempotencyId);
+  Future<Message> createMessage(int conversationId, String text,
+      String idempotencyId, List<XFile> attachments) {
+    return _apiClient.createMessage(
+        conversationId, text, idempotencyId, attachments);
   }
 
   @override

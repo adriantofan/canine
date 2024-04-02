@@ -28,7 +28,10 @@ class MessagesPage extends StatelessWidget {
           conversationInfo,
           SendWidget(draftMessage, (msg) async {
             await context.read<SyncRepository>().createMessage(
-                conversationInfo.conversationId, msg.text!, msg.idempotencyId!);
+                conversationInfo.conversationId,
+                msg.text!,
+                msg.idempotencyId!,
+                msg.attachments);
           })),
     );
   }

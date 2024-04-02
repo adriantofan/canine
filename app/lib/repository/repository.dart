@@ -43,9 +43,10 @@ class SyncRepository {
     return _sync.conversationMessagesLoadPast(conversationId);
   }
 
-  Future<Message> createMessage(
-      int conversationId, String text, String idempotencyId) {
-    return _sync.createMessage(conversationId, text, idempotencyId);
+  Future<Message> createMessage(int conversationId, String text,
+      String idempotencyId, List<XFile> attachments) {
+    return _sync.createMessage(
+        conversationId, text, idempotencyId, attachments);
   }
 
   Future<Conversation> createConversation(

@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../models/model.dart';
@@ -27,8 +28,12 @@ sealed class Msg with _$Msg {
       MsgConversationMessagesSyncStateUnsubscribe;
   const factory Msg.conversationMessagesLoadPast(
       SendPort sendPort, int conversationId) = MsgConversationMessagesLoadPast;
-  const factory Msg.createMessage(SendPort sendPort, int conversationId,
-      String text, String idempotencyId) = MsgCreateMessage;
+  const factory Msg.createMessage(
+      SendPort sendPort,
+      int conversationId,
+      String text,
+      String idempotencyId,
+      List<XFile> attachments) = MsgCreateMessage;
   const factory Msg.createConversation(SendPort sendPort,
       {required String recipientMessagingAddress}) = MsgCreateConversation;
   const factory Msg.createUser(SendPort sendPort,

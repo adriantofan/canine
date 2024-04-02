@@ -23,6 +23,7 @@ type messageTable struct {
 	Type           postgres.ColumnString
 	Message        postgres.ColumnString
 	CreatedAt      postgres.ColumnTimestamp
+	Attachments    postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -69,8 +70,9 @@ func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 		TypeColumn           = postgres.StringColumn("type")
 		MessageColumn        = postgres.StringColumn("message")
 		CreatedAtColumn      = postgres.TimestampColumn("created_at")
-		allColumns           = postgres.ColumnList{IDColumn, ConversationIDColumn, SenderIDColumn, TypeColumn, MessageColumn, CreatedAtColumn}
-		mutableColumns       = postgres.ColumnList{ConversationIDColumn, SenderIDColumn, TypeColumn, MessageColumn, CreatedAtColumn}
+		AttachmentsColumn    = postgres.StringColumn("attachments")
+		allColumns           = postgres.ColumnList{IDColumn, ConversationIDColumn, SenderIDColumn, TypeColumn, MessageColumn, CreatedAtColumn, AttachmentsColumn}
+		mutableColumns       = postgres.ColumnList{ConversationIDColumn, SenderIDColumn, TypeColumn, MessageColumn, CreatedAtColumn, AttachmentsColumn}
 	)
 
 	return messageTable{
@@ -83,6 +85,7 @@ func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 		Type:           TypeColumn,
 		Message:        MessageColumn,
 		CreatedAt:      CreatedAtColumn,
+		Attachments:    AttachmentsColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

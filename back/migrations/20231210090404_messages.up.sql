@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS message
     type            message_type NOT NULL,
     message         TEXT         NOT NULL,
     created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    attachments     TEXT[],
     PRIMARY KEY (id),
     FOREIGN KEY (conversation_id) REFERENCES conversation (id),
     FOREIGN KEY (sender_id) REFERENCES "user" (id)

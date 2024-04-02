@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"mime/multipart"
 )
 
 var ()
@@ -59,8 +60,9 @@ type CreateUserData struct {
 }
 
 type CreateMessageData struct {
-	Message       string `json:"message"`
-	IdempotencyID string `json:"idempotency_id"`
+	Message       string                 `form:"message"`
+	IdempotencyID string                 `form:"idempotency_id"`
+	Attachments   []multipart.FileHeader `form:"attachments"`
 }
 
 type WorkspaceWithUser struct {
@@ -145,7 +147,7 @@ func (s *Service) CreateMessage(
 	conversationID int64,
 	messageData CreateMessageData) (model.Message, error) {
 	var message model.Message
-
+	// TODO: use idempotency_id
 	repo, err := s.t.Begin()
 	defer s.t.MustRollback()
 	if err != nil {

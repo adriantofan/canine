@@ -93,7 +93,7 @@ class _TabHomeState extends State<TabHome> {
                       case CreateFlowResultDevis():
                         AppRouter.goConversationWithUser(DraftConversation(
                             user: result.user,
-                            message: DraftMessage(attachment: [result.file])));
+                            message: DraftMessage(attachments: [result.file])));
                       case CreateFlowResultUser():
                         AppRouter.goConversationWithUser(DraftConversation(
                             user: result.user, message: const DraftMessage()));
