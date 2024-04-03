@@ -8,6 +8,7 @@
 package model
 
 import (
+	"github.com/lib/pq"
 	"time"
 )
 
@@ -18,5 +19,5 @@ type Message struct {
 	Type           MessageType
 	Message        string
 	CreatedAt      time.Time
-	Attachments    *string
+	Attachments    pq.StringArray
 }

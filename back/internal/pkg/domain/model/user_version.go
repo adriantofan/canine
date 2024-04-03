@@ -1,5 +1,7 @@
 package model
 
+import "back/internal/pkg/domain/model/primitive"
+
 type UserVersion struct {
-	MaxUpdateTime MillisecondsTime `json:"max_update_time"`
+	MaxUpdateTime primitive.MillisecondsTime `json:"max_update_time"`
 }

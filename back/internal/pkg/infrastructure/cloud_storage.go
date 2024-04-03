@@ -37,10 +37,12 @@ func NewCloudStorageClient(ctx context.Context, devBuckets []string) (*storage.C
 
 func initBucket(storageClient *storage.Client, devBuckets []string) error {
 	for _, bucketName := range devBuckets {
+		log.Printf("Creating bucket if it doesn't exit %s", bucketName)
 		if err := storageClient.Bucket(bucketName).Create(context.Background(), "", nil); err != nil {
 			return fmt.Errorf("failed to create bucket %s: %w", bucketName, err)
 		}
 	}
+
 	return nil
 }
 

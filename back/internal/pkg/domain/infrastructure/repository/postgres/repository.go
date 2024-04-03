@@ -339,7 +339,7 @@ func (s *MessageRepository) CreateMessage(
 			Int64(senderID),
 			String(message),
 			messageType,
-			pq.Array(attachments),
+			attachments,
 		).
 		RETURNING(table.Message.AllColumns)
 	err := stmt.QueryContext(ctx, s.db, &msg)

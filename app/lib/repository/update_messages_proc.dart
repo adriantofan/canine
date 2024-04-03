@@ -100,5 +100,6 @@ ChatMessage? makeChatMessage(Message message, Cache cache) {
       type: message.type,
       message: message.message,
       time: message.createdAt,
-      userId: user.id);
+      userId: user.id,
+      attachments: message.attachments);
 }

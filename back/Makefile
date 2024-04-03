@@ -1,6 +1,6 @@
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 export GOBIN := $(ROOT_DIR)/.bin
-export GOROOT := /Users/adriantofan/.local/share/mise/installs/go/1.21.6/go
+export GOROOT := /Users/adriantofan/.local/share/mise/installs/go/1.21.8/go
 GO := TZ=UTC $(GOROOT)/bin/go
 
 SHELL := /bin/bash
@@ -88,16 +88,17 @@ migrate-drop: $(MIGRATE)
 		drop
 
 .PHONY: generate
-generate: generate-models generate-mocks
+generate: generate-models #generate-mocks
 
-.PHONY: generate-mocks
-generate-mocks: $(MOCKERY)
-	@rm -rf ./services/*/mocks
-	$(MOCKERY)
+#.PHONY: generate-mocks
+#generate-mocks: $(MOCKERY)
+#	@rm -rf ./services/*/mocks
+#	$(MOCKERY)
 
 .PHONY: generate-models
-generate-models: $(JET)
-	$(JET) -dsn="postgres://postgres:postgres@localhost:5432/canine?sslmode=disable" -path=./.gen
+generate-models:
+	$(GO) run scripts/jet-generate.go -postgres-dsn="postgres://postgres:postgres@localhost:5432/canine?sslmode=disable"
+
 
 .PHONY: build
 build:

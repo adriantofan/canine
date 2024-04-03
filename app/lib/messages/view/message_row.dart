@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 
 import '../model/chat_message.dart';
+import 'attachment_widget.dart';
 
 class MessageRow extends StatelessWidget {
   final ChatMessage chatMessage;
@@ -16,9 +18,9 @@ class MessageRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
       margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+          // color: Colors.grey[200],
+          // borderRadius: BorderRadius.circular(10.0),
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -57,6 +59,14 @@ class MessageRow extends StatelessWidget {
                   chatMessage.message,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
+                if (chatMessage.attachments.isNotEmpty)
+                  Wrap(
+                      children: chatMessage.attachments
+                          .map((e) => AttachmentWidget(
+                                fileName: path.basename(e),
+                                iconData: Icons.attach_file,
+                              ))
+                          .toList())
               ],
             ),
           ),

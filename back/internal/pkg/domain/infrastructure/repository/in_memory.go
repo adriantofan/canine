@@ -90,7 +90,7 @@ func (r *MemoryMessageRepository) GetOrCreateConversation(ctx context.Context, e
 		ID:             r.nextConversationID,
 		ExternalUserID: externalUserID,
 		Name:           name,
-		CreatedAt:      model.NewMillisecondsTime(r.timeService.NowUTC()),
+		CreatedAt:      db.NewMillisecondsTime(r.timeService.NowUTC()),
 	}
 	r.nextConversationID++
 	r.conversations = append(r.conversations, conversation)
@@ -106,7 +106,7 @@ func (r *MemoryMessageRepository) CreateMessage(_ context.Context, conversationI
 		SenderID:       senderID,
 		Message:        message,
 		Type:           messageType,
-		CreatedAt:      model.NewMillisecondsTime(r.timeService.NowUTC()),
+		CreatedAt:      db.NewMillisecondsTime(r.timeService.NowUTC()),
 	}
 	r.messages = append(r.messages, msg)
 	return msg, nil

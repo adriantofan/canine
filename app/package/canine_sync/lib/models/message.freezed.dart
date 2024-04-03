@@ -26,7 +26,9 @@ mixin _$Message {
   String get message => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   @TimestampSerializer()
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get createdAt =>
+      throw _privateConstructorUsedError; // TODO: use DateTime, requires converter
+  List<String> get attachments => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +46,8 @@ abstract class $MessageCopyWith<$Res> {
       int senderId,
       String message,
       String type,
-      @TimestampSerializer() DateTime createdAt});
+      @TimestampSerializer() DateTime createdAt,
+      List<String> attachments});
 }
 
 /// @nodoc
@@ -66,6 +69,7 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
     Object? message = null,
     Object? type = null,
     Object? createdAt = null,
+    Object? attachments = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -92,6 +96,10 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      attachments: null == attachments
+          ? _value.attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -109,7 +117,8 @@ abstract class _$$MessageImplCopyWith<$Res> implements $MessageCopyWith<$Res> {
       int senderId,
       String message,
       String type,
-      @TimestampSerializer() DateTime createdAt});
+      @TimestampSerializer() DateTime createdAt,
+      List<String> attachments});
 }
 
 /// @nodoc
@@ -129,6 +138,7 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? message = null,
     Object? type = null,
     Object? createdAt = null,
+    Object? attachments = null,
   }) {
     return _then(_$MessageImpl(
       id: null == id
@@ -155,6 +165,10 @@ class __$$MessageImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      attachments: null == attachments
+          ? _value._attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -168,7 +182,9 @@ class _$MessageImpl implements _Message {
       required this.senderId,
       required this.message,
       required this.type,
-      @TimestampSerializer() required this.createdAt});
+      @TimestampSerializer() required this.createdAt,
+      final List<String> attachments = const []})
+      : _attachments = attachments;
 
   factory _$MessageImpl.fromJson(Map<String, dynamic> json) =>
       _$$MessageImplFromJson(json);
@@ -186,10 +202,20 @@ class _$MessageImpl implements _Message {
   @override
   @TimestampSerializer()
   final DateTime createdAt;
+// TODO: use DateTime, requires converter
+  final List<String> _attachments;
+// TODO: use DateTime, requires converter
+  @override
+  @JsonKey()
+  List<String> get attachments {
+    if (_attachments is EqualUnmodifiableListView) return _attachments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_attachments);
+  }
 
   @override
   String toString() {
-    return 'Message(id: $id, conversationId: $conversationId, senderId: $senderId, message: $message, type: $type, createdAt: $createdAt)';
+    return 'Message(id: $id, conversationId: $conversationId, senderId: $senderId, message: $message, type: $type, createdAt: $createdAt, attachments: $attachments)';
   }
 
   @override
@@ -205,13 +231,22 @@ class _$MessageImpl implements _Message {
             (identical(other.message, message) || other.message == message) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            const DeepCollectionEquality()
+                .equals(other._attachments, _attachments));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, conversationId, senderId, message, type, createdAt);
+      runtimeType,
+      id,
+      conversationId,
+      senderId,
+      message,
+      type,
+      createdAt,
+      const DeepCollectionEquality().hash(_attachments));
 
   @JsonKey(ignore: true)
   @override
@@ -229,13 +264,13 @@ class _$MessageImpl implements _Message {
 
 abstract class _Message implements Message {
   const factory _Message(
-          {required final int id,
-          required final int conversationId,
-          required final int senderId,
-          required final String message,
-          required final String type,
-          @TimestampSerializer() required final DateTime createdAt}) =
-      _$MessageImpl;
+      {required final int id,
+      required final int conversationId,
+      required final int senderId,
+      required final String message,
+      required final String type,
+      @TimestampSerializer() required final DateTime createdAt,
+      final List<String> attachments}) = _$MessageImpl;
 
   factory _Message.fromJson(Map<String, dynamic> json) = _$MessageImpl.fromJson;
 
@@ -252,6 +287,8 @@ abstract class _Message implements Message {
   @override
   @TimestampSerializer()
   DateTime get createdAt;
+  @override // TODO: use DateTime, requires converter
+  List<String> get attachments;
   @override
   @JsonKey(ignore: true)
   _$$MessageImplCopyWith<_$MessageImpl> get copyWith =>

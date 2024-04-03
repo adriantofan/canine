@@ -14,6 +14,10 @@ _$MessageImpl _$$MessageImplFromJson(Map<String, dynamic> json) =>
       message: json['message'] as String,
       type: json['type'] as String,
       createdAt: const TimestampSerializer().fromJson(json['created_at']),
+      attachments: (json['attachments'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
@@ -24,4 +28,5 @@ Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
       'message': instance.message,
       'type': instance.type,
       'created_at': const TimestampSerializer().toJson(instance.createdAt),
+      'attachments': instance.attachments,
     };

@@ -12,10 +12,10 @@ import (
 
 var _ = Describe("Json", func() {
 	It("Encodes and Decodes MillisecondsTime", func() {
-		txt, err := json.Marshal(model.NewMillisecondsTime(time.UnixMilli(2)))
+		txt, err := json.Marshal(db.NewMillisecondsTime(time.UnixMilli(2)))
 		Expect(err).ToNot(HaveOccurred())
 		Expect(txt).To(Equal([]byte("2")))
-		var mt model.MillisecondsTime
+		var mt db.MillisecondsTime
 		err = json.Unmarshal(txt, &mt)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(mt.Time).To(Equal(time.UnixMilli(2)))
@@ -23,10 +23,10 @@ var _ = Describe("Json", func() {
 
 	It("Encodes time.Now", func() {
 		now := time.Now().UTC()
-		txt, err := json.Marshal(model.NewMillisecondsTime(now))
+		txt, err := json.Marshal(db.NewMillisecondsTime(now))
 		Expect(err).ToNot(HaveOccurred())
 		Expect(txt).ToNot(Equal([]byte("")))
-		var mt model.MillisecondsTime
+		var mt db.MillisecondsTime
 		err = json.Unmarshal(txt, &mt)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(mt.Time).To(Equal(now.Truncate(time.Millisecond)))
@@ -42,7 +42,7 @@ var _ = Describe("Json", func() {
 			SenderID:       3,
 			Type:           genModel.MessageType_Msg,
 			Message:        "content",
-			CreatedAt:      model.NewMillisecondsTime(time.UnixMilli(2)),
+			CreatedAt:      db.NewMillisecondsTime(time.UnixMilli(2)),
 		}
 		_, err := msg.MarshallDataUpdate()
 		Expect(err).ToNot(HaveOccurred())

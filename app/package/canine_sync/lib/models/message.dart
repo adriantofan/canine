@@ -15,6 +15,7 @@ class Message with _$Message {
     required String type,
     @TimestampSerializer()
     required DateTime createdAt, // TODO: use DateTime, requires converter
+    @Default([]) List<String> attachments,
   }) = _Message;
 
   factory Message.fromJson(Map<String, dynamic> json) =>

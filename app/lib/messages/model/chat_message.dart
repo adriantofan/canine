@@ -10,6 +10,7 @@ class ChatMessage {
     required this.message,
     required this.time,
     required this.userId,
+    required this.attachments,
   }) : avatarInitials = getAvatarInitials(name);
   int id;
   String name;
@@ -17,6 +18,8 @@ class ChatMessage {
   String message;
   DateTime time;
   int userId;
+  List<String> attachments;
+
   final String avatarInitials;
   late final String timeFormatted = DateFormat.Hms().format(time);
 
