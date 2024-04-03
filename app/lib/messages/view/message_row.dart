@@ -61,6 +61,7 @@ class MessageRow extends StatelessWidget {
                 ),
                 if (chatMessage.attachments.isNotEmpty)
                   Wrap(
+                      spacing: 16,
                       children: chatMessage.attachments
                           .map((e) => AttachmentWidget(
                                 fileName: path.basename(e),
