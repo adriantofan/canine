@@ -36,7 +36,7 @@ workflows:
     publishing: 
       email:
         recipients:
-          - uadrian@bjrdoc.fr
+          - eng@bjrdoc.fr
         notify:
           success: true
           failure: false
