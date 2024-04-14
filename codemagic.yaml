@@ -39,4 +39,11 @@ workflows:
           - uadrian@bjrdoc.fr
         notify:
           success: true
-          failure: false          
+          failure: false
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'release'
+          include: true
+          source: true
