@@ -5,6 +5,8 @@ GO := TZ=UTC $(GOROOT)/bin/go
 
 SHELL := /bin/bash
 
+PGUSER_ENCODED=$(call urlencode,canine-sql-migrate-p-sa@prj-p-k9canine-base-f4s4.iam)
+
 WATCHEXEC := watchexec
 
 GOFUMPT := $(GOBIN)/gofumpt
@@ -32,7 +34,7 @@ GINKGO := $(GOBIN)/ginkgo
 GINKGO_VERSION := v2.15.0 # github.com/onsi/ginkgo/v2/ginkgo
 
 .PHONY: all
-all: migrate-up generate tidy format lint build test
+all: generate tidy format lint build test
 
 .PHONY: prepare-system
 prepare-system:
@@ -65,30 +67,9 @@ $(JET):
 $(GINKGO):
 	$(GO) install github.com/onsi/ginkgo/v2/ginkgo@$(GINKGO_VERSION)
 
-.PHONY: migrate-up
-migrate-up: $(MIGRATE)
-	$(MIGRATE) \
-		-database 'postgres://postgres:postgres@localhost:5432/canine?sslmode=disable' \
-		-path ./migrations \
-		up
-
-.PHONY: migrate-down
-migrate-down: $(MIGRATE)
-	$(MIGRATE) \
-		-database 'postgres://postgres:postgres@localhost:5432/canine?sslmode=disable' \
-		-path ./migrations \
-		down --all
-
-
-.PHONY: migrate-drop
-migrate-drop: $(MIGRATE)
-	$(MIGRATE) \
-		-database 'postgres://postgres:postgres@localhost:5432/canine?sslmode=disable' \
-		-path ./migrations \
-		drop
-
 .PHONY: generate
 generate: generate-models #generate-mocks
+
 
 #.PHONY: generate-mocks
 #generate-mocks: $(MOCKERY)
@@ -97,7 +78,7 @@ generate: generate-models #generate-mocks
 
 .PHONY: generate-models
 generate-models:
-	$(GO) run scripts/jet-generate.go -postgres-dsn="postgres://postgres:postgres@localhost:5432/canine?sslmode=disable"
+	$(GO) run scripts/jet-generate.go -postgres-dsn="postgres://prod:prod@localhost:5432/canine?sslmode=disable"
 
 
 .PHONY: build
@@ -191,21 +172,114 @@ start-backend:
 start-backend-watch:
 	$(WATCHEXEC) --restart --clear --shell=none -- $(MAKE) start-backend
 
-.PHONY: migrate-new
-migrate-new:
-	@if [ -z "$(name)" ]; then \
-		echo "Please specify a name for the migration using 'name='" ; \
+#######################
+# Database management #
+#######################
+.PHONY: _migrate
+_migrate: $(MIGRATE)
+	@if [ -z "$(PGUSER)" ]; then \
+		echo "Please specify a PGUSER" ; \
 		exit 1 ; \
 	fi
-	@if [ -z "$(service)" ]; then \
-		echo "Please specify a service using 'service='" ; \
+	@if [ -z "$(PGPASSWORD)" ]; then \
+		echo "Please specify a PGPASSWORD" ; \
 		exit 1 ; \
 	fi
-	$(MIGRATE) create -ext psql -dir ./services/$(service)/internal/database/migrations $(name)
+	@if [ -z "$(migrate_cmd)" ]; then \
+		echo "Please specify a PGPASSWORD" ; \
+		exit 1 ; \
+	fi
+	$(MIGRATE) \
+		-database "postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/canine?sslmode=disable" \
+		-path ./migrations \
+		$(migrate_cmd)
 
-.PHONY: seed
-seed:
-	./scripts/delete-qdrant-collection main
-	./scripts/create-qdrant-collection main
-	$(MAKE) migrate-down migrate-up
-	$(GO) run ./scripts/seed
+.PHONY: migrate-up-dev
+migrate-up-dev:
+	$(MAKE) _migrate migrate_cmd=up PGUSER=migrate PGPASSWORD=migrate PGHOST="[::1]"
+
+.PHONY: migrate-up-prod
+migrate-up-prod:
+	$(MAKE) _migrate migrate_cmd=up PGUSER=$(PGUSER_ENCODED) PGPASSWORD=not_a_password PGHOST=127.0.0.1
+
+.PHONY: migrate-revert-last-dev
+migrate-revert-last-dev:
+	$(MAKE) _migrate migrate_cmd='down 1' PGUSER=migrate PGPASSWORD=migrate PGHOST="[::1]"
+
+.phony: migrate-revert-last-prod
+migrate-revert-last-prod:
+	$(MAKE) _migrate migrate_cmd='down 1' PGUSER=$(PGUSER_ENCODED) PGPASSWORD=not_a_password PGHOST=127.0.0.1
+
+.PHONY: create-migrations-table
+
+create-migrations-table:
+	./scripts/create_migrations_table.sh
+
+.PHONY: bootstrap-db-dev
+bootstrap-db-dev: export PGHOST=::1
+# it implies that the db is postgres
+bootstrap-db-dev: export PGUSER=postgres
+bootstrap-db-dev: export PGPASSWORD=postgres
+bootstrap-db-dev:
+	./scripts/bootstrap_db.sh dev canine
+	$(MAKE) create-migrations-table PGDATABASE=canine
+	$(MAKE) _migrate migrate_cmd=up PGUSER=migrate PGPASSWORD=migrate PGHOST="[::1]"
+
+# A temporary user must exist and be set up here, by convention it is called 'admin'
+# it can be safely removed after the database is set up
+.PHONY: bootstrap-db-prod
+bootstrap-db-prod: export PGHOST=127.0.0.1
+# it implies that the db is postgres
+bootstrap-db-prod: export PGUSER=postgres
+bootstrap-db-prod:
+	@if [ -z "$(PGPASSWORD)" ]; then \
+		echo "Please set PGPASSWORD for $(PGUSER)" ; \
+		exit 1 ; \
+	fi
+	./scripts/bootstrap_db.sh prod canine
+	# normally we would like to chant in migrate user but the proxy does not allow it without restart
+	# so we use the postgres user while setting role to migrate script by script
+	$(MAKE) create-migrations-table PGDATABASE=canine
+	$(MAKE) _migrate migrate_cmd=up PGHOST=127.0.0.1
+
+
+.PHONY: dump-db-dev
+dump-db-dev:
+	docker compose stop
+	docker compose rm --force db
+	docker volume rm back_pg-data
+
+
+.PHONY: seed-dev
+seed-dev:
+	$(MAKE) _migrate migrate_cmd=down PGUSER=migrate PGPASSWORD=migrate
+	$(MAKE) _migrate migrate_cmd=up PGUSER=migrate PGPASSWORD=migrate
+	./.venv/bin/python seed.py
+
+urlencode = $(shell python -c "import urllib.parse; print(urllib.parse.quote('$(1)'))")
+
+.PHONY: prod-sql-proxy-migrate
+prod-sql-proxy-migrate: export ALL_PROXY=socks5://localhost:1080
+prod-sql-proxy-migrate: export HTTPS_PROXY=socks5://localhost:1080
+prod-sql-proxy-migrate:
+	cloud-sql-proxy \
+		--private-ip \
+		--auto-iam-authn \
+		--impersonate-service-account=canine-sql-migrate-p-sa@prj-p-k9canine-base-f4s4.iam.gserviceaccount.com \
+		prj-p-k9canine-sql-y3aq:europe-west9:canine-sql-1-p-europe-west9-2b17793a
+
+.PHONY: prod-sql-proxy-iam
+prod-sql-proxy-iam: export ALL_PROXY=socks5://localhost:1080
+prod-sql-proxy-iam: export HTTPS_PROXY=socks5://localhost:1080
+prod-sql-proxy-iam:
+	cloud-sql-proxy \
+		--private-ip \
+		--auto-iam-authn \
+		prj-p-k9canine-sql-y3aq:europe-west9:canine-sql-1-p-europe-west9-2b17793a
+
+.PHONY: prod-sql-sock5-proxy
+prod-sql-sock5-proxy:
+	gcloud compute ssh "gce-bastion-europe-west9-b-01" \
+		--tunnel-through-iap \
+		--project "prj-p-k9canine-base-f4s4" \
+		--ssh-flag="-4 -D 1080 -N"

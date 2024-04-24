@@ -1,3 +1,4 @@
+SET ROLE ddl_grp;
 CREATE TABLE IF NOT EXISTS "user"
 (
     id                BIGSERIAL PRIMARY KEY,

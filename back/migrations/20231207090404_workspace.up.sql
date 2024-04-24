@@ -1,3 +1,4 @@
+SET ROLE ddl_grp;
 CREATE TABLE workspace
 (
     id         BIGINT PRIMARY KEY NOT NULL,
