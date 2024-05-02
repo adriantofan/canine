@@ -283,3 +283,15 @@ prod-sql-sock5-proxy:
 		--tunnel-through-iap \
 		--project "prj-p-k9canine-base-f4s4" \
 		--ssh-flag="-4 -D 1080 -N"
+
+
+
+##################################
+# secrets
+##################################
+
+
+.PHONY: generate-key-RS256
+generate-key:
+	ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
+	openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub

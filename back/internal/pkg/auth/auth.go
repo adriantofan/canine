@@ -35,6 +35,9 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 	}
 	log.Printf("Set JWT timeout and refresh")
 	return jwt.New(&jwt.GinJWTMiddleware{ //nolint:exhaustruct
+		//SigningAlgorithm: "RS256",
+		//PrivKeyFile:      "/Users/adriantofan/code/canine/back/jwtRS256.key",
+		//PubKeyFile:       "/Users/adriantofan/code/canine/back/jwtRS256.key.pub",
 		Realm:   realm,
 		Key:     secretKey,
 		Timeout: time.Hour * 24,
