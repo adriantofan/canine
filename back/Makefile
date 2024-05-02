@@ -295,3 +295,55 @@ prod-sql-sock5-proxy:
 generate-key:
 	ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
 	openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+
+.PHONY: secret-manager-list
+secret-manager-list:
+	gcloud secrets --project prj-p-k9env-kms-zyow list
+
+.PHONY: secret-manager-describe
+secret-manager-describe:
+	@if [ -z $(SECRET_NAME) ]; then \
+		echo "SECRET_NAME is not set"; \
+		exit 1; \
+	fi
+	gcloud secrets --project prj-p-k9env-kms-zyow describe $(SECRET_NAME)
+
+.PHONY: secret-manager-version-add
+secret-manager-version-add:
+	@if [ -z $(SECRET_NAME) ]; then \
+		echo "SECRET_NAME is not set"; \
+		exit 1; \
+	fi
+	openssl rand -out /dev/stdout 100 | gcloud secrets --project prj-p-k9env-kms-zyow versions add $(SECRET_NAME) --data-file=-
+
+.PHONY: secret-manager-version-list
+secret-manager-version-list:
+	@if [ -z $(SECRET_NAME) ]; then \
+		echo "SECRET_NAME is not set"; \
+		exit 1; \
+	fi
+	gcloud secrets --project prj-p-k9env-kms-zyow versions list $(SECRET_NAME)
+
+##################################
+# Build and deploy
+##################################
+
+.PHONY: ska-build
+ska-build:
+	skaffold build \
+		--default-repo europe-west9-docker.pkg.dev/prj-c-k9app-cicd-rv1i/prj-c-k9app-cicd-rv1i-app-k9-image-repo/image-canine-$(shell date '+%Y%m%d%H%M%S') \
+		--push=true \
+		--file-output=app.json \
+		-p prod
+
+.PHONY: ska-render
+ska-render:
+	skaffold render \
+		-p prod \
+		-a app.json \
+		> app_deployment.yaml
+
+.PHONY: ska-apply
+ska-apply:
+	skaffold apply  app_deployment.yaml \
+		-p prod
