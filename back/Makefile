@@ -99,7 +99,7 @@ lint-go: $(GOLANGCI_LINT)
 
 .PHONY: test-integration
 test-integration: $(GINKGO)
-	export POSTGRES_DSN=postgres://postgres:postgres@localhost:5432/?sslmode=disable; \
+	@export $(shell sed 's/#.*//;s/^ *//;s/ *$$//;/^$$/d' .test.env) && \
 	$(GINKGO) --tags integration -r
 
 .PHONY:  test

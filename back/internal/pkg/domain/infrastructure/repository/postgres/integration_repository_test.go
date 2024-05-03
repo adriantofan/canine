@@ -10,16 +10,16 @@ import (
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/infrastructure"
 	"context"
+	"database/sql"
 	"fmt"
 	"math"
 
-	"github.com/jmoiron/sqlx"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("IntegrationRepository", Ordered, func() {
-	var testDB *sqlx.DB
+	var testDB *sql.DB
 	var messagesRepo *postgres.MessageRepository
 	var workspace model.Workspace
 	const passHash = "$argon2id$v=toto" //nolint:gosec
@@ -48,20 +48,26 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		return conversation
 	}
 	createMessage := func(conversationId, senderId int64, messageText string) model.Message {
-		message, err := messagesRepo.CreateMessage(ctx, conversationId, senderId, messageText, genModel.MessageType_Msg)
+		message, err := messagesRepo.CreateMessage(ctx, conversationId, senderId, messageText, genModel.MessageType_Msg, nil)
 		Expect(err).ToNot(HaveOccurred())
 
 		return message
 	}
 
 	BeforeAll(func() {
-		testDB, _ = test_util.MustCreateTestDBWithMigrations(false, "file://./../../../../../../migrations")
+		testDB, _ = test_util.MustCreateTestDBWithMigrations()
+	})
+
+	AfterAll(func() {
+		if testDB != nil {
+			_ = testDB.Close()
+		}
 	})
 
 	BeforeEach(func() {
-		testDB.MustExec(truncateTables)
+		_, err := testDB.Exec(truncateTables)
+		Expect(err).ToNot(HaveOccurred())
 
-		var err error
 		messagesRepo = postgres.NewMessageRepository(testDB, infrastructure.NewRealTimeService())
 		workspace, err = messagesRepo.CreateWorkspace(ctx, "test workspace")
 		Expect(err).ToNot(HaveOccurred())
@@ -132,7 +138,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 	Specify("message create", func() {
 		user1 := createUser("+1234567890")
 		c := createConversation(user1.ID, "")
-		message, err := messagesRepo.CreateMessage(ctx, c.ID, user1.ID, "Hello, world!", genModel.MessageType_Ask)
+		message, err := messagesRepo.CreateMessage(ctx, c.ID, user1.ID, "Hello, world!", genModel.MessageType_Ask, nil)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(message.ID).ToNot(BeZero())
 		Expect(message.ConversationID).To(Equal(c.ID))

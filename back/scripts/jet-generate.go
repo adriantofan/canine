@@ -6,12 +6,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/lib/pq"
-
 	"github.com/go-jet/jet/v2/generator/metadata"
 	"github.com/go-jet/jet/v2/generator/postgres"
 	"github.com/go-jet/jet/v2/generator/template"
 	postgres2 "github.com/go-jet/jet/v2/postgres"
+	"github.com/jackc/pgx/v5/pgtype"
+
+	// TODO: It would be nice to make this work with PGX
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -58,7 +60,7 @@ func main() {
 func useArray(f *template.TableModelField, _ metadata.Table, c metadata.Column) {
 	if c.DataType.Kind == metadata.ArrayType {
 		if c.DataType.Name == "text" {
-			f.Type = template.NewType(pq.StringArray{})
+			f.Type = template.NewType(pgtype.FlatArray[string]{})
 		}
 	}
 }

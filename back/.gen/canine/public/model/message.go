@@ -8,8 +8,9 @@
 package model
 
 import (
-	"github.com/lib/pq"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Message struct {
@@ -19,5 +20,5 @@ type Message struct {
 	Type           MessageType
 	Message        string
 	CreatedAt      time.Time
-	Attachments    pq.StringArray
+	Attachments    pgtype.FlatArray[string]
 }

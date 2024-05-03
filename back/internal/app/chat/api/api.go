@@ -21,7 +21,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 const (
@@ -45,9 +44,9 @@ func Run(args []string) {
 		log.Fatal(err)
 	}
 
-	connexion, err := sqlx.Connect("postgres", *dsn)
+	connexion, err := infrastructure.ConnectDB(*dsn, "")
 	if err != nil {
-		log.Fatalln(fmt.Errorf("failed to connect to postgress: %w", err))
+		log.Fatalf("failed to connect to db: %v", err)
 	}
 
 	transactionFactory := postgres.NewTransactionFactory(connexion)

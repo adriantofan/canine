@@ -4,7 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/domain/model/primitive"
 
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // db anotation is used by sqlx
@@ -42,7 +42,7 @@ type Message struct {
 	Type           genModel.MessageType       `json:"type" db:"type"`
 	Message        string                     `json:"message" db:"message"`
 	CreatedAt      primitive.MillisecondsTime `json:"created_at" db:"created_at"`
-	Attachments    pq.StringArray             `json:"attachments" db:"attachments"`
+	Attachments    pgtype.FlatArray[string]   `json:"attachments" db:"attachments"`
 }
 type Workspace struct {
 	ID        int64                      `json:"id" sql:"primary_key"`

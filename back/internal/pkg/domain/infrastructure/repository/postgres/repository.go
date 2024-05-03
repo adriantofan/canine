@@ -12,6 +12,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jackc/pgerrcode"
+
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgtype"
+
 	"back/.gen/canine/public/enum"
 	genModel "back/.gen/canine/public/model"
 	"back/.gen/canine/public/table"
@@ -19,12 +24,10 @@ import (
 
 	. "github.com/go-jet/jet/v2/postgres" //nolint
 	"github.com/go-jet/jet/v2/qrm"
-	"github.com/jmoiron/sqlx"
-	"github.com/lib/pq"
 )
 
 type RealTransactionFactory struct {
-	db          *sqlx.DB
+	db          *sql.DB
 	tx          *sql.Tx
 	repo        *MessageRepository
 	timeService infrastructure.TimeService
@@ -35,7 +38,7 @@ var (
 	ErrInvalidPasswordHash = fmt.Errorf("password hould be hashed with argon2id")
 )
 
-func NewTransactionFactory(db *sqlx.DB) *RealTransactionFactory {
+func NewTransactionFactory(db *sql.DB) *RealTransactionFactory {
 	return &RealTransactionFactory{
 		db:          db,
 		tx:          nil,
@@ -211,9 +214,9 @@ func (s *MessageRepository) CreateUser(
 		RETURNING(table.User.AllColumns)
 
 	err := stmt.QueryContext(ctx, s.db, &user)
-	var pqError *pq.Error
+	var pgError *pgconn.PgError
 
-	if errors.As(err, &pqError) && pqError.Code.Name() == "unique_violation" {
+	if errors.As(err, &pgError) && pgError.Code == pgerrcode.UniqueViolation {
 		return user, domain.ErrMessagingAddressExists
 	}
 	if err != nil {
@@ -339,7 +342,7 @@ func (s *MessageRepository) CreateMessage(
 			Int64(senderID),
 			String(message),
 			messageType,
-			pq.StringArray(attachments),
+			pgtype.FlatArray[string](attachments),
 		).
 		RETURNING(table.Message.AllColumns)
 	err := stmt.QueryContext(ctx, s.db, &msg)

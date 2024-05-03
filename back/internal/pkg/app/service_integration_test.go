@@ -12,11 +12,12 @@ import (
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt/eventlog"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -47,8 +48,15 @@ func (t *TimeServiceMock) Now() time.Time {
 	return t.now
 }
 
+type DummyAttachmentService struct {
+}
+
+func (as *DummyAttachmentService) UploadMultipart(ctx context.Context, conversationID int64, files []multipart.FileHeader) ([]string, error) {
+	return nil, nil
+}
+
 var _ = Describe("ServiceIntegration", Ordered, func() {
-	var testDB *sqlx.DB
+	var testDB *sql.DB
 	var transactionFactory *postgres.RealTransactionFactory
 	var service *app.Service
 	var output *OutputMock
@@ -125,15 +133,22 @@ var _ = Describe("ServiceIntegration", Ordered, func() {
 	})
 
 	BeforeAll(func() {
-		testDB, _ = test_util.MustCreateTestDBWithMigrations(false, "file://./../../../migrations")
+		testDB, _ = test_util.MustCreateTestDBWithMigrations()
 		transactionFactory = postgres.NewTransactionFactory(testDB)
 		transactionFactory.SetTimeService(timeServiceMock)
 	})
 
+	AfterAll(func() {
+		if testDB != nil {
+			_ = testDB.Close()
+		}
+	})
+
 	BeforeEach(func() {
-		testDB.MustExec(truncateTablesStmt())
+		_, err := testDB.Exec(truncateTablesStmt())
+		Expect(err).ToNot(HaveOccurred())
 		output = &OutputMock{} //nolint:exhaustruct
-		service = app.NewService(transactionFactory, output, fatal)
+		service = app.NewService(transactionFactory, output, fatal, &DummyAttachmentService{})
 		service.SetTimeService(timeServiceMock)
 		ctx = serviceContext{
 			service: service,
