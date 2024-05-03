@@ -48,21 +48,16 @@ spec:
             configMapKeyRef:
               name: app-config
               key: LOG_LEVEL
-        - name: DB_USER
+        - name: POSTGRES_DSN
           valueFrom:
             configMapKeyRef:
               name: app-config
-              key: DB_USER
-        - name: DB_PASS
+              key: POSTGRES_DSN
+        - name: AUTH_REALM
           valueFrom:
             configMapKeyRef:
               name: app-config
-              key: DB_PASS
-        - name: DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: DB_NAME
+              key: AUTH_REALM
         - name: INSTANCE_CONNECTION_NAME
           valueFrom:
             configMapKeyRef:

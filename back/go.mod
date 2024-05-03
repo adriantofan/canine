@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	cloud.google.com/go/cloudsqlconn v1.9.0
+	cloud.google.com/go/secretmanager v1.11.5
 	cloud.google.com/go/storage v1.36.0
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/appleboy/gin-jwt/v2 v2.9.2
@@ -19,6 +20,7 @@ require (
 	github.com/onsi/gomega v1.30.0
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/segmentio/ksuid v1.0.4
+	github.com/spf13/pflag v1.0.5
 	google.golang.org/api v0.172.0
 )
 

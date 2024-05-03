@@ -31,3 +31,8 @@ spec:
         env:
         - name: ENVIRONMENT
           value: prod
+        - name: AUTH_SECRET_SM_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: AUTH_SECRET_SM_NAME

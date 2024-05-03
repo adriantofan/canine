@@ -11,7 +11,6 @@ import (
 	"back/internal/pkg/rt/eventlog"
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -19,6 +18,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +33,7 @@ func Run(args []string) {
 	fs := flag.NewFlagSet("api", flag.ExitOnError)
 	addr := fs.String("addr", ":8080", "websocket service address")
 	dsn := fs.String("postgres-dsn", "", "database connection string")
-	authSecret := fs.String("auth-secret", "", "auth secret")
+	authSecret := fs.BytesBase64P("auth-secret", "", nil, "jwt auth secret base64 encoded")
 	authRealm := fs.String("auth-realm", "", "auth realm")
 	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
 
@@ -70,13 +71,13 @@ func Run(args []string) {
 
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
-	middleware, err := auth.Middleware(transactionFactory, *authRealm, []byte(*authSecret))
+	middleware, err := auth.Middleware(transactionFactory, *authRealm, *authSecret)
 	if err != nil {
 		log.Printf("failed to create middleware: %v", err)
 
 	}
 	apiInternal.ConfigureRouter(router, handlers, middleware)
-
+	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 	//handlers := apiInternal.MakeHandlers(repository)
 	//r := mux.NewRouter()
 	//apiInternal.AddRoutes(r, handlers)
