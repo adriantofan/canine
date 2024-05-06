@@ -21,6 +21,7 @@ resources:
 patches:
 - path: deployment.yaml
 - path: service-account.yaml
+- path: service.yaml
 commonLabels:
   env: prod
 namePrefix: canine-

@@ -1,0 +1,6 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created

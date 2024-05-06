@@ -15,6 +15,7 @@
 resources:
   - deployment.yaml
   - service-account.yaml
+  - service.yaml
 configMapGenerator:
   - name: app-config
     literals:
