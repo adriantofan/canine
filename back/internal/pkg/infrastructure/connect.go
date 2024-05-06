@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"net"
 
 	"cloud.google.com/go/cloudsqlconn"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/rs/zerolog/log"
 )
 
 func ConnectDB(dsn, instanceConnectionName string) (*sql.DB, error) {
@@ -41,7 +41,7 @@ func ConnectDBDirect(dsn string) (*sql.DB, error) {
 }
 
 func ConnectDBCloudSQL(dsn, instanceConnectionName string) (*sql.DB, error) {
-	log.Printf("Connecting to Cloud SQL instance %s dsn %s", instanceConnectionName, dsn)
+	log.Info().Msgf("Connecting to Cloud SQL instance %s dsn %s", instanceConnectionName, dsn)
 	dialer, err := cloudsqlconn.NewDialer(context.Background(), cloudsqlconn.WithIAMAuthN())
 	if err != nil {
 		return nil, fmt.Errorf("cloudsqlconn.NewDialer: %w", err)

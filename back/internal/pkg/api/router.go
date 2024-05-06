@@ -9,12 +9,12 @@ import (
 )
 
 const kDefaultFileUploadSize = 10 << 20 // 10 MiB
-func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware *jwt.GinJWTMiddleware) {
+func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware *jwt.GinJWTMiddleware, apiLogger gin.HandlerFunc) {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 
 	apiRoutes := router.Group("/")
-	apiRoutes.Use(gin.Logger())
+	apiRoutes.Use(apiLogger)
 	apiRoutes.Use(gin.Recovery())
 	apiRoutes.POST("/login", authMiddleware.LoginHandler)
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)

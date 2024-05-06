@@ -13,11 +13,12 @@ import (
 	"back/internal/pkg/rt/websocket"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"net/http"
 	"strconv"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 
 	gorillaWebsocket "github.com/gorilla/websocket"
 
@@ -292,11 +293,12 @@ func (h ChatHandlers) RTCConnect(c *gin.Context) {
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		log.Printf("error upgrading websocket: %v", err)
+		log.Ctx(c.Request.Context()).Error().Err(err).Msg("error upgrading websocket")
 		abortWithAppError(c, fmt.Errorf("error upgrading websocket: %w", err))
+
 		return
 	}
-	log.Printf("client %s connected", c.Request.RemoteAddr)
+	log.Ctx(c.Request.Context()).Debug().Msgf("client %s connected", c.Request.RemoteAddr)
 	/*
 			Shutdown sequence:
 			1. server shutdown  - stopConnection is closed, handled by ClientStream
@@ -332,7 +334,7 @@ func (h ChatHandlers) RTCConnect(c *gin.Context) {
 	clientStream.Run()
 	<-clientDoneChan
 	stopStream() // also stops the buffer on clientOutChan
-	log.Printf("client %s disconnected", c.Request.RemoteAddr)
+	log.Ctx(c.Request.Context()).Debug().Msgf("client %s disconnected", c.Request.RemoteAddr)
 }
 func (h ChatHandlers) addStopWSConnection(stop chan<- struct{}) {
 	h.closeWSSignalsMX.Lock()
@@ -382,8 +384,9 @@ func (h ChatHandlers) HandleClientMessageKindSyncState(c *gin.Context, user mode
 	stateUpdate, err := repo.GetSyncState(c, user, clientState)
 
 	if err != nil {
-		log.Printf("error getting sync state: %v", err)
+		log.Ctx(c.Request.Context()).Error().Err(err).Msg("error getting sync state")
 		c.AbortWithStatusJSON(http.StatusInternalServerError, apiModel.ErrorInternalServer)
+
 		return
 	}
 

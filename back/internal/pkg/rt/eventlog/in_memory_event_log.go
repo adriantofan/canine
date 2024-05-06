@@ -3,8 +3,9 @@ package eventlog
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -100,7 +101,7 @@ func (l *InMemoryEventLog) StreamEvents(
 	startHash string,
 ) (func(), chan []Event) {
 	if !l.running {
-		log.Println("Should not stream events for a non running Event log")
+		log.Error().Msg("Should not stream events for a non running Event log")
 	}
 	outbox := make(chan []Event, 1)
 	sub := Subscription{

@@ -2,12 +2,10 @@ package chat
 
 import (
 	"back/internal/app/chat/api"
-	"log"
 	"os"
 )
 
 func Run(args []string) {
-	log.Printf("Running chat with args: %v", args)
 	if len(args) < 2 {
 		exitWithHelp()
 	}

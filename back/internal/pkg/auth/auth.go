@@ -8,7 +8,9 @@ import (
 	"back/internal/pkg/domain/model"
 	"errors"
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
+
 	"net/http"
 	"strconv"
 	"time"
@@ -33,7 +35,7 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repository: %w", err)
 	}
-	log.Printf("Set JWT timeout and refresh")
+	log.Warn().Msg("Set JWT timeout and refresh")
 	return jwt.New(&jwt.GinJWTMiddleware{ //nolint:exhaustruct
 		//SigningAlgorithm: "RS256",
 		//PrivKeyFile:      "/Users/adriantofan/code/canine/back/jwtRS256.key",
@@ -85,7 +87,7 @@ func Middleware(t domain.Transaction, realm string, secretKey []byte) (*jwt.GinJ
 					workspaceKey: strconv.FormatInt(v.WorkspaceID, 10),
 				}
 			}
-			log.Printf("failed to cast user in PayloadFunc %v", data)
+			log.Debug().Msgf("failed to cast user in PayloadFunc %v", data)
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {

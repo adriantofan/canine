@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	"github.com/segmentio/ksuid"
 
@@ -42,16 +43,14 @@ func (s *CloudStorageAttachments) UploadMultipart(
 		uploadPath, err := s.uploadFile(ctx, prefix, file)
 		if err != nil {
 			// FIXME: at least try to cleanup the uploaded files
-			log.Printf("CloudStorageAttachments.UploadMultipart patrtialy uploaded files %v", fileNames)
+			zerolog.Ctx(ctx).Error().Err(err).Msgf("CloudStorageAttachments.UploadMultipart failed to upload file %v", fileNames)
 
 			return nil, fmt.Errorf("CloudStorageAttachments.UploadMultipart %s s.uploadFile: %w", file.Filename, err)
 		}
 
 		fileNames = append(fileNames, uploadPath)
 	}
-	// FIXME: remove
-	fmt.Printf("CloudStorageAttachments.UploadMultipart uploaded files %v", fileNames)
-
+	zerolog.Ctx(ctx).Debug().Msgf("CloudStorageAttachments.UploadMultipart uploaded files %v", fileNames)
 	return fileNames, nil
 }
 
@@ -79,7 +78,7 @@ func (s *CloudStorageAttachments) uploadFile(
 	defer func(reader multipart.File) {
 		err := reader.Close()
 		if err != nil {
-			log.Printf("CloudStorageAttachments.UploadMultipart failed to close input file: %v", err)
+			zerolog.Ctx(ctx).Error().Err(err).Msg("CloudStorageAttachments.UploadMultipart failed to close input file")
 		}
 	}(fileReader)
 

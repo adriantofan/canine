@@ -2,7 +2,8 @@ package buffer
 
 import (
 	"back/internal/pkg/rt/eventlog"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/gammazero/deque"
 )
@@ -40,7 +41,7 @@ func Buffer(events <-chan []eventlog.Event) <-chan []byte {
 						d.PushFront(event)
 					}
 					if d.Len() > kWarnBufferSize {
-						log.Printf("Buffer size > %d last event %s", kWarnBufferSize, d.Back())
+						log.Warn().Msgf("Buffer size > %d last event %s", kWarnBufferSize, d.Back())
 					}
 				case out <- d.Back().Payload:
 					d.PopBack()

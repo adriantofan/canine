@@ -1,8 +1,9 @@
 package websocket
 
 import (
-	"log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/gorilla/websocket"
 )
@@ -51,7 +52,7 @@ func (c *ClientStream) writePump(readClosed <-chan struct{}) {
 	defer func() {
 		ticker.Stop()
 		if shutdownAsked {
-			log.Printf("ClientStream.writePump: shutdown asked")
+			log.Info().Msg("ClientStream.writePump: shutdown asked")
 			clientClosedTimer := time.NewTimer(10 * time.Second)
 			select { // wait for the client to close or timeout
 			case <-readClosed:
@@ -131,7 +132,7 @@ func (c *ClientStream) readPump(readClosed chan<- struct{}) {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+				log.Error().Err(err).Msg("ClientStream.readPump: unexpected close error")
 			}
 
 			break

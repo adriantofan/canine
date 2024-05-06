@@ -26,7 +26,7 @@ type Transaction interface {
 	Begin() (ChatRepository, error)
 	Commit() ([]model.DataUpdate, error)
 	Rollback() error
-	MustRollback()
+	MustRollback(ctx context.Context)
 	InTransaction(ctx context.Context, f func(ctx context.Context, r ChatRepository) error) ([]model.DataUpdate, error)
 	WithoutTransaction() (ChatRepository, error)
 }

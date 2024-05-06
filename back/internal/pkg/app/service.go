@@ -12,8 +12,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"mime/multipart"
+
+	"github.com/rs/zerolog"
 )
 
 var ()
@@ -91,7 +92,7 @@ func (s *Service) CreateWorkspace(
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace begin transaction: %w", err)
 	}
 
-	defer s.t.MustRollback()
+	defer s.t.MustRollback(ctx)
 
 	workspace, err := repo.CreateWorkspace(ctx, data.Name)
 	if err != nil {
@@ -156,7 +157,7 @@ func (s *Service) CreateMessage(
 	var message model.Message
 	// TODO: use idempotency_id
 	repo, err := s.t.Begin()
-	defer s.t.MustRollback()
+	defer s.t.MustRollback(ctx)
 	if err != nil {
 		return message, fmt.Errorf("CreateMessage begin transaction: %w", err)
 	}
@@ -210,7 +211,7 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 	var user model.User
 
 	repo, err := s.t.Begin()
-	defer s.t.MustRollback()
+	defer s.t.MustRollback(ctx)
 
 	if err != nil {
 		return user, fmt.Errorf("CreateUser begin transaction: %w", err)
@@ -263,7 +264,8 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 	case genModel.UserType_External:
 		destination = eventlog.MakeDestinationExternalMessage(user.ID)
 	default:
-		log.Println("unknown user type", user.Type)
+		zerolog.Ctx(ctx).Error().
+			Msgf("unknown user type %v", user.Type)
 		s.eventLogFatalErr(errEventLogInvalidUserType)
 
 		return user, nil
@@ -280,7 +282,7 @@ func (s *Service) GetOrCreateConversation(
 	var conversation model.Conversation
 
 	repo, err := s.t.Begin()
-	defer s.t.MustRollback()
+	defer s.t.MustRollback(ctx)
 
 	if err != nil {
 		return conversation, fmt.Errorf("CreateChat begin transaction: %w", err)

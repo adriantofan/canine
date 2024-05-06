@@ -7,10 +7,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	"github.com/jackc/pgerrcode"
 
@@ -101,10 +102,10 @@ func (t *RealTransactionFactory) Rollback() error {
 	return nil
 }
 
-func (t *RealTransactionFactory) MustRollback() {
+func (t *RealTransactionFactory) MustRollback(ctx context.Context) {
 	err := t.Rollback()
 	if err != nil {
-		log.Println("failed to rollback transaction", err)
+		zerolog.Ctx(ctx).Error().Err(err).Msg("failed to rollback transaction")
 	}
 }
 
@@ -115,7 +116,7 @@ func (t *RealTransactionFactory) InTransaction(
 	defer func() {
 		err := t.Rollback()
 		if err != nil {
-			log.Println("failed to rollback transaction", err)
+			zerolog.Ctx(ctx).Error().Err(err).Msg("failed to rollback transaction")
 		}
 	}()
 	if err != nil {
@@ -449,8 +450,10 @@ func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, k
 			return r, fmt.Errorf("user sync failed to get messages: %w", err)
 		}
 
-		if len(messages) > 5000 {
-			log.Printf("warning: user sync returned %d messages for conversation %d", len(messages), mr.ConversationID)
+		const maxMessageCountSyncPerConversation = 5000
+		if len(messages) > maxMessageCountSyncPerConversation {
+			zerolog.Ctx(ctx).Error().
+				Msgf("warning: user sync returned %d messages for conversation %d", len(messages), mr.ConversationID)
 		}
 
 		newMessagesExistingConversations = append(newMessagesExistingConversations, model.ConversationMessages{
@@ -561,7 +564,7 @@ func (s *MessageRepository) GetChangedUsersForUser(ctx context.Context, user mod
 	users := make([]model.User, 0)
 	err := stmt.QueryContext(ctx, s.db, &users)
 	if err != nil && len(users) > 1000 {
-		log.Printf("warning: user sync returned %d users", len(users))
+		zerolog.Ctx(ctx).Warn().Msgf("warning: user sync returned %d users", len(users))
 	}
 	return users, err
 }

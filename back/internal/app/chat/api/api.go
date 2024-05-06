@@ -12,12 +12,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	flag "github.com/spf13/pflag"
 
@@ -30,6 +31,8 @@ const (
 )
 
 func Run(args []string) {
+	log.Debug().Msgf("Running chat api with args: %v", args)
+
 	fs := flag.NewFlagSet("api", flag.ExitOnError)
 	addr := fs.String("addr", ":8080", "websocket service address")
 	dsn := fs.String("postgres-dsn", "", "database connection string")
@@ -37,18 +40,22 @@ func Run(args []string) {
 	authSecret := fs.BytesBase64P("auth-secret", "", nil, "jwt auth secret base64 encoded")
 	authRealm := fs.String("auth-realm", "", "auth realm")
 	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
+	logLevel := fs.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
+	structuredLog := fs.Bool("structured-log", true, "use structured log output")
 
 	if err := env.SetFlagsFromEnvironment(fs); err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	if err := fs.Parse(args); err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
+
+	infrastructure.SetupLogger(*structuredLog, *logLevel)
 
 	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
 	if err != nil {
-		log.Fatalf("failed to connect to db: %v", err)
+		log.Fatal().Err(err).Msg("failed to connect to db")
 	}
 
 	transactionFactory := postgres.NewTransactionFactory(connexion)
@@ -60,13 +67,13 @@ func Run(args []string) {
 	// TODO: make sure this is the right context to provide to the cloud storage client
 	csClient, err := infrastructure.NewCloudStorageClient(fatalCtx, []string{*attachmentsBucket})
 	if err != nil {
-		log.Panicf("failed to create cloud storage client: %v", err)
+		log.Fatal().Err(err).Msg("failed to create cloud storage client")
 	}
 
 	attachmentService := domainServices.NewCloudStorageAttachments(csClient, *attachmentsBucket)
 
 	service := app.NewService(transactionFactory, inMemoryEventLog, func(err error) {
-		log.Printf("event output fatal error: %v", err)
+		log.Error().Err(err).Msg("event output fatal error")
 		cancel() // WTF
 	}, attachmentService)
 
@@ -77,7 +84,12 @@ func Run(args []string) {
 		log.Printf("failed to create middleware: %v", err)
 
 	}
-	apiInternal.ConfigureRouter(router, handlers, middleware)
+	apiInternal.ConfigureRouter(
+		router,
+		handlers,
+		middleware,
+		infrastructure.NewLogHandler(log.Logger, *structuredLog),
+	)
 	//handlers := apiInternal.MakeHandlers(repository)
 	//r := mux.NewRouter()
 	//apiInternal.AddRoutes(r, handlers)
@@ -93,7 +105,7 @@ func Run(args []string) {
 	err = gracefullyListenAndServe(fatalCtx, shutdown, *addr, router)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	os.Exit(0)
@@ -135,7 +147,7 @@ func gracefullyListenAndServe(
 
 	ctx, cancel := context.WithTimeout(context.Background(), kShutdownTimeout)
 	defer cancel()
-	log.Println("Shutting down...")
+	log.Info().Msg("Shutting down...")
 
 	shutDownErr := srv.Shutdown(ctx) //nolint:contextcheck
 	if errors.Is(shutDownErr, http.ErrServerClosed) {

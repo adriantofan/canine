@@ -3,10 +3,12 @@ package infrastructure
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/option"
@@ -18,7 +20,7 @@ import (
 func NewCloudStorageClient(ctx context.Context, devBuckets []string) (*storage.Client, error) {
 	if host := os.Getenv("GCS_EMULATOR_HOST"); host != "" {
 		csHost := "http://" + host
-		log.Printf("Using GCS emulator at %s", csHost)
+		zerolog.Ctx(ctx).Info().Msgf("Using GCS emulator at %s", csHost)
 
 		client, err := NewCloudStorageClientWithHost(ctx, csHost)
 		if err != nil {
@@ -37,7 +39,7 @@ func NewCloudStorageClient(ctx context.Context, devBuckets []string) (*storage.C
 
 func initBucket(storageClient *storage.Client, devBuckets []string) error {
 	for _, bucketName := range devBuckets {
-		log.Printf("Creating bucket if it doesn't exit %s", bucketName)
+		log.Debug().Msgf("Creating bucket if it doesn't exit %s", bucketName)
 		if err := storageClient.Bucket(bucketName).Create(context.Background(), "", nil); err != nil {
 			return fmt.Errorf("failed to create bucket %s: %w", bucketName, err)
 		}
