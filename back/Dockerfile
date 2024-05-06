@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 go build -o canine-be
+RUN CGO_ENABLED=0 go build -o canine-be cmd/chat/main.go
 
 FROM alpine:latest
 
@@ -19,4 +19,4 @@ USER appuser
 
 COPY --from=builder /app/canine-be /app/canine-be
 
-CMD ["/app/canine-be"]
+ENTRYPOINT ["/app/canine-be"]

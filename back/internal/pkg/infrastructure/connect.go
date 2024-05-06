@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"net"
 
 	"cloud.google.com/go/cloudsqlconn"
@@ -40,6 +41,7 @@ func ConnectDBDirect(dsn string) (*sql.DB, error) {
 }
 
 func ConnectDBCloudSQL(dsn, instanceConnectionName string) (*sql.DB, error) {
+	log.Printf("Connecting to Cloud SQL instance %s dsn %s", instanceConnectionName, dsn)
 	dialer, err := cloudsqlconn.NewDialer(context.Background(), cloudsqlconn.WithIAMAuthN())
 	if err != nil {
 		return nil, fmt.Errorf("cloudsqlconn.NewDialer: %w", err)

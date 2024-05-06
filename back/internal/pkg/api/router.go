@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	jwt "github.com/appleboy/gin-jwt/v2"
 
 	"github.com/gin-gonic/gin"
@@ -8,12 +10,15 @@ import (
 
 const kDefaultFileUploadSize = 10 << 20 // 10 MiB
 func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware *jwt.GinJWTMiddleware) {
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
-	router.POST("/login", authMiddleware.LoginHandler)
-	router.POST("/workspaces", handlers.CreateWorkspace)
-	workspaceGroup := router.Group("/:workspace_id")
+	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
+
+	apiRoutes := router.Group("/")
+	apiRoutes.Use(gin.Logger())
+	apiRoutes.Use(gin.Recovery())
+	apiRoutes.POST("/login", authMiddleware.LoginHandler)
+	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
+	workspaceGroup := apiRoutes.Group("/:workspace_id")
 	workspaceGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
 
 	workspaceGroup.Use(authMiddleware.MiddlewareFunc())

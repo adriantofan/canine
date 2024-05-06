@@ -36,6 +36,7 @@ spec:
       containers:
       - name: app
         image: app
+        args: ["api"]
         resources:
           limits:
             memory: "200Mi"
@@ -63,6 +64,11 @@ spec:
             configMapKeyRef:
               name: app-config
               key: INSTANCE_CONNECTION_NAME
+        - name: GIN_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: GIN_MODE
         readinessProbe:
           initialDelaySeconds: 1
           periodSeconds: 1

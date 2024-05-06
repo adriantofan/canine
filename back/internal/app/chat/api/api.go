@@ -33,6 +33,7 @@ func Run(args []string) {
 	fs := flag.NewFlagSet("api", flag.ExitOnError)
 	addr := fs.String("addr", ":8080", "websocket service address")
 	dsn := fs.String("postgres-dsn", "", "database connection string")
+	instanceConnectionName := fs.String("instance-connection-name", "", "cloud sql instance connection name, if any")
 	authSecret := fs.BytesBase64P("auth-secret", "", nil, "jwt auth secret base64 encoded")
 	authRealm := fs.String("auth-realm", "", "auth realm")
 	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
@@ -45,7 +46,7 @@ func Run(args []string) {
 		log.Fatal(err)
 	}
 
-	connexion, err := infrastructure.ConnectDB(*dsn, "")
+	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
@@ -77,7 +78,6 @@ func Run(args []string) {
 
 	}
 	apiInternal.ConfigureRouter(router, handlers, middleware)
-	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 	//handlers := apiInternal.MakeHandlers(repository)
 	//r := mux.NewRouter()
 	//apiInternal.AddRoutes(r, handlers)
