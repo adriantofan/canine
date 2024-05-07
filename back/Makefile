@@ -333,17 +333,17 @@ ska-build:
 	skaffold build \
 		--default-repo europe-west9-docker.pkg.dev/prj-c-k9app-cicd-rv1i/prj-c-k9app-cicd-rv1i-app-k9-image-repo/image-canine-$(shell date '+%Y%m%d%H%M%S') \
 		--push=true \
-		--file-output=app.json \
+		--file-output=k8s/prod_app.json \
 		-p prod
 
 .PHONY: ska-render
 ska-render:
 	skaffold render \
 		-p prod \
-		-a app.json \
-		> app_deployment.yaml
+		-a k8s/prod_app.json \
+		> k8s/prod_app_deployment.yaml
 
 .PHONY: ska-apply
 ska-apply:
-	skaffold apply  app_deployment.yaml \
+	skaffold apply k8s/prod_app_deployment.yaml \
 		-p prod

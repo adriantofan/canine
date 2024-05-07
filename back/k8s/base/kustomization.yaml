@@ -13,9 +13,10 @@
 # limitations under the License.
 
 resources:
-  - deployment.yaml
+  - app-deployment.yaml
   - service-account.yaml
-  - service.yaml
+  - app-service.yaml
+  - ingress.yaml
 configMapGenerator:
   - name: app-config
     literals:

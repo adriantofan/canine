@@ -13,8 +13,9 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 
-	apiRoutes := router.Group("/")
-	apiRoutes.Use(apiLogger)
+	apiRoutes := router.Group("/api/v1")
+	apiRoutes.Use(apiLogger) // Order matters, this should be the first middleware on the group
+	apiRoutes.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 	apiRoutes.Use(gin.Recovery())
 	apiRoutes.POST("/login", authMiddleware.LoginHandler)
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
