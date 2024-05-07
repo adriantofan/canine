@@ -323,27 +323,3 @@ secret-manager-version-list:
 		exit 1; \
 	fi
 	gcloud secrets --project prj-p-k9env-kms-zyow versions list $(SECRET_NAME)
-
-##################################
-# Build and deploy
-##################################
-
-.PHONY: ska-build
-ska-build:
-	skaffold build \
-		--default-repo europe-west9-docker.pkg.dev/prj-c-k9app-cicd-rv1i/prj-c-k9app-cicd-rv1i-app-k9-image-repo/image-canine-$(shell date '+%Y%m%d%H%M%S') \
-		--push=true \
-		--file-output=k8s/prod_app.json \
-		-p prod
-
-.PHONY: ska-render
-ska-render:
-	skaffold render \
-		-p prod \
-		-a k8s/prod_app.json \
-		> k8s/prod_app_deployment.yaml
-
-.PHONY: ska-apply
-ska-apply:
-	skaffold apply k8s/prod_app_deployment.yaml \
-		-p prod
