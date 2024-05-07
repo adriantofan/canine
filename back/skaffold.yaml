@@ -16,6 +16,6 @@ apiVersion: skaffold/v2beta29
 kind: Config
 build:
   artifacts:
-  - image: app # Match name in deployment yaml
+  - image: back # Match name in deployment yaml
     context: ./
     platforms: ["linux/amd64"]
