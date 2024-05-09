@@ -56,4 +56,18 @@ dependencies-outdated-canine-sync:
 dependencies-outdated-form-inputs:
 	cd $(FORM_INPUTS_DIR) &&  $(FLUTTER) pub outdated
 
+.PHONY: dependencies-upgrade
+dependencies-upgrade:dependencies-upgrade-app dependencies-upgrade-canine-sync dependencies-upgrade-form-inputs
+
+.PHONY: dependencies-upgrade-app
+dependencies-upgrade-app:
+	cd $(APP_DIR) &&  $(FLUTTER) pub upgrade
+
+.PHONY: dependencies-upgrade-canine-sync
+dependencies-upgrade-canine-sync:
+	cd $(CANINE_SYNC_DIR) &&  $(FLUTTER) pub upgrade
+
+.PHONY: dependencies-upgrade-form-inputs
+dependencies-upgrade-form-inputs:
+	cd $(FORM_INPUTS_DIR) &&  $(FLUTTER) pub upgrade
 
