@@ -22,9 +22,9 @@ class DummySecureStorage implements SecureStorage {
   }
 }
 
-Future<Sync> start() async {
+Future<Sync> start(String apiBase, String wsBase) async {
   final cache = InMemoryCache();
-  APIClient apiClient = APIClient(DummySecureStorage());
+  APIClient apiClient = APIClient(DummySecureStorage(), apiBase, wsBase);
   await apiClient.init(); // loads credentials from disk
 
   final syncService = SyncService(cache, apiClient);

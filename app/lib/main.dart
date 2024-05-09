@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 
 import 'app/app.dart';
 import 'app/routes/routes.dart';
+import 'config.dart';
 
 void main() async {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
@@ -17,7 +18,8 @@ void main() async {
     }
   });
   WidgetsFlutterBinding.ensureInitialized();
-  final sync = await start();
+  await Config().loadConfig();
+  final sync = await start(Config().apiBase, Config().wsBase);
   final repository = SyncRepository(sync);
   AppRouter.instance; // Make sure the router is initialized when app starts
   runApp(MainApp(

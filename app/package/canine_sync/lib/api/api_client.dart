@@ -17,12 +17,12 @@ import 'credential_set.dart';
 
 class APIClient {
   static int kItemsPerPage = 5;
-  final _apiBase = 'http://localhost:8080';
-  final _wsBase = 'ws://localhost:8080';
+  final _apiBase;
+  final _wsBase;
   final _logger = Logger('APIClient');
   CredentialSet? _credential;
   final SecureStorage _secureStorage;
-  APIClient(this._secureStorage);
+  APIClient(this._secureStorage, this._apiBase, this._wsBase);
 
   final _controller = StreamController<AuthenticationStatus>.broadcast();
   var _authStatus = AuthenticationStatus.unknown();

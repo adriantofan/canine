@@ -4,9 +4,9 @@ import 'rpc/main.dart' as rpc;
 import 'sync.dart';
 import 'web/main.dart' as web;
 
-Future<Sync> start() async {
+Future<Sync> start(String apiBase, String wsBase) async {
   if (kIsWeb) {
-    return web.start();
+    return web.start(apiBase, wsBase);
   }
-  return rpc.start();
+  return rpc.start(apiBase, wsBase);
 }

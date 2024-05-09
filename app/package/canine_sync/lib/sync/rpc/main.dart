@@ -12,7 +12,7 @@ import './msg.dart';
 import './sync_skeleton.dart';
 import './sync_stub.dart';
 
-Future<Sync> start() async {
+Future<Sync> start(String apiBase, String wsBase) async {
   var receivePortStorage = ReceivePort();
 
   // Needs to happen on the main isolate
@@ -20,7 +20,7 @@ Future<Sync> start() async {
 
   var receivePort = ReceivePort();
 
-  await Isolate.spawn(_runner, receivePort.sendPort);
+  await Isolate.spawn(_runner, [receivePort.sendPort, apiBase, wsBase]);
   final [sendPort, stubSendPort] = await receivePort.first as List<SendPort>;
   stubSendPort.send(receivePortStorage.sendPort);
 
@@ -28,7 +28,11 @@ Future<Sync> start() async {
   return stub;
 }
 
-_runner(SendPort sendPort) async {
+_runner(dynamic ags) async {
+  final sendPort = ags[0] as SendPort;
+  final apiBase = ags[1] as String;
+  final wsBase = ags[2] as String;
+
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
     if (record.error != null || record.stackTrace != null) {
@@ -50,7 +54,7 @@ _runner(SendPort sendPort) async {
   SecureStoragesStub stub = SecureStoragesStub(sendPortStorage);
 
   final cache = InMemoryCache();
-  APIClient apiClient = APIClient(stub);
+  APIClient apiClient = APIClient(stub, apiBase, wsBase);
   await apiClient.init(); // loads credentials from disk
 
   final syncService = SyncService(cache, apiClient);
