@@ -30,7 +30,7 @@ WORKDIR $APP
 
 RUN flutter clean
 RUN flutter pub get
-RUN flutter build web --base-href=/app
+RUN flutter build web --base-href=/app/
 
 
 
