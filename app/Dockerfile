@@ -35,10 +35,10 @@ RUN flutter build web
 
 
 FROM --platform=linux/amd64 nginxinc/nginx-unprivileged:alpine-slim
-RUN mkdir -p /usr/share/nginx/html/app
-WORKDIR /usr/share/nginx/html/app
+
+WORKDIR /usr/share/nginx/html
 COPY --chown=nginx:nginx deploy/default.conf /etc/nginx/conf.d/default.conf
-COPY --chown=nginx:nginx --from=build-env /app/build/web /usr/share/nginx/html/app
+COPY --chown=nginx:nginx --from=build-env /app/build/web /usr/share/nginx/html
 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
