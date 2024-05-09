@@ -18,7 +18,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   canine_sync:
     path: package/canine_sync
-  flow_builder: ^0.0.10
+  flow_builder: ^0.1.0
   form_inputs:
     path: package/form_inputs
   formz: ^0.7.0
@@ -30,7 +30,7 @@ dependencies:
   uuid: ^4.3.3
   file_selector: ^1.0.3
   rxdart: ^0.27.7
-  go_router: ^13.2.1
+  go_router: ^14.0.2
   path: ^1.9.0
 
 dev_dependencies:
