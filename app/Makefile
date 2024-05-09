@@ -71,3 +71,29 @@ dependencies-upgrade-canine-sync:
 dependencies-upgrade-form-inputs:
 	cd $(FORM_INPUTS_DIR) &&  $(FLUTTER) pub upgrade
 
+.PHONY: dependencies-upgrade-mjr
+dependencies-upgrade-mjr:dependencies-upgrade-mjr-app dependencies-upgrade-mjr-canine-sync dependencies-upgrade-mjr-form-inputs
+
+.PHONY: dependencies-upgrade-mjr-app
+dependencies-upgrade-mjr-app:
+	@if [ -z $(dependency) ]; then \
+		echo "Please provide a dependency to upgrade"; \
+		exit -1; \
+	fi
+	cd $(APP_DIR) &&  $(FLUTTER) pub upgrade --major-versions $(dependency)
+
+.PHONY: dependencies-upgrade-mjr-canine-sync
+dependencies-upgrade-mjr-canine-sync:
+	@if [ -z $(dependency) ]; then \
+		echo "Please provide a dependency to upgrade"; \
+		exit -1; \
+	fi
+	cd $(CANINE_SYNC_DIR) &&  $(FLUTTER) pub upgrade --major-versions $(dependency)
+
+.PHONY: dependencies-upgrade-mjr-form-inputs
+dependencies-upgrade-mjr-form-inputs:
+	@if [ -z $(dependency) ]; then \
+		echo "Please provide a dependency to upgrade"; \
+		exit -1; \
+	fi
+	cd $(FORM_INPUTS_DIR) &&  $(FLUTTER) pub upgrade --major-versions $(dependency)
