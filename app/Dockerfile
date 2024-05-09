@@ -5,7 +5,7 @@ RUN apt-get install -y curl git unzip xz-utils zip libglu1-mesa
 
 
 ARG FLUTTER_SDK=/usr/local/flutter
-ARG FLUTTER_VERSION=3.19.3
+ARG FLUTTER_VERSION=3.19.6
 ARG APP=/app/
 
 RUN curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz" \
