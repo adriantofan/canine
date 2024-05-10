@@ -15,6 +15,5 @@ class Config {
         defaultValue: 'https://bjrdoc.fr/api/v1');
     wsBase = const String.fromEnvironment('WS_BASE',
         defaultValue: 'https://bjrdoc.fr/api/v1');
-    print('API_BASE: $apiBase');
   }
 }

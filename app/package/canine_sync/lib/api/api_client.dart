@@ -306,7 +306,7 @@ class APIClient {
     final bodyOrFieldsLog = body != null ? 'body: $body' : 'fields: $fields';
 
     try {
-      final url = Uri.parse('$_apiBase/$path');
+      final url = Uri.parse('$_apiBase$path');
       _logger.fine(
           '🌐🚀${methodLog(method)} $path $fileNamesLog $bodyOrFieldsLog');
 
