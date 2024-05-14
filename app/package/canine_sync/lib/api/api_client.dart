@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:file_selector/file_selector.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../canine_sync.dart';
 import '../constants/constants.dart';
@@ -22,16 +23,14 @@ class APIClient {
   CredentialSet? _credential;
   APIClient(this._apiBase, this._wsBase);
 
-  final _controller = StreamController<AuthenticationStatus>.broadcast();
+  final _controller = BehaviorSubject<AuthenticationStatus>.seeded(
+      AuthenticationStatus.unknown());
   var _authStatus = AuthenticationStatus.unknown();
 
   void dispose() => _controller.close();
 
-  Stream<AuthenticationStatus> get authStatus async* {
-    yield _authStatus;
-    await for (var status in _controller.stream) {
-      yield status;
-    }
+  Stream<AuthenticationStatus> get authStatus {
+    return _controller.stream;
   }
 
   Future<Conversation> createConversation(
