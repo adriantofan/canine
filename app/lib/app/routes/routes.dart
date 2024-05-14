@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../conversations/conversations.dart';
@@ -9,6 +10,7 @@ import '../../re_login/re_login.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
+import '../bloc/app_bloc.dart';
 
 // List<Page> onGenerateAppViewPages(
 //     AppState appState, List<Page<dynamic>> pages) {
@@ -68,7 +70,7 @@ class AppRouter {
                   parentNavigatorKey: conversationsTabNavigatorKey,
                   navigatorKey: messagesTabNavigatorKey,
                   routes: [
-                    GoRoute(
+                    GoAuthRoute(
                         path: homePath,
                         parentNavigatorKey: messagesTabNavigatorKey,
                         pageBuilder: (context, state) {
@@ -82,7 +84,7 @@ class AppRouter {
                             state: state,
                           );
                         }),
-                    GoRoute(
+                    GoAuthRoute(
                       path: homePathNew,
                       parentNavigatorKey: messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
@@ -95,7 +97,7 @@ class AppRouter {
                         );
                       },
                     ),
-                    GoRoute(
+                    GoAuthRoute(
                       path: '$homePath/:id',
                       parentNavigatorKey: messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
@@ -138,7 +140,7 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: settingsTabNavigatorKey,
             routes: [
-              GoRoute(
+              GoAuthRoute(
                 path: settingsPath,
                 pageBuilder: (context, state) {
                   return getPage(
@@ -245,4 +247,24 @@ class AppRouter {
       child: child,
     );
   }
+}
+
+String? redirectIfNotAuth(BuildContext context, GoRouterState state) {
+  final status = context.read<AppBloc>();
+  if (status.state is! Running) {
+    return AppRouter.loginPath;
+  }
+  return null;
+}
+
+class GoAuthRoute extends GoRoute {
+  GoAuthRoute({
+    required super.path,
+    super.name,
+    super.builder,
+    super.pageBuilder,
+    super.parentNavigatorKey,
+    super.onExit,
+    super.redirect = redirectIfNotAuth,
+  }) : super();
 }
