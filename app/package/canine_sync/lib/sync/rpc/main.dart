@@ -4,8 +4,6 @@ import 'package:logging/logging.dart';
 
 import '../../api/main.dart';
 import '../../cache/in_memory_cache.dart';
-import '../../secure_storage/secure_storage_skeleton.dart';
-import '../../secure_storage/secure_storages_stub.dart';
 import '../sync.dart';
 import '../sync_service.dart';
 import './msg.dart';
@@ -16,7 +14,6 @@ Future<Sync> start(String apiBase, String wsBase) async {
   var receivePortStorage = ReceivePort();
 
   // Needs to happen on the main isolate
-  await SecureStorageSkeleton().listen(receivePortStorage);
 
   var receivePort = ReceivePort();
 
@@ -51,10 +48,9 @@ _runner(dynamic ags) async {
   sendPort.send([receivePort.sendPort, tmpReceivePort.sendPort]);
 
   SendPort sendPortStorage = await tmpReceivePort.first as SendPort;
-  SecureStoragesStub stub = SecureStoragesStub(sendPortStorage);
 
   final cache = InMemoryCache();
-  APIClient apiClient = APIClient(stub, apiBase, wsBase);
+  APIClient apiClient = APIClient(apiBase, wsBase);
   await apiClient.init(); // loads credentials from disk
 
   final syncService = SyncService(cache, apiClient);

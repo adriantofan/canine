@@ -22,7 +22,6 @@ dependencies:
   form_inputs:
     path: package/form_inputs
   formz: ^0.7.0
-  flutter_secure_storage: ^9.0.0
   logging: ^1.2.0
   flutter_svg: ^2.0.10+1
   easy_refresh: ^3.3.4

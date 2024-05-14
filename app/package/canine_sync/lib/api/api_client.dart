@@ -10,7 +10,6 @@ import '../constants/constants.dart';
 import '../models/paginated.dart';
 import '../models/rtc_remote.dart';
 import '../models/rtc_remote_update.dart';
-import '../secure_storage/secure_storage.dart';
 import 'credential_set.dart';
 
 // enum AuthenticationStatus { unknown, authenticated, unauthenticated }
@@ -21,8 +20,7 @@ class APIClient {
   final _wsBase;
   final _logger = Logger('APIClient');
   CredentialSet? _credential;
-  final SecureStorage _secureStorage;
-  APIClient(this._secureStorage, this._apiBase, this._wsBase);
+  APIClient(this._apiBase, this._wsBase);
 
   final _controller = StreamController<AuthenticationStatus>.broadcast();
   var _authStatus = AuthenticationStatus.unknown();
@@ -176,30 +174,8 @@ class APIClient {
   }
 
   Future<void> init() async {
-    final credential = await _secureStorage.getCredentials();
-    if (credential == null) {
-      _logger.config('No credential found in storage');
-      _authStatus = AuthenticationStatus.unauthenticated(null);
-      _controller.add(_authStatus);
-      return;
-    }
-
-    _credential = credential;
-
-    if (credential.isAuthenticated) {
-      if (!credential.authExpired) {
-        _refreshTokenAsync();
-        _authStatus = AuthenticationStatus.authenticated(credential.identity);
-      } else {
-        // How could this happen?
-        _authStatus = AuthenticationStatus.unauthenticated(credential.identity);
-      }
-    } else {
-      _authStatus = AuthenticationStatus.unauthenticated(credential.identity);
-    }
+    _authStatus = AuthenticationStatus.unauthenticated(null);
     _controller.add(_authStatus);
-    _logger.config(
-        'Credential loaded from storage: $_workspaceId/$_userId expiration ${credential.tokenExpiration}');
   }
 
   // Caller can fire and forget. This function must not throw an exception
@@ -222,7 +198,6 @@ class APIClient {
 
   Future<void> _updateCredential(CredentialSet? credential) async {
     _credential = credential;
-    await _secureStorage.setCredentials(credential);
     _logger.fine(
         'Credential updated in storage: $_workspaceId/$_userId expiration ${credential?.tokenExpiration}');
   }
