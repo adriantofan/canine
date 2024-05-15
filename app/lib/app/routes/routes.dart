@@ -34,47 +34,60 @@ import '../bloc/app_bloc.dart';
 
 // see https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
 //  about making a modal route and dealing with transiations
-
+//  This model ws explained here https://github.com/flutter/flutter/issues/116651#issuecomment-1956528322
 class AppRouter {
   static final AppRouter _instance = AppRouter._internal();
   factory AppRouter() => _instance;
   static late final GoRouter router;
   static AppRouter get instance => _instance;
 
-  static const String slashPath = '/';
-  static const String loginPath = '/login';
-  static const String confirmPasswordPath = '/confirm-password';
-  static const String homePath = '/home';
-  static const String homePathNew = '$homePath/new';
-  static const String settingsPath = '/settings';
-  static const String logoutPath = '/logout';
+  static String path(AppState state) {
+    return switch (state) {
+      Unknown() => _slashPath,
+      LoginRegisterFlow() => _loginPath,
+      Login() => _confirmPasswordPath,
+      Running() => _homePath,
+      RunningRefresh() =>
+        _loginPath, // TODO: see how to trigger modal confirm password
+      LoggingOut() => _logoutPath,
+    };
+  }
+
+  static const String _slashPath = '/';
+  static const String _loginPath = '/login';
+  static const String _confirmPasswordPath = '/confirm-password';
+  static const String _homePath = '/home';
+  static const String _homePathConversation = '$_homePath/:id';
+  static const String _homePathNew = '$_homePath/new';
+  static const String _settingsPath = '/settings';
+  static const String _logoutPath = '/logout';
 
   GoRouterState? authState; // holds the path to redirect to after login
 
-  static final GlobalKey<NavigatorState> parentNavigatorKey =
+  static final GlobalKey<NavigatorState> _parentNavigatorKey =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> conversationsTabNavigatorKey =
+  static final GlobalKey<NavigatorState> _conversationsTabNavigatorKey =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> settingsTabNavigatorKey =
+  static final GlobalKey<NavigatorState> _settingsTabNavigatorKey =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> messagesTabNavigatorKey =
+  static final GlobalKey<NavigatorState> _messagesTabNavigatorKey =
       GlobalKey<NavigatorState>();
 
   AppRouter._internal() {
     final routes = [
       StatefulShellRoute.indexedStack(
-        parentNavigatorKey: parentNavigatorKey,
+        parentNavigatorKey: _parentNavigatorKey,
         branches: [
           StatefulShellBranch(
-            navigatorKey: conversationsTabNavigatorKey,
+            navigatorKey: _conversationsTabNavigatorKey,
             routes: [
               ShellRoute(
-                  parentNavigatorKey: conversationsTabNavigatorKey,
-                  navigatorKey: messagesTabNavigatorKey,
+                  parentNavigatorKey: _conversationsTabNavigatorKey,
+                  navigatorKey: _messagesTabNavigatorKey,
                   routes: [
                     GoAuthRoute(
-                        path: homePath,
-                        parentNavigatorKey: messagesTabNavigatorKey,
+                        path: _homePath,
+                        parentNavigatorKey: _messagesTabNavigatorKey,
                         pageBuilder: (context, state) {
                           return getPage(
                             child: Scaffold(
@@ -87,8 +100,8 @@ class AppRouter {
                           );
                         }),
                     GoAuthRoute(
-                      path: homePathNew,
-                      parentNavigatorKey: messagesTabNavigatorKey,
+                      path: _homePathNew,
+                      parentNavigatorKey: _messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         return getPage(
                           child: DraftConversationPage(
@@ -100,8 +113,8 @@ class AppRouter {
                       },
                     ),
                     GoAuthRoute(
-                      path: '$homePath/:id',
-                      parentNavigatorKey: messagesTabNavigatorKey,
+                      path: _homePathConversation,
+                      parentNavigatorKey: _messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         switch (state.extra) {
                           case ConversationInfo():
@@ -140,10 +153,10 @@ class AppRouter {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: settingsTabNavigatorKey,
+            navigatorKey: _settingsTabNavigatorKey,
             routes: [
               GoAuthRoute(
-                path: settingsPath,
+                path: _settingsPath,
                 pageBuilder: (context, state) {
                   return getPage(
                     child: const SettingsScreen(),
@@ -168,19 +181,19 @@ class AppRouter {
         },
       ),
       GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
-        path: slashPath,
+        parentNavigatorKey: _parentNavigatorKey,
+        path: _slashPath,
         pageBuilder: (context, state) =>
             getPage(child: const SplashPage(), state: state),
       ),
       GoRoute(
-          parentNavigatorKey: parentNavigatorKey,
-          path: loginPath,
+          parentNavigatorKey: _parentNavigatorKey,
+          path: _loginPath,
           pageBuilder: (context, state) =>
               getPage(child: const LoginPage(), state: state)),
       GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
-        path: confirmPasswordPath,
+        parentNavigatorKey: _parentNavigatorKey,
+        path: _confirmPasswordPath,
         pageBuilder: (context, state) =>
             getPage(child: const ReLoginPage(), state: state),
       ),
@@ -191,26 +204,26 @@ class AppRouter {
       //       getPage(child: const TabHome(), state: state),
       // ),
       GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
-        path: logoutPath,
+        parentNavigatorKey: _parentNavigatorKey,
+        path: _logoutPath,
         pageBuilder: (context, state) =>
             getPage(child: const LogoutPage(), state: state),
       ),
     ];
 
     router = GoRouter(
-      navigatorKey: parentNavigatorKey,
+      navigatorKey: _parentNavigatorKey,
       routes: routes,
     );
   }
 
   static get onConversations =>
-      router.routeInformationProvider.value.uri.path.startsWith(homePath);
+      router.routeInformationProvider.value.uri.path.startsWith(_homePath);
   static get crtConversationRouteId =>
       router.routeInformationProvider.value.uri.pathSegments.last;
 
   static goConversationWithInfo(ConversationInfo conversationInfo) {
-    final newPath = '$homePath/${conversationInfo.conversationId}';
+    final newPath = '$_homePath/${conversationInfo.conversationId}';
     // Seems like if go is called after a replace with the same uri
     // it will still result in a double push because it not only checks
     // the uri but also the type in go definition:
@@ -232,12 +245,12 @@ class AppRouter {
 
   static replaceConversationWithInfo(
       ConversationInfo conversationInfo, DraftMessage draftMessage) {
-    router.replace('$homePath/${conversationInfo.conversationId}',
+    router.replace('$_homePath/${conversationInfo.conversationId}',
         extra: (conversationInfo, draftMessage));
   }
 
   static goConversationWithUser(DraftConversation draftConversation) {
-    router.go(homePathNew, extra: draftConversation);
+    router.go(_homePathNew, extra: draftConversation);
   }
 
   static Page getPage({
@@ -252,12 +265,29 @@ class AppRouter {
 }
 
 String? redirectIfNotAuth(BuildContext context, GoRouterState state) {
-  final status = context.read<AppBloc>();
-  if (status.state is! Running) {
-    AppRouter.instance.authState = state;
-    return AppRouter.loginPath;
+  final appBloc = context.read<AppBloc>();
+  if (appBloc.state is! Running) {
+    return AppRouter._loginPath;
   }
   return null;
+  // TODO: implement variations here when final auth in place
+
+  final newWorkspaceIdStr = state.pathParameters['workspaceId'];
+  int newWorkspaceId = int.tryParse(newWorkspaceIdStr ?? '') ?? 0;
+
+  switch (appBloc.state) {
+    case Unknown():
+    case LoginRegisterFlow(): // Does not exist
+    case LoggingOut():
+      break;
+    case Login(identity: var identity): // It might be submitting
+      if (newWorkspaceId != 0 && identity.workspaceId == newWorkspaceId) {
+        // this is a switch to a new workspace
+        // should return another page
+      }
+    case Running(): // has identity
+    case RunningRefresh(): // has identity
+  }
 }
 
 class GoAuthRoute extends GoRoute {

@@ -19,19 +19,10 @@ class MainApp extends StatelessWidget {
       value: _repository,
       child: BlocProvider(
         create: (c) => AppBloc(c.read()),
+        // See AppRouter documentation for more information.
         child: BlocListener<AppBloc, AppState>(
           listener: (context, state) {
-            final path = switch (state) {
-              Unknown() => '/',
-              LoginRegisterFlow() => '/login',
-              Login() => '/confirm-password',
-              Running() => '/home',
-              RunningRefresh() =>
-                '/login', // TODO: see how to trigger modal confirm password
-              LoggingOut() => '/logout',
-            };
-            // This model ws explained here https://github.com/flutter/flutter/issues/116651#issuecomment-1956528322
-            AppRouter.router.go(path);
+            AppRouter.router.go(AppRouter.path(state));
           },
           child: MaterialApp.router(
               theme: ThemeData.light(useMaterial3: true),
