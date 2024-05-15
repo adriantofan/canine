@@ -49,6 +49,8 @@ class AppRouter {
   static const String settingsPath = '/settings';
   static const String logoutPath = '/logout';
 
+  GoRouterState? authState; // holds the path to redirect to after login
+
   static final GlobalKey<NavigatorState> parentNavigatorKey =
       GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> conversationsTabNavigatorKey =
@@ -252,6 +254,7 @@ class AppRouter {
 String? redirectIfNotAuth(BuildContext context, GoRouterState state) {
   final status = context.read<AppBloc>();
   if (status.state is! Running) {
+    AppRouter.instance.authState = state;
     return AppRouter.loginPath;
   }
   return null;

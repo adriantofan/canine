@@ -181,27 +181,27 @@ class __$$InitialImplCopyWithImpl<$Res>
     Object? errorMessage = freezed,
   }) {
     return _then(_$InitialImpl(
-      null == email
+      email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as Email,
-      null == password
+      password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as PasswordSubmit,
-      null == workspaceId
+      workspaceId: null == workspaceId
           ? _value.workspaceId
           : workspaceId // ignore: cast_nullable_to_non_nullable
               as WorkspaceId,
-      null == status
+      status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as FormzSubmissionStatus,
-      null == isValid
+      isValid: null == isValid
           ? _value.isValid
           : isValid // ignore: cast_nullable_to_non_nullable
               as bool,
-      freezed == errorMessage
+      errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
@@ -213,12 +213,12 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 class _$InitialImpl implements _Initial {
   const _$InitialImpl(
-      [this.email = const Email.pure(),
+      {this.email = const Email.pure(),
       this.password = const PasswordSubmit.pure(),
       this.workspaceId = const WorkspaceId.pure(),
       this.status = FormzSubmissionStatus.initial,
       this.isValid = false,
-      this.errorMessage]);
+      this.errorMessage});
 
   @override
   @JsonKey()
@@ -351,12 +351,12 @@ class _$InitialImpl implements _Initial {
 
 abstract class _Initial implements LoginState {
   const factory _Initial(
-      [final Email email,
+      {final Email email,
       final PasswordSubmit password,
       final WorkspaceId workspaceId,
       final FormzSubmissionStatus status,
       final bool isValid,
-      final String? errorMessage]) = _$InitialImpl;
+      final String? errorMessage}) = _$InitialImpl;
 
   @override
   Email get email;

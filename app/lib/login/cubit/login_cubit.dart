@@ -11,7 +11,9 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final SyncRepository _syncRepository;
 
-  LoginCubit(this._syncRepository) : super(const LoginState.initial());
+  LoginCubit(this._syncRepository, String workspaceId)
+      : super(const LoginState.initial(
+            workspaceId: WorkspaceId.dirty("1714116660140")));
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
