@@ -17,6 +17,7 @@ void main() async {
           '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
     }
   });
+  // usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Config().loadConfig();
   final sync = await start(Config().apiBase, Config().wsBase);

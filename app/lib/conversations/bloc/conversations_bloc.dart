@@ -23,9 +23,9 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
         return;
       }
       final maybeConversationId = AppRouter.crtConversationRouteId;
-      final canBeParsed = int.tryParse(maybeConversationId) != null;
-      if (canBeParsed) {
-        add(ConversationsRouteChanged(maybeConversationId));
+
+      if (maybeConversationId != null) {
+        add(ConversationsRouteChanged('$maybeConversationId'));
       } else {
         add(ConversationsDeselect());
       }
