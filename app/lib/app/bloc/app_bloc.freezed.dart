@@ -324,8 +324,9 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -334,8 +335,9 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -344,8 +346,9 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -355,6 +358,7 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -365,6 +369,7 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -375,6 +380,7 @@ mixin _$AppState {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -441,8 +447,9 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -454,8 +461,9 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -467,8 +475,9 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -484,6 +493,7 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -497,6 +507,7 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -510,6 +521,7 @@ class _$UnknownImpl implements Unknown {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -526,6 +538,138 @@ class _$UnknownImpl implements Unknown {
 
 abstract class Unknown implements AppState {
   const factory Unknown() = _$UnknownImpl;
+}
+
+/// @nodoc
+abstract class _$$WellcomeImplCopyWith<$Res> {
+  factory _$$WellcomeImplCopyWith(
+          _$WellcomeImpl value, $Res Function(_$WellcomeImpl) then) =
+      __$$WellcomeImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$WellcomeImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$WellcomeImpl>
+    implements _$$WellcomeImplCopyWith<$Res> {
+  __$$WellcomeImplCopyWithImpl(
+      _$WellcomeImpl _value, $Res Function(_$WellcomeImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$WellcomeImpl implements Wellcome {
+  const _$WellcomeImpl();
+
+  @override
+  String toString() {
+    return 'AppState.wellcome()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$WellcomeImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() unknown,
+    required TResult Function() wellcome,
+    required TResult Function() loginRegisterFlow,
+    required TResult Function(int workspaceId) login,
+    required TResult Function(Identity identity) running,
+    required TResult Function(Identity identity) runningRefresh,
+    required TResult Function() loggingOut,
+  }) {
+    return wellcome();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? unknown,
+    TResult? Function()? wellcome,
+    TResult? Function()? loginRegisterFlow,
+    TResult? Function(int workspaceId)? login,
+    TResult? Function(Identity identity)? running,
+    TResult? Function(Identity identity)? runningRefresh,
+    TResult? Function()? loggingOut,
+  }) {
+    return wellcome?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? unknown,
+    TResult Function()? wellcome,
+    TResult Function()? loginRegisterFlow,
+    TResult Function(int workspaceId)? login,
+    TResult Function(Identity identity)? running,
+    TResult Function(Identity identity)? runningRefresh,
+    TResult Function()? loggingOut,
+    required TResult orElse(),
+  }) {
+    if (wellcome != null) {
+      return wellcome();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
+    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
+    required TResult Function(Login value) login,
+    required TResult Function(Running value) running,
+    required TResult Function(RunningRefresh value) runningRefresh,
+    required TResult Function(LoggingOut value) loggingOut,
+  }) {
+    return wellcome(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
+    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
+    TResult? Function(Login value)? login,
+    TResult? Function(Running value)? running,
+    TResult? Function(RunningRefresh value)? runningRefresh,
+    TResult? Function(LoggingOut value)? loggingOut,
+  }) {
+    return wellcome?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
+    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
+    TResult Function(Login value)? login,
+    TResult Function(Running value)? running,
+    TResult Function(RunningRefresh value)? runningRefresh,
+    TResult Function(LoggingOut value)? loggingOut,
+    required TResult orElse(),
+  }) {
+    if (wellcome != null) {
+      return wellcome(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Wellcome implements AppState {
+  const factory Wellcome() = _$WellcomeImpl;
 }
 
 /// @nodoc
@@ -567,8 +711,9 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -580,8 +725,9 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -593,8 +739,9 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -610,6 +757,7 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -623,6 +771,7 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -636,6 +785,7 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -660,9 +810,7 @@ abstract class _$$LoginImplCopyWith<$Res> {
           _$LoginImpl value, $Res Function(_$LoginImpl) then) =
       __$$LoginImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
+  $Res call({int workspaceId});
 }
 
 /// @nodoc
@@ -676,36 +824,28 @@ class __$$LoginImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? workspaceId = null,
   }) {
     return _then(_$LoginImpl(
-      null == identity
-          ? _value.identity
-          : identity // ignore: cast_nullable_to_non_nullable
-              as Identity,
+      null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$LoginImpl implements Login {
-  const _$LoginImpl(this.identity);
+  const _$LoginImpl(this.workspaceId);
 
   @override
-  final Identity identity;
+  final int workspaceId;
 
   @override
   String toString() {
-    return 'AppState.login(identity: $identity)';
+    return 'AppState.login(workspaceId: $workspaceId)';
   }
 
   @override
@@ -713,12 +853,12 @@ class _$LoginImpl implements Login {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode => Object.hash(runtimeType, workspaceId);
 
   @JsonKey(ignore: true)
   @override
@@ -730,41 +870,44 @@ class _$LoginImpl implements Login {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
   }) {
-    return login(identity);
+    return login(workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
   }) {
-    return login?.call(identity);
+    return login?.call(workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
     required TResult orElse(),
   }) {
     if (login != null) {
-      return login(identity);
+      return login(workspaceId);
     }
     return orElse();
   }
@@ -773,6 +916,7 @@ class _$LoginImpl implements Login {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -786,6 +930,7 @@ class _$LoginImpl implements Login {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -799,6 +944,7 @@ class _$LoginImpl implements Login {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -814,9 +960,9 @@ class _$LoginImpl implements Login {
 }
 
 abstract class Login implements AppState {
-  const factory Login(final Identity identity) = _$LoginImpl;
+  const factory Login(final int workspaceId) = _$LoginImpl;
 
-  Identity get identity;
+  int get workspaceId;
   @JsonKey(ignore: true)
   _$$LoginImplCopyWith<_$LoginImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -898,8 +1044,9 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -911,8 +1058,9 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -924,8 +1072,9 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -941,6 +1090,7 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -954,6 +1104,7 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -967,6 +1118,7 @@ class _$RunningImpl implements Running {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -1067,8 +1219,9 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -1080,8 +1233,9 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -1093,8 +1247,9 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -1110,6 +1265,7 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -1123,6 +1279,7 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -1136,6 +1293,7 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
@@ -1198,8 +1356,9 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
+    required TResult Function() wellcome,
     required TResult Function() loginRegisterFlow,
-    required TResult Function(Identity identity) login,
+    required TResult Function(int workspaceId) login,
     required TResult Function(Identity identity) running,
     required TResult Function(Identity identity) runningRefresh,
     required TResult Function() loggingOut,
@@ -1211,8 +1370,9 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
+    TResult? Function()? wellcome,
     TResult? Function()? loginRegisterFlow,
-    TResult? Function(Identity identity)? login,
+    TResult? Function(int workspaceId)? login,
     TResult? Function(Identity identity)? running,
     TResult? Function(Identity identity)? runningRefresh,
     TResult? Function()? loggingOut,
@@ -1224,8 +1384,9 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
+    TResult Function()? wellcome,
     TResult Function()? loginRegisterFlow,
-    TResult Function(Identity identity)? login,
+    TResult Function(int workspaceId)? login,
     TResult Function(Identity identity)? running,
     TResult Function(Identity identity)? runningRefresh,
     TResult Function()? loggingOut,
@@ -1241,6 +1402,7 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Unknown value) unknown,
+    required TResult Function(Wellcome value) wellcome,
     required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
     required TResult Function(Login value) login,
     required TResult Function(Running value) running,
@@ -1254,6 +1416,7 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Unknown value)? unknown,
+    TResult? Function(Wellcome value)? wellcome,
     TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult? Function(Login value)? login,
     TResult? Function(Running value)? running,
@@ -1267,6 +1430,7 @@ class _$LoggingOutImpl implements LoggingOut {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Unknown value)? unknown,
+    TResult Function(Wellcome value)? wellcome,
     TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
     TResult Function(Login value)? login,
     TResult Function(Running value)? running,
