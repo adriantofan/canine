@@ -323,69 +323,65 @@ abstract class Logout implements AppEvent {
 mixin _$AppState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -409,35 +405,35 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
 }
 
 /// @nodoc
-abstract class _$$UnknownImplCopyWith<$Res> {
-  factory _$$UnknownImplCopyWith(
-          _$UnknownImpl value, $Res Function(_$UnknownImpl) then) =
-      __$$UnknownImplCopyWithImpl<$Res>;
+abstract class _$$AppStateStartingImplCopyWith<$Res> {
+  factory _$$AppStateStartingImplCopyWith(_$AppStateStartingImpl value,
+          $Res Function(_$AppStateStartingImpl) then) =
+      __$$AppStateStartingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$UnknownImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$UnknownImpl>
-    implements _$$UnknownImplCopyWith<$Res> {
-  __$$UnknownImplCopyWithImpl(
-      _$UnknownImpl _value, $Res Function(_$UnknownImpl) _then)
+class __$$AppStateStartingImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateStartingImpl>
+    implements _$$AppStateStartingImplCopyWith<$Res> {
+  __$$AppStateStartingImplCopyWithImpl(_$AppStateStartingImpl _value,
+      $Res Function(_$AppStateStartingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$UnknownImpl implements Unknown {
-  const _$UnknownImpl();
+class _$AppStateStartingImpl implements AppStateStarting {
+  const _$AppStateStartingImpl();
 
   @override
   String toString() {
-    return 'AppState.unknown()';
+    return 'AppState.starting()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$UnknownImpl);
+        (other.runtimeType == runtimeType && other is _$AppStateStartingImpl);
   }
 
   @override
@@ -446,45 +442,42 @@ class _$UnknownImpl implements Unknown {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return unknown();
+    return starting();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return unknown?.call();
+    return starting?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (unknown != null) {
-      return unknown();
+    if (starting != null) {
+      return starting();
     }
     return orElse();
   }
@@ -492,84 +485,83 @@ class _$UnknownImpl implements Unknown {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return unknown(this);
+    return starting(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return unknown?.call(this);
+    return starting?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (unknown != null) {
-      return unknown(this);
+    if (starting != null) {
+      return starting(this);
     }
     return orElse();
   }
 }
 
-abstract class Unknown implements AppState {
-  const factory Unknown() = _$UnknownImpl;
+abstract class AppStateStarting implements AppState {
+  const factory AppStateStarting() = _$AppStateStartingImpl;
 }
 
 /// @nodoc
-abstract class _$$WellcomeImplCopyWith<$Res> {
-  factory _$$WellcomeImplCopyWith(
-          _$WellcomeImpl value, $Res Function(_$WellcomeImpl) then) =
-      __$$WellcomeImplCopyWithImpl<$Res>;
+abstract class _$$AppStateNAImplCopyWith<$Res> {
+  factory _$$AppStateNAImplCopyWith(
+          _$AppStateNAImpl value, $Res Function(_$AppStateNAImpl) then) =
+      __$$AppStateNAImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$WellcomeImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$WellcomeImpl>
-    implements _$$WellcomeImplCopyWith<$Res> {
-  __$$WellcomeImplCopyWithImpl(
-      _$WellcomeImpl _value, $Res Function(_$WellcomeImpl) _then)
+class __$$AppStateNAImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateNAImpl>
+    implements _$$AppStateNAImplCopyWith<$Res> {
+  __$$AppStateNAImplCopyWithImpl(
+      _$AppStateNAImpl _value, $Res Function(_$AppStateNAImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$WellcomeImpl implements Wellcome {
-  const _$WellcomeImpl();
+class _$AppStateNAImpl implements AppStateNA {
+  const _$AppStateNAImpl();
 
   @override
   String toString() {
-    return 'AppState.wellcome()';
+    return 'AppState.na()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$WellcomeImpl);
+        (other.runtimeType == runtimeType && other is _$AppStateNAImpl);
   }
 
   @override
@@ -578,45 +570,42 @@ class _$WellcomeImpl implements Wellcome {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return wellcome();
+    return na();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return wellcome?.call();
+    return na?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (wellcome != null) {
-      return wellcome();
+    if (na != null) {
+      return na();
     }
     return orElse();
   }
@@ -624,84 +613,86 @@ class _$WellcomeImpl implements Wellcome {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return wellcome(this);
+    return na(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return wellcome?.call(this);
+    return na?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (wellcome != null) {
-      return wellcome(this);
+    if (na != null) {
+      return na(this);
     }
     return orElse();
   }
 }
 
-abstract class Wellcome implements AppState {
-  const factory Wellcome() = _$WellcomeImpl;
+abstract class AppStateNA implements AppState {
+  const factory AppStateNA() = _$AppStateNAImpl;
 }
 
 /// @nodoc
-abstract class _$$LoginRegisterFlowImplCopyWith<$Res> {
-  factory _$$LoginRegisterFlowImplCopyWith(_$LoginRegisterFlowImpl value,
-          $Res Function(_$LoginRegisterFlowImpl) then) =
-      __$$LoginRegisterFlowImplCopyWithImpl<$Res>;
+abstract class _$$AppStateUnauthenticatedImplCopyWith<$Res> {
+  factory _$$AppStateUnauthenticatedImplCopyWith(
+          _$AppStateUnauthenticatedImpl value,
+          $Res Function(_$AppStateUnauthenticatedImpl) then) =
+      __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoginRegisterFlowImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$LoginRegisterFlowImpl>
-    implements _$$LoginRegisterFlowImplCopyWith<$Res> {
-  __$$LoginRegisterFlowImplCopyWithImpl(_$LoginRegisterFlowImpl _value,
-      $Res Function(_$LoginRegisterFlowImpl) _then)
+class __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateUnauthenticatedImpl>
+    implements _$$AppStateUnauthenticatedImplCopyWith<$Res> {
+  __$$AppStateUnauthenticatedImplCopyWithImpl(
+      _$AppStateUnauthenticatedImpl _value,
+      $Res Function(_$AppStateUnauthenticatedImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
-  const _$LoginRegisterFlowImpl();
+class _$AppStateUnauthenticatedImpl implements AppStateUnauthenticated {
+  const _$AppStateUnauthenticatedImpl();
 
   @override
   String toString() {
-    return 'AppState.loginRegisterFlow()';
+    return 'AppState.unauthenticated()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoginRegisterFlowImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$AppStateUnauthenticatedImpl);
   }
 
   @override
@@ -710,45 +701,42 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return loginRegisterFlow();
+    return unauthenticated();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return loginRegisterFlow?.call();
+    return unauthenticated?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (loginRegisterFlow != null) {
-      return loginRegisterFlow();
+    if (unauthenticated != null) {
+      return unauthenticated();
     }
     return orElse();
   }
@@ -756,80 +744,81 @@ class _$LoginRegisterFlowImpl implements LoginRegisterFlow {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return loginRegisterFlow(this);
+    return unauthenticated(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return loginRegisterFlow?.call(this);
+    return unauthenticated?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (loginRegisterFlow != null) {
-      return loginRegisterFlow(this);
+    if (unauthenticated != null) {
+      return unauthenticated(this);
     }
     return orElse();
   }
 }
 
-abstract class LoginRegisterFlow implements AppState {
-  const factory LoginRegisterFlow() = _$LoginRegisterFlowImpl;
+abstract class AppStateUnauthenticated implements AppState {
+  const factory AppStateUnauthenticated() = _$AppStateUnauthenticatedImpl;
 }
 
 /// @nodoc
-abstract class _$$LoginImplCopyWith<$Res> {
-  factory _$$LoginImplCopyWith(
-          _$LoginImpl value, $Res Function(_$LoginImpl) then) =
-      __$$LoginImplCopyWithImpl<$Res>;
+abstract class _$$AppStateUnauthenticatedWkspImplCopyWith<$Res> {
+  factory _$$AppStateUnauthenticatedWkspImplCopyWith(
+          _$AppStateUnauthenticatedWkspImpl value,
+          $Res Function(_$AppStateUnauthenticatedWkspImpl) then) =
+      __$$AppStateUnauthenticatedWkspImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int workspaceId});
+  $Res call({int workspaceID});
 }
 
 /// @nodoc
-class __$$LoginImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$LoginImpl>
-    implements _$$LoginImplCopyWith<$Res> {
-  __$$LoginImplCopyWithImpl(
-      _$LoginImpl _value, $Res Function(_$LoginImpl) _then)
+class __$$AppStateUnauthenticatedWkspImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateUnauthenticatedWkspImpl>
+    implements _$$AppStateUnauthenticatedWkspImplCopyWith<$Res> {
+  __$$AppStateUnauthenticatedWkspImplCopyWithImpl(
+      _$AppStateUnauthenticatedWkspImpl _value,
+      $Res Function(_$AppStateUnauthenticatedWkspImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? workspaceId = null,
+    Object? workspaceID = null,
   }) {
-    return _then(_$LoginImpl(
-      null == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
+    return _then(_$AppStateUnauthenticatedWkspImpl(
+      null == workspaceID
+          ? _value.workspaceID
+          : workspaceID // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -837,77 +826,75 @@ class __$$LoginImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoginImpl implements Login {
-  const _$LoginImpl(this.workspaceId);
+class _$AppStateUnauthenticatedWkspImpl implements AppStateUnauthenticatedWksp {
+  const _$AppStateUnauthenticatedWkspImpl(this.workspaceID);
 
   @override
-  final int workspaceId;
+  final int workspaceID;
 
   @override
   String toString() {
-    return 'AppState.login(workspaceId: $workspaceId)';
+    return 'AppState.unauthenticatedWksp(workspaceID: $workspaceID)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoginImpl &&
-            (identical(other.workspaceId, workspaceId) ||
-                other.workspaceId == workspaceId));
+            other is _$AppStateUnauthenticatedWkspImpl &&
+            (identical(other.workspaceID, workspaceID) ||
+                other.workspaceID == workspaceID));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, workspaceId);
+  int get hashCode => Object.hash(runtimeType, workspaceID);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginImplCopyWith<_$LoginImpl> get copyWith =>
-      __$$LoginImplCopyWithImpl<_$LoginImpl>(this, _$identity);
+  _$$AppStateUnauthenticatedWkspImplCopyWith<_$AppStateUnauthenticatedWkspImpl>
+      get copyWith => __$$AppStateUnauthenticatedWkspImplCopyWithImpl<
+          _$AppStateUnauthenticatedWkspImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return login(workspaceId);
+    return unauthenticatedWksp(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return login?.call(workspaceId);
+    return unauthenticatedWksp?.call(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (login != null) {
-      return login(workspaceId);
+    if (unauthenticatedWksp != null) {
+      return unauthenticatedWksp(workspaceID);
     }
     return orElse();
   }
@@ -915,173 +902,163 @@ class _$LoginImpl implements Login {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return login(this);
+    return unauthenticatedWksp(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return login?.call(this);
+    return unauthenticatedWksp?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (login != null) {
-      return login(this);
+    if (unauthenticatedWksp != null) {
+      return unauthenticatedWksp(this);
     }
     return orElse();
   }
 }
 
-abstract class Login implements AppState {
-  const factory Login(final int workspaceId) = _$LoginImpl;
+abstract class AppStateUnauthenticatedWksp implements AppState {
+  const factory AppStateUnauthenticatedWksp(final int workspaceID) =
+      _$AppStateUnauthenticatedWkspImpl;
 
-  int get workspaceId;
+  int get workspaceID;
   @JsonKey(ignore: true)
-  _$$LoginImplCopyWith<_$LoginImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$AppStateUnauthenticatedWkspImplCopyWith<_$AppStateUnauthenticatedWkspImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RunningImplCopyWith<$Res> {
-  factory _$$RunningImplCopyWith(
-          _$RunningImpl value, $Res Function(_$RunningImpl) then) =
-      __$$RunningImplCopyWithImpl<$Res>;
+abstract class _$$AppStateAuthenticatingImplCopyWith<$Res> {
+  factory _$$AppStateAuthenticatingImplCopyWith(
+          _$AppStateAuthenticatingImpl value,
+          $Res Function(_$AppStateAuthenticatingImpl) then) =
+      __$$AppStateAuthenticatingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
+  $Res call({int workspaceID});
 }
 
 /// @nodoc
-class __$$RunningImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$RunningImpl>
-    implements _$$RunningImplCopyWith<$Res> {
-  __$$RunningImplCopyWithImpl(
-      _$RunningImpl _value, $Res Function(_$RunningImpl) _then)
+class __$$AppStateAuthenticatingImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateAuthenticatingImpl>
+    implements _$$AppStateAuthenticatingImplCopyWith<$Res> {
+  __$$AppStateAuthenticatingImplCopyWithImpl(
+      _$AppStateAuthenticatingImpl _value,
+      $Res Function(_$AppStateAuthenticatingImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? workspaceID = null,
   }) {
-    return _then(_$RunningImpl(
-      null == identity
-          ? _value.identity
-          : identity // ignore: cast_nullable_to_non_nullable
-              as Identity,
+    return _then(_$AppStateAuthenticatingImpl(
+      null == workspaceID
+          ? _value.workspaceID
+          : workspaceID // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
 /// @nodoc
 
-class _$RunningImpl implements Running {
-  const _$RunningImpl(this.identity);
+class _$AppStateAuthenticatingImpl implements AppStateAuthenticating {
+  const _$AppStateAuthenticatingImpl(this.workspaceID);
 
   @override
-  final Identity identity;
+  final int workspaceID;
 
   @override
   String toString() {
-    return 'AppState.running(identity: $identity)';
+    return 'AppState.partiallyAuthenticated(workspaceID: $workspaceID)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RunningImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            other is _$AppStateAuthenticatingImpl &&
+            (identical(other.workspaceID, workspaceID) ||
+                other.workspaceID == workspaceID));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode => Object.hash(runtimeType, workspaceID);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RunningImplCopyWith<_$RunningImpl> get copyWith =>
-      __$$RunningImplCopyWithImpl<_$RunningImpl>(this, _$identity);
+  _$$AppStateAuthenticatingImplCopyWith<_$AppStateAuthenticatingImpl>
+      get copyWith => __$$AppStateAuthenticatingImplCopyWithImpl<
+          _$AppStateAuthenticatingImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return running(identity);
+    return partiallyAuthenticated(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return running?.call(identity);
+    return partiallyAuthenticated?.call(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (running != null) {
-      return running(identity);
+    if (partiallyAuthenticated != null) {
+      return partiallyAuthenticated(workspaceID);
     }
     return orElse();
   }
@@ -1089,174 +1066,162 @@ class _$RunningImpl implements Running {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return running(this);
+    return partiallyAuthenticated(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return running?.call(this);
+    return partiallyAuthenticated?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (running != null) {
-      return running(this);
+    if (partiallyAuthenticated != null) {
+      return partiallyAuthenticated(this);
     }
     return orElse();
   }
 }
 
-abstract class Running implements AppState {
-  const factory Running(final Identity identity) = _$RunningImpl;
+abstract class AppStateAuthenticating implements AppState {
+  const factory AppStateAuthenticating(final int workspaceID) =
+      _$AppStateAuthenticatingImpl;
 
-  Identity get identity;
+  int get workspaceID;
   @JsonKey(ignore: true)
-  _$$RunningImplCopyWith<_$RunningImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$AppStateAuthenticatingImplCopyWith<_$AppStateAuthenticatingImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RunningRefreshImplCopyWith<$Res> {
-  factory _$$RunningRefreshImplCopyWith(_$RunningRefreshImpl value,
-          $Res Function(_$RunningRefreshImpl) then) =
-      __$$RunningRefreshImplCopyWithImpl<$Res>;
+abstract class _$$AppStateAuthenticatedImplCopyWith<$Res> {
+  factory _$$AppStateAuthenticatedImplCopyWith(
+          _$AppStateAuthenticatedImpl value,
+          $Res Function(_$AppStateAuthenticatedImpl) then) =
+      __$$AppStateAuthenticatedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Identity identity});
-
-  $IdentityCopyWith<$Res> get identity;
+  $Res call({int workspaceID});
 }
 
 /// @nodoc
-class __$$RunningRefreshImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$RunningRefreshImpl>
-    implements _$$RunningRefreshImplCopyWith<$Res> {
-  __$$RunningRefreshImplCopyWithImpl(
-      _$RunningRefreshImpl _value, $Res Function(_$RunningRefreshImpl) _then)
+class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateAuthenticatedImpl>
+    implements _$$AppStateAuthenticatedImplCopyWith<$Res> {
+  __$$AppStateAuthenticatedImplCopyWithImpl(_$AppStateAuthenticatedImpl _value,
+      $Res Function(_$AppStateAuthenticatedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? identity = null,
+    Object? workspaceID = null,
   }) {
-    return _then(_$RunningRefreshImpl(
-      null == identity
-          ? _value.identity
-          : identity // ignore: cast_nullable_to_non_nullable
-              as Identity,
+    return _then(_$AppStateAuthenticatedImpl(
+      null == workspaceID
+          ? _value.workspaceID
+          : workspaceID // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $IdentityCopyWith<$Res> get identity {
-    return $IdentityCopyWith<$Res>(_value.identity, (value) {
-      return _then(_value.copyWith(identity: value));
-    });
   }
 }
 
 /// @nodoc
 
-class _$RunningRefreshImpl implements RunningRefresh {
-  const _$RunningRefreshImpl(this.identity);
+class _$AppStateAuthenticatedImpl implements AppStateAuthenticated {
+  const _$AppStateAuthenticatedImpl(this.workspaceID);
 
   @override
-  final Identity identity;
+  final int workspaceID;
 
   @override
   String toString() {
-    return 'AppState.runningRefresh(identity: $identity)';
+    return 'AppState.authenticated(workspaceID: $workspaceID)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RunningRefreshImpl &&
-            (identical(other.identity, identity) ||
-                other.identity == identity));
+            other is _$AppStateAuthenticatedImpl &&
+            (identical(other.workspaceID, workspaceID) ||
+                other.workspaceID == workspaceID));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, identity);
+  int get hashCode => Object.hash(runtimeType, workspaceID);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RunningRefreshImplCopyWith<_$RunningRefreshImpl> get copyWith =>
-      __$$RunningRefreshImplCopyWithImpl<_$RunningRefreshImpl>(
-          this, _$identity);
+  _$$AppStateAuthenticatedImplCopyWith<_$AppStateAuthenticatedImpl>
+      get copyWith => __$$AppStateAuthenticatedImplCopyWithImpl<
+          _$AppStateAuthenticatedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
+    required TResult Function() starting,
+    required TResult Function() na,
+    required TResult Function() unauthenticated,
+    required TResult Function(int workspaceID) unauthenticatedWksp,
+    required TResult Function(int workspaceID) partiallyAuthenticated,
+    required TResult Function(int workspaceID) authenticated,
   }) {
-    return runningRefresh(identity);
+    return authenticated(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
+    TResult? Function()? starting,
+    TResult? Function()? na,
+    TResult? Function()? unauthenticated,
+    TResult? Function(int workspaceID)? unauthenticatedWksp,
+    TResult? Function(int workspaceID)? partiallyAuthenticated,
+    TResult? Function(int workspaceID)? authenticated,
   }) {
-    return runningRefresh?.call(identity);
+    return authenticated?.call(workspaceID);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
+    TResult Function()? starting,
+    TResult Function()? na,
+    TResult Function()? unauthenticated,
+    TResult Function(int workspaceID)? unauthenticatedWksp,
+    TResult Function(int workspaceID)? partiallyAuthenticated,
+    TResult Function(int workspaceID)? authenticated,
     required TResult orElse(),
   }) {
-    if (runningRefresh != null) {
-      return runningRefresh(identity);
+    if (authenticated != null) {
+      return authenticated(workspaceID);
     }
     return orElse();
   }
@@ -1264,187 +1229,55 @@ class _$RunningRefreshImpl implements RunningRefresh {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
+    required TResult Function(AppStateStarting value) starting,
+    required TResult Function(AppStateNA value) na,
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateUnauthenticatedWksp value)
+        unauthenticatedWksp,
+    required TResult Function(AppStateAuthenticating value)
+        partiallyAuthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
   }) {
-    return runningRefresh(this);
+    return authenticated(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
+    TResult? Function(AppStateStarting value)? starting,
+    TResult? Function(AppStateNA value)? na,
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult? Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
   }) {
-    return runningRefresh?.call(this);
+    return authenticated?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
+    TResult Function(AppStateStarting value)? starting,
+    TResult Function(AppStateNA value)? na,
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateUnauthenticatedWksp value)? unauthenticatedWksp,
+    TResult Function(AppStateAuthenticating value)? partiallyAuthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
-    if (runningRefresh != null) {
-      return runningRefresh(this);
+    if (authenticated != null) {
+      return authenticated(this);
     }
     return orElse();
   }
 }
 
-abstract class RunningRefresh implements AppState {
-  const factory RunningRefresh(final Identity identity) = _$RunningRefreshImpl;
+abstract class AppStateAuthenticated implements AppState {
+  const factory AppStateAuthenticated(final int workspaceID) =
+      _$AppStateAuthenticatedImpl;
 
-  Identity get identity;
+  int get workspaceID;
   @JsonKey(ignore: true)
-  _$$RunningRefreshImplCopyWith<_$RunningRefreshImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LoggingOutImplCopyWith<$Res> {
-  factory _$$LoggingOutImplCopyWith(
-          _$LoggingOutImpl value, $Res Function(_$LoggingOutImpl) then) =
-      __$$LoggingOutImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoggingOutImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$LoggingOutImpl>
-    implements _$$LoggingOutImplCopyWith<$Res> {
-  __$$LoggingOutImplCopyWithImpl(
-      _$LoggingOutImpl _value, $Res Function(_$LoggingOutImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LoggingOutImpl implements LoggingOut {
-  const _$LoggingOutImpl();
-
-  @override
-  String toString() {
-    return 'AppState.loggingOut()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoggingOutImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() wellcome,
-    required TResult Function() loginRegisterFlow,
-    required TResult Function(int workspaceId) login,
-    required TResult Function(Identity identity) running,
-    required TResult Function(Identity identity) runningRefresh,
-    required TResult Function() loggingOut,
-  }) {
-    return loggingOut();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? wellcome,
-    TResult? Function()? loginRegisterFlow,
-    TResult? Function(int workspaceId)? login,
-    TResult? Function(Identity identity)? running,
-    TResult? Function(Identity identity)? runningRefresh,
-    TResult? Function()? loggingOut,
-  }) {
-    return loggingOut?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? wellcome,
-    TResult Function()? loginRegisterFlow,
-    TResult Function(int workspaceId)? login,
-    TResult Function(Identity identity)? running,
-    TResult Function(Identity identity)? runningRefresh,
-    TResult Function()? loggingOut,
-    required TResult orElse(),
-  }) {
-    if (loggingOut != null) {
-      return loggingOut();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(Unknown value) unknown,
-    required TResult Function(Wellcome value) wellcome,
-    required TResult Function(LoginRegisterFlow value) loginRegisterFlow,
-    required TResult Function(Login value) login,
-    required TResult Function(Running value) running,
-    required TResult Function(RunningRefresh value) runningRefresh,
-    required TResult Function(LoggingOut value) loggingOut,
-  }) {
-    return loggingOut(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(Unknown value)? unknown,
-    TResult? Function(Wellcome value)? wellcome,
-    TResult? Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult? Function(Login value)? login,
-    TResult? Function(Running value)? running,
-    TResult? Function(RunningRefresh value)? runningRefresh,
-    TResult? Function(LoggingOut value)? loggingOut,
-  }) {
-    return loggingOut?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(Unknown value)? unknown,
-    TResult Function(Wellcome value)? wellcome,
-    TResult Function(LoginRegisterFlow value)? loginRegisterFlow,
-    TResult Function(Login value)? login,
-    TResult Function(Running value)? running,
-    TResult Function(RunningRefresh value)? runningRefresh,
-    TResult Function(LoggingOut value)? loggingOut,
-    required TResult orElse(),
-  }) {
-    if (loggingOut != null) {
-      return loggingOut(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class LoggingOut implements AppState {
-  const factory LoggingOut() = _$LoggingOutImpl;
+  _$$AppStateAuthenticatedImplCopyWith<_$AppStateAuthenticatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

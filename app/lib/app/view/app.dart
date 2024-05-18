@@ -18,11 +18,11 @@ class MainApp extends StatelessWidget {
     return RepositoryProvider.value(
       value: _repository,
       child: BlocProvider(
-        create: (c) => AppBloc(c.read()),
+        create: (c) => AppBloc(),
         // See AppRouter documentation for more information.
         child: BlocListener<AppBloc, AppState>(
           listener: (context, state) {
-            AppRouter.router.go(AppRouter.path(state));
+            AppRouter.router.refresh();
           },
           child: MaterialApp.router(
               theme: ThemeData.light(useMaterial3: true),

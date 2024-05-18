@@ -23,10 +23,11 @@ class AppGoRoute extends GoRoute {
   }) : super();
 
   @override
-  get redirect => redirectIfNotAuth;
+  get redirect => _guard;
 
-  String? redirectIfNotAuth(BuildContext context, GoRouterState routerState) {
+  Future<String?> _guard(
+      BuildContext context, GoRouterState routerState) async {
     final appBloc = context.read<AppBloc>();
-    return appBloc.redirect(this, routerState);
+    return null;
   }
 }

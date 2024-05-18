@@ -25,26 +25,6 @@ class AppRouter {
   static late final GoRouter router;
   static AppRouter get instance => _instance;
 
-  static String path(AppState state) {
-    switch (state) {
-      case Unknown():
-        return AppRoutes.slash.path;
-      case Wellcome():
-        return AppRoutes.wellcome.path;
-      case LoginRegisterFlow():
-        return AppRoutes.login.path(1714116660140);
-      case Login():
-        return AppRoutes.confirmPassword.path(1714116660140);
-      case Running(identity: var identity):
-        return AppRoutes.home.path(identity.workspaceId);
-      case RunningRefresh():
-        return AppRoutes.login.path(1714116660140);
-        ; // TODO: see how to trigger modal confirm password
-      case LoggingOut():
-        return AppRoutes.logout.path;
-    }
-  }
-
   GoRouterState? authState; // holds the path to redirect to after login
 
   static final GlobalKey<NavigatorState> _parentNavigatorKey =
@@ -227,13 +207,14 @@ class AppRouter {
     return GoRoute(
         path: path,
         redirect: (BuildContext context, GoRouterState state) {
-          final appState = context.read<AppBloc>().state;
-          if (appState is! Running) {
+          final workspaceID = context.read<AppBloc>().state.workspaceID;
+
+          if (workspaceID == null) {
             throw FormatException(
                 'Cannot go to conversations without workspace', state.fullPath);
           }
 
-          return workspacePath.path(appState.identity.workspaceId);
+          return workspacePath.path(workspaceID);
         });
   }
 
@@ -258,19 +239,6 @@ class AppRouter {
           'Cannot go on a conversation only from a workspaced resource',
           crtUri.path);
     }
-
-    // Seems like if go is called after a replace with the same uri
-    // it will still result in a double push because it not only checks
-    // the uri but also the type in go definition:
-    //   void go(String location, {Object? extra}) {
-    //     _setValue(
-    //       location,
-    //       RouteInformationState<void>(
-    //         extra: extra,
-    //         type: NavigatingType.go,
-    //       ),
-    //     );
-    //   }
 
     router.go(
         AppRoutes.homeConversation
