@@ -216,13 +216,11 @@ class AppRouter {
     ];
 
     router = GoRouter(
-        navigatorKey: _parentNavigatorKey,
-        routes: routes,
-        debugLogDiagnostics: true,
-        redirect: (BuildContext context, GoRouterState state) {
-          print('going to ${state.fullPath}');
-          return null;
-        });
+      navigatorKey: _parentNavigatorKey,
+      routes: routes,
+      routerNeglect: true, // TODO: see if this is a good idea
+      debugLogDiagnostics: true,
+    );
   }
 
   GoRoute noPatternRoute(String path, WorkspacePath workspacePath) {
