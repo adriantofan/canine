@@ -2,6 +2,7 @@ part of 'app_bloc.dart';
 
 @freezed
 sealed class AppState with _$AppState {
+  const AppState._();
   const factory AppState.starting() = AppStateStarting;
   const factory AppState.na() = AppStateNA;
   const factory AppState.unauthenticated() = AppStateUnauthenticated;
@@ -21,5 +22,9 @@ sealed class AppState with _$AppState {
       return (this as AppStateAuthenticated).workspaceID;
     }
     return null;
+  }
+
+  bool get isAuthenticated {
+    return this is AppStateAuthenticated;
   }
 }

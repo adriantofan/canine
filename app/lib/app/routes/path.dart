@@ -13,11 +13,11 @@ class RootPath implements RouterPath {
 }
 
 class WorkspacePath implements RouterPath {
+  static const String pathKey = 'workspaceId';
   @override
   final String pattern;
   final String subPath;
-  const WorkspacePath({required this.subPath})
-      : pattern = '/:workspaceId$subPath';
+  const WorkspacePath({required this.subPath}) : pattern = '/:$pathKey$subPath';
 
   String path(int workspaceId) {
     return '/$workspaceId$subPath';
@@ -35,8 +35,13 @@ class WorkspacePath implements RouterPath {
     return '/$rest'.startsWith(subPath);
   }
 
+  static int? parseWorkspaceId(Uri path) {
+    final segments = path.pathSegments;
+    return segments.isNotEmpty ? int.tryParse(path.pathSegments[0]) : null;
+  }
+
   int? workspaceId(Uri path) {
-    return int.tryParse(path.pathSegments[0]);
+    return WorkspacePath.parseWorkspaceId(path);
   }
 }
 

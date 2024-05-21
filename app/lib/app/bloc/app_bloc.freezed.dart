@@ -422,8 +422,8 @@ class __$$AppStateStartingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateStartingImpl implements AppStateStarting {
-  const _$AppStateStartingImpl();
+class _$AppStateStartingImpl extends AppStateStarting {
+  const _$AppStateStartingImpl() : super._();
 
   @override
   String toString() {
@@ -528,8 +528,9 @@ class _$AppStateStartingImpl implements AppStateStarting {
   }
 }
 
-abstract class AppStateStarting implements AppState {
+abstract class AppStateStarting extends AppState {
   const factory AppStateStarting() = _$AppStateStartingImpl;
+  const AppStateStarting._() : super._();
 }
 
 /// @nodoc
@@ -550,8 +551,8 @@ class __$$AppStateNAImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateNAImpl implements AppStateNA {
-  const _$AppStateNAImpl();
+class _$AppStateNAImpl extends AppStateNA {
+  const _$AppStateNAImpl() : super._();
 
   @override
   String toString() {
@@ -656,8 +657,9 @@ class _$AppStateNAImpl implements AppStateNA {
   }
 }
 
-abstract class AppStateNA implements AppState {
+abstract class AppStateNA extends AppState {
   const factory AppStateNA() = _$AppStateNAImpl;
+  const AppStateNA._() : super._();
 }
 
 /// @nodoc
@@ -680,8 +682,8 @@ class __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateUnauthenticatedImpl implements AppStateUnauthenticated {
-  const _$AppStateUnauthenticatedImpl();
+class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
+  const _$AppStateUnauthenticatedImpl() : super._();
 
   @override
   String toString() {
@@ -787,8 +789,9 @@ class _$AppStateUnauthenticatedImpl implements AppStateUnauthenticated {
   }
 }
 
-abstract class AppStateUnauthenticated implements AppState {
+abstract class AppStateUnauthenticated extends AppState {
   const factory AppStateUnauthenticated() = _$AppStateUnauthenticatedImpl;
+  const AppStateUnauthenticated._() : super._();
 }
 
 /// @nodoc
@@ -826,8 +829,8 @@ class __$$AppStateUnauthenticatedWkspImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateUnauthenticatedWkspImpl implements AppStateUnauthenticatedWksp {
-  const _$AppStateUnauthenticatedWkspImpl(this.workspaceID);
+class _$AppStateUnauthenticatedWkspImpl extends AppStateUnauthenticatedWksp {
+  const _$AppStateUnauthenticatedWkspImpl(this.workspaceID) : super._();
 
   @override
   final int workspaceID;
@@ -945,9 +948,10 @@ class _$AppStateUnauthenticatedWkspImpl implements AppStateUnauthenticatedWksp {
   }
 }
 
-abstract class AppStateUnauthenticatedWksp implements AppState {
+abstract class AppStateUnauthenticatedWksp extends AppState {
   const factory AppStateUnauthenticatedWksp(final int workspaceID) =
       _$AppStateUnauthenticatedWkspImpl;
+  const AppStateUnauthenticatedWksp._() : super._();
 
   int get workspaceID;
   @JsonKey(ignore: true)
@@ -990,8 +994,8 @@ class __$$AppStateAuthenticatingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateAuthenticatingImpl implements AppStateAuthenticating {
-  const _$AppStateAuthenticatingImpl(this.workspaceID);
+class _$AppStateAuthenticatingImpl extends AppStateAuthenticating {
+  const _$AppStateAuthenticatingImpl(this.workspaceID) : super._();
 
   @override
   final int workspaceID;
@@ -1109,9 +1113,10 @@ class _$AppStateAuthenticatingImpl implements AppStateAuthenticating {
   }
 }
 
-abstract class AppStateAuthenticating implements AppState {
+abstract class AppStateAuthenticating extends AppState {
   const factory AppStateAuthenticating(final int workspaceID) =
       _$AppStateAuthenticatingImpl;
+  const AppStateAuthenticating._() : super._();
 
   int get workspaceID;
   @JsonKey(ignore: true)
@@ -1153,8 +1158,8 @@ class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppStateAuthenticatedImpl implements AppStateAuthenticated {
-  const _$AppStateAuthenticatedImpl(this.workspaceID);
+class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
+  const _$AppStateAuthenticatedImpl(this.workspaceID) : super._();
 
   @override
   final int workspaceID;
@@ -1272,9 +1277,10 @@ class _$AppStateAuthenticatedImpl implements AppStateAuthenticated {
   }
 }
 
-abstract class AppStateAuthenticated implements AppState {
+abstract class AppStateAuthenticated extends AppState {
   const factory AppStateAuthenticated(final int workspaceID) =
       _$AppStateAuthenticatedImpl;
+  const AppStateAuthenticated._() : super._();
 
   int get workspaceID;
   @JsonKey(ignore: true)
