@@ -11,7 +11,7 @@ enum AuthStatusLoginState {
 }
 
 @freezed
-class AuthStatus with _$AuthStatus {
+sealed class AuthStatus with _$AuthStatus {
   const factory AuthStatus.unknown() = AuthStatusUnknown;
   const factory AuthStatus.disconnected() = AuthStatusDisconnected;
   const factory AuthStatus.login(AuthStatusLoginState state) = AuthStatusLogin;

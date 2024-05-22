@@ -20,15 +20,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(
+        RepositoryProvider<SyncRepository>.value(
           value: _syncRepository,
         ),
-        RepositoryProvider.value(
+        RepositoryProvider<AuthRepository>.value(
           value: _authRepository,
         ),
       ],
       child: BlocProvider(
-        create: (c) => AppBloc(context.read<AuthRepository>()),
+        create: (c) => AppBloc(c.read<AuthRepository>()),
         // See AppRouter documentation for more information.
         child: BlocListener<AppBloc, AuthStatus>(
           listener: (context, state) {
