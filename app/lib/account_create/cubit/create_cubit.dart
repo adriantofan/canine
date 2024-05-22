@@ -5,15 +5,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../repository/repository.dart';
 
-part 'login_cubit.freezed.dart';
-part 'login_state.dart';
+part 'create_cubit.freezed.dart';
+part 'create_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  final SyncRepository _syncRepository;
-
-  LoginCubit(this._syncRepository, int workspaceId)
-      : super(
-            LoginState.initial(workspaceId: WorkspaceId.dirty('$workspaceId')));
+class CreateCubit extends Cubit<CreateState> {
+  final AuthRepository _authRepository;
+  final int _workspaceId;
+  CreateCubit(this._authRepository, this._workspaceId)
+      : super(CreateState.initial(
+            workspaceId: WorkspaceId.dirty('$_workspaceId')));
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
@@ -48,7 +48,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
-  Future<void> logInWithCredentials() async {
+  Future<void> createUserWithCredentials() async {
     if (!state.isValid) return;
     final workspaceId = int.tryParse(state.workspaceId.value);
     if (workspaceId == null) {
@@ -59,11 +59,11 @@ class LoginCubit extends Cubit<LoginState> {
     }
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      await _syncRepository.login(
-        workspaceId,
-        state.email.value,
-        state.password.value,
-      );
+      await _authRepository.signUp(
+          workspaceId: workspaceId,
+          email: state.email.value,
+          password: state.password.value);
+
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on APIError catch (e) {
       emit(

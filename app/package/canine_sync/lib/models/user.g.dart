@@ -7,8 +7,8 @@ part of 'user.dart';
 // **************************************************************************
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      id: json['id'] as int,
-      workspaceId: json['workspace_id'] as int,
+      id: (json['id'] as num).toInt(),
+      workspaceId: (json['workspace_id'] as num).toInt(),
       messagingAddress: json['messaging_address'] as String,
       type: $enumDecode(_$UserTypeEnumMap, json['type']),
       createdAt: const TimestampSerializer().fromJson(json['created_at']),

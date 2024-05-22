@@ -2,10 +2,12 @@ package app
 
 import (
 	genModel "back/.gen/canine/public/model"
+	"back/internal/pkg/auth"
 	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
+
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
 	"context"
@@ -25,6 +27,7 @@ type Service struct {
 	eventLogFatalErr   func(error)
 	timeService        infrastructure.TimeService
 	attachmentsService service.Attachments
+	authService        auth.Service
 }
 
 func NewService(
@@ -65,6 +68,12 @@ type CreateUserData struct {
 	MessagingAddress string            `binding:"required" json:"messaging_address"`
 	UserType         genModel.UserType `binding:"required" json:"user_type"         validate:"oneof=external internal"`
 	Password         string            `json:"password"`
+}
+
+type WorkspaceLoginData struct {
+	WorkspaceID int64  `binding:"required" json:"workspace_id"`
+	Token       string `binding:"required" json:"token"`
+	Method      string `binding:"required" json:"method"`
 }
 
 type CreateMessageData struct {
@@ -413,4 +422,15 @@ func (s *Service) sendChangesToEventLog(
 			break
 		}
 	}
+}
+
+func (s *Service) WorkspaceLogin(
+	ctx context.Context,
+	data WorkspaceLoginData) (string, error) {
+	_, err := s.t.WithoutTransaction()
+	if err != nil {
+		return "", fmt.Errorf("WorkspaceLogin begin transaction: %w", err)
+	}
+
+	return "", nil
 }

@@ -27,4 +27,6 @@ const (
 	ErrorCodePayloadExists  = "payload_exists"
 	ErrorCodeUnauthorized   = "unauthorized"
 	ErrorCodeForbidden      = "forbidden"
+
+	ErrorCodeAuthNoWorkspaceUserFound = "auth_no_workspace_user_found"
 )

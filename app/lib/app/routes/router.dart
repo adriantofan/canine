@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../account_create/account_create.dart';
 import '../../conversations/conversations.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
@@ -175,8 +176,21 @@ class AppRouter {
           workspaceNamespaced: true,
           parentNavigatorKey: _parentNavigatorKey,
           path: AppRoutes.login.pattern,
-          pageBuilder: (context, state) =>
-              getPage(child: const LoginPage(), state: state)),
+          pageBuilder: (context, state) {
+            final workspaceId = WorkspacePath.parseWorkspaceId(state.uri);
+            return getPage(
+                child: LoginPage(workspaceId: workspaceId!), state: state);
+          }),
+      AppGoRoute(
+          onlyAuthenticated: false,
+          workspaceNamespaced: true,
+          parentNavigatorKey: _parentNavigatorKey,
+          path: AppRoutes.createAccount.pattern,
+          pageBuilder: (context, state) {
+            final workspaceId = WorkspacePath.parseWorkspaceId(state.uri);
+            return getPage(
+                child: CreatePage(workspaceId: workspaceId!), state: state);
+          }),
       AppGoRoute(
         onlyAuthenticated: false, // TODO: ??
         workspaceNamespaced: true,
@@ -198,7 +212,7 @@ class AppRouter {
     router = GoRouter(
       navigatorKey: _parentNavigatorKey,
       routes: routes,
-      routerNeglect: true, // TODO: see if this is a good idea
+      // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
       debugLogDiagnostics: true,
     );
   }
@@ -207,7 +221,7 @@ class AppRouter {
     return GoRoute(
         path: path,
         redirect: (BuildContext context, GoRouterState state) {
-          final workspaceID = context.read<AppBloc>().state.workspaceID;
+          final workspaceID = context.read<AppBloc>().workspaceId;
 
           if (workspaceID == null) {
             throw FormatException(
@@ -270,6 +284,14 @@ class AppRouter {
     }
     final newPath = AppRoutes.homeNew.path(AppRoutes.home.workspaceId(crtUri)!);
     router.go(newPath, extra: draftConversation);
+  }
+
+  static goCreateAccountInWorkspace(int workspaceId) {
+    router.go(AppRoutes.createAccount.path(workspaceId));
+  }
+
+  static goLoginInWorkspace(int workspaceId) {
+    router.go(AppRoutes.login.path(workspaceId));
   }
 
   static Page getPage({

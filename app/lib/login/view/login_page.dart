@@ -6,8 +6,9 @@ import '../cubit/login_cubit.dart';
 import 'login_form.dart';
 
 class LoginPage extends StatelessWidget {
-  final String workspaceId;
-  const LoginPage({super.key, this.workspaceId = ''});
+  final int workspaceId;
+  LoginPage({required this.workspaceId})
+      : super(key: ValueKey('loginPage_$workspaceId'));
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class LoginPage extends StatelessWidget {
         child: BlocProvider(
           create: (_) =>
               LoginCubit(context.read<SyncRepository>(), workspaceId),
-          child: const LoginForm(),
+          child: LoginForm(workspaceId: workspaceId),
         ),
       ),
     );

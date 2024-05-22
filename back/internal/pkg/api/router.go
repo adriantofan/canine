@@ -20,9 +20,11 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 	apiRoutes.POST("/login", authMiddleware.LoginHandler)
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
 	workspaceGroup := apiRoutes.Group("/:workspace_id")
-	workspaceGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
+	// workspaceGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
+	workspaceGroup.POST("/login", handlers.WorkspaceLogin)
 
-	workspaceGroup.Use(authMiddleware.MiddlewareFunc())
+	// TODO: write a firebase middleware
+	// workspaceGroup.Use(authMiddleware.MiddlewareFunc())
 
 	workspaceGroup.POST("/users", handlers.CreateUser)
 

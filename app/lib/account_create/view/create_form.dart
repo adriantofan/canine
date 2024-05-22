@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../../app/routes/routes.dart';
-import '../cubit/login_cubit.dart';
+import '../cubit/create_cubit.dart';
 
-class LoginForm extends StatelessWidget {
+class CreateForm extends StatelessWidget {
   final int workspaceId;
-  LoginForm({required this.workspaceId})
-      : super(key: ValueKey('loginForm_form_$workspaceId'));
+  CreateForm({required this.workspaceId})
+      : super(key: ValueKey('createForm_form_$workspaceId'));
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
+    return BlocListener<CreateCubit, CreateState>(
       listener: (context, state) {
         if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -43,7 +43,7 @@ class LoginForm extends StatelessWidget {
               const SizedBox(height: 8),
               _LoginButton(),
               const SizedBox(height: 4),
-              _SignUpButton(workspaceId: workspaceId),
+              _SignInButton(workspaceId: workspaceId),
             ],
           ),
         ),
@@ -55,14 +55,13 @@ class LoginForm extends StatelessWidget {
 class _WorkspaceIdInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocBuilder<CreateCubit, CreateState>(
       buildWhen: (previous, current) =>
           previous.workspaceId != current.workspaceId,
       builder: (context, state) {
         return TextFormField(
-          key: const Key('loginForm_workspaceIdInput_textField'),
-          onChanged: (workspaceID) =>
-              context.read<LoginCubit>().workspaceIdChanged(workspaceID),
+          key: const Key('createForm_workspaceIdInput_textField'),
+          readOnly: true,
           keyboardType: TextInputType.number,
           initialValue: state.workspaceId.value,
           decoration: InputDecoration(
@@ -81,12 +80,12 @@ class _WorkspaceIdInput extends StatelessWidget {
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocBuilder<CreateCubit, CreateState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextFormField(
-          key: const Key('loginForm_emailInput_textField'),
-          onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
+          key: const Key('createForm_emailInput_textField'),
+          onChanged: (email) => context.read<CreateCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           initialValue: state.email.value,
           decoration: InputDecoration(
@@ -104,13 +103,13 @@ class _EmailInput extends StatelessWidget {
 class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocBuilder<CreateCubit, CreateState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return TextFormField(
-          key: const Key('loginForm_passwordInput_textField'),
+          key: const Key('createForm_passwordInput_textField'),
           onChanged: (password) =>
-              context.read<LoginCubit>().passwordChanged(password),
+              context.read<CreateCubit>().passwordChanged(password),
           initialValue: state.password.value,
           obscureText: true,
           decoration: InputDecoration(
@@ -128,12 +127,12 @@ class _PasswordInput extends StatelessWidget {
 class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocBuilder<CreateCubit, CreateState>(
       builder: (context, state) {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
-                key: const Key('loginForm_continue_raisedButton'),
+                key: const Key('createForm_continue_raisedButton'),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -141,28 +140,29 @@ class _LoginButton extends StatelessWidget {
                   backgroundColor: const Color(0xFFFFD600),
                 ),
                 onPressed: state.isValid
-                    ? () => context.read<LoginCubit>().logInWithCredentials()
+                    ? () =>
+                        context.read<CreateCubit>().createUserWithCredentials()
                     : null,
-                child: const Text('LOGIN'),
+                child: const Text('CREATE ACCOUNT'),
               );
       },
     );
   }
 }
 
-class _SignUpButton extends StatelessWidget {
+class _SignInButton extends StatelessWidget {
   final int workspaceId;
-  _SignUpButton({required this.workspaceId})
-      : super(key: ValueKey('loginForm_createAccount_flatButton_$workspaceId'));
+  _SignInButton({required this.workspaceId})
+      : super(key: ValueKey('createForm_signIn_flatButton_$workspaceId'));
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextButton(
-      key: Key('loginForm_createAccount_flatButton_$workspaceId'),
-      onPressed: () => AppRouter.goCreateAccountInWorkspace(workspaceId),
+      key: Key('loginForm_createAccount_signIn_$workspaceId'),
+      onPressed: () => AppRouter.goLoginInWorkspace(workspaceId),
       child: Text(
-        'CREATE ACCOUNT',
+        'LOGIN',
         style: TextStyle(color: theme.primaryColor),
       ),
     );

@@ -81,7 +81,7 @@ linters:
     - testpackage
     - thelper
     - tparallel
-    - typecheck
+#    - typecheck
     - unconvert
     - unparam
     - unused
@@ -142,6 +142,7 @@ linters-settings:
           - 'github.com/rs/zerolog/log'
           - 'github.com/gin-gonic/gin'
           - 'github.com/appleboy/gin-jwt/v2'
+          - 'firebase.google.com/go/v4/auth'
   ireturn:
     allow:
       - anon

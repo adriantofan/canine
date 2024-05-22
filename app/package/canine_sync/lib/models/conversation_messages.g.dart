@@ -9,7 +9,7 @@ part of 'conversation_messages.dart';
 _$ConversationMessagesImpl _$$ConversationMessagesImplFromJson(
         Map<String, dynamic> json) =>
     _$ConversationMessagesImpl(
-      conversationId: json['conversation_id'] as int,
+      conversationId: (json['conversation_id'] as num).toInt(),
       messages: (json['messages'] as List<dynamic>)
           .map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),

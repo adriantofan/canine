@@ -21,9 +21,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Config().loadConfig();
   final sync = await start(Config().apiBase, Config().wsBase);
-  final repository = SyncRepository(sync);
+  final syncRepository = SyncRepository(sync);
+  final authRepository = AuthRepository(
+      apiClient: APIClientBase(Config().apiBase, Config().wsBase));
   AppRouter.instance; // Make sure the router is initialized when app starts
   runApp(MainApp(
-    repository: repository,
+    syncRepository: syncRepository,
+    authRepository: authRepository,
   ));
 }

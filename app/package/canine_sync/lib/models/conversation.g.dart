@@ -8,8 +8,8 @@ part of 'conversation.dart';
 
 _$ConversationImpl _$$ConversationImplFromJson(Map<String, dynamic> json) =>
     _$ConversationImpl(
-      id: json['id'] as int,
-      externalUserId: json['external_user_id'] as int,
+      id: (json['id'] as num).toInt(),
+      externalUserId: (json['external_user_id'] as num).toInt(),
       name: json['name'] as String,
       createdAt: const TimestampSerializer().fromJson(json['created_at']),
       updatedAt: const TimestampSerializer().fromJson(json['updated_at']),

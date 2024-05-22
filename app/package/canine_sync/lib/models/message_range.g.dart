@@ -8,7 +8,7 @@ part of 'message_range.dart';
 
 _$MessageRangeImpl _$$MessageRangeImplFromJson(Map<String, dynamic> json) =>
     _$MessageRangeImpl(
-      conversationId: json['conversation_id'] as int,
+      conversationId: (json['conversation_id'] as num).toInt(),
       range: Range.fromJson(json['range'] as Map<String, dynamic>),
     );
 

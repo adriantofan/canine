@@ -3,7 +3,7 @@ package api
 import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth"
+	"back/internal/pkg/auth/midleware"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	domainServices "back/internal/pkg/domain/infrastructure/service"
 	"back/internal/pkg/env"
@@ -17,6 +17,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	firebase "firebase.google.com/go/v4"
 
 	"github.com/rs/zerolog/log"
 
@@ -61,6 +63,11 @@ func Run(args []string) {
 	transactionFactory := postgres.NewTransactionFactory(connexion)
 	inMemoryEventLog := eventlog.NewInMemoryEventLog()
 
+	_, err = firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create firebase app")
+	}
+
 	fatalCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -79,7 +86,7 @@ func Run(args []string) {
 
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
-	middleware, err := auth.Middleware(transactionFactory, *authRealm, *authSecret)
+	middleware, err := midleware.Middleware(transactionFactory, *authRealm, *authSecret)
 	if err != nil {
 		log.Printf("failed to create middleware: %v", err)
 
@@ -90,6 +97,7 @@ func Run(args []string) {
 		middleware,
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
+
 	//handlers := apiInternal.MakeHandlers(repository)
 	//r := mux.NewRouter()
 	//apiInternal.AddRoutes(r, handlers)

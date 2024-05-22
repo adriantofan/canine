@@ -6,21 +6,31 @@ import '../bloc/app_bloc.dart';
 import '../routes/routes.dart';
 
 class MainApp extends StatelessWidget {
-  final SyncRepository _repository;
+  final SyncRepository _syncRepository;
+  final AuthRepository _authRepository;
 
   const MainApp({
-    required SyncRepository repository,
+    required SyncRepository syncRepository,
+    required AuthRepository authRepository,
     super.key,
-  }) : _repository = repository;
+  })  : _syncRepository = syncRepository,
+        _authRepository = authRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _repository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(
+          value: _syncRepository,
+        ),
+        RepositoryProvider.value(
+          value: _authRepository,
+        ),
+      ],
       child: BlocProvider(
-        create: (c) => AppBloc(),
+        create: (c) => AppBloc(context.read<AuthRepository>()),
         // See AppRouter documentation for more information.
-        child: BlocListener<AppBloc, AppState>(
+        child: BlocListener<AppBloc, AuthStatus>(
           listener: (context, state) {
             AppRouter.router.refresh();
           },

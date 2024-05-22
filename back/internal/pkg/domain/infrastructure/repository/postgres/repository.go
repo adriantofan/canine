@@ -587,3 +587,25 @@ func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string) (m
 	}
 	return workspace, fmt.Errorf("failed to create workspace (retry) %s", name)
 }
+
+func (s *MessageRepository) GetUserByFBUID(ctx context.Context, workspaceID int64, fbUID string) (model.User, error) {
+	var user model.User
+	stmt := SELECT(table.User.AllColumns).
+		FROM(table.User).
+		WHERE(
+			AND(
+				table.User.WorkspaceID.EQ(Int64(workspaceID)),
+				// TODO add this back when the case
+				//table.User.FBUID.EQ(String(fbUID)),
+			))
+	err := stmt.QueryContext(ctx, s.db, &user)
+
+	if errors.Is(err, qrm.ErrNoRows) {
+		return user, domain.ErrUserNotFound
+	}
+	if err != nil {
+		return user, fmt.Errorf("failed to get user by FBUID: %w", err)
+	}
+
+	return user, nil
+}

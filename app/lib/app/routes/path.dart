@@ -19,7 +19,7 @@ class WorkspacePath implements RouterPath {
   final String subPath;
   const WorkspacePath({required this.subPath}) : pattern = '/:$pathKey$subPath';
 
-  String path(int workspaceId) {
+  String path(dynamic workspaceId) {
     return '/$workspaceId$subPath';
   }
 

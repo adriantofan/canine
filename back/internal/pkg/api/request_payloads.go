@@ -10,6 +10,7 @@ import (
 
 type CreateWorkspacePayload = app.CreateWorkspaceData
 type CreateUserPayload = app.CreateUserData
+type WorkspaceLoginData = app.WorkspaceLoginData
 
 type CreateConversationPayload struct {
 	RecipientMessagingAddress string `json:"recipient_messaging_address"`

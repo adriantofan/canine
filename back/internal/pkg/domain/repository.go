@@ -96,4 +96,5 @@ type ChatRepository interface {
 		ctx context.Context,
 		user model.User,
 		current model.RTCRemote) (model.RTCRemoteUpdate, error)
+	GetUserByFBUID(ctx context.Context, workspaceID int64, fbUID string) (model.User, error)
 }

@@ -8,9 +8,9 @@ part of 'pagination_meta.dart';
 
 _$PaginationMetaImpl _$$PaginationMetaImplFromJson(Map<String, dynamic> json) =>
     _$PaginationMetaImpl(
-      limit: json['limit'] as int,
-      prevId: json['prev_id'] as int,
-      nextId: json['next_id'] as int,
+      limit: (json['limit'] as num).toInt(),
+      prevId: (json['prev_id'] as num).toInt(),
+      nextId: (json['next_id'] as num).toInt(),
       hasMore: json['has_more'] as bool,
     );
 

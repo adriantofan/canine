@@ -1,4 +1,4 @@
-package auth
+package midleware
 
 import (
 	apiInternal "back/internal/pkg/api/model"

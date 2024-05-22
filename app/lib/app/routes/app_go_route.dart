@@ -30,8 +30,11 @@ class AppGoRoute extends GoRoute {
   Future<String?> _guard(
       BuildContext context, GoRouterState routerState) async {
     final appBloc = context.read<AppBloc>();
-    onLogin(workspaceId) =>
-        "${AppRoutes.login.path(workspaceId)}?ref=${routerState.uri}";
+
+    onLogin(workspaceId) {
+      return "${AppRoutes.login.path(workspaceId)}?ref=${routerState.uri}";
+    }
+
     final isOnWorkspace =
         routerState.pathParameters.containsKey(WorkspacePath.pathKey);
     final workspaceId =
@@ -47,13 +50,13 @@ class AppGoRoute extends GoRoute {
     final isOnAnotherWorkspace =
         isOnWorkspace && workspaceId != appBloc.workspaceId;
 
-    if (isOnLogin && appBloc.state.isAuthenticated && !isOnAnotherWorkspace) {
+    if (isOnLogin && appBloc.isAuthenticated && !isOnAnotherWorkspace) {
       // Don't go on login if not necessary
       return AppRoutes.home.path(workspaceId);
     }
 
     if (!isOnLogin && onlyAuthenticated) {
-      if (!appBloc.state.isAuthenticated || isOnAnotherWorkspace) {
+      if (!appBloc.isAuthenticated || isOnAnotherWorkspace) {
         return onLogin(workspaceId!);
       }
     }

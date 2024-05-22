@@ -4,7 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	apiModel "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth"
+	"back/internal/pkg/auth/midleware"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
@@ -78,6 +78,27 @@ func (h ChatHandlers) CreateWorkspace(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, workspaceWithUser)
 }
+
+func (h ChatHandlers) WorkspaceLogin(ctx *gin.Context) {
+	var payload WorkspaceLoginData
+
+	err := ctx.ShouldBindJSON(&payload)
+	if err != nil {
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	user, err := h.Service.WorkspaceLogin(ctx, payload)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+	ctx.JSON(http.StatusCreated, user)
+}
+
 func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 	var payload CreateUserPayload
 
@@ -421,11 +442,15 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 		id = new(int64)
 		*id, err = strconv.ParseInt(lowerThanStr, 10, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
+			c.JSON(
+				http.StatusBadRequest,
+				apiModel.MakeError(apiModel.ErrorCodeInvalidRequest, "Invalid payload - lower_than", err.Error()))
+
 			return 0, nil, 0, false
 		}
 		direction = domain.DirectionBackward
 	}
+
 	return limit, id, direction, true
 }
 
@@ -440,5 +465,5 @@ func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
 }
 
 func getIdentity(ctx *gin.Context) *app.Identity {
-	return ctx.MustGet(auth.IdentityKey).(*app.Identity)
+	return ctx.MustGet(midleware.IdentityKey).(*app.Identity)
 }

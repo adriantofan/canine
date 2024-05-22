@@ -16,7 +16,7 @@ GOIMPORTS := $(GOBIN)/goimports
 GOIMPORTS_VERSION := v0.17.0 # https://pkg.go.dev/golang.org/x/tools/cmd/goimports?tab=versions
 
 GOLANGCI_LINT := $(GOBIN)/golangci-lint
-GOLANGCI_LINT_VERSION := v1.56.1 # https://github.com/golangci/golangci-lint/releases
+GOLANGCI_LINT_VERSION := v1.58.2 # https://github.com/golangci/golangci-lint/releases
 
 GOLINES := $(GOBIN)/golines
 GOLINES_VERSION := v0.11.0 # https://github.com/segmentio/golines/releases
