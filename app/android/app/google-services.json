@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:533854786827:android:0289668eb22734ace43e0e",
+        "mobilesdk_app_id": "1:533854786827:android:063c7b7240fad493e43e0e",
         "android_client_info": {
-          "package_name": "com.example.app"
+          "package_name": "fr.clemia.app"
         }
       },
       "oauth_client": [],
