@@ -4,7 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	apiModel "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth/midleware"
+	jwtmidleware "back/internal/pkg/auth/jwt-midleware"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
@@ -465,5 +465,7 @@ func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
 }
 
 func getIdentity(ctx *gin.Context) *app.Identity {
-	return ctx.MustGet(midleware.IdentityKey).(*app.Identity)
+	log.Fatal().Msg("Not implemented yet - tap in to auth middleware to get identity")
+
+	return ctx.MustGet(jwtmidleware.IdentityKey).(*app.Identity)
 }

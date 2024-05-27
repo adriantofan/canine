@@ -3,7 +3,6 @@ package api
 import (
 	"back/internal/pkg/api/model"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth"
 	"errors"
 	"net/http"
 
@@ -30,12 +29,6 @@ func abortWithAppError(ctx *gin.Context, err error) {
 	}
 	if errors.Is(err, app.ErrConversationNotFound) {
 		ctx.JSON(http.StatusBadRequest, model.MakeError(model.ErrorCodeInvalidRequest, "Conversation not found", ""))
-	}
-	if errors.Is(err, auth.ErrLoginNoWorkspaceUserFound) {
-		ctx.JSON(
-			http.StatusForbidden,
-			model.MakeError(model.ErrorCodeAuthNoWorkspaceUserFound, "", ""))
-		return
 	}
 	_ = ctx.AbortWithError(http.StatusInternalServerError, err)
 }

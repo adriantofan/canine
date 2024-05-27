@@ -2,7 +2,6 @@ package app
 
 import (
 	genModel "back/.gen/canine/public/model"
-	"back/internal/pkg/auth"
 	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
@@ -27,7 +26,6 @@ type Service struct {
 	eventLogFatalErr   func(error)
 	timeService        infrastructure.TimeService
 	attachmentsService service.Attachments
-	authService        auth.Service
 }
 
 func NewService(

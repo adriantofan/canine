@@ -3,7 +3,6 @@ package api
 import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth/midleware"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	domainServices "back/internal/pkg/domain/infrastructure/service"
 	"back/internal/pkg/env"
@@ -17,8 +16,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	firebase "firebase.google.com/go/v4"
 
 	"github.com/rs/zerolog/log"
 
@@ -39,8 +36,6 @@ func Run(args []string) {
 	addr := fs.String("addr", ":8080", "websocket service address")
 	dsn := fs.String("postgres-dsn", "", "database connection string")
 	instanceConnectionName := fs.String("instance-connection-name", "", "cloud sql instance connection name, if any")
-	authSecret := fs.BytesBase64P("auth-secret", "", nil, "jwt auth secret base64 encoded")
-	authRealm := fs.String("auth-realm", "", "auth realm")
 	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
 	logLevel := fs.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
 	structuredLog := fs.Bool("structured-log", true, "use structured log output")
@@ -63,11 +58,6 @@ func Run(args []string) {
 	transactionFactory := postgres.NewTransactionFactory(connexion)
 	inMemoryEventLog := eventlog.NewInMemoryEventLog()
 
-	_, err = firebase.NewApp(context.Background(), nil)
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to create firebase app")
-	}
-
 	fatalCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -86,7 +76,7 @@ func Run(args []string) {
 
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
-	middleware, err := midleware.Middleware(transactionFactory, *authRealm, *authSecret)
+
 	if err != nil {
 		log.Printf("failed to create middleware: %v", err)
 
@@ -94,7 +84,7 @@ func Run(args []string) {
 	apiInternal.ConfigureRouter(
 		router,
 		handlers,
-		middleware,
+		nil,
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
 
