@@ -4,7 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	apiModel "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
-	jwtmidleware "back/internal/pkg/auth/jwt-midleware"
+	"back/internal/pkg/auth/zitadel"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/rt"
@@ -454,6 +454,12 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 	return limit, id, direction, true
 }
 
+func (h ChatHandlers) GetMe(c *gin.Context) {
+	roles := zitadel.GinCtxMustGetRoles(c)
+	fmt.Printf("roles %+v\n", roles)
+	c.JSON(http.StatusOK, "go on")
+}
+
 func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
 	// TODO: kill and replace with getIdentity
 	user, ok := ctx.MustGet("user").(model.User)
@@ -465,7 +471,7 @@ func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
 }
 
 func getIdentity(ctx *gin.Context) *app.Identity {
-	log.Fatal().Msg("Not implemented yet - tap in to auth middleware to get identity")
+	log.Warn().Msg("Not implemented yet - tap in to auth middleware to get identity")
 
-	return ctx.MustGet(jwtmidleware.IdentityKey).(*app.Identity)
+	return &app.Identity{}
 }

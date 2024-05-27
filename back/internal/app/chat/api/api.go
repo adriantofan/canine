@@ -3,6 +3,7 @@ package api
 import (
 	apiInternal "back/internal/pkg/api"
 	"back/internal/pkg/app"
+	"back/internal/pkg/auth/zitadel"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	domainServices "back/internal/pkg/domain/infrastructure/service"
 	"back/internal/pkg/env"
@@ -32,23 +33,34 @@ const (
 func Run(args []string) {
 	log.Debug().Msgf("Running chat api with args: %v", args)
 
-	fs := flag.NewFlagSet("api", flag.ExitOnError)
-	addr := fs.String("addr", ":8080", "websocket service address")
-	dsn := fs.String("postgres-dsn", "", "database connection string")
-	instanceConnectionName := fs.String("instance-connection-name", "", "cloud sql instance connection name, if any")
-	attachmentsBucket := fs.String("attachments-bucket", "", "attachments bucket")
-	logLevel := fs.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
-	structuredLog := fs.Bool("structured-log", true, "use structured log output")
+	flagSet := flag.NewFlagSet("api", flag.ExitOnError)
+	addr := flagSet.String("addr", ":8080", "websocket service address")
+	dsn := flagSet.String("postgres-dsn", "", "database connection string")
+	instanceConnectionName := flagSet.String("instance-connection-name", "", "cloud sql instance connection name, if any")
+	attachmentsBucket := flagSet.String("attachments-bucket", "", "attachments bucket")
+	logLevel := flagSet.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
+	structuredLog := flagSet.Bool("structured-log", true, "use structured log output")
+	authDomain := flagSet.String("auth-domain", "", "auth domain")
+	authKeyPath := flagSet.String("auth-key-path", "", "zitadel auth key path (supply either this or auth-key-data)")
+	authKeyData := flagSet.String("auth-key-data", "", "zitadel auth key data (supply either this or auth-key-path)")
+	authProjectID := flagSet.String("auth-project-id", "", "zitadel auth project id")
 
-	if err := env.SetFlagsFromEnvironment(fs); err != nil {
-		log.Fatal().Err(err)
+	if err := env.SetFlagsFromEnvironment(flagSet); err != nil {
+		log.Fatal().Err(err).Msg("failed to set flags from environment")
 	}
 
-	if err := fs.Parse(args); err != nil {
-		log.Fatal().Err(err)
+	if err := flagSet.Parse(args); err != nil {
+		log.Fatal().Err(err).Msg("failed to parse flags")
 	}
 
 	infrastructure.SetupLogger(*structuredLog, *logLevel)
+
+	if len(*authKeyData) == 0 && len(*authKeyPath) == 0 {
+		log.Fatal().Msg("either auth-key-path or auth-key-data must be provided")
+	}
+	if len(*authProjectID) == 0 {
+		log.Fatal().Msg("auth-project-id must be provided")
+	}
 
 	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
 	if err != nil {
@@ -64,7 +76,7 @@ func Run(args []string) {
 	// TODO: make sure this is the right context to provide to the cloud storage client
 	csClient, err := infrastructure.NewCloudStorageClient(fatalCtx, []string{*attachmentsBucket})
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to create cloud storage client")
+		log.Panic().Err(err).Msg("failed to create cloud storage client")
 	}
 
 	attachmentService := domainServices.NewCloudStorageAttachments(csClient, *attachmentsBucket)
@@ -78,13 +90,18 @@ func Run(args []string) {
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
 
 	if err != nil {
-		log.Printf("failed to create middleware: %v", err)
-
+		log.Fatal().Err(err).Msg("failed to create zitadel auth middleware")
 	}
+
+	zitadelAuth, err := zitadel.NewIntrospectionInterceptor(*authDomain, *authKeyPath, *authKeyData)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create zitadel auth middleware")
+	}
+
 	apiInternal.ConfigureRouter(
 		router,
 		handlers,
-		nil,
+		zitadelAuth.Authorize(*authProjectID),
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
 
@@ -103,7 +120,7 @@ func Run(args []string) {
 	err = gracefullyListenAndServe(fatalCtx, shutdown, *addr, router)
 
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal().Err(err).Msg("failed to listen and serve")
 	}
 
 	os.Exit(0)

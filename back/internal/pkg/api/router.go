@@ -7,11 +7,7 @@ import (
 )
 
 const kDefaultFileUploadSize = 10 << 20 // 10 MiB
-func ConfigureRouter(
-	router *gin.Engine,
-	handlers *ChatHandlers,
-	authMiddleware gin.HandlerFunc,
-	apiLogger gin.HandlerFunc) {
+func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware gin.HandlerFunc, apiLogger gin.HandlerFunc) {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 
@@ -19,10 +15,13 @@ func ConfigureRouter(
 	apiRoutes.Use(apiLogger) // Order matters, this should be the first middleware on the group
 	apiRoutes.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 	apiRoutes.Use(gin.Recovery())
+
+	authRoutes := apiRoutes.Group("/auth")
+	authRoutes.Use(authMiddleware)
+	authRoutes.GET("/me", handlers.GetMe)
+
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
 	workspaceGroup := apiRoutes.Group("/:workspace_id")
-	// workspaceGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
-	workspaceGroup.POST("/login", handlers.WorkspaceLogin)
 
 	// TODO: write a firebase middleware
 	workspaceGroup.Use(authMiddleware)

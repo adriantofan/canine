@@ -143,6 +143,7 @@ linters-settings:
           - 'github.com/gin-gonic/gin'
           - 'github.com/appleboy/gin-jwt/v2'
           - 'firebase.google.com/go/v4/auth'
+          - 'github.com/zitadel/oidc'
   ireturn:
     allow:
       - anon
