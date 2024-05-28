@@ -2,10 +2,19 @@ package app
 
 import (
 	genModel "back/.gen/canine/public/model"
+	appZitadel "back/internal/pkg/app/zitadel"
 	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
+
+	"google.golang.org/grpc/metadata"
+
+	zitadelManagement "github.com/zitadel/zitadel-go/v2/pkg/client/management"
+
+	"google.golang.org/grpc/codes"
+
+	"google.golang.org/grpc/status"
 
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
@@ -16,29 +25,46 @@ import (
 	"mime/multipart"
 
 	"github.com/rs/zerolog"
+	zitadelAdmin "github.com/zitadel/zitadel-go/v2/pkg/client/admin"
+	zAdminPb "github.com/zitadel/zitadel-go/v2/pkg/client/zitadel/admin"
+	zManagementPb "github.com/zitadel/zitadel-go/v2/pkg/client/zitadel/management"
 )
 
-var ()
+const ZitadelAppProjectGrantRoleWkspAdmin = "wksp_admin"
+const ZitadelAppProjectGrantRoleUser = "user"
 
 type Service struct {
-	t                  domain.Transaction
-	eventsOutput       eventlog.Output
-	eventLogFatalErr   func(error)
-	timeService        infrastructure.TimeService
-	attachmentsService service.Attachments
+	t                          domain.Transaction
+	eventsOutput               eventlog.Output
+	eventLogFatalErr           func(error)
+	timeService                infrastructure.TimeService
+	attachmentsService         service.Attachments
+	zitadelAdmin               *zitadelAdmin.Client
+	zitadelManagement          *zitadelManagement.Client
+	zitadelGrantedProjectID    string
+	zitadelGrantedProjectOrgID string
 }
 
 func NewService(
 	t domain.Transaction,
 	eventsOutput eventlog.Output,
 	fatalErr func(error),
-	attachmentsService service.Attachments) *Service {
+	attachmentsService service.Attachments,
+	zitadelAdmin *zitadelAdmin.Client,
+	zitadelManagement *zitadelManagement.Client,
+	zitadelGrantedProjectID string,
+	zitadelGrantedProjectOrgID string,
+) *Service {
 	return &Service{
-		t:                  t,
-		eventsOutput:       eventsOutput,
-		eventLogFatalErr:   fatalErr,
-		timeService:        infrastructure.NewRealTimeService(),
-		attachmentsService: attachmentsService,
+		t:                          t,
+		eventsOutput:               eventsOutput,
+		eventLogFatalErr:           fatalErr,
+		timeService:                infrastructure.NewRealTimeService(),
+		attachmentsService:         attachmentsService,
+		zitadelAdmin:               zitadelAdmin,
+		zitadelManagement:          zitadelManagement,
+		zitadelGrantedProjectID:    zitadelGrantedProjectID,
+		zitadelGrantedProjectOrgID: zitadelGrantedProjectOrgID,
 	}
 }
 
@@ -46,8 +72,9 @@ var (
 	ErrRecipientNotFound = errors.New("recipient not found")
 	// ErrNotAuthorized mean identity lacks valid credentials:
 	//  - user not found in db
-	ErrNotAuthorized = errors.New("user not authorized")
-	ErrForbidden     = errors.New("forbidden to perform this action")
+	ErrNotAuthorized          = errors.New("user not authorized")
+	ErrForbidden              = errors.New("forbidden to perform this action")
+	ErrZitadelWorkspaceExists = errors.New("authorization workspace already exists")
 
 	ErrCreateUserMessagingAddressExists = domain.ErrMessagingAddressExists
 	ErrConversationNotFound             = domain.ErrConversationNotFound
@@ -57,9 +84,12 @@ var (
 )
 
 type CreateWorkspaceData struct {
-	Name             string `binding:"required" json:"name"`
-	MessagingAddress string `binding:"required" json:"messaging_address"`
-	Password         string `binding:"required" json:"password"`
+	Name      string `binding:"required" json:"name"`
+	Email     string `binding:"required" json:"email"`
+	Phone     string `json:"phone"`
+	FirstName string `binding:"required" json:"first_name"`
+	LastName  string `binding:"required" json:"last_name"`
+	Password  string `binding:"required" json:"password"`
 }
 
 type CreateUserData struct {
@@ -100,6 +130,80 @@ func (s *Service) CreateWorkspace(
 	}
 
 	defer s.t.MustRollback(ctx)
+	setUpOrgRequest := zAdminPb.SetUpOrgRequest{
+		Org: &zAdminPb.SetUpOrgRequest_Org{ //nolint:exhaustruct
+			Name: data.Name,
+		},
+		User: &zAdminPb.SetUpOrgRequest_Human_{
+			Human: &zAdminPb.SetUpOrgRequest_Human{ //nolint:exhaustruct
+				UserName: data.Email,
+				Profile: &zAdminPb.SetUpOrgRequest_Human_Profile{ //nolint:exhaustruct
+					FirstName:         data.FirstName,
+					LastName:          data.LastName,
+					PreferredLanguage: "fr",
+				},
+				Email: &zAdminPb.SetUpOrgRequest_Human_Email{
+					Email:           data.Email,
+					IsEmailVerified: false,
+				},
+				//Phone: &zAdminPb.SetUpOrgRequest_Human_Phone{
+				//	Phone:           "",
+				//	IsPhoneVerified: false,
+				// },
+				Password: data.Password,
+			},
+		},
+		//https://zitadel.com/docs/guides/manage/console/managers
+		//Roles: []string{"ORG_OWNER_VIEWER", "ORG_USER_MANAGER", "ORG_USER_PERMISSION_EDITOR"},
+		Roles: []string{"ORG_OWNER"},
+	}
+
+	setupResult, err := s.zitadelAdmin.SetUpOrg(ctx, &setUpOrgRequest)
+
+	if statusErr := status.Convert(err); statusErr != nil {
+		switch statusErr.Code() {
+		case codes.InvalidArgument:
+			return workspaceWithUser, appZitadel.NewInvalidRequestError(statusErr)
+		case codes.AlreadyExists:
+			return workspaceWithUser, ErrZitadelWorkspaceExists
+		}
+	}
+
+	if err != nil {
+		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel set up org: %w", err)
+	}
+
+	grantRequest := zManagementPb.AddProjectGrantRequest{
+		ProjectId:    s.zitadelGrantedProjectID,
+		GrantedOrgId: setupResult.OrgId,
+		RoleKeys:     []string{ZitadelAppProjectGrantRoleWkspAdmin, ZitadelAppProjectGrantRoleUser},
+	}
+
+	grantResponse, err := s.zitadelManagement.AddProjectGrant(
+		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-zitadel-orgid", s.zitadelGrantedProjectOrgID)),
+		&grantRequest,
+	)
+
+	if err != nil {
+		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel add project grant: %w", err)
+	}
+
+	addUserGrantRequest := zManagementPb.AddUserGrantRequest{
+		ProjectId:      s.zitadelGrantedProjectID,
+		UserId:         setupResult.UserId,
+		ProjectGrantId: grantResponse.GrantId,
+		RoleKeys:       []string{ZitadelAppProjectGrantRoleWkspAdmin},
+	}
+
+	_, err = s.zitadelManagement.AddUserGrant(
+		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-zitadel-orgid", setupResult.OrgId)),
+		&addUserGrantRequest)
+
+	if err != nil {
+		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel add user grant: %w", err)
+	}
+
+	return workspaceWithUser, errors.New("not implemented")
 
 	workspace, err := repo.CreateWorkspace(ctx, data.Name)
 	if err != nil {
@@ -109,7 +213,7 @@ func (s *Service) CreateWorkspace(
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace hash password: %w", err)
 	}
-	user, err := repo.CreateUser(ctx, workspace.ID, data.MessagingAddress, genModel.UserType_Internal, passwordHash)
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, passwordHash)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}

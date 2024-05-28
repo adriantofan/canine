@@ -23,10 +23,11 @@ var (
 )
 
 const (
-	ErrorCodeInvalidRequest = "invalid_request"
-	ErrorCodePayloadExists  = "payload_exists"
-	ErrorCodeUnauthorized   = "unauthorized"
-	ErrorCodeForbidden      = "forbidden"
+	ErrorCodeInvalidRequest            = "invalid_request"
+	ErrorCodePayloadExists             = "payload_exists"
+	ErrorCodeAuthWorkspaceOrUserExists = "auth_workspace_or_user_exists"
+	ErrorCodeUnauthorized              = "unauthorized"
+	ErrorCodeForbidden                 = "forbidden"
 
 	ErrorCodeAuthNoWorkspaceUserFound = "auth_no_workspace_user_found"
 )

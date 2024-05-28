@@ -3,6 +3,7 @@ package api
 import (
 	"back/internal/pkg/api/model"
 	"back/internal/pkg/app"
+	appModel "back/internal/pkg/app/model"
 	"errors"
 	"net/http"
 
@@ -30,5 +31,23 @@ func abortWithAppError(ctx *gin.Context, err error) {
 	if errors.Is(err, app.ErrConversationNotFound) {
 		ctx.JSON(http.StatusBadRequest, model.MakeError(model.ErrorCodeInvalidRequest, "Conversation not found", ""))
 	}
+
+	if errors.Is(err, app.ErrZitadelWorkspaceExists) {
+		ctx.JSON(
+			http.StatusBadRequest,
+			model.MakeError(model.ErrorCodeAuthWorkspaceOrUserExists, "Workspace or user already exists", ""))
+	}
+
+	var invalidRequestError *appModel.InvalidRequestError
+	if errors.As(err, &invalidRequestError) {
+		ctx.JSON(
+			http.StatusBadRequest,
+			model.MakeError(
+				model.ErrorCodeInvalidRequest,
+				invalidRequestError.UserMessage,
+				invalidRequestError.Error()),
+		)
+	}
+
 	_ = ctx.AbortWithError(http.StatusInternalServerError, err)
 }

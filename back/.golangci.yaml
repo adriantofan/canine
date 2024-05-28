@@ -144,6 +144,7 @@ linters-settings:
           - 'github.com/appleboy/gin-jwt/v2'
           - 'firebase.google.com/go/v4/auth'
           - 'github.com/zitadel/oidc'
+          - 'github.com/zitadel/zitadel-go/v2'
   ireturn:
     allow:
       - anon

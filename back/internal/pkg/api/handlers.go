@@ -73,6 +73,7 @@ func (h ChatHandlers) CreateWorkspace(ctx *gin.Context) {
 
 	if err != nil {
 		abortWithAppError(ctx, err)
+
 		return
 	}
 
@@ -458,6 +459,10 @@ func (h ChatHandlers) GetMe(c *gin.Context) {
 	roles := zitadel.GinCtxMustGetRoles(c)
 	fmt.Printf("roles %+v\n", roles)
 	c.JSON(http.StatusOK, "go on")
+}
+
+func (h ChatHandlers) GetCreateOrg(c *gin.Context) {
+
 }
 
 func (h ChatHandlers) getUser(ctx *gin.Context) model.User {

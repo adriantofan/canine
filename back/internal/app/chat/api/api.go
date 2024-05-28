@@ -13,14 +13,23 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	zitadelManagement "github.com/zitadel/zitadel-go/v2/pkg/client/management"
+
+	"github.com/zitadel/oidc/pkg/oidc"
+
+	"github.com/zitadel/zitadel-go/v2/pkg/client/middleware"
+
 	"github.com/rs/zerolog/log"
 
 	flag "github.com/spf13/pflag"
+	zitadelAdmin "github.com/zitadel/zitadel-go/v2/pkg/client/admin"
+	zitadelClient "github.com/zitadel/zitadel-go/v2/pkg/client/zitadel"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,10 +49,23 @@ func Run(args []string) {
 	attachmentsBucket := flagSet.String("attachments-bucket", "", "attachments bucket")
 	logLevel := flagSet.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
 	structuredLog := flagSet.Bool("structured-log", true, "use structured log output")
-	authDomain := flagSet.String("auth-domain", "", "auth domain")
-	authKeyPath := flagSet.String("auth-key-path", "", "zitadel auth key path (supply either this or auth-key-data)")
-	authKeyData := flagSet.String("auth-key-data", "", "zitadel auth key data (supply either this or auth-key-path)")
-	authProjectID := flagSet.String("auth-project-id", "", "zitadel auth project id")
+
+	zitadelIssuer := flagSet.String("zitadel-issuer", "", "zitadel issuer")
+
+	zitadelAuthKeyPath := flagSet.String("zitadel-auth-key-path", "", "zitadel auth key path (supply either this or auth-key-data)")
+	zitadelAuthKeyData := flagSet.String("zitadel-auth-key-data", "", "zitadel auth key data (supply either this or auth-key-path)")
+	zitadelAuthProjectID := flagSet.String("zitadel-auth-project-id", "", "zitadel auth project id")
+	zitadelAuthOrgID := flagSet.String("zitadel-auth-org-id", "", "zitadel auth org id")
+
+	// For the admin api access the app needs a instance level manager service account.
+	// Create the service account in the default org (for example)
+	// Then give it IAM OWNER role at instance level
+	// https://clemia-test-cudifn.zitadel.cloud/ui/console/instance?id=organizations
+	// Then make a service account and set credentials here
+	zitadelAdminKeyPath := flagSet.String("zitadel-admin-key-path", "", "zitadel admin key path "+
+		"(supply either this or zitadel-admin-key-data)")
+	zitadelAdminKeyData := flagSet.String("zitadel-admin-key-data", "", "zitadel admin key data "+
+		"(supply either this or zitadel-admin-key-path)")
 
 	if err := env.SetFlagsFromEnvironment(flagSet); err != nil {
 		log.Fatal().Err(err).Msg("failed to set flags from environment")
@@ -55,11 +77,20 @@ func Run(args []string) {
 
 	infrastructure.SetupLogger(*structuredLog, *logLevel)
 
-	if len(*authKeyData) == 0 && len(*authKeyPath) == 0 {
+	if len(*zitadelAuthKeyData) == 0 && len(*zitadelAuthKeyPath) == 0 {
 		log.Fatal().Msg("either auth-key-path or auth-key-data must be provided")
 	}
-	if len(*authProjectID) == 0 {
+
+	if len(*zitadelAdminKeyPath) == 0 && len(*zitadelAdminKeyData) == 0 {
+		log.Fatal().Msg("either auth-key-path or auth-key-data must be provided")
+	}
+
+	if len(*zitadelAuthProjectID) == 0 {
 		log.Fatal().Msg("auth-project-id must be provided")
+	}
+
+	if len(*zitadelIssuer) == 0 {
+		log.Fatal().Msg("zitadel-issuer must be provided")
 	}
 
 	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
@@ -81,10 +112,53 @@ func Run(args []string) {
 
 	attachmentService := domainServices.NewCloudStorageAttachments(csClient, *attachmentsBucket)
 
-	service := app.NewService(transactionFactory, inMemoryEventLog, func(err error) {
-		log.Error().Err(err).Msg("event output fatal error")
-		cancel() // WTF
-	}, attachmentService)
+	var tokenSource middleware.JWTProfileTokenSource
+	if len(*zitadelAuthKeyPath) > 0 {
+		tokenSource = middleware.JWTProfileFromPath(*zitadelAdminKeyPath)
+	} else {
+		tokenSource = middleware.JWTProfileFromFileData([]byte(*zitadelAdminKeyData))
+	}
+
+	profileOption := zitadelClient.WithJWTProfileTokenSource(tokenSource)
+
+	issuerURL, err := url.Parse(*zitadelIssuer)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to parse zitadel issuer")
+	}
+
+	adminAdminClient, err := zitadelAdmin.NewClient(
+		*zitadelIssuer,
+		issuerURL.Hostname()+":443",
+		[]string{oidc.ScopeOpenID, zitadelClient.ScopeZitadelAPI()},
+		profileOption,
+	)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create zitadel admin client")
+	}
+
+	managementClient, err := zitadelManagement.NewClient(
+		*zitadelIssuer,
+		issuerURL.Hostname()+":443",
+		[]string{oidc.ScopeOpenID, zitadelClient.ScopeZitadelAPI()},
+		profileOption,
+	)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create zitadel management client")
+	}
+
+	service := app.NewService(
+		transactionFactory,
+		inMemoryEventLog, func(err error) {
+			log.Error().Err(err).Msg("event output fatal error")
+			cancel() // WTF
+		},
+		attachmentService,
+		adminAdminClient,
+		managementClient,
+		*zitadelAuthProjectID,
+		*zitadelAuthOrgID,
+	)
 
 	router := gin.New()
 	handlers := apiInternal.NewChatHandlers(transactionFactory, service, inMemoryEventLog)
@@ -93,7 +167,7 @@ func Run(args []string) {
 		log.Fatal().Err(err).Msg("failed to create zitadel auth middleware")
 	}
 
-	zitadelAuth, err := zitadel.NewIntrospectionInterceptor(*authDomain, *authKeyPath, *authKeyData)
+	zitadelAuth, err := zitadel.NewIntrospectionInterceptor(*zitadelIssuer, *zitadelAuthKeyPath, *zitadelAuthKeyData)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create zitadel auth middleware")
 	}
@@ -101,7 +175,7 @@ func Run(args []string) {
 	apiInternal.ConfigureRouter(
 		router,
 		handlers,
-		zitadelAuth.Authorize(*authProjectID),
+		zitadelAuth.Authorize(*zitadelAuthProjectID),
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
 

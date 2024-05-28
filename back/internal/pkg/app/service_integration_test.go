@@ -332,9 +332,9 @@ func makeInternalUser(ctx serviceContext, identity *app.Identity, email string, 
 
 func makeWorkspace(ctx serviceContext, workspaceName, email, password string) (model.Workspace, model.User) {
 	result, err := ctx.service.CreateWorkspace(ctx, app.CreateWorkspaceData{
-		Name:             workspaceName,
-		MessagingAddress: email,
-		Password:         password,
+		Name:     workspaceName,
+		Email:    email,
+		Password: password,
 	})
 	Expect(err).ToNot(HaveOccurred())
 	Expect(result.Workspace.Name).To(Equal(workspaceName))
