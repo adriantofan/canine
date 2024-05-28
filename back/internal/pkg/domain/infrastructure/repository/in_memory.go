@@ -44,27 +44,27 @@ func (r *MemoryMessageRepository) GetMessagesBefore(
 	panic("implement me")
 }
 func (r *MemoryMessageRepository) CreateUser(
-	_ context.Context, messagingAddress string, userType genModel.UserType) (model.User, error) {
+	_ context.Context, email string, userType genModel.UserType) (model.User, error) {
 	for _, user := range r.users {
-		if user.MessagingAddress == messagingAddress {
-			return model.User{}, domain.ErrMessagingAddressExists
+		if user.Email == email {
+			return model.User{}, domain.ErrEmailExists
 		}
 	}
 
 	newID := r.nextUserID
 	r.nextUserID++
 	user := model.User{
-		ID:               newID,
-		MessagingAddress: messagingAddress,
-		Type:             userType,
+		ID:    newID,
+		Email: email,
+		Type:  userType,
 	}
 	r.users = append(r.users, user)
 	return user, nil
 }
-func (r *MemoryMessageRepository) GetUserByMessagingAddress(
-	_ context.Context, messagingAddress string) (model.User, error) {
+func (r *MemoryMessageRepository) GetUserByEmail(
+	_ context.Context, email string) (model.User, error) {
 	for _, user := range r.users {
-		if user.MessagingAddress == messagingAddress {
+		if user.Email == email {
 			return user, nil
 		}
 	}

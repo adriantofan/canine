@@ -25,10 +25,10 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 	const passHash = "$argon2id$v=toto" //nolint:gosec
 	ctx := context.Background()
 
-	createUser := func(messagingAddress string) model.User {
-		user, err := messagesRepo.CreateUser(ctx, workspace.ID, messagingAddress, genModel.UserType_External, passHash)
+	createUser := func(email string) model.User {
+		user, err := messagesRepo.CreateUser(ctx, workspace.ID, email, genModel.UserType_External, passHash)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(user.MessagingAddress).To(Equal(messagingAddress))
+		Expect(user.Email).To(Equal(email))
 		Expect(user.CreatedAt).ToNot(BeZero())
 		Expect(user.UpdatedAt).ToNot(BeZero())
 		Expect(user.Type).To(Equal(genModel.UserType_External))
@@ -74,7 +74,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 	})
 
 	Specify("user operations", func() {
-		_, err := messagesRepo.GetUserByMessagingAddress(ctx, workspace.ID, "+1234567890")
+		_, err := messagesRepo.GetUserByEmail(ctx, workspace.ID, "+1234567890")
 		Expect(err).Should(MatchError(domain.ErrUserNotFound))
 
 		By("creating user")
@@ -82,7 +82,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		user1 := createUser("+1234567890")
 
 		By("getting user by phone")
-		user, err := messagesRepo.GetUserByMessagingAddress(ctx, workspace.ID, "+1234567890")
+		user, err := messagesRepo.GetUserByEmail(ctx, workspace.ID, "+1234567890")
 		Expect(err).ToNot(HaveOccurred())
 		Expect(user).To(Equal(user1))
 
@@ -99,7 +99,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 
 		By("Fail to create user with same phone")
 		_, err = messagesRepo.CreateUser(ctx, workspace.ID, "+1234567890", genModel.UserType_External, passHash)
-		Expect(err).To(MatchError(domain.ErrMessagingAddressExists))
+		Expect(err).To(MatchError(domain.ErrEmailExists))
 	})
 
 	Specify("conversation operations", func() {

@@ -26,7 +26,7 @@ var _ = Describe("Handlers", func() {
 			Expect(w.Code).To(Equal(201))
 			var decoded model.User
 			_ = json.Unmarshal(w.Body.Bytes(), &decoded)
-			Expect(decoded.MessagingAddress).To(Equal(phone))
+			Expect(decoded.Email).To(Equal(phone))
 			return decoded
 		}
 

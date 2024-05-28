@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	ErrMessagingAddressExists = errors.New("phone number exists")
-	ErrUserNotFound           = errors.New("user not found")
-	ErrConversationNotFound   = errors.New("conversation not found")
+	ErrEmailExists          = errors.New("phone number exists")
+	ErrUserNotFound         = errors.New("user not found")
+	ErrConversationNotFound = errors.New("conversation not found")
 )
 
 // Direction is a custom type representing the enum for forward and backward directions.
@@ -63,16 +63,16 @@ type ChatRepository interface {
 	GetMessagesBefore(ctx context.Context, conversationID int64, beforeID int64, limit int) ([]model.Message, error)
 
 	// CreateUser creates a new user with the given phone number.
-	// Returns ErrMessagingAddressExists if phone number is already used
+	// Returns ErrEmailExists if phone number is already used
 	CreateUser(
 		ctx context.Context,
 		workspaceID int64,
-		messagingAddress string,
+		email string,
 		userType genModel.UserType,
-		passwordHash string) (model.User, error)
+		authID *string) (model.User, error)
 
-	// GetUserByMessagingAddress returns the user having the given phone number. err is ErrUserNotFound if user not found
-	GetUserByMessagingAddress(ctx context.Context, workspaceID int64, messagingAddress string) (model.User, error)
+	// GetUserByEmail returns the user having the given phone number. err is ErrUserNotFound if user not found
+	GetUserByEmail(ctx context.Context, workspaceID int64, email string) (model.User, error)
 
 	// GetUserByID returns the user having the given user id. err is ErrUserNotFound if user not found
 	GetUserByID(ctx context.Context, id int64) (model.User, error)

@@ -132,7 +132,7 @@ func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 		return
 	}
 
-	conversation, err := h.Service.GetOrCreateConversation(ctx, getIdentity(ctx), payload.RecipientMessagingAddress)
+	conversation, err := h.Service.GetOrCreateConversation(ctx, getIdentity(ctx), payload.RecipientEmail)
 
 	if err != nil {
 		abortWithAppError(ctx, err)

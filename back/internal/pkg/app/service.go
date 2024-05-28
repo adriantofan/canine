@@ -3,7 +3,6 @@ package app
 import (
 	genModel "back/.gen/canine/public/model"
 	appZitadel "back/internal/pkg/app/zitadel"
-	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
@@ -76,8 +75,8 @@ var (
 	ErrForbidden              = errors.New("forbidden to perform this action")
 	ErrZitadelWorkspaceExists = errors.New("authorization workspace already exists")
 
-	ErrCreateUserMessagingAddressExists = domain.ErrMessagingAddressExists
-	ErrConversationNotFound             = domain.ErrConversationNotFound
+	ErrCreateUserEmailExists = domain.ErrEmailExists
+	ErrConversationNotFound  = domain.ErrConversationNotFound
 
 	// internal errors, should not be returned to the client.
 	errEventLogInvalidUserType = errors.New("invalid user type")
@@ -93,9 +92,8 @@ type CreateWorkspaceData struct {
 }
 
 type CreateUserData struct {
-	MessagingAddress string            `binding:"required" json:"messaging_address"`
-	UserType         genModel.UserType `binding:"required" json:"user_type"         validate:"oneof=external internal"`
-	Password         string            `json:"password"`
+	Email    string            `binding:"required" json:"email"`
+	UserType genModel.UserType `binding:"required" json:"user_type"         validate:"oneof=external internal"`
 }
 
 type WorkspaceLoginData struct {
@@ -209,11 +207,10 @@ func (s *Service) CreateWorkspace(
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create workspace: %w", err)
 	}
-	passwordHash, err := hash.CreateHash(data.Password)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace hash password: %w", err)
 	}
-	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, passwordHash)
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, nil)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}
@@ -342,19 +339,10 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 		return user, ErrForbidden
 	}
 
-	// TODO: allow empty password for resetting them later
-	var hashedPassword string
-	if userData.Password != "" {
-		hashedPassword, err = hash.CreateHash(userData.Password)
-		if err != nil {
-			return user, fmt.Errorf("CreateUser hash password: %w", err)
-		}
-	}
+	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.Email, userData.UserType, nil)
 
-	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.MessagingAddress, userData.UserType, hashedPassword)
-
-	if errors.Is(err, domain.ErrMessagingAddressExists) {
-		return user, ErrCreateUserMessagingAddressExists
+	if errors.Is(err, domain.ErrEmailExists) {
+		return user, ErrCreateUserEmailExists
 	}
 
 	if err != nil {
@@ -389,7 +377,7 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 func (s *Service) GetOrCreateConversation(
 	ctx context.Context,
 	identity *Identity,
-	recipientMessagingAddress string) (model.Conversation, error) {
+	recipientEmail string) (model.Conversation, error) {
 	var conversation model.Conversation
 
 	repo, err := s.t.Begin()
@@ -412,7 +400,7 @@ func (s *Service) GetOrCreateConversation(
 		return conversation, ErrForbidden
 	}
 
-	recipient, err := repo.GetUserByMessagingAddress(ctx, user.WorkspaceID, recipientMessagingAddress)
+	recipient, err := repo.GetUserByEmail(ctx, user.WorkspaceID, recipientEmail)
 	if err != nil {
 		if errors.Is(err, domain.ErrUserNotFound) {
 			return conversation, ErrRecipientNotFound

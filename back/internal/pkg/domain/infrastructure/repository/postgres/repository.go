@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -35,8 +34,7 @@ type RealTransactionFactory struct {
 }
 
 var (
-	ErrTransactionStarted  = errors.New("transaction already started")
-	ErrInvalidPasswordHash = fmt.Errorf("password hould be hashed with argon2id")
+	ErrTransactionStarted = errors.New("transaction already started")
 )
 
 func NewTransactionFactory(db *sql.DB) *RealTransactionFactory {
@@ -201,24 +199,20 @@ func (s *MessageRepository) GetMessagesAfter(
 func (s *MessageRepository) CreateUser(
 	ctx context.Context,
 	workspaceID int64,
-	messagingAddress string,
+	email string,
 	userType genModel.UserType,
-	passwordHash string) (model.User, error) {
-	// TODO: check empty hashes in db
-	if passwordHash != "" && !strings.HasPrefix(passwordHash, "$argon2id$v") {
-		return model.User{}, ErrInvalidPasswordHash
-	}
+	authID *string) (model.User, error) {
 	var user model.User
 	stmt := table.User.
-		INSERT(table.User.WorkspaceID, table.User.MessagingAddress, table.User.Type, table.User.PasswordHash).
-		VALUES(Int64(workspaceID), String(messagingAddress), userType, String(passwordHash)).
+		INSERT(table.User.WorkspaceID, table.User.Email, table.User.Type, table.User.AuthID).
+		VALUES(Int64(workspaceID), String(email), userType, authID).
 		RETURNING(table.User.AllColumns)
 
 	err := stmt.QueryContext(ctx, s.db, &user)
 	var pgError *pgconn.PgError
 
 	if errors.As(err, &pgError) && pgError.Code == pgerrcode.UniqueViolation {
-		return user, domain.ErrMessagingAddressExists
+		return user, domain.ErrEmailExists
 	}
 	if err != nil {
 		return user, fmt.Errorf("failed to create user: %w", err)
@@ -233,16 +227,16 @@ func (s *MessageRepository) CreateUser(
 	return user, nil
 }
 
-// GetUserByMessagingAddress implements MessageRepository.
-func (s *MessageRepository) GetUserByMessagingAddress(
+// GetUserByEmail implements MessageRepository.
+func (s *MessageRepository) GetUserByEmail(
 	ctx context.Context,
 	workspaceID int64,
-	messagingAddress string) (model.User, error) {
+	email string) (model.User, error) {
 	var user model.User
 	stmt := SELECT(table.User.AllColumns).
 		FROM(table.User).
 		WHERE(AND(
-			table.User.MessagingAddress.EQ(String(messagingAddress)),
+			table.User.Email.EQ(String(email)),
 			table.User.WorkspaceID.EQ(Int64(workspaceID))))
 
 	err := stmt.QueryContext(ctx, s.db, &user)
@@ -251,7 +245,7 @@ func (s *MessageRepository) GetUserByMessagingAddress(
 		return user, domain.ErrUserNotFound
 	}
 	if err != nil {
-		return user, fmt.Errorf("failed to get user by messaging address: %w", err)
+		return user, fmt.Errorf("failed to get user by email: %w", err)
 	}
 
 	return user, nil

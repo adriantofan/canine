@@ -13,7 +13,7 @@ type CreateUserPayload = app.CreateUserData
 type WorkspaceLoginData = app.WorkspaceLoginData
 
 type CreateConversationPayload struct {
-	RecipientMessagingAddress string `json:"recipient_messaging_address"`
+	RecipientEmail string `json:"recipient_messaging_address"`
 }
 
 type CreateMessagePayload = app.CreateMessageData

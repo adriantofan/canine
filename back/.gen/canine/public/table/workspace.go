@@ -21,6 +21,7 @@ type workspaceTable struct {
 	Name      postgres.ColumnString
 	CreatedAt postgres.ColumnTimestamp
 	UpdatedAt postgres.ColumnTimestamp
+	AuthID    postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -65,8 +66,9 @@ func newWorkspaceTableImpl(schemaName, tableName, alias string) workspaceTable {
 		NameColumn      = postgres.StringColumn("name")
 		CreatedAtColumn = postgres.TimestampColumn("created_at")
 		UpdatedAtColumn = postgres.TimestampColumn("updated_at")
-		allColumns      = postgres.ColumnList{IDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns  = postgres.ColumnList{NameColumn, CreatedAtColumn, UpdatedAtColumn}
+		AuthIDColumn    = postgres.StringColumn("auth_id")
+		allColumns      = postgres.ColumnList{IDColumn, NameColumn, CreatedAtColumn, UpdatedAtColumn, AuthIDColumn}
+		mutableColumns  = postgres.ColumnList{NameColumn, CreatedAtColumn, UpdatedAtColumn, AuthIDColumn}
 	)
 
 	return workspaceTable{
@@ -77,6 +79,7 @@ func newWorkspaceTableImpl(schemaName, tableName, alias string) workspaceTable {
 		Name:      NameColumn,
 		CreatedAt: CreatedAtColumn,
 		UpdatedAt: UpdatedAtColumn,
+		AuthID:    AuthIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

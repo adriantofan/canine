@@ -16,4 +16,5 @@ type Workspace struct {
 	Name      string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
+	AuthID    string
 }

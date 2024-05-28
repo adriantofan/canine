@@ -25,7 +25,7 @@ func abortWithAppError(ctx *gin.Context, err error) {
 	if errors.Is(err, app.ErrForbidden) {
 		ctx.JSON(http.StatusForbidden, model.ErrorNotAuthorized)
 	}
-	if errors.Is(err, app.ErrCreateUserMessagingAddressExists) {
+	if errors.Is(err, app.ErrCreateUserEmailExists) {
 		ctx.JSON(http.StatusBadRequest, model.MakeError(model.ErrorCodePayloadExists, "Messaging address already exists", ""))
 	}
 	if errors.Is(err, app.ErrConversationNotFound) {

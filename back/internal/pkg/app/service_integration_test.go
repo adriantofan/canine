@@ -5,7 +5,6 @@ package app_test
 import (
 	genModel "back/.gen/canine/public/model"
 	"back/internal/pkg/app"
-	"back/internal/pkg/auth/hash"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	"back/internal/pkg/domain/infrastructure/repository/postgres/test_util"
@@ -148,7 +147,7 @@ var _ = Describe("ServiceIntegration", Ordered, func() {
 		_, err := testDB.Exec(truncateTablesStmt())
 		Expect(err).ToNot(HaveOccurred())
 		output = &OutputMock{} //nolint:exhaustruct
-		service = app.NewService(transactionFactory, output, fatal, &DummyAttachmentService{})
+		service = app.NewService(transactionFactory, output, fatal, &DummyAttachmentService{}, nil, nil, "", "")
 		service.SetTimeService(timeServiceMock)
 		ctx = serviceContext{
 			service: service,
@@ -229,7 +228,7 @@ func (g *testWorkspace) makeExternalConversation(ctx serviceContext, user model.
 }
 
 func makeExternalConversation(ctx serviceContext, owner *app.Identity, user model.User) model.Conversation {
-	conversation, err := ctx.service.GetOrCreateConversation(ctx, owner, user.MessagingAddress)
+	conversation, err := ctx.service.GetOrCreateConversation(ctx, owner, user.Email)
 	Expect(err).ToNot(HaveOccurred())
 	Expect(conversation.ExternalUserID).To(Equal(user.ID))
 	Expect(conversation.WorkspaceID).To(Equal(owner.WorkspaceID))
@@ -310,16 +309,15 @@ func makeUser(
 	password string,
 	userType genModel.UserType) model.User {
 	user, err := ctx.service.CreateUser(ctx, identity, app.CreateUserData{
-		MessagingAddress: email,
-		UserType:         userType,
-		Password:         password,
+		Email:    email,
+		UserType: userType,
+		Password: password,
 	})
 	Expect(err).ToNot(HaveOccurred())
 	Expect(err).ToNot(HaveOccurred())
-	Expect(user.MessagingAddress).To(Equal(email))
+	Expect(user.Email).To(Equal(email))
 	Expect(user.WorkspaceID).To(Equal(identity.WorkspaceID))
 	Expect(user.Type).To(Equal(userType))
-	Expect(hash.ComparePasswordAndHash(password, user.PasswordHash)).To(BeTrue())
 
 	return user
 }
@@ -338,9 +336,8 @@ func makeWorkspace(ctx serviceContext, workspaceName, email, password string) (m
 	})
 	Expect(err).ToNot(HaveOccurred())
 	Expect(result.Workspace.Name).To(Equal(workspaceName))
-	Expect(result.User.MessagingAddress).To(Equal(email))
+	Expect(result.User.Email).To(Equal(email))
 	Expect(result.User.WorkspaceID).To(Equal(result.Workspace.ID))
-	Expect(hash.ComparePasswordAndHash(password, result.User.PasswordHash)).To(BeTrue())
 
 	return result.Workspace, result.User
 }

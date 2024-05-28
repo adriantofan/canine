@@ -17,13 +17,13 @@ type userTable struct {
 	postgres.Table
 
 	// Columns
-	ID               postgres.ColumnInteger
-	WorkspaceID      postgres.ColumnInteger
-	MessagingAddress postgres.ColumnString
-	Type             postgres.ColumnString
-	CreatedAt        postgres.ColumnTimestamp
-	UpdatedAt        postgres.ColumnTimestamp
-	PasswordHash     postgres.ColumnString
+	ID          postgres.ColumnInteger
+	WorkspaceID postgres.ColumnInteger
+	Email       postgres.ColumnString
+	Type        postgres.ColumnString
+	CreatedAt   postgres.ColumnTimestamp
+	UpdatedAt   postgres.ColumnTimestamp
+	AuthID      postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -64,28 +64,28 @@ func newUserTable(schemaName, tableName, alias string) *UserTable {
 
 func newUserTableImpl(schemaName, tableName, alias string) userTable {
 	var (
-		IDColumn               = postgres.IntegerColumn("id")
-		WorkspaceIDColumn      = postgres.IntegerColumn("workspace_id")
-		MessagingAddressColumn = postgres.StringColumn("messaging_address")
-		TypeColumn             = postgres.StringColumn("type")
-		CreatedAtColumn        = postgres.TimestampColumn("created_at")
-		UpdatedAtColumn        = postgres.TimestampColumn("updated_at")
-		PasswordHashColumn     = postgres.StringColumn("password_hash")
-		allColumns             = postgres.ColumnList{IDColumn, WorkspaceIDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, PasswordHashColumn}
-		mutableColumns         = postgres.ColumnList{WorkspaceIDColumn, MessagingAddressColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, PasswordHashColumn}
+		IDColumn          = postgres.IntegerColumn("id")
+		WorkspaceIDColumn = postgres.IntegerColumn("workspace_id")
+		EmailColumn       = postgres.StringColumn("email")
+		TypeColumn        = postgres.StringColumn("type")
+		CreatedAtColumn   = postgres.TimestampColumn("created_at")
+		UpdatedAtColumn   = postgres.TimestampColumn("updated_at")
+		AuthIDColumn      = postgres.StringColumn("auth_id")
+		allColumns        = postgres.ColumnList{IDColumn, WorkspaceIDColumn, EmailColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, AuthIDColumn}
+		mutableColumns    = postgres.ColumnList{WorkspaceIDColumn, EmailColumn, TypeColumn, CreatedAtColumn, UpdatedAtColumn, AuthIDColumn}
 	)
 
 	return userTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:               IDColumn,
-		WorkspaceID:      WorkspaceIDColumn,
-		MessagingAddress: MessagingAddressColumn,
-		Type:             TypeColumn,
-		CreatedAt:        CreatedAtColumn,
-		UpdatedAt:        UpdatedAtColumn,
-		PasswordHash:     PasswordHashColumn,
+		ID:          IDColumn,
+		WorkspaceID: WorkspaceIDColumn,
+		Email:       EmailColumn,
+		Type:        TypeColumn,
+		CreatedAt:   CreatedAtColumn,
+		UpdatedAt:   UpdatedAtColumn,
+		AuthID:      AuthIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
