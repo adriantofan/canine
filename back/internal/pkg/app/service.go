@@ -144,6 +144,7 @@ func (s *Service) CreateWorkspace(
 					Email:           data.Email,
 					IsEmailVerified: false,
 				},
+				// TODO: do we want a phone number?
 				//Phone: &zAdminPb.SetUpOrgRequest_Human_Phone{
 				//	Phone:           "",
 				//	IsPhoneVerified: false,
@@ -201,16 +202,13 @@ func (s *Service) CreateWorkspace(
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel add user grant: %w", err)
 	}
 
-	return workspaceWithUser, errors.New("not implemented")
+	workspace, err := repo.CreateWorkspace(ctx, data.Name, setupResult.OrgId)
 
-	workspace, err := repo.CreateWorkspace(ctx, data.Name)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create workspace: %w", err)
 	}
-	if err != nil {
-		return workspaceWithUser, fmt.Errorf("CreateWorkspace hash password: %w", err)
-	}
-	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, nil)
+
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, &setupResult.UserId)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}

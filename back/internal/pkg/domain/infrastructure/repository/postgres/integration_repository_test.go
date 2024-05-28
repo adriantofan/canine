@@ -69,7 +69,7 @@ var _ = Describe("IntegrationRepository", Ordered, func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		messagesRepo = postgres.NewMessageRepository(testDB, infrastructure.NewRealTimeService())
-		workspace, err = messagesRepo.CreateWorkspace(ctx, "test workspace")
+		workspace, err = messagesRepo.CreateWorkspace(ctx, "test workspace", "")
 		Expect(err).ToNot(HaveOccurred())
 	})
 

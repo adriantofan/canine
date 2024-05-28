@@ -203,9 +203,15 @@ func (s *MessageRepository) CreateUser(
 	userType genModel.UserType,
 	authID *string) (model.User, error) {
 	var user model.User
+	var authIDValue Expression
+	if authID == nil {
+		authIDValue = NULL
+	} else {
+		authIDValue = String(*authID)
+	}
 	stmt := table.User.
 		INSERT(table.User.WorkspaceID, table.User.Email, table.User.Type, table.User.AuthID).
-		VALUES(Int64(workspaceID), String(email), userType, authID).
+		VALUES(Int64(workspaceID), String(email), userType, authIDValue).
 		RETURNING(table.User.AllColumns)
 
 	err := stmt.QueryContext(ctx, s.db, &user)
@@ -563,13 +569,13 @@ func (s *MessageRepository) GetChangedUsersForUser(ctx context.Context, user mod
 	return users, err
 }
 
-func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string) (model.Workspace, error) {
+func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, authID string) (model.Workspace, error) {
 	var workspace model.Workspace
 	id := s.timeService.Now().UnixMilli()
 	for i := 0; i <= 4; i++ {
 		stmt := table.Workspace.
-			INSERT(table.Workspace.ID, table.Workspace.Name).
-			VALUES(Int64(id), String(name)).
+			INSERT(table.Workspace.ID, table.Workspace.Name, table.Workspace.AuthID).
+			VALUES(Int64(id), String(name), String(authID)).
 			RETURNING(table.Workspace.AllColumns)
 		err := stmt.QueryContext(ctx, s.db, &workspace)
 		if errors.Is(err, qrm.ErrNoRows) {
