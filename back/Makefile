@@ -78,7 +78,7 @@ generate: generate-models #generate-mocks
 
 .PHONY: generate-models
 generate-models:
-	$(GO) run scripts/jet-generate.go -postgres-dsn="postgres://prod:prod@localhost:5432/canine?sslmode=disable"
+	$(GO) run scripts/jet-generate.go --postgres-dsn="postgres://prod:prod@localhost:5432/canine?sslmode=disable"
 
 
 .PHONY: build
