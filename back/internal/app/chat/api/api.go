@@ -52,10 +52,13 @@ func Run(args []string) {
 
 	zitadelIssuer := flagSet.String("zitadel-issuer", "", "zitadel issuer")
 
-	zitadelAuthKeyPath := flagSet.String("zitadel-auth-key-path", "", "zitadel auth key path (supply either this or auth-key-data)")
-	zitadelAuthKeyData := flagSet.String("zitadel-auth-key-data", "", "zitadel auth key data (supply either this or auth-key-path)")
+	zitadelAuthKeyPath := flagSet.String("zitadel-auth-key-path", "", "zitadel auth key path "+
+		"(supply either this or auth-key-data)")
+	zitadelAuthKeyData := flagSet.String("zitadel-auth-key-data", "", "zitadel auth key data "+
+		"(supply either this or auth-key-path)")
 	zitadelAuthProjectID := flagSet.String("zitadel-auth-project-id", "", "zitadel auth project id")
 	zitadelAuthOrgID := flagSet.String("zitadel-auth-org-id", "", "zitadel auth org id")
+	zitadelAutoApprove := flagSet.Bool("zitadel-auto-approve", false, "zitadel auto approve new users")
 
 	// For the admin api access the app needs a instance level manager service account.
 	// Create the service account in the default org (for example)
@@ -158,6 +161,7 @@ func Run(args []string) {
 		managementClient,
 		*zitadelAuthProjectID,
 		*zitadelAuthOrgID,
+		*zitadelAutoApprove,
 	)
 
 	router := gin.New()

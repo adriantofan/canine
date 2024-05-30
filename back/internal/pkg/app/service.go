@@ -42,6 +42,7 @@ type Service struct {
 	zitadelManagement          *zitadelManagement.Client
 	zitadelGrantedProjectID    string
 	zitadelGrantedProjectOrgID string
+	zitadelAutoApprove         bool
 }
 
 func NewService(
@@ -53,6 +54,7 @@ func NewService(
 	zitadelManagement *zitadelManagement.Client,
 	zitadelGrantedProjectID string,
 	zitadelGrantedProjectOrgID string,
+	zitadelAutoApprove bool,
 ) *Service {
 	return &Service{
 		t:                          t,
@@ -64,6 +66,7 @@ func NewService(
 		zitadelManagement:          zitadelManagement,
 		zitadelGrantedProjectID:    zitadelGrantedProjectID,
 		zitadelGrantedProjectOrgID: zitadelGrantedProjectOrgID,
+		zitadelAutoApprove:         true,
 	}
 }
 
@@ -142,7 +145,7 @@ func (s *Service) CreateWorkspace(
 				},
 				Email: &zAdminPb.SetUpOrgRequest_Human_Email{
 					Email:           data.Email,
-					IsEmailVerified: false,
+					IsEmailVerified: s.zitadelAutoApprove,
 				},
 				// TODO: do we want a phone number?
 				//Phone: &zAdminPb.SetUpOrgRequest_Human_Phone{

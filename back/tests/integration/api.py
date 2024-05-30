@@ -1,16 +1,19 @@
 import requests
-import json
+
+from login import interactive_login
 
 # Define the base URL
-base_url = "http://localhost:8080"
+base_url = "http://localhost:8080/api/v1"
 
 
-def create_workspace(name, owner_email, owner_password):
+def create_workspace(name, owner_email, owner_password, first, last):
     headers = {"Content-Type": "application/json"}
     data = {
         "name": name,
-        "messaging_address": owner_email,
-        "password": owner_password
+        "email": owner_email,
+        "password": owner_password,
+        "first_name": first,
+        "last_name": last,
     }
 
     response = requests.post(f"{base_url}/workspaces", headers=headers, json=data)
@@ -22,19 +25,21 @@ def create_workspace(name, owner_email, owner_password):
     return workspace_id, user_id
 
 
-def login(workspace_id, messaging_address, password):
-    headers = {"Content-Type": "application/json"}
-    data = {
-        "username": messaging_address,
-        "password": password,
-        "workspace_id": workspace_id,
-    }
+def login(email, workspace, use_cache=True):
+    print(f'Please login to {email} to {workspace} continue')
+    # try to read the token from file
+    token_file_name = f'.token.{email}.{workspace}.txt'
+    if use_cache:
+        try:
+            with open(token_file_name, "r") as file:
+                token = file.read()
+                return token
+        except FileNotFoundError:
+            pass
 
-    response = requests.post(f"{base_url}/login", headers=headers, json=data)
-    if response.status_code != 200:
-        raise Exception(f"Failed to login {response.status_code}, {response.text}")
-    response_data = response.json()
-    token = response_data.get("token")
+    token = interactive_login()
+    with open(token_file_name, "w") as file:
+        file.write(token)
     return token
 
 
@@ -95,39 +100,3 @@ def get_messages(user_id, conversation_id):
     response = requests.get(f"{base_url}/conversations/{conversation_id}/messages", headers=headers)
     messages = response.json()
     return messages
-
-
-emma_email, emma_password = "emma@example.com", "emma forever"
-canine_id, emma_id = create_workspace("canine", emma_email, emma_password)
-print(f"created emma {emma_id} owning workspace {canine_id}")
-
-emma_token = login(canine_id, emma_email, emma_password)
-print("emma logged in")
-
-# Create a user
-ava_email, ava_password = "ava@example.com", "ava forever"
-ava_id = create_user(emma_token, canine_id, ava_email, "internal", ava_password)
-print("created ava", ava_id)
-
-kitty_email = "kitty@example.com"
-kitty_id = create_user(emma_token, canine_id, kitty_email, "external", "kitty forever")
-print("created ava", kitty_id)
-
-whiskers_email = "whiskers@example.com"
-whiskers_id = create_user(emma_token, canine_id, whiskers_email, "external", "whiskers forever")
-print("created whiskers", whiskers_id)
-
-# Login as ava
-ava_token = login(canine_id, ava_email, ava_password)
-print("ava logged in")
-
-withKitty = create_conversation(ava_token, canine_id, kitty_email)
-print("created conversation with kitty", withKitty)
-
-withWhiskers = create_conversation(emma_token, canine_id, whiskers_email)
-print("created conversation with whiskers", withWhiskers)
-
-send_message(emma_token, canine_id, withKitty, "hello kitty, here emma")
-print("to kitty: hello kitty, here emma")
-send_message(ava_token, canine_id, withKitty, "hello kitty, here ava")
-print("to kitty: hello kitty, here ava")
