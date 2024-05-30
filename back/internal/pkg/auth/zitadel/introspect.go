@@ -72,6 +72,7 @@ func (interceptor *IntrospectionInterceptor) Authorize(appID string) gin.Handler
 			return
 		}
 
+		GinCtxSetUserAuthID(ctx, authCtx.UserID())
 		GinCtxSetRoles(ctx, roleMap)
 		ctx.Next()
 	}

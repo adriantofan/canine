@@ -76,6 +76,8 @@ type ChatRepository interface {
 
 	// GetUserByID returns the user having the given user id. err is ErrUserNotFound if user not found
 	GetUserByID(ctx context.Context, id int64) (model.User, error)
+	GetUsersByAuthIDs(ctx context.Context, authID []string) ([]model.User, error)
+	GetUsersByAuthID(ctx context.Context, authID string) (model.User, error)
 
 	// GetOrCreateConversation creates a new conversation between two users or returns existing one
 	GetOrCreateConversation(
@@ -96,5 +98,4 @@ type ChatRepository interface {
 		ctx context.Context,
 		user model.User,
 		current model.RTCRemote) (model.RTCRemoteUpdate, error)
-	GetUserByFBUID(ctx context.Context, workspaceID int64, fbUID string) (model.User, error)
 }

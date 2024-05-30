@@ -175,11 +175,13 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create zitadel auth middleware")
 	}
+	identityMidleware := zitadel.NewIdentityMiddleware(transactionFactory)
 
 	apiInternal.ConfigureRouter(
 		router,
 		handlers,
 		zitadelAuth.Authorize(*zitadelAuthProjectID),
+		identityMidleware.Authenticate(),
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
 

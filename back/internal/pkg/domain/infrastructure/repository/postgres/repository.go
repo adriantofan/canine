@@ -146,6 +146,46 @@ func (s *MessageRepository) GetChanges() []model.DataUpdate {
 	return s.changes
 }
 
+func (s *MessageRepository) GetUsersByAuthIDs(ctx context.Context, authID []string) ([]model.User, error) {
+	authIDExpressions := make([]Expression, len(authID))
+	for i, id := range authID {
+		authIDExpressions[i] = String(id)
+	}
+
+	stmt := SELECT(table.User.AllColumns).
+		FROM(table.User).
+		WHERE(table.User.AuthID.IN(authIDExpressions...))
+	users := make([]model.User, 0)
+	err := stmt.QueryContext(ctx, s.db, &users)
+	if err != nil {
+		if errors.Is(err, qrm.ErrNoRows) {
+			return users, domain.ErrUserNotFound
+		}
+
+		return nil, fmt.Errorf("failed to get users by authID: %w", err)
+	}
+
+	return users, nil
+}
+
+func (s *MessageRepository) GetUsersByAuthID(ctx context.Context, authID string) (model.User, error) {
+
+	stmt := SELECT(table.User.AllColumns).
+		FROM(table.User).
+		WHERE(table.User.AuthID.IN(String(authID)))
+	user := model.User{}
+	err := stmt.QueryContext(ctx, s.db, &user)
+	if err != nil {
+		if errors.Is(err, qrm.ErrNoRows) {
+			return user, domain.ErrUserNotFound
+		}
+
+		return user, fmt.Errorf("failed to get user by authID: %w", err)
+	}
+
+	return user, nil
+}
+
 func (s *MessageRepository) GetMessages(
 	ctx context.Context,
 	conversationID int64,
@@ -588,24 +628,19 @@ func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, au
 	return workspace, fmt.Errorf("failed to create workspace (retry) %s", name)
 }
 
-func (s *MessageRepository) GetUserByFBUID(ctx context.Context, workspaceID int64, fbUID string) (model.User, error) {
-	var user model.User
-	stmt := SELECT(table.User.AllColumns).
-		FROM(table.User).
-		WHERE(
-			AND(
-				table.User.WorkspaceID.EQ(Int64(workspaceID)),
-				// TODO add this back when the case
-				//table.User.FBUID.EQ(String(fbUID)),
-			))
-	err := stmt.QueryContext(ctx, s.db, &user)
+func (s *MessageRepository) GetWorkspaceByAuthId(ctx context.Context, authID string) (*model.Workspace, error) {
+	var workspace model.Workspace
+	stmt := SELECT(table.Workspace.AllColumns).
+		FROM(table.Workspace).
+		WHERE(table.Workspace.AuthID.EQ(String(authID)))
+	err := stmt.QueryContext(ctx, s.db, &workspace)
 
 	if errors.Is(err, qrm.ErrNoRows) {
-		return user, domain.ErrUserNotFound
+		return nil, nil
 	}
 	if err != nil {
-		return user, fmt.Errorf("failed to get user by FBUID: %w", err)
+		return nil, fmt.Errorf("failed to get workspace by authID: %w", err)
 	}
 
-	return user, nil
+	return &workspace, nil
 }

@@ -1,13 +1,20 @@
 package api
 
 import (
+	"back/internal/pkg/auth/zitadel"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 const kDefaultFileUploadSize = 10 << 20 // 10 MiB
-func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware gin.HandlerFunc, apiLogger gin.HandlerFunc) {
+func ConfigureRouter(
+	router *gin.Engine,
+	handlers *ChatHandlers,
+	authMiddleware gin.HandlerFunc,
+	identityMiddleware gin.HandlerFunc,
+	apiLogger gin.HandlerFunc,
+) {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 
@@ -18,13 +25,19 @@ func ConfigureRouter(router *gin.Engine, handlers *ChatHandlers, authMiddleware 
 
 	authRoutes := apiRoutes.Group("/auth")
 	authRoutes.Use(authMiddleware)
+
+	authRoutes.Use(identityMiddleware)
 	authRoutes.GET("/me", handlers.GetMe)
 
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
-	workspaceGroup := apiRoutes.Group("/:workspace_id")
+	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
+	// it MUST match the workspace_id param as defined in the identity middleware
+	workspaceGroup := apiRoutes.Group("/:" + zitadel.WorkspaceIDParam)
 
 	// TODO: write a firebase middleware
 	workspaceGroup.Use(authMiddleware)
+	workspaceGroup.Use(identityMiddleware)
+	workspaceGroup.GET("/me", handlers.GetMe)
 
 	workspaceGroup.POST("/users", handlers.CreateUser)
 

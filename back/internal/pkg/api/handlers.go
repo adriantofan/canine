@@ -4,6 +4,7 @@ import (
 	genModel "back/.gen/canine/public/model"
 	apiModel "back/internal/pkg/api/model"
 	"back/internal/pkg/app"
+	appModel "back/internal/pkg/app/model"
 	"back/internal/pkg/auth/zitadel"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
@@ -110,7 +111,7 @@ func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.Service.CreateUser(ctx, getIdentity(ctx), payload)
+	user, err := h.Service.CreateUser(ctx, authorize(ctx), payload)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -132,7 +133,7 @@ func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 		return
 	}
 
-	conversation, err := h.Service.GetOrCreateConversation(ctx, getIdentity(ctx), payload.RecipientEmail)
+	conversation, err := h.Service.GetOrCreateConversation(ctx, authorize(ctx), payload.RecipientEmail)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -163,7 +164,7 @@ func (h ChatHandlers) CreateMessage(ctx *gin.Context) {
 		return
 	}
 
-	message, err := h.Service.CreateMessage(ctx, getIdentity(ctx), params.ConversationID, payload)
+	message, err := h.Service.CreateMessage(ctx, authorize(ctx), params.ConversationID, payload)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -180,7 +181,7 @@ func (h ChatHandlers) GetConversations(c *gin.Context) {
 		return
 	}
 
-	conversations, err := h.Service.GetConversations(c, getIdentity(c), id, limit, direction)
+	conversations, err := h.Service.GetConversations(c, authorize(c), id, limit, direction)
 	if err != nil {
 		abortWithAppError(c, err)
 		return
@@ -226,7 +227,7 @@ func (h ChatHandlers) GetConversationMessages(c *gin.Context) {
 		return
 	}
 
-	messages, err := h.Service.GetConversationMessages(c, getIdentity(c), params.ConversationID, id, limit, direction)
+	messages, err := h.Service.GetConversationMessages(c, authorize(c), params.ConversationID, id, limit, direction)
 	if err != nil {
 		abortWithAppError(c, err)
 		return
@@ -262,7 +263,7 @@ func (h ChatHandlers) RTCStartSession(c *gin.Context) {
 		return
 	}
 
-	update, err := h.Service.GetRTCRemoteUpdate(c, getIdentity(c), payload)
+	update, err := h.Service.GetRTCRemoteUpdate(c, authorize(c), payload)
 	if err != nil {
 		abortWithAppError(c, err)
 		return
@@ -296,7 +297,7 @@ func (h ChatHandlers) RTCConnect(c *gin.Context) {
 		return
 	}
 
-	identity := getIdentity(c)
+	identity := authorize(c)
 	user, err := repo.GetUserByID(c, identity.UserID)
 	if err != nil {
 		abortWithAppError(c, fmt.Errorf("error getting user: %w", err))
@@ -457,8 +458,7 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 
 func (h ChatHandlers) GetMe(c *gin.Context) {
 	roles := zitadel.GinCtxMustGetRoles(c)
-	fmt.Printf("roles %+v\n", roles)
-	c.JSON(http.StatusOK, "go on")
+	c.String(http.StatusOK, "roles %+v\n identity %+v", roles, authorize(c))
 }
 
 func (h ChatHandlers) GetCreateOrg(c *gin.Context) {
@@ -466,7 +466,7 @@ func (h ChatHandlers) GetCreateOrg(c *gin.Context) {
 }
 
 func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
-	// TODO: kill and replace with getIdentity
+	// TODO: kill and replace with authorize
 	user, ok := ctx.MustGet("user").(model.User)
 	if !ok {
 		panic("user not found")
@@ -475,8 +475,20 @@ func (h ChatHandlers) getUser(ctx *gin.Context) model.User {
 	return user
 }
 
-func getIdentity(ctx *gin.Context) *app.Identity {
-	log.Warn().Msg("Not implemented yet - tap in to auth middleware to get identity")
-
-	return &app.Identity{}
+func authorize(ctx *gin.Context) *appModel.Identity {
+	//params := struct {
+	//	WorkspaceID int64 `uri:"workspace_id" binding:"required"`
+	//}{}
+	//if err := ctx.ShouldBindUri(&params); err != nil {
+	//	_ = ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid workspace id: %w", err))
+	//	return nil
+	//}
+	//identity := zitadel.GinCtxMustGetIdentity(ctx)
+	//if identity.WorkspaceID != params.WorkspaceID {
+	//	ctx.AbortWithStatus(http.StatusForbidden)
+	//	return nil
+	//}
+	//
+	//return identity
+	return zitadel.GinCtxMustGetIdentity(ctx)
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	genModel "back/.gen/canine/public/model"
+	appModel "back/internal/pkg/app/model"
 	appZitadel "back/internal/pkg/app/zitadel"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
@@ -226,7 +227,7 @@ func (s *Service) CreateWorkspace(
 
 func (s *Service) GetRTCRemoteUpdate(
 	ctx context.Context,
-	identity *Identity,
+	identity *appModel.Identity,
 	clientState model.RTCRemote) (model.RTCRemoteUpdate, error) {
 
 	var workspaceID int64
@@ -260,7 +261,7 @@ func (s *Service) GetRTCRemoteUpdate(
 
 func (s *Service) CreateMessage(
 	ctx context.Context,
-	identity *Identity,
+	identity *appModel.Identity,
 	conversationID int64,
 	messageData CreateMessageData) (model.Message, error) {
 	var message model.Message
@@ -315,7 +316,7 @@ func (s *Service) CreateMessage(
 	return message, nil
 }
 
-func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData CreateUserData) (model.User, error) {
+func (s *Service) CreateUser(ctx context.Context, identity *appModel.Identity, userData CreateUserData) (model.User, error) {
 
 	var user model.User
 
@@ -377,7 +378,7 @@ func (s *Service) CreateUser(ctx context.Context, identity *Identity, userData C
 
 func (s *Service) GetOrCreateConversation(
 	ctx context.Context,
-	identity *Identity,
+	identity *appModel.Identity,
 	recipientEmail string) (model.Conversation, error) {
 	var conversation model.Conversation
 
@@ -429,7 +430,7 @@ func (s *Service) GetOrCreateConversation(
 
 func (s *Service) GetConversations(
 	ctx context.Context,
-	identity *Identity,
+	identity *appModel.Identity,
 	fromID *int64,
 	limit int,
 	direction domain.Direction) ([]model.Conversation, error) {
@@ -455,7 +456,7 @@ func (s *Service) GetConversations(
 
 func (s *Service) GetConversationMessages(
 	ctx context.Context,
-	identity *Identity,
+	identity *appModel.Identity,
 	conversationID int64,
 	fromID *int64,
 	limit int,

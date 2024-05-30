@@ -5,7 +5,7 @@ emma_email, emma_password = "emma@example.com", "Emma forever1"
 canine_id, emma_id = create_workspace("Dr. Emma", emma_email, emma_password, "Emma", "Admin")
 print(f"created emma {emma_id} owning workspace {canine_id}")
 
-emma_token = login(emma_email)
+emma_token = login(emma_email, canine_id)
 print("emma logged in")
 print("emma token", emma_token)
 
