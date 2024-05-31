@@ -243,11 +243,12 @@ func (s *MessageRepository) CreateUser(
 	workspaceID int64,
 	email string,
 	userType genModel.UserType,
-	authID string) (model.User, error) {
+	authID string,
+	phone string) (model.User, error) {
 	var user model.User
 	stmt := table.User.
-		INSERT(table.User.WorkspaceID, table.User.Email, table.User.Type, table.User.AuthID).
-		VALUES(Int64(workspaceID), String(email), userType, String(authID)).
+		INSERT(table.User.WorkspaceID, table.User.Email, table.User.Type, table.User.AuthID, table.User.Phone).
+		VALUES(Int64(workspaceID), String(email), userType, String(authID), String(phone)).
 		RETURNING(table.User.AllColumns)
 
 	err := stmt.QueryContext(ctx, s.db, &user)

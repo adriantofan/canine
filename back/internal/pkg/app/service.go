@@ -97,8 +97,9 @@ type CreateWorkspaceData struct {
 }
 
 type CreateUserData struct {
-	Email    string            `binding:"required" json:"email"`
+	Email    string            `binding:"required" json:"email" validate:"email"`
 	UserType genModel.UserType `binding:"required" json:"user_type"         validate:"oneof=external internal"`
+	Phone    string            `json:"phone" validate:"e164"`
 }
 
 type WorkspaceLoginData struct {
@@ -212,8 +213,8 @@ func (s *Service) CreateWorkspace(
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create workspace: %w", err)
 	}
-
-	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, setupResult.UserId)
+	// TODO: add phone number here
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, setupResult.UserId, "")
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}
@@ -346,7 +347,7 @@ func (s *Service) CreateUser(
 		return user, ErrForbidden
 	}
 
-	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.Email, userData.UserType, "")
+	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.Email, userData.UserType, "", userData.Phone)
 
 	if errors.Is(err, domain.ErrEmailExists) {
 		return user, ErrCreateUserEmailExists
