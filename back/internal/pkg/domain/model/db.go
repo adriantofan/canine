@@ -20,7 +20,7 @@ type User struct {
 	Type        genModel.UserType          `json:"type" db:"type"`
 	CreatedAt   primitive.MillisecondsTime `json:"created_at" db:"created_at"`
 	UpdatedAt   primitive.MillisecondsTime `json:"updated_at" db:"updated_at"`
-	AuthID      *string                    `json:"-" db:"auth_id"`
+	AuthID      string                     `json:"-" db:"auth_id"`
 }
 
 type Conversation struct {

@@ -213,7 +213,7 @@ func (s *Service) CreateWorkspace(
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create workspace: %w", err)
 	}
 
-	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, &setupResult.UserId)
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, setupResult.UserId)
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}
@@ -317,7 +317,11 @@ func (s *Service) CreateMessage(
 	return message, nil
 }
 
-func (s *Service) CreateUser(ctx context.Context, identity *appModel.Identity, userData CreateUserData) (model.User, error) {
+func (s *Service) CreateUser(
+	ctx context.Context,
+	identity *appModel.Identity,
+	userData CreateUserData,
+) (model.User, error) {
 
 	var user model.User
 
@@ -342,7 +346,7 @@ func (s *Service) CreateUser(ctx context.Context, identity *appModel.Identity, u
 		return user, ErrForbidden
 	}
 
-	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.Email, userData.UserType, nil)
+	user, err = repo.CreateUser(ctx, identity.WorkspaceID, userData.Email, userData.UserType, "")
 
 	if errors.Is(err, domain.ErrEmailExists) {
 		return user, ErrCreateUserEmailExists
@@ -574,8 +578,8 @@ func (s *Service) CheckAuthorization(
 		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization fail to get workspace user: %w", err)
 	}
 
-	if wkspUser.AuthID != nil {
-		if *wkspUser.AuthID == userAuthID {
+	if wkspUser.AuthID != "" {
+		if wkspUser.AuthID == userAuthID {
 			return EndUserAuthorizationAlreadyAuthorized, nil
 		}
 

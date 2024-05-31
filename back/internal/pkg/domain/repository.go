@@ -69,7 +69,7 @@ type ChatRepository interface {
 		workspaceID int64,
 		email string,
 		userType genModel.UserType,
-		authID *string) (model.User, error)
+		authID string) (model.User, error)
 
 	// GetUserByEmail returns the user having the given phone number. err is ErrUserNotFound if user not found
 	GetUserByEmail(ctx context.Context, workspaceID int64, email string) (model.User, error)
