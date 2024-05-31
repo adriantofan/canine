@@ -1,0 +1,3 @@
+SET ROLE ddl_grp;
+ALTER TABLE "user"
+    ADD COLUMN phone VARCHAR(20) NOT NULL DEFAULT '';
