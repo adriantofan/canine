@@ -21,6 +21,7 @@ type User struct {
 	CreatedAt   primitive.MillisecondsTime `json:"created_at" db:"created_at"`
 	UpdatedAt   primitive.MillisecondsTime `json:"updated_at" db:"updated_at"`
 	AuthID      string                     `json:"-" db:"auth_id"`
+	Phone       string                     `json:"phone" db:"phone"`
 }
 
 type Conversation struct {

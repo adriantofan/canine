@@ -18,5 +18,6 @@ type User struct {
 	Type        UserType
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	AuthID      *string
+	AuthID      string
+	Phone       string
 }
