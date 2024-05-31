@@ -124,9 +124,8 @@ func (h ChatHandlers) CreateUser(ctx *gin.Context) {
 
 func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 	var payload CreateConversationPayload
-
 	err := ctx.ShouldBindJSON(&payload)
-
+	log.Warn().Msg("CreateConversation should work with ids instead of emails ❌")
 	if err != nil {
 		abortBadRequest(ctx, err)
 
@@ -461,8 +460,37 @@ func (h ChatHandlers) GetMe(c *gin.Context) {
 	c.String(http.StatusOK, "roles %+v\n identity %+v", roles, authorize(c))
 }
 
-func (h ChatHandlers) GetCreateOrg(c *gin.Context) {
+func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {
 
+	var uriParams zitadel.WorkspaceBased
+
+	if err := ctx.ShouldBindUri(&uriParams); err != nil {
+		// this is a bug
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	var params struct {
+		ConversationID int64 `binding:"required" form:"cid"`
+	}
+
+	if err := ctx.ShouldBind(&params); err != nil {
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	userAuthID := zitadel.GinCtxMustGetUserAuthID(ctx)
+	authorization, err := h.Service.CheckAuthorization(ctx, uriParams.WorkspaceID, params.ConversationID, userAuthID)
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+	// TODO: remove some of the sensitive data when not authorized
+
+	ctx.JSON(http.StatusOK, authorization)
 }
 
 func (h ChatHandlers) getUser(ctx *gin.Context) model.User {

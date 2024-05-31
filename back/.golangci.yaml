@@ -139,12 +139,15 @@ linters-settings:
           - $gostd
           - 'back'
           - 'github.com/spf13/pflag' # clearly unmaintained, but we need it
-          - 'github.com/rs/zerolog/log'
+          - 'github.com/rs/zerolog'
           - 'github.com/gin-gonic/gin'
           - 'github.com/appleboy/gin-jwt/v2'
           - 'firebase.google.com/go/v4/auth'
           - 'github.com/zitadel/oidc'
           - 'github.com/zitadel/zitadel-go/v2'
+          - 'github.com/jackc/pgerrcode'
+          - 'github.com/jackc/pgx'
+          - 'github.com/go-jet'
   ireturn:
     allow:
       - anon

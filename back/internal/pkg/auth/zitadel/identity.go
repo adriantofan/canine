@@ -33,7 +33,15 @@ func (m *IdentityMiddleware) Authenticate() gin.HandlerFunc {
 			return
 		}
 		authID := GinCtxMustGetUserAuthID(ctx)
-		user, err := chatRepo.GetUsersByAuthID(ctx, authID)
+
+		var params WorkspaceBased
+
+		if err := ctx.ShouldBindUri(&params); err != nil {
+			_ = ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("failed to bind uri params: %w", err))
+			return
+		}
+
+		user, err := chatRepo.GetUsersByAuthID(ctx, params.WorkspaceID, authID)
 		if err != nil {
 			if errors.Is(err, domain.ErrUserNotFound) {
 				ctx.AbortWithStatus(http.StatusUnauthorized)
@@ -43,14 +51,11 @@ func (m *IdentityMiddleware) Authenticate() gin.HandlerFunc {
 			_ = ctx.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to get user by auth id: %w", err))
 			return
 		}
-		var params WorkspaceBased
 
-		if err := ctx.ShouldBindUri(&params); err == nil {
-			if user.WorkspaceID != params.WorkspaceID {
-				ctx.AbortWithStatus(http.StatusForbidden)
+		if user.WorkspaceID != params.WorkspaceID {
+			ctx.AbortWithStatus(http.StatusForbidden)
 
-				return
-			}
+			return
 		}
 
 		identity := appModel.Identity{

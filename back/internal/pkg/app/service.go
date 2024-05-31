@@ -77,6 +77,7 @@ var (
 	//  - user not found in db
 	ErrNotAuthorized          = errors.New("user not authorized")
 	ErrForbidden              = errors.New("forbidden to perform this action")
+	ErrNotFound               = errors.New("not found")
 	ErrZitadelWorkspaceExists = errors.New("authorization workspace already exists")
 
 	ErrCreateUserEmailExists = domain.ErrEmailExists
@@ -514,6 +515,88 @@ func (s *Service) sendChangesToEventLog(
 			break
 		}
 	}
+}
+
+//nolint:gochecknoglobals
+var (
+	// EndUserAuthorizationPrivate means the user is attempting to authorize a private conversation
+	EndUserAuthorizationPrivate = makeEndUserAuthorization(false, "private")
+	// EndUserAuthorizationAlreadyAuthorized means the user is already authorized
+	EndUserAuthorizationAlreadyAuthorized = makeEndUserAuthorization(true, "already_authorized")
+	EndUserAuthorizationNA                = makeEndUserAuthorization(true, "does_not_apply")
+	EndUserAuthorizationAlreadyLinked     = makeEndUserAuthorization(false, "already_linked")
+	EndUserAuthorizationGranted           = makeEndUserAuthorization(true, "granted")
+)
+
+type EndUserAuthorization struct {
+	Authorized bool
+	Code       string
+}
+
+func makeEndUserAuthorization(authorized bool, code string) EndUserAuthorization {
+	return EndUserAuthorization{
+		Authorized: authorized,
+		Code:       code,
+	}
+}
+
+func (s *Service) CheckAuthorization(
+	ctx context.Context,
+	workspaceID int64,
+	conversationID int64,
+	userAuthID string) (EndUserAuthorization, error) {
+	chatRepo, err := s.t.WithoutTransaction()
+	if err != nil {
+		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization begin transaction: %w", err)
+	}
+
+	// this must be one user at most (sole user in the wksp)
+	conversation, err := chatRepo.GetConversation(ctx, conversationID)
+	if err != nil {
+		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization get conversation: %w", err)
+	}
+
+	if conversation.WorkspaceID != workspaceID {
+		return EndUserAuthorization{}, ErrNotFound
+	}
+
+	if conversation.ExternalUserID == 0 {
+		return EndUserAuthorizationPrivate, nil
+	}
+
+	wkspUser, err := chatRepo.GetUserByID(ctx, conversation.ExternalUserID)
+
+	if errors.Is(err, domain.ErrUserNotFound) {
+		return EndUserAuthorizationPrivate, nil
+	}
+
+	if err != nil {
+		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization fail to get workspace user: %w", err)
+	}
+
+	if wkspUser.AuthID != nil {
+		if *wkspUser.AuthID == userAuthID {
+			return EndUserAuthorizationAlreadyAuthorized, nil
+		}
+
+		return EndUserAuthorizationAlreadyLinked, nil
+	}
+
+	if wkspUser.Type != genModel.UserType_External {
+		return EndUserAuthorizationNA, nil
+	}
+
+	// TODO: determine if the user has an authorized phone number identical to the auth user in zitadel
+	hasAuthorizedPhoneNumberIdenticalToAuthUserInZitadel := false
+	// there is a user without authID and he is external
+	// Happy path: we can link the user because he has an authed phone number
+	if hasAuthorizedPhoneNumberIdenticalToAuthUserInZitadel {
+		// TODO: set the authID
+		return EndUserAuthorizationGranted, nil
+	}
+
+	// TODO: need to send code to the phone number or determine if code already sent
+	return EndUserAuthorization{}, nil
 }
 
 func (s *Service) WorkspaceLogin(

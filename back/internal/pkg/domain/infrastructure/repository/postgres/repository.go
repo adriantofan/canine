@@ -168,12 +168,14 @@ func (s *MessageRepository) GetUsersByAuthIDs(ctx context.Context, authID []stri
 	return users, nil
 }
 
-func (s *MessageRepository) GetUsersByAuthID(ctx context.Context, authID string) (model.User, error) {
-
+func (s *MessageRepository) GetUsersByAuthID(
+	ctx context.Context,
+	workspaceID int64,
+	authID string) (model.User, error) {
 	stmt := SELECT(table.User.AllColumns).
 		FROM(table.User).
-		WHERE(table.User.AuthID.IN(String(authID)))
-	user := model.User{}
+		WHERE(table.User.AuthID.EQ(String(authID)).AND(table.User.WorkspaceID.EQ(Int64(workspaceID))))
+	user := model.User{} //nolint:exhaustruct
 	err := stmt.QueryContext(ctx, s.db, &user)
 	if err != nil {
 		if errors.Is(err, qrm.ErrNoRows) {
@@ -351,7 +353,6 @@ func (s *MessageRepository) GetOrCreateConversation(
 		}
 
 		return conversation, nil
-
 	}
 	s.changes = append(s.changes, model.DataUpdate{
 		Kind: model.DataUpdateKindCreate,
@@ -369,7 +370,6 @@ func (s *MessageRepository) CreateMessage(
 	message string,
 	messageType genModel.MessageType,
 	attachments []string) (model.Message, error) {
-
 	var msg model.Message
 	stmt := table.
 		Message.INSERT(
@@ -428,7 +428,7 @@ func (s *MessageRepository) GetConversations(
 	ctx context.Context,
 	workspaceID int64,
 	externalUserID *int64,
-	id *int64,
+	conversationID *int64,
 	limit int,
 	direction domain.Direction) ([]model.Conversation, error) {
 	expression := table.Conversation.WorkspaceID.EQ(Int64(workspaceID))
@@ -438,20 +438,24 @@ func (s *MessageRepository) GetConversations(
 	stmt := SELECT(table.Conversation.AllColumns).
 		FROM(table.Conversation)
 	if direction == domain.DirectionForward {
-		if id != nil {
-			expression = expression.AND(table.Conversation.ID.GT(Int64(*id)))
+		if conversationID != nil {
+			expression = expression.AND(table.Conversation.ID.GT(Int64(*conversationID)))
 		}
 		stmt = stmt.ORDER_BY(table.Conversation.ID.ASC()).LIMIT(int64(limit))
 	} else {
-		if id != nil {
-			expression = expression.AND(table.Conversation.ID.LT(Int64(*id)))
+		if conversationID != nil {
+			expression = expression.AND(table.Conversation.ID.LT(Int64(*conversationID)))
 		}
 		stmt = stmt.ORDER_BY(table.Conversation.ID.DESC()).LIMIT(int64(limit))
 	}
 	stmt = stmt.WHERE(expression)
 	conversations := make([]model.Conversation, 0)
 	err := stmt.QueryContext(ctx, s.db, &conversations)
-	return conversations, err
+	if err != nil {
+		return conversations, fmt.Errorf("failed to get conversations: %w", err)
+	}
+
+	return conversations, nil
 }
 
 func (s *MessageRepository) GetConversation(ctx context.Context, id int64) (model.Conversation, error) {
@@ -464,12 +468,19 @@ func (s *MessageRepository) GetConversation(ctx context.Context, id int64) (mode
 	if errors.Is(err, qrm.ErrNoRows) {
 		return conversation, domain.ErrConversationNotFound
 	}
+	if err != nil {
+		return conversation, fmt.Errorf("failed to get conversation by id: %w", err)
+	}
 
-	return conversation, err
+	return conversation, nil
 }
 
-func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, known model.RTCRemote) (model.RTCRemoteUpdate, error) {
-	r := model.RTCRemoteUpdate{}
+func (s *MessageRepository) GetSyncState(
+	ctx context.Context,
+	user model.User,
+	known model.RTCRemote,
+) (model.RTCRemoteUpdate, error) {
+	rtcRemoteUpdate := model.RTCRemoteUpdate{} //nolint:exhaustruct
 
 	// Only need to return the full conversation object for each changed known conversation.
 	// Given their changed status it is not required to get last known message because messages for known conversations
@@ -480,14 +491,14 @@ func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, k
 		known.ConversationsUpdateSeq,
 		known.Messages)
 	if err != nil {
-		return r, fmt.Errorf("user sync failed to get updated conversations: %w", err)
+		return rtcRemoteUpdate, fmt.Errorf("user sync failed to get updated conversations: %w", err)
 	}
 
 	newMessagesExistingConversations := make([]model.ConversationMessages, 0)
 	for _, mr := range known.Messages {
 		messages, err := s.GetMessages(ctx, mr.ConversationID, &mr.Range.Last, 10000, domain.DirectionForward)
 		if err != nil {
-			return r, fmt.Errorf("user sync failed to get messages: %w", err)
+			return rtcRemoteUpdate, fmt.Errorf("user sync failed to get messages: %w", err)
 		}
 
 		const maxMessageCountSyncPerConversation = 5000
@@ -506,7 +517,7 @@ func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, k
 
 	users, err := s.GetChangedUsersForUser(ctx, user, known.LastKnownUserVersion)
 	if err != nil {
-		return r, fmt.Errorf("user sync failed to get changed users: %w", err)
+		return rtcRemoteUpdate, fmt.Errorf("user sync failed to get changed users: %w", err)
 	}
 
 	return model.RTCRemoteUpdate{
@@ -514,7 +525,6 @@ func (s *MessageRepository) GetSyncState(ctx context.Context, user model.User, k
 		Messages:      messages,
 		Users:         users,
 	}, nil
-
 }
 
 func (s *MessageRepository) GetUserChangedConversations(
@@ -579,7 +589,11 @@ func (s *MessageRepository) GetUserChangedConversations(
 	return conversations, messages, nil
 }
 
-func (s *MessageRepository) GetChangedUsersForUser(ctx context.Context, user model.User, userVersion model.UserVersion) ([]model.User, error) {
+func (s *MessageRepository) GetChangedUsersForUser(
+	ctx context.Context,
+	user model.User,
+	userVersion model.UserVersion,
+) ([]model.User, error) {
 	condition := AND(
 		table.User.UpdatedAt.GT(TimestampT(userVersion.MaxUpdateTime.Time)),
 		table.User.WorkspaceID.EQ(Int64(user.WorkspaceID)),
@@ -622,25 +636,8 @@ func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, au
 			time.Sleep(time.Duration(rand.Float64()*10) * time.Millisecond)
 		}
 		if err == nil {
-			return workspace, err
+			return workspace, nil
 		}
 	}
 	return workspace, fmt.Errorf("failed to create workspace (retry) %s", name)
-}
-
-func (s *MessageRepository) GetWorkspaceByAuthId(ctx context.Context, authID string) (*model.Workspace, error) {
-	var workspace model.Workspace
-	stmt := SELECT(table.Workspace.AllColumns).
-		FROM(table.Workspace).
-		WHERE(table.Workspace.AuthID.EQ(String(authID)))
-	err := stmt.QueryContext(ctx, s.db, &workspace)
-
-	if errors.Is(err, qrm.ErrNoRows) {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, fmt.Errorf("failed to get workspace by authID: %w", err)
-	}
-
-	return &workspace, nil
 }

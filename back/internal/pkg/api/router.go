@@ -29,13 +29,15 @@ func ConfigureRouter(
 	authRoutes.Use(identityMiddleware)
 	authRoutes.GET("/me", handlers.GetMe)
 
-	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
+	apiRoutes.GET("/workspaces", handlers.CreateWorkspace)
 	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
 	// it MUST match the workspace_id param as defined in the identity middleware
 	workspaceGroup := apiRoutes.Group("/:" + zitadel.WorkspaceIDParam)
 
 	// TODO: write a firebase middleware
 	workspaceGroup.Use(authMiddleware)
+	workspaceGroup.GET("/authz/check", handlers.CheckAuthorization)
+
 	workspaceGroup.Use(identityMiddleware)
 	workspaceGroup.GET("/me", handlers.GetMe)
 

@@ -6,7 +6,6 @@ require (
 	cloud.google.com/go/cloudsqlconn v1.9.0
 	cloud.google.com/go/secretmanager v1.11.5
 	cloud.google.com/go/storage v1.40.0
-	github.com/alexedwards/argon2id v1.0.0
 	github.com/gammazero/deque v0.2.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-jet/jet/v2 v2.10.1
