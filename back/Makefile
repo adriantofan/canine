@@ -210,8 +210,16 @@ migrate-revert-last-dev:
 migrate-revert-last-prod:
 	$(MAKE) _migrate migrate_cmd='down 1' PGUSER=$(PGUSER_ENCODED) PGPASSWORD=not_a_password PGHOST=127.0.0.1
 
-.PHONY: create-migrations-table
+.PHONY: migration-create
+migration-create: $(MIGRATE)
+	@if [ -z "$(name)" ]; then \
+		echo "Please specify a name" ; \
+		exit 1 ; \
+	fi
+	$(MIGRATE) create -ext sql -dir ./migrations $(name)
 
+
+.PHONY: create-migrations-table
 create-migrations-table:
 	./scripts/create_migrations_table.sh
 
