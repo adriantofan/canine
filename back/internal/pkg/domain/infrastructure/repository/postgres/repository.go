@@ -269,29 +269,17 @@ func (s *MessageRepository) CreateUser(
 
 	return user, nil
 }
-
-// GetUserByEmail implements MessageRepository.
-func (s *MessageRepository) GetUserByEmail(
-	ctx context.Context,
-	workspaceID int64,
-	email string) (model.User, error) {
-	var user model.User
-	stmt := SELECT(table.User.AllColumns).
-		FROM(table.User).
-		WHERE(AND(
-			table.User.Email.EQ(String(email)),
-			table.User.WorkspaceID.EQ(Int64(workspaceID))))
-
-	err := stmt.QueryContext(ctx, s.db, &user)
-
-	if errors.Is(err, qrm.ErrNoRows) {
-		return user, domain.ErrUserNotFound
-	}
+func (s *MessageRepository) SetUserAuthID(ctx context.Context, userID int64, authID string) error {
+	stmt := table.User.
+		UPDATE(table.User.AuthID).
+		SET(String(authID)).
+		WHERE(table.User.ID.EQ(Int64(userID)))
+	_, err := stmt.ExecContext(ctx, s.db)
 	if err != nil {
-		return user, fmt.Errorf("failed to get user by email: %w", err)
+		return fmt.Errorf("failed to set user authID: %w", err)
 	}
 
-	return user, nil
+	return nil
 }
 
 func (s *MessageRepository) GetUserByID(ctx context.Context, id int64) (model.User, error) {

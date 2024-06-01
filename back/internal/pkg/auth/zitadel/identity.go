@@ -24,8 +24,17 @@ func NewIdentityMiddleware(transactionFactory domain.Transaction) *IdentityMiddl
 	}
 }
 
-func (m *IdentityMiddleware) Authenticate() gin.HandlerFunc {
+func (m *IdentityMiddleware) Authenticate(appID string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		authCtx := GinMustGetUserContext(ctx)
+		roleMap := authCtx.GrantedRolesInProject(appID)
+		if len(roleMap) == 0 {
+			ctx.AbortWithStatus(http.StatusForbidden)
+
+			return
+		}
+		GinCtxSetRoles(ctx, roleMap)
+
 		chatRepo, err := m.transactionFactory.WithoutTransaction()
 		if err != nil {
 			_ = ctx.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to get chat transactionFactory: %w", err))

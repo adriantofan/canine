@@ -149,6 +149,14 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create zitadel management client")
 	}
+	zitadelService := app.NewZitadelService(
+		adminAdminClient,
+		managementClient,
+		nil,
+		*zitadelAuthProjectID,
+		*zitadelAuthOrgID,
+		*zitadelAutoApprove,
+	)
 
 	service := app.NewService(
 		transactionFactory,
@@ -157,11 +165,7 @@ func Run(args []string) {
 			cancel() // WTF
 		},
 		attachmentService,
-		adminAdminClient,
-		managementClient,
-		*zitadelAuthProjectID,
-		*zitadelAuthOrgID,
-		*zitadelAutoApprove,
+		zitadelService,
 	)
 
 	router := gin.New()
@@ -180,8 +184,8 @@ func Run(args []string) {
 	apiInternal.ConfigureRouter(
 		router,
 		handlers,
-		zitadelAuth.Authorize(*zitadelAuthProjectID),
-		identityMidleware.Authenticate(),
+		zitadelAuth.Authorize(),
+		identityMidleware.Authenticate(*zitadelAuthProjectID),
 		infrastructure.NewLogHandler(log.Logger, *structuredLog),
 	)
 

@@ -3,18 +3,10 @@ package app
 import (
 	genModel "back/.gen/canine/public/model"
 	appModel "back/internal/pkg/app/model"
-	appZitadel "back/internal/pkg/app/zitadel"
+	"back/internal/pkg/auth/zitadel/oauth"
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
-
-	"google.golang.org/grpc/metadata"
-
-	zitadelManagement "github.com/zitadel/zitadel-go/v2/pkg/client/management"
-
-	"google.golang.org/grpc/codes"
-
-	"google.golang.org/grpc/status"
 
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
@@ -25,49 +17,34 @@ import (
 	"mime/multipart"
 
 	"github.com/rs/zerolog"
-	zitadelAdmin "github.com/zitadel/zitadel-go/v2/pkg/client/admin"
-	zAdminPb "github.com/zitadel/zitadel-go/v2/pkg/client/zitadel/admin"
-	zManagementPb "github.com/zitadel/zitadel-go/v2/pkg/client/zitadel/management"
 )
 
 const ZitadelAppProjectGrantRoleWkspAdmin = "wksp_admin"
 const ZitadelAppProjectGrantRoleUser = "user"
 
 type Service struct {
-	t                          domain.Transaction
-	eventsOutput               eventlog.Output
-	eventLogFatalErr           func(error)
-	timeService                infrastructure.TimeService
-	attachmentsService         service.Attachments
-	zitadelAdmin               *zitadelAdmin.Client
-	zitadelManagement          *zitadelManagement.Client
-	zitadelGrantedProjectID    string
-	zitadelGrantedProjectOrgID string
-	zitadelAutoApprove         bool
+	t                  domain.Transaction
+	eventsOutput       eventlog.Output
+	eventLogFatalErr   func(error)
+	timeService        infrastructure.TimeService
+	attachmentsService service.Attachments
+	zitadelService     *ZitadelService
 }
 
 func NewService(
-	t domain.Transaction,
+	transaction domain.Transaction,
 	eventsOutput eventlog.Output,
 	fatalErr func(error),
 	attachmentsService service.Attachments,
-	zitadelAdmin *zitadelAdmin.Client,
-	zitadelManagement *zitadelManagement.Client,
-	zitadelGrantedProjectID string,
-	zitadelGrantedProjectOrgID string,
-	zitadelAutoApprove bool,
+	zitadelService *ZitadelService,
 ) *Service {
 	return &Service{
-		t:                          t,
-		eventsOutput:               eventsOutput,
-		eventLogFatalErr:           fatalErr,
-		timeService:                infrastructure.NewRealTimeService(),
-		attachmentsService:         attachmentsService,
-		zitadelAdmin:               zitadelAdmin,
-		zitadelManagement:          zitadelManagement,
-		zitadelGrantedProjectID:    zitadelGrantedProjectID,
-		zitadelGrantedProjectOrgID: zitadelGrantedProjectOrgID,
-		zitadelAutoApprove:         true,
+		t:                  transaction,
+		eventsOutput:       eventsOutput,
+		eventLogFatalErr:   fatalErr,
+		timeService:        infrastructure.NewRealTimeService(),
+		attachmentsService: attachmentsService,
+		zitadelService:     zitadelService,
 	}
 }
 
@@ -134,87 +111,19 @@ func (s *Service) CreateWorkspace(
 	}
 
 	defer s.t.MustRollback(ctx)
-	setUpOrgRequest := zAdminPb.SetUpOrgRequest{
-		Org: &zAdminPb.SetUpOrgRequest_Org{ //nolint:exhaustruct
-			Name: data.Name,
-		},
-		User: &zAdminPb.SetUpOrgRequest_Human_{
-			Human: &zAdminPb.SetUpOrgRequest_Human{ //nolint:exhaustruct
-				UserName: data.Email,
-				Profile: &zAdminPb.SetUpOrgRequest_Human_Profile{ //nolint:exhaustruct
-					FirstName:         data.FirstName,
-					LastName:          data.LastName,
-					PreferredLanguage: "fr",
-				},
-				Email: &zAdminPb.SetUpOrgRequest_Human_Email{
-					Email:           data.Email,
-					IsEmailVerified: s.zitadelAutoApprove,
-				},
-				// TODO: do we want a phone number?
-				//Phone: &zAdminPb.SetUpOrgRequest_Human_Phone{
-				//	Phone:           "",
-				//	IsPhoneVerified: false,
-				// },
-				Password: data.Password,
-			},
-		},
-		//https://zitadel.com/docs/guides/manage/console/managers
-		//Roles: []string{"ORG_OWNER_VIEWER", "ORG_USER_MANAGER", "ORG_USER_PERMISSION_EDITOR"},
-		Roles: []string{"ORG_OWNER"},
-	}
-
-	setupResult, err := s.zitadelAdmin.SetUpOrg(ctx, &setUpOrgRequest)
-
-	if statusErr := status.Convert(err); statusErr != nil {
-		switch statusErr.Code() {
-		case codes.InvalidArgument:
-			return workspaceWithUser, appZitadel.NewInvalidRequestError(statusErr)
-		case codes.AlreadyExists:
-			return workspaceWithUser, ErrZitadelWorkspaceExists
-		}
-	}
+	setupResult, err := s.zitadelService.CreateOrg(ctx, data)
 
 	if err != nil {
-		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel set up org: %w", err)
+		return workspaceWithUser, err
 	}
 
-	grantRequest := zManagementPb.AddProjectGrantRequest{
-		ProjectId:    s.zitadelGrantedProjectID,
-		GrantedOrgId: setupResult.OrgId,
-		RoleKeys:     []string{ZitadelAppProjectGrantRoleWkspAdmin, ZitadelAppProjectGrantRoleUser},
-	}
-
-	grantResponse, err := s.zitadelManagement.AddProjectGrant(
-		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-zitadel-orgid", s.zitadelGrantedProjectOrgID)),
-		&grantRequest,
-	)
-
-	if err != nil {
-		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel add project grant: %w", err)
-	}
-
-	addUserGrantRequest := zManagementPb.AddUserGrantRequest{
-		ProjectId:      s.zitadelGrantedProjectID,
-		UserId:         setupResult.UserId,
-		ProjectGrantId: grantResponse.GrantId,
-		RoleKeys:       []string{ZitadelAppProjectGrantRoleWkspAdmin},
-	}
-
-	_, err = s.zitadelManagement.AddUserGrant(
-		metadata.NewOutgoingContext(ctx, metadata.Pairs("x-zitadel-orgid", setupResult.OrgId)),
-		&addUserGrantRequest)
-
-	if err != nil {
-		return workspaceWithUser, fmt.Errorf("CreateWorkspace zitadel add user grant: %w", err)
-	}
-
-	workspace, err := repo.CreateWorkspace(ctx, data.Name, setupResult.OrgId)
+	workspace, err := repo.CreateWorkspace(ctx, data.Name, setupResult.OrgID)
 
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create workspace: %w", err)
 	}
 	// TODO: add phone number here
-	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, setupResult.UserId, "")
+	user, err := repo.CreateUser(ctx, workspace.ID, data.Email, genModel.UserType_Internal, setupResult.UserID, "")
 	if err != nil {
 		return workspaceWithUser, fmt.Errorf("CreateWorkspace create user: %w", err)
 	}
@@ -231,9 +140,7 @@ func (s *Service) GetRTCRemoteUpdate(
 	ctx context.Context,
 	identity *appModel.Identity,
 	clientState model.RTCRemote) (model.RTCRemoteUpdate, error) {
-
 	var workspaceID int64
-
 	var serverState model.RTCRemoteUpdate
 	repo, err := s.t.WithoutTransaction()
 	if err != nil {
@@ -258,6 +165,7 @@ func (s *Service) GetRTCRemoteUpdate(
 		return serverState, fmt.Errorf("GetRTCRemoteUpdate get sync state: %w", err)
 	}
 	serverState.SyncToken = marker.MarkerHash
+
 	return serverState, nil
 }
 
@@ -302,7 +210,14 @@ func (s *Service) CreateMessage(
 	}
 
 	// FIXME: Starting here we should introduce the total ordering of messages
-	message, err = repo.CreateMessage(ctx, conversationID, sender.ID, messageData.Message, genModel.MessageType_Msg, attachments)
+	message, err = repo.CreateMessage(
+		ctx,
+		conversationID,
+		sender.ID,
+		messageData.Message,
+		genModel.MessageType_Msg,
+		attachments,
+	)
 	if err != nil {
 		return message, fmt.Errorf("CreateMessage create message: %w", err)
 	}
@@ -323,9 +238,7 @@ func (s *Service) CreateUser(
 	identity *appModel.Identity,
 	userData CreateUserData,
 ) (model.User, error) {
-
 	var user model.User
-
 	repo, err := s.t.Begin()
 	defer s.t.MustRollback(ctx)
 
@@ -385,7 +298,7 @@ func (s *Service) CreateUser(
 func (s *Service) GetOrCreateConversation(
 	ctx context.Context,
 	identity *appModel.Identity,
-	recipientEmail string) (model.Conversation, error) {
+	userID int64) (model.Conversation, error) {
 	var conversation model.Conversation
 
 	repo, err := s.t.Begin()
@@ -408,13 +321,17 @@ func (s *Service) GetOrCreateConversation(
 		return conversation, ErrForbidden
 	}
 
-	recipient, err := repo.GetUserByEmail(ctx, user.WorkspaceID, recipientEmail)
+	recipient, err := repo.GetUserByID(ctx, userID)
 	if err != nil {
 		if errors.Is(err, domain.ErrUserNotFound) {
 			return conversation, ErrRecipientNotFound
 		}
 
 		return conversation, fmt.Errorf("CreateChat get recipient: %w", err)
+	}
+
+	if recipient.WorkspaceID != identity.WorkspaceID {
+		return conversation, ErrNotFound
 	}
 
 	conversation, err = repo.GetOrCreateConversation(ctx, identity.WorkspaceID, recipient.ID, "")
@@ -522,21 +439,26 @@ func (s *Service) sendChangesToEventLog(
 	}
 }
 
+type EndUserAuthorization struct {
+	Authorized bool
+	Code       string
+}
+
 //nolint:gochecknoglobals
 var (
+	EndUserAuthorizationUndefined = makeEndUserAuthorization(false, "")
 	// EndUserAuthorizationPrivate means the user is attempting to authorize a private conversation
 	EndUserAuthorizationPrivate = makeEndUserAuthorization(false, "private")
 	// EndUserAuthorizationAlreadyAuthorized means the user is already authorized
 	EndUserAuthorizationAlreadyAuthorized = makeEndUserAuthorization(true, "already_authorized")
 	EndUserAuthorizationNA                = makeEndUserAuthorization(true, "does_not_apply")
 	EndUserAuthorizationAlreadyLinked     = makeEndUserAuthorization(false, "already_linked")
-	EndUserAuthorizationGranted           = makeEndUserAuthorization(true, "granted")
+	EndUserAuthorizationGrantedEmail      = makeEndUserAuthorization(true, "granted_email")
+	EndUserAuthorizationGrantedPhone      = makeEndUserAuthorization(true, "granted_email")
+	EndUserAuthorizationFailPhone         = makeEndUserAuthorization(false, "phone_no_match")
+	EndUserAuthorizationAskPhone          = makeEndUserAuthorization(false, "ask_phone")
+	EndUserAuthorizationFailEmail         = makeEndUserAuthorization(false, "email_no_match")
 )
-
-type EndUserAuthorization struct {
-	Authorized bool
-	Code       string
-}
 
 func makeEndUserAuthorization(authorized bool, code string) EndUserAuthorization {
 	return EndUserAuthorization{
@@ -549,20 +471,21 @@ func (s *Service) CheckAuthorization(
 	ctx context.Context,
 	workspaceID int64,
 	conversationID int64,
-	userAuthID string) (EndUserAuthorization, error) {
+	userAuthID string,
+	authContext *oauth.IntrospectionContext) (EndUserAuthorization, error) {
 	chatRepo, err := s.t.WithoutTransaction()
 	if err != nil {
-		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization begin transaction: %w", err)
+		return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization begin transaction: %w", err)
 	}
 
 	// this must be one user at most (sole user in the wksp)
 	conversation, err := chatRepo.GetConversation(ctx, conversationID)
 	if err != nil {
-		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization get conversation: %w", err)
+		return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization get conversation: %w", err)
 	}
 
 	if conversation.WorkspaceID != workspaceID {
-		return EndUserAuthorization{}, ErrNotFound
+		return EndUserAuthorizationUndefined, ErrNotFound
 	}
 
 	if conversation.ExternalUserID == 0 {
@@ -571,16 +494,18 @@ func (s *Service) CheckAuthorization(
 
 	wkspUser, err := chatRepo.GetUserByID(ctx, conversation.ExternalUserID)
 
-	if errors.Is(err, domain.ErrUserNotFound) {
-		return EndUserAuthorizationPrivate, nil
-	}
-
 	if err != nil {
-		return EndUserAuthorization{}, fmt.Errorf("CheckAuthorization fail to get workspace user: %w", err)
+		return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization fail to get workspace user: %w", err)
 	}
 
 	if wkspUser.AuthID != "" {
 		if wkspUser.AuthID == userAuthID {
+			// makes sure the user has the role in the project
+			err = s.zitadelService.GiveRoleToUser(ctx, userAuthID, ZitadelAppProjectGrantRoleUser)
+			if err != nil {
+				return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization	zitadel give role to user: %w", err)
+			}
+
 			return EndUserAuthorizationAlreadyAuthorized, nil
 		}
 
@@ -591,17 +516,46 @@ func (s *Service) CheckAuthorization(
 		return EndUserAuthorizationNA, nil
 	}
 
-	// TODO: determine if the user has an authorized phone number identical to the auth user in zitadel
-	hasAuthorizedPhoneNumberIdenticalToAuthUserInZitadel := false
-	// there is a user without authID and he is external
-	// Happy path: we can link the user because he has an authed phone number
-	if hasAuthorizedPhoneNumberIdenticalToAuthUserInZitadel {
-		// TODO: set the authID
-		return EndUserAuthorizationGranted, nil
+	// try authorized email
+	if authContext.IsEmailVerified() && wkspUser.Email == authContext.GetEmail() {
+		wkspUser.AuthID = userAuthID
+		err = chatRepo.SetUserAuthID(ctx, wkspUser.ID, userAuthID)
+		if err != nil {
+			return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization set user auth id: %w", err)
+		}
+		err = s.zitadelService.GiveRoleToUser(ctx, userAuthID, ZitadelAppProjectGrantRoleUser)
+		if err != nil {
+			return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization	zitadel give role to user: %w", err)
+		}
+
+		return EndUserAuthorizationGrantedEmail, nil
 	}
 
-	// TODO: need to send code to the phone number or determine if code already sent
-	return EndUserAuthorization{}, nil
+	if authContext.IsPhoneNumberVerified() { // has phone on the context
+		if authContext.GetPhoneNumber() == wkspUser.Phone {
+			wkspUser.AuthID = userAuthID
+			err = chatRepo.SetUserAuthID(ctx, wkspUser.ID, userAuthID)
+			if err != nil {
+				return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization set user auth id: %w", err)
+			}
+			err = s.zitadelService.GiveRoleToUser(ctx, userAuthID, ZitadelAppProjectGrantRoleUser)
+			if err != nil {
+				return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization	zitadel give role to user: %w", err)
+			}
+
+			return EndUserAuthorizationGrantedPhone, nil
+		}
+
+		if wkspUser.Phone != "" {
+			return EndUserAuthorizationFailPhone, nil
+		}
+	}
+
+	if wkspUser.Phone != "" {
+		return EndUserAuthorizationAskPhone, nil
+	}
+
+	return EndUserAuthorizationFailEmail, nil
 }
 
 func (s *Service) WorkspaceLogin(

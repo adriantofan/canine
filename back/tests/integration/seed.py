@@ -9,28 +9,30 @@ emma_token = login(emma_email, canine_id)
 print("emma logged in")
 print("emma token", emma_token)
 
-exit(0)
+kitty_email = "kitty@example.com"
+kitty_id = create_user(emma_token, canine_id, kitty_email, "external", "kitty forever")
+print("kitty", kitty_id)
+
+exit(1)
 # Create a user
 ava_email, ava_password = "ava@example.com", "ava forever"
 ava_id = create_user(emma_token, canine_id, ava_email, "internal", ava_password)
 print("created ava", ava_id)
 
-kitty_email = "kitty@example.com"
-kitty_id = create_user(emma_token, canine_id, kitty_email, "external", "kitty forever")
-print("created ava", kitty_id)
 
 whiskers_email = "whiskers@example.com"
 whiskers_id = create_user(emma_token, canine_id, whiskers_email, "external", "whiskers forever")
 print("created whiskers", whiskers_id)
 
+
 # Login as ava
 ava_token = login(canine_id, ava_email, ava_password)
 print("ava logged in")
 
-withKitty = create_conversation(ava_token, canine_id, kitty_email)
+withKitty = create_conversation(ava_token, canine_id, kitty_id)
 print("created conversation with kitty", withKitty)
 
-withWhiskers = create_conversation(emma_token, canine_id, whiskers_email)
+withWhiskers = create_conversation(emma_token, canine_id, whiskers_id)
 print("created conversation with whiskers", withWhiskers)
 
 send_message(emma_token, canine_id, withKitty, "hello kitty, here emma")

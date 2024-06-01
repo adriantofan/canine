@@ -44,7 +44,7 @@ def login(email, workspace, use_cache=True):
 
 
 # Function to create a user
-def create_user(token, workspace_id, messaging_address, user_type, password):
+def create_user(token, workspace_id, email, user_type, phone=None):
     assert user_type in ["internal", "external"]
 
     headers = {
@@ -52,28 +52,28 @@ def create_user(token, workspace_id, messaging_address, user_type, password):
         "Authorization": f"Bearer {token}",
     }
     data = {
-        "messaging_address": messaging_address,
+        "email": email,
         "user_type": user_type,
-        "password": password,
+        "phone": phone or "",
     }
     response = requests.post(f"{base_url}/{workspace_id}/users", headers=headers, json=data)
     if response.status_code != 201:
-        raise Exception(f"Failed to create user {response.status_code}, {response.text}")
+        raise Exception(f"Failed to create user {response.status_code}, {data} {response.text}")
     response_data = response.json()
     user_id = response_data.get("id")
     return user_id
 
 
 # Function to create a conversation
-def create_conversation(token, workspace_id, recipient_phone):
+def create_conversation(token, workspace_id, recipient_id:int):
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {token}",
     }
-    data = {"recipient_messaging_address": recipient_phone}
+    data = {"user_id": recipient_id}
     response = requests.post(f"{base_url}/{workspace_id}/conversations", headers=headers, json=data)
     if response.status_code != 201:
-        raise Exception(f"Failed to create conversation {response.status_code}, {response.text}")
+        raise Exception(f"Failed to create conversation {response.status_code}, {data} {response.text}")
     response_data = response.json()
     conversation_id = response_data.get("id")
     return conversation_id

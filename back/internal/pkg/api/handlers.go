@@ -132,7 +132,7 @@ func (h ChatHandlers) CreateConversation(ctx *gin.Context) {
 		return
 	}
 
-	conversation, err := h.Service.GetOrCreateConversation(ctx, authorize(ctx), payload.RecipientEmail)
+	conversation, err := h.Service.GetOrCreateConversation(ctx, authorize(ctx), payload.UserId)
 
 	if err != nil {
 		abortWithAppError(ctx, err)
@@ -482,7 +482,14 @@ func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {
 	}
 
 	userAuthID := zitadel.GinCtxMustGetUserAuthID(ctx)
-	authorization, err := h.Service.CheckAuthorization(ctx, uriParams.WorkspaceID, params.ConversationID, userAuthID)
+	authContext := zitadel.GinMustGetUserContext(ctx)
+	authorization, err := h.Service.CheckAuthorization(
+		ctx,
+		uriParams.WorkspaceID,
+		params.ConversationID,
+		userAuthID,
+		authContext,
+	)
 	if err != nil {
 		abortWithAppError(ctx, err)
 

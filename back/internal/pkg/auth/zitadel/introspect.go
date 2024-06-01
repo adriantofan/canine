@@ -46,11 +46,11 @@ func NewIntrospectionInterceptor(issuer, keyPath string, keyData string) (*Intro
 	}, nil
 }
 
-func (interceptor *IntrospectionInterceptor) Authorize(appID string) gin.HandlerFunc {
+func (interceptor *IntrospectionInterceptor) Authorize() gin.HandlerFunc {
 	var errUnauthorized UnauthorizedError
 
 	return func(ctx *gin.Context) {
-		authCtx, err := interceptor.CheckAuthorization(ctx.Request)
+		authCtx, err := interceptor.LoadAuthorization(ctx.Request)
 
 		if err != nil {
 			if errors.Is(err, &errUnauthorized) {
@@ -64,21 +64,14 @@ func (interceptor *IntrospectionInterceptor) Authorize(appID string) gin.Handler
 
 			return
 		}
-		roleMap := authCtx.GrantedRolesInProject(appID)
-		if len(roleMap) == 0 {
-			interceptor.writeError(ctx.Writer, http.StatusUnauthorized, nil)
-			ctx.Abort()
-
-			return
-		}
 
 		GinCtxSetUserAuthID(ctx, authCtx.UserID())
-		GinCtxSetRoles(ctx, roleMap)
+		GinSetUserContext(ctx, authCtx)
 		ctx.Next()
 	}
 }
 
-func (interceptor *IntrospectionInterceptor) CheckAuthorization(r *http.Request) (*oauth.IntrospectionContext, error) {
+func (interceptor *IntrospectionInterceptor) LoadAuthorization(r *http.Request) (*oauth.IntrospectionContext, error) {
 	authCtx, err := Introspect(r.Context(), r.Header.Get("authorization"), interceptor.resourceServer)
 	if err != nil || !authCtx.IsAuthorized() {
 		if errors.Is(err, ErrIntrospectionFailed) {

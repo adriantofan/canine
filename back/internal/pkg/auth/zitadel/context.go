@@ -2,6 +2,7 @@ package zitadel
 
 import (
 	appModel "back/internal/pkg/app/model"
+	"back/internal/pkg/auth/zitadel/oauth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +11,7 @@ const (
 	roleCtxKey     = "zitadel_roles"
 	identityCtxKey = "identity"
 	userAuthIDKey  = "user_auth_id"
+	authContextKey = "auth_context"
 )
 
 // Ctx represents the authorization context with information about the authorized user.
@@ -55,4 +57,11 @@ func GinCtxMustGetIdentity(ctx *gin.Context) *appModel.Identity {
 
 func GinCtxSetIdentity(ctx *gin.Context, identity appModel.Identity) {
 	ctx.Set(identityCtxKey, &identity)
+}
+func GinSetUserContext(ctx *gin.Context, authContext *oauth.IntrospectionContext) {
+	ctx.Set(authContextKey, authContext)
+}
+
+func GinMustGetUserContext(ctx *gin.Context) *oauth.IntrospectionContext {
+	return ctx.MustGet(authContextKey).(*oauth.IntrospectionContext) //nolint: forcetypeassert
 }
