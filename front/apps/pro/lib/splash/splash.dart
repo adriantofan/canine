@@ -15,9 +15,6 @@ class SplashPage extends StatelessWidget {
             case AuthStatus.authenticated:
               Navigator.of(context).pushReplacementNamed('/home');
               break;
-            case AuthStatus.unauthenticated:
-              Navigator.of(context).pushReplacementNamed('/login');
-              break;
             default:
               break;
           }

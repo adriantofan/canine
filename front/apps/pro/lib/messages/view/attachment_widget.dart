@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 
 class AttachmentWidget extends StatelessWidget {
-  final String fileName;
+  final String filePath;
   final IconData
       iconData; // For simplicity, using an icon. Replace or extend with Image for specific previews.
 
   const AttachmentWidget({
     Key? key,
-    required this.fileName,
+    required this.filePath,
     required this.iconData,
   }) : super(key: key);
 
@@ -33,7 +34,7 @@ class AttachmentWidget extends StatelessWidget {
             const SizedBox(height: 8), // Space between icon and text
             Flexible(
               child: Text(
-                fileName,
+                path.basename(filePath),
                 style: Theme.of(context).textTheme.labelSmall,
                 overflow:
                     TextOverflow.ellipsis, // Show ellipsis if text overflows

@@ -17,10 +17,10 @@ dependencies:
   json_annotation: ^4.8.1
   web_socket_channel: ^2.4.0
   canine_sync:
-    path: package/canine_sync
+    path: ../../packages/canine_sync
   flow_builder: ^0.1.0
   form_inputs:
-    path: package/form_inputs
+    path: ../../package/form_inputs
   formz: ^0.7.0
   logging: ^1.2.0
   flutter_svg: ^2.0.10+1
