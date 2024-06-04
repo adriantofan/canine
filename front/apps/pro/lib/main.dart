@@ -28,8 +28,13 @@ void main() async {
   final sync = await start(Config().apiBase, Config().wsBase);
   final syncRepository = SyncRepository(sync);
   final authRepository = AuthRepository(
-      // apiClient: APIClientBase(Config().apiBase, Config().wsBase),
-      );
+    oidcUrl: Config().oidcUrl,
+    appClientId: Config().appClientId,
+    appProjectId: Config().appProjectId,
+    endUserOrganizationId: Config().endUserOrganizationId,
+    callbackUrlScheme: Config().callbackUrlScheme,
+    // apiClient: APIClientBase(Config().apiBase, Config().wsBase),
+  );
   authRepository.init();
   AppRouter.instance; // Make sure the router is initialized when app starts
   runApp(MainApp(

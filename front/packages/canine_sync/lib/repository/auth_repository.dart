@@ -13,7 +13,7 @@ class AuthRepository {
   /// if you don't want to pass them dynamically.
   // final zitadelIssuer = Uri.parse(const String.fromEnvironment('zitadel_url'));
   // const zitadelClientId = String.fromEnvironment('zitadel_client_id');
-  late final Uri zitadelIssuer;
+  late final Uri oidcUrl;
   final String appClientId;
   final String appProjectId;
   final String endUserOrganizationId; // clemia-dev
@@ -31,18 +31,16 @@ class AuthRepository {
   late final OidcUserManager userManager;
 
   AuthRepository({
-    String zitadelIssuer = 'https://clemia-test-cudifn.zitadel.cloud',
-    this.appClientId = '268939975775556876@clemia', //clemia-dev/clemia/app,
-    this.appProjectId = '268939777150031116', // clemia-dev/clemia,
-    this.endUserOrganizationId = '268939597935809804', // clemia-dev,
-    this.callbackUrlScheme = 'fr.clemia.proapp',
+    required this.oidcUrl,
+    required this.appClientId,
+    required this.appProjectId,
+    required this.endUserOrganizationId,
+    required this.callbackUrlScheme,
   }) {
-    this.zitadelIssuer = Uri.parse(zitadelIssuer);
     redirectUri =
         kIsWeb ? webCallbackUrl : Uri(scheme: callbackUrlScheme, path: '/');
     userManager = OidcUserManager.lazy(
-      discoveryDocumentUri:
-          OidcUtils.getOpenIdConfigWellKnownUri(this.zitadelIssuer),
+      discoveryDocumentUri: OidcUtils.getOpenIdConfigWellKnownUri(oidcUrl),
       clientCredentials: OidcClientAuthentication.none(clientId: appClientId),
       store: OidcDefaultStore(),
       settings: OidcUserManagerSettings(
