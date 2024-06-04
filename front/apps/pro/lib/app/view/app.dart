@@ -28,9 +28,10 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: BlocProvider(
-        create: (c) => AppBloc(c.read<AuthRepository>()),
+        create: (c) =>
+            AppBloc(c.read<AuthRepository>())..add(AppEvent.initial()),
         // See AppRouter documentation for more information.
-        child: BlocListener<AppBloc, AuthStatus>(
+        child: BlocListener<AppBloc, AppState>(
           listener: (context, state) {
             AppRouter.router.refresh();
           },

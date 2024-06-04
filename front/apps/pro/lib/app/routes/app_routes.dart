@@ -5,7 +5,7 @@ class AppRoutes {
   static const RootPath slash = RootPath(path: '/');
   static const WorkspacePath switchWorkspace =
       WorkspacePath(subPath: '/switch-workspace');
-  static const WorkspacePath login = WorkspacePath(subPath: '/login');
+  static const RootPath login = RootPath(path: '/login');
   static const WorkspacePath createAccount =
       WorkspacePath(subPath: '/create-account');
   static const WorkspacePath confirmPassword =

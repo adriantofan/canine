@@ -38,19 +38,19 @@ mixin _$AppEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
-    required TResult Function(Logout value) logout,
+    required TResult Function(AppEventLogout value) logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
-    TResult? Function(Logout value)? logout,
+    TResult? Function(AppEventLogout value)? logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
-    TResult Function(Logout value)? logout,
+    TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -143,7 +143,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
-    required TResult Function(Logout value) logout,
+    required TResult Function(AppEventLogout value) logout,
   }) {
     return initial(this);
   }
@@ -152,7 +152,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
-    TResult? Function(Logout value)? logout,
+    TResult? Function(AppEventLogout value)? logout,
   }) {
     return initial?.call(this);
   }
@@ -161,7 +161,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
-    TResult Function(Logout value)? logout,
+    TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -176,25 +176,25 @@ abstract class AppEventInitial implements AppEvent {
 }
 
 /// @nodoc
-abstract class _$$LogoutImplCopyWith<$Res> {
-  factory _$$LogoutImplCopyWith(
-          _$LogoutImpl value, $Res Function(_$LogoutImpl) then) =
-      __$$LogoutImplCopyWithImpl<$Res>;
+abstract class _$$AppEventLogoutImplCopyWith<$Res> {
+  factory _$$AppEventLogoutImplCopyWith(_$AppEventLogoutImpl value,
+          $Res Function(_$AppEventLogoutImpl) then) =
+      __$$AppEventLogoutImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LogoutImplCopyWithImpl<$Res>
-    extends _$AppEventCopyWithImpl<$Res, _$LogoutImpl>
-    implements _$$LogoutImplCopyWith<$Res> {
-  __$$LogoutImplCopyWithImpl(
-      _$LogoutImpl _value, $Res Function(_$LogoutImpl) _then)
+class __$$AppEventLogoutImplCopyWithImpl<$Res>
+    extends _$AppEventCopyWithImpl<$Res, _$AppEventLogoutImpl>
+    implements _$$AppEventLogoutImplCopyWith<$Res> {
+  __$$AppEventLogoutImplCopyWithImpl(
+      _$AppEventLogoutImpl _value, $Res Function(_$AppEventLogoutImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LogoutImpl implements Logout {
-  const _$LogoutImpl();
+class _$AppEventLogoutImpl implements AppEventLogout {
+  const _$AppEventLogoutImpl();
 
   @override
   String toString() {
@@ -204,7 +204,7 @@ class _$LogoutImpl implements Logout {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LogoutImpl);
+        (other.runtimeType == runtimeType && other is _$AppEventLogoutImpl);
   }
 
   @override
@@ -245,7 +245,7 @@ class _$LogoutImpl implements Logout {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
-    required TResult Function(Logout value) logout,
+    required TResult Function(AppEventLogout value) logout,
   }) {
     return logout(this);
   }
@@ -254,7 +254,7 @@ class _$LogoutImpl implements Logout {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
-    TResult? Function(Logout value)? logout,
+    TResult? Function(AppEventLogout value)? logout,
   }) {
     return logout?.call(this);
   }
@@ -263,7 +263,7 @@ class _$LogoutImpl implements Logout {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
-    TResult Function(Logout value)? logout,
+    TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -273,6 +273,177 @@ class _$LogoutImpl implements Logout {
   }
 }
 
-abstract class Logout implements AppEvent {
-  const factory Logout() = _$LogoutImpl;
+abstract class AppEventLogout implements AppEvent {
+  const factory AppEventLogout() = _$AppEventLogoutImpl;
+}
+
+/// @nodoc
+mixin _$AppState {
+  AuthStatus get authStatus => throw _privateConstructorUsedError;
+  int? get workspaceId => throw _privateConstructorUsedError;
+  bool get isAuthorized => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $AppStateCopyWith<AppState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AppStateCopyWith<$Res> {
+  factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
+      _$AppStateCopyWithImpl<$Res, AppState>;
+  @useResult
+  $Res call({AuthStatus authStatus, int? workspaceId, bool isAuthorized});
+
+  $AuthStatusCopyWith<$Res> get authStatus;
+}
+
+/// @nodoc
+class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
+    implements $AppStateCopyWith<$Res> {
+  _$AppStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? authStatus = null,
+    Object? workspaceId = freezed,
+    Object? isAuthorized = null,
+  }) {
+    return _then(_value.copyWith(
+      authStatus: null == authStatus
+          ? _value.authStatus
+          : authStatus // ignore: cast_nullable_to_non_nullable
+              as AuthStatus,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isAuthorized: null == isAuthorized
+          ? _value.isAuthorized
+          : isAuthorized // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AuthStatusCopyWith<$Res> get authStatus {
+    return $AuthStatusCopyWith<$Res>(_value.authStatus, (value) {
+      return _then(_value.copyWith(authStatus: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AppStateImplCopyWith<$Res>
+    implements $AppStateCopyWith<$Res> {
+  factory _$$AppStateImplCopyWith(
+          _$AppStateImpl value, $Res Function(_$AppStateImpl) then) =
+      __$$AppStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({AuthStatus authStatus, int? workspaceId, bool isAuthorized});
+
+  @override
+  $AuthStatusCopyWith<$Res> get authStatus;
+}
+
+/// @nodoc
+class __$$AppStateImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateImpl>
+    implements _$$AppStateImplCopyWith<$Res> {
+  __$$AppStateImplCopyWithImpl(
+      _$AppStateImpl _value, $Res Function(_$AppStateImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? authStatus = null,
+    Object? workspaceId = freezed,
+    Object? isAuthorized = null,
+  }) {
+    return _then(_$AppStateImpl(
+      authStatus: null == authStatus
+          ? _value.authStatus
+          : authStatus // ignore: cast_nullable_to_non_nullable
+              as AuthStatus,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isAuthorized: null == isAuthorized
+          ? _value.isAuthorized
+          : isAuthorized // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AppStateImpl implements _AppState {
+  const _$AppStateImpl(
+      {required this.authStatus,
+      required this.workspaceId,
+      required this.isAuthorized});
+
+  @override
+  final AuthStatus authStatus;
+  @override
+  final int? workspaceId;
+  @override
+  final bool isAuthorized;
+
+  @override
+  String toString() {
+    return 'AppState(authStatus: $authStatus, workspaceId: $workspaceId, isAuthorized: $isAuthorized)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppStateImpl &&
+            (identical(other.authStatus, authStatus) ||
+                other.authStatus == authStatus) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId) &&
+            (identical(other.isAuthorized, isAuthorized) ||
+                other.isAuthorized == isAuthorized));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, authStatus, workspaceId, isAuthorized);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
+      __$$AppStateImplCopyWithImpl<_$AppStateImpl>(this, _$identity);
+}
+
+abstract class _AppState implements AppState {
+  const factory _AppState(
+      {required final AuthStatus authStatus,
+      required final int? workspaceId,
+      required final bool isAuthorized}) = _$AppStateImpl;
+
+  @override
+  AuthStatus get authStatus;
+  @override
+  int? get workspaceId;
+  @override
+  bool get isAuthorized;
+  @override
+  @JsonKey(ignore: true)
+  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

@@ -32,7 +32,18 @@ class AppGoRoute extends GoRoute {
     final appBloc = context.read<AppBloc>();
 
     onLogin(workspaceId) {
-      return "${AppRoutes.login.path(workspaceId)}?ref=${routerState.uri}";
+      return "${AppRoutes.login.path}?ref=${routerState.uri}";
+    }
+
+    final onSplash = routerState.path == AppRoutes.slash.path;
+    if (onSplash) {
+      if (appBloc.isAuthenticated) {
+        print("Login");
+        return AppRoutes.home.path(appBloc.workspaceId);
+      } else {
+        print("Login");
+        return AppRoutes.login.path;
+      }
     }
 
     final isOnWorkspace =
@@ -44,22 +55,30 @@ class AppGoRoute extends GoRoute {
       throw GoException('Invalid workspace');
     }
 
-    final isOnLogin =
-        isOnWorkspace && AppRoutes.login.path(workspaceId!) == routerState.path;
-
-    final isOnAnotherWorkspace =
-        isOnWorkspace && workspaceId != appBloc.workspaceId;
-
-    if (isOnLogin && appBloc.isAuthenticated && !isOnAnotherWorkspace) {
-      // Don't go on login if not necessary
-      return AppRoutes.home.path(workspaceId);
+    final isOnLogin = AppRoutes.login.path == routerState.path;
+    if (isOnLogin && appBloc.isAuthenticated) {
+      return AppRoutes.home.path(appBloc.workspaceId);
     }
 
     if (!isOnLogin && onlyAuthenticated) {
-      if (!appBloc.isAuthenticated || isOnAnotherWorkspace) {
-        return onLogin(workspaceId!);
+      if (!appBloc.isAuthenticated) {
+        return onLogin(workspaceId);
       }
     }
+
+    // final isOnAnotherWorkspace =
+    //     isOnWorkspace && workspaceId != appBloc.workspaceId;
+    //
+    // if (isOnLogin && appBloc.isAuthenticated && !isOnAnotherWorkspace) {
+    //   // Don't go on login if not necessary
+    //   return AppRoutes.home.path(workspaceId);
+    // }
+    //
+    // if (!isOnLogin && onlyAuthenticated) {
+    //   if (!appBloc.isAuthenticated || isOnAnotherWorkspace) {
+    //     return onLogin(workspaceId!);
+    //   }
+    // }
     // TODO: finish checking this , and go to the repository
     return null;
   }

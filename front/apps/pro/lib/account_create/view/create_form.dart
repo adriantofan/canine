@@ -160,7 +160,7 @@ class _SignInButton extends StatelessWidget {
     final theme = Theme.of(context);
     return TextButton(
       key: Key('loginForm_createAccount_signIn_$workspaceId'),
-      onPressed: () => AppRouter.goLoginInWorkspace(workspaceId),
+      onPressed: () => AppRouter.goLoginInWorkspace(),
       child: Text(
         'LOGIN',
         style: TextStyle(color: theme.primaryColor),

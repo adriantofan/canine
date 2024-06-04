@@ -20,7 +20,7 @@ dependencies:
     path: ../../packages/canine_sync
   flow_builder: ^0.1.0
   form_inputs:
-    path: ../../package/form_inputs
+    path: ../../packages/form_inputs
   formz: ^0.7.0
   logging: ^1.2.0
   flutter_svg: ^2.0.10+1
@@ -35,7 +35,6 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.2.3
   firebase_core: ^2.31.1
-  firebase_auth: ^4.19.6
 
 dev_dependencies:
   flutter_test:

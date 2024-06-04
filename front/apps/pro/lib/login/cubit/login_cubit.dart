@@ -9,61 +9,14 @@ part 'login_cubit.freezed.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  final SyncRepository _syncRepository;
+  final AuthRepository _authRepository;
 
-  LoginCubit(this._syncRepository, int workspaceId)
-      : super(
-            LoginState.initial(workspaceId: WorkspaceId.dirty('$workspaceId')));
+  LoginCubit(this._authRepository) : super(const LoginState.initial());
 
-  void emailChanged(String value) {
-    final email = Email.dirty(value);
-    emit(
-      state.copyWith(
-        email: email,
-        isValid: Formz.validate([email, state.password, state.workspaceId]),
-        status: FormzSubmissionStatus.initial,
-      ),
-    );
-  }
-
-  void passwordChanged(String value) {
-    final password = PasswordSubmit.dirty(value);
-    emit(
-      state.copyWith(
-        password: password,
-        isValid: Formz.validate([state.email, password, state.workspaceId]),
-        status: FormzSubmissionStatus.initial,
-      ),
-    );
-  }
-
-  void workspaceIdChanged(String value) {
-    final workspaceId = WorkspaceId.dirty(value);
-    emit(
-      state.copyWith(
-        workspaceId: workspaceId,
-        isValid: Formz.validate([state.email, state.password, workspaceId]),
-        status: FormzSubmissionStatus.initial,
-      ),
-    );
-  }
-
-  Future<void> logInWithCredentials() async {
-    if (!state.isValid) return;
-    final workspaceId = int.tryParse(state.workspaceId.value);
-    if (workspaceId == null) {
-      emit(state.copyWith(
-          status: FormzSubmissionStatus.failure,
-          errorMessage: 'Invalid workspace ID'));
-      return;
-    }
+  Future<void> logIn() async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      await _syncRepository.login(
-        workspaceId,
-        state.email.value,
-        state.password.value,
-      );
+      await _authRepository.login();
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on APIError catch (e) {
       emit(

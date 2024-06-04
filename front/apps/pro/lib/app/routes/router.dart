@@ -175,16 +175,6 @@ class AppRouter {
           onlyAuthenticated: false,
           workspaceNamespaced: true,
           parentNavigatorKey: _parentNavigatorKey,
-          path: AppRoutes.login.pattern,
-          pageBuilder: (context, state) {
-            final workspaceId = WorkspacePath.parseWorkspaceId(state.uri);
-            return getPage(
-                child: LoginPage(workspaceId: workspaceId!), state: state);
-          }),
-      AppGoRoute(
-          onlyAuthenticated: false,
-          workspaceNamespaced: true,
-          parentNavigatorKey: _parentNavigatorKey,
           path: AppRoutes.createAccount.pattern,
           pageBuilder: (context, state) {
             final workspaceId = WorkspacePath.parseWorkspaceId(state.uri);
@@ -207,6 +197,14 @@ class AppRouter {
         pageBuilder: (context, state) =>
             getPage(child: const LogoutPage(), state: state),
       ),
+      AppGoRoute(
+          onlyAuthenticated: false,
+          workspaceNamespaced: false,
+          parentNavigatorKey: _parentNavigatorKey,
+          path: AppRoutes.login.pattern,
+          pageBuilder: (context, state) {
+            return getPage(child: const LoginPage(), state: state);
+          }),
     ];
 
     router = GoRouter(
@@ -290,8 +288,8 @@ class AppRouter {
     router.go(AppRoutes.createAccount.path(workspaceId));
   }
 
-  static goLoginInWorkspace(int workspaceId) {
-    router.go(AppRoutes.login.path(workspaceId));
+  static goLoginInWorkspace() {
+    router.go(AppRoutes.login.path);
   }
 
   static Page getPage({

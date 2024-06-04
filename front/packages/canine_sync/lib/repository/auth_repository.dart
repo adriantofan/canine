@@ -1,357 +1,122 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+import 'package:oidc/oidc.dart';
+import 'package:oidc_default_store/oidc_default_store.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../api/api_client.dart';
-import 'auth_status.dart';
-import 'profile_repository.dart';
+import '../canine_sync.dart';
 
-/// Thrown during the sign up process if a failure occurs.
-class SignUpWithEmailAndPasswordFailure implements Exception {
-  const SignUpWithEmailAndPasswordFailure([
-    this.message = 'An unknown exception occurred.',
-  ]);
-
-  /// Create an authentication message
-  /// from a firebase authentication exception code.
-  /// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/createUserWithEmailAndPassword.html
-  factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
-    switch (code) {
-      case 'invalid-email':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Email is not valid or badly formatted.',
-        );
-      case 'user-disabled':
-        return const SignUpWithEmailAndPasswordFailure(
-          'This user has been disabled. Please contact support for help.',
-        );
-      case 'email-already-in-use':
-        return const SignUpWithEmailAndPasswordFailure(
-          'An account already exists for that email.',
-        );
-      case 'operation-not-allowed':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Operation is not allowed.  Please contact support.',
-        );
-      case 'weak-password':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Please enter a stronger password.',
-        );
-      default:
-        return const SignUpWithEmailAndPasswordFailure();
-    }
-  }
-
-  /// The associated error message.
-  final String message;
-}
-
-/// Thrown during the login process if a failure occurs.
-/// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/signInWithEmailAndPassword.html
-class LogInWithEmailAndPasswordFailure implements Exception {
-  const LogInWithEmailAndPasswordFailure([
-    this.message = 'An unknown exception occurred.',
-  ]);
-
-  /// Create an authentication message
-  /// from a firebase authentication exception code.
-  factory LogInWithEmailAndPasswordFailure.fromCode(String code) {
-    switch (code) {
-      case 'invalid-email':
-        return const LogInWithEmailAndPasswordFailure(
-          'Email is not valid or badly formatted.',
-        );
-      case 'user-disabled':
-        return const LogInWithEmailAndPasswordFailure(
-          'This user has been disabled. Please contact support for help.',
-        );
-      case 'user-not-found':
-        return const LogInWithEmailAndPasswordFailure(
-          'Email is not found, please create an account.',
-        );
-      case 'wrong-password':
-        return const LogInWithEmailAndPasswordFailure(
-          'Incorrect password, please try again.',
-        );
-      default:
-        return const LogInWithEmailAndPasswordFailure();
-    }
-  }
-
-  /// The associated error message.
-  final String message;
-}
-
-/// Thrown during the sign in with google process if a failure occurs.
-/// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/signInWithCredential.html
-class LogInWithGoogleFailure implements Exception {
-  const LogInWithGoogleFailure([
-    this.message = 'An unknown exception occurred.',
-  ]);
-
-  /// Create an authentication message
-  /// from a firebase authentication exception code.
-  factory LogInWithGoogleFailure.fromCode(String code) {
-    switch (code) {
-      case 'account-exists-with-different-credential':
-        return const LogInWithGoogleFailure(
-          'Account exists with different credentials.',
-        );
-      case 'invalid-credential':
-        return const LogInWithGoogleFailure(
-          'The credential received is malformed or has expired.',
-        );
-      case 'operation-not-allowed':
-        return const LogInWithGoogleFailure(
-          'Operation is not allowed.  Please contact support.',
-        );
-      case 'user-disabled':
-        return const LogInWithGoogleFailure(
-          'This user has been disabled. Please contact support for help.',
-        );
-      case 'user-not-found':
-        return const LogInWithGoogleFailure(
-          'Email is not found, please create an account.',
-        );
-      case 'wrong-password':
-        return const LogInWithGoogleFailure(
-          'Incorrect password, please try again.',
-        );
-      case 'invalid-verification-code':
-        return const LogInWithGoogleFailure(
-          'The credential verification code received is invalid.',
-        );
-      case 'invalid-verification-id':
-        return const LogInWithGoogleFailure(
-          'The credential verification ID received is invalid.',
-        );
-      default:
-        return const LogInWithGoogleFailure();
-    }
-  }
-
-  /// The associated error message.
-  final String message;
-}
-
-/// Thrown during the logout process if a failure occurs.
-class LogOutFailure implements Exception {}
-
-/// {@template authentication_repository}
-/// Repository which manages user authentication.
-/// {@endtemplate}
 class AuthRepository {
-  /// {@macro authentication_repository}
+  // Zitadel url + client id.
+  /// you can replace String.fromEnvironment(*) calls with the actual values
+  /// if you don't want to pass them dynamically.
+  // final zitadelIssuer = Uri.parse(const String.fromEnvironment('zitadel_url'));
+  // const zitadelClientId = String.fromEnvironment('zitadel_client_id');
+  late final Uri zitadelIssuer;
+  final String appClientId;
+  final String appProjectId;
+  final String endUserOrganizationId; // clemia-dev
+  /// This should be the app's bundle id.
+  final String callbackUrlScheme;
+
+  /// This will be the current url of the page + /auth.html added to it.
+  final baseUri = Uri.base;
+  final webCallbackUrl = Uri.base.replace(path: 'auth.html').removeFragment();
+
+  /// for web platforms, we use http://website-url.com/auth.html
+  ///
+  /// for mobile platforms, we use `com.zitadel.zitadelflutter:/`
+  late final redirectUri;
+  late final OidcUserManager userManager;
+
   AuthRepository({
-    // CacheClient? cache,
-    required this.apiClient,
-    firebase_auth.FirebaseAuth? firebaseAuth,
-    ProfileRepository? profileRepository,
-  })  :
-        // _cache = cache ?? CacheClient(),
+    String zitadelIssuer = 'https://clemia-test-cudifn.zitadel.cloud',
+    this.appClientId = '268939975775556876@clemia', //clemia-dev/clemia/app,
+    this.appProjectId = '268939777150031116', // clemia-dev/clemia,
+    this.endUserOrganizationId = '268939597935809804', // clemia-dev,
+    this.callbackUrlScheme = 'fr.clemia.proapp',
+  }) {
+    this.zitadelIssuer = Uri.parse(zitadelIssuer);
+    redirectUri =
+        kIsWeb ? webCallbackUrl : Uri(scheme: callbackUrlScheme, path: '/');
+    userManager = OidcUserManager.lazy(
+      discoveryDocumentUri:
+          OidcUtils.getOpenIdConfigWellKnownUri(this.zitadelIssuer),
+      clientCredentials: OidcClientAuthentication.none(clientId: appClientId),
+      store: OidcDefaultStore(),
+      settings: OidcUserManagerSettings(
+        redirectUri: redirectUri,
+        // the same redirectUri can be used as for post logout too.
+        postLogoutRedirectUri: redirectUri,
+        scope: [
+          'openid',
+          'profile',
+          'email',
+          'offline_access',
+          // adds the following in to the claims
+          // urn:zitadel:iam:user:metadata: {0000001: YXNzaXN0YW50}
+          'urn:zitadel:iam:user:metadata',
+          //
+          'urn:zitadel:iam:org:projects:roles',
+          // Unclear how this is used
+          'urn:zitadel:iam:org:project:id:$appProjectId:aud',
 
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _profileRepository =
-            profileRepository ?? ProfileRepositorySharedPreferences();
+          // this is where the non matched users land in
+          // also possible to have a default instance organization
+          // 'urn:zitadel:iam:org:id:${endUserOrganizationId}',
+          // 'urn:zitadel:iam:action:make_api_call:log'
+          // 'urn:zitadel:iam:org:project:id:268388710280641701' <- this needs to be the project id for the backend application
+        ],
+      ),
+    );
+  }
 
-  // final CacheClient _cache;
-  final APIClientBase apiClient;
-  final firebase_auth.FirebaseAuth _firebaseAuth;
-  final ProfileRepository _profileRepository;
-  final _loger = Logger('AuthRepository');
+  void init() async {
+    processUserChanges();
+    await userManager.init();
+  }
 
-  /// Whether or not the current environment is web
-  /// Should only be overridden for testing purposes. Otherwise,
-  /// defaults to [kIsWeb]
-  @visibleForTesting
-  bool isWeb = kIsWeb;
+  void dispose() {
+    _subscription?.cancel();
+  }
 
-  /// User cache key.
-  /// Should only be used for testing purposes.
-  @visibleForTesting
-  static const userCacheKey = '__user_cache_key__';
+  Future<void> login() async {
+    await userManager.loginAuthorizationCodeFlow();
+  }
 
-  // /// Stream of [User] which will emit the current user when
-  // /// the authentication state changes.
-  // ///
-  // /// Emits [User.empty] if the user is not authenticated.
-  // Stream<User> get user {
-  //   return _firebaseAuth.authStateChanges().map((firebaseUser) {
-  //     final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
-  //     _cache.write(key: userCacheKey, value: user);
-  //     return user;
-  //   });
-  // }
-  //
-  // /// Returns the current cached user.
-  // /// Defaults to [User.empty] if there is no cached user.
-  // User get currentUser {
-  //   return _cache.read<User>(key: userCacheKey) ?? User.empty;
-  // }
+  Future<void> logout() async {
+    await userManager.logout();
+  }
 
-  final _authStatusSubject =
+  bool get isAuthenticated => _authStatus.value is AuthStatusAuthenticated;
+  ProjectRoles get roles => _roles;
+  Stream<AuthStatus> get authStatusChanges => _authStatus.stream;
+
+  final _authStatus =
       BehaviorSubject<AuthStatus>.seeded(const AuthStatus.unknown());
 
-  AuthStatus _rawAuthStatus = const AuthStatus.unknown();
-
-  AuthStatus get authStatus => _rawAuthStatus;
-
-  set _authStatus(AuthStatus value) {
-    _rawAuthStatus = value;
-    _authStatusSubject.add(value);
-  }
-
-  Stream<AuthStatus> get authStatusStream => _authStatusSubject.stream;
-  bool get isAuthenticated => authStatus is AuthStatusAuthenticated;
-
-  int? workspaceId;
-  _authStatusRefresh() async {
-    workspaceId = await _profileRepository.workspaceId;
-    // if (_firebaseAuth.currentUser == null) {
-    //   if (workspaceId == null) {
-    //     _authStatus = const AuthStatus.disconnected();
-    //   } else {
-    //     _authStatus = const AuthStatus.login(AuthStatusLoginState.disconnected);
-    //   }
-    // }
-
-    _firebaseAuth.idTokenChanges().listen(idTokenDidChange);
-  }
-
-  idTokenDidChange(firebase_auth.User? event) async {
-    switch (_rawAuthStatus) {
-      case AuthStatusUnknown():
-        if (event == null) {
-          if (workspaceId == null) {
-            _authStatus = const AuthStatus.disconnected();
-          } else {
-            _authStatus =
-                const AuthStatus.login(AuthStatusLoginState.disconnected);
-          }
-        } else {
-          await idTokenUpdateUser(event);
-        }
-      case AuthStatusDisconnected():
-        if (event != null) {
-          logOut();
-        }
-      case AuthStatusLogin():
-        if (event == null) {
-          _authStatus =
-              const AuthStatus.login(AuthStatusLoginState.disconnected);
+  StreamSubscription<dynamic>? _subscription;
+  ProjectRoles _roles = {};
+  void processUserChanges() {
+    _subscription = userManager.userChanges().listen((user) {
+      print('User: $user');
+      if (user == null) {
+        _authStatus.add(const AuthStatus.disconnected());
+        _roles = {};
+        return;
+      }
+      try {
+        final newRoles = parseRoles(appProjectId, user.aggregatedClaims);
+        _roles = newRoles;
+        if (newRoles.isEmpty) {
+          _authStatus.add(const AuthStatus.restricted());
           return;
         }
-        await idTokenUpdateUser(event);
-      case AuthStatusAuthenticated():
-        if (event == null) {
-          _authStatus =
-              const AuthStatus.login(AuthStatusLoginState.disconnected);
-        } else {
-          await idTokenUpdateUser(event);
-        }
-    }
-  }
-
-  idTokenUpdateUser(firebase_auth.User user) async {
-    switch (_rawAuthStatus) {
-      case AuthStatusUnknown():
-        if (workspaceId == null) {
-          logOut(); // should not get user without workspace
-        } else {
-          _authStatus = const AuthStatus.login(AuthStatusLoginState.connecting);
-        }
-      case AuthStatusDisconnected():
-        _loger.warning('Got firebase user, but not authenticated. Logging out');
-        logOut();
-      case AuthStatusLogin(state: var state):
-        switch (state) {
-          case AuthStatusLoginState.disconnected:
-            _authStatus =
-                const AuthStatus.login(AuthStatusLoginState.connecting);
-            break;
-          case AuthStatusLoginState.connecting:
-          case AuthStatusLoginState.link:
-          case AuthStatusLoginState.rejected:
-          // nothing to do, just the FB token who changes
-        }
-      case AuthStatusAuthenticated():
-        await _refreshBEToken(user);
-    }
-  }
-
-  _refreshBEToken(firebase_auth.User user) async {
-    assert(workspaceId != null);
-    assert(authStatus is AuthStatusAuthenticated);
-
-    final token = await user.getIdToken();
-    // TODO: implement refresh token
-    // What happens if it fails ? How many times to retry and how to cancel?
-    apiClient.loginFirebase(workspaceId!, token!);
-  }
-
-  /// Creates a new user with the provided [email] and [password].
-  ///
-  /// Throws a [SignUpWithEmailAndPasswordFailure] if an exception occurs.
-  Future<void> signUp(
-      {required int workspaceId,
-      required String email,
-      required String password}) async {
-    final firebase_auth.UserCredential credential;
-    try {
-      credential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SignUpWithEmailAndPasswordFailure();
-    }
-    final token = await credential.user!.getIdToken();
-    apiClient.loginFirebase(workspaceId, token!);
-  }
-
-  /// Signs in with the provided [email] and [password].
-  ///
-  /// Throws a [LogInWithEmailAndPasswordFailure] if an exception occurs.
-  Future<void> logInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const LogInWithEmailAndPasswordFailure();
-    }
-  }
-
-  /// Signs out the current user which will emit
-  /// [User.empty] from the [user] Stream.
-  ///
-  /// Throws a [LogOutFailure] if an exception occurs.
-  Future<void> logOut() async {
-    try {
-      await Future.wait([
-        _firebaseAuth.signOut(),
-      ]);
-    } catch (_) {
-      throw LogOutFailure();
-    }
+        _authStatus.add(AuthStatus.authenticated(newRoles));
+      } catch (e, st) {
+        _authStatus.addError(e, st);
+      }
+    });
   }
 }
-
-// extension on firebase_auth.User {
-//   /// Maps a [firebase_auth.User] into a [User].
-//   User get toUser {
-//     return User(id: uid, email: email, name: displayName, photo: photoURL);
-//   }
-// }

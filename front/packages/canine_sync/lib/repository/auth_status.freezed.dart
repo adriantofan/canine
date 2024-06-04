@@ -20,8 +20,8 @@ AuthStatus _$AuthStatusFromJson(Map<String, dynamic> json) {
       return AuthStatusUnknown.fromJson(json);
     case 'disconnected':
       return AuthStatusDisconnected.fromJson(json);
-    case 'login':
-      return AuthStatusLogin.fromJson(json);
+    case 'restricted':
+      return AuthStatusRestricted.fromJson(json);
     case 'authenticated':
       return AuthStatusAuthenticated.fromJson(json);
 
@@ -37,24 +37,24 @@ mixin _$AuthStatus {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function() disconnected,
-    required TResult Function(AuthStatusLoginState state) login,
-    required TResult Function() authenticated,
+    required TResult Function() restricted,
+    required TResult Function(Map<Role, List<int>> roles) authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
-    TResult? Function(AuthStatusLoginState state)? login,
-    TResult? Function()? authenticated,
+    TResult? Function()? restricted,
+    TResult? Function(Map<Role, List<int>> roles)? authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function()? disconnected,
-    TResult Function(AuthStatusLoginState state)? login,
-    TResult Function()? authenticated,
+    TResult Function()? restricted,
+    TResult Function(Map<Role, List<int>> roles)? authenticated,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -62,7 +62,7 @@ mixin _$AuthStatus {
   TResult map<TResult extends Object?>({
     required TResult Function(AuthStatusUnknown value) unknown,
     required TResult Function(AuthStatusDisconnected value) disconnected,
-    required TResult Function(AuthStatusLogin value) login,
+    required TResult Function(AuthStatusRestricted value) restricted,
     required TResult Function(AuthStatusAuthenticated value) authenticated,
   }) =>
       throw _privateConstructorUsedError;
@@ -70,7 +70,7 @@ mixin _$AuthStatus {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthStatusUnknown value)? unknown,
     TResult? Function(AuthStatusDisconnected value)? disconnected,
-    TResult? Function(AuthStatusLogin value)? login,
+    TResult? Function(AuthStatusRestricted value)? restricted,
     TResult? Function(AuthStatusAuthenticated value)? authenticated,
   }) =>
       throw _privateConstructorUsedError;
@@ -78,7 +78,7 @@ mixin _$AuthStatus {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthStatusUnknown value)? unknown,
     TResult Function(AuthStatusDisconnected value)? disconnected,
-    TResult Function(AuthStatusLogin value)? login,
+    TResult Function(AuthStatusRestricted value)? restricted,
     TResult Function(AuthStatusAuthenticated value)? authenticated,
     required TResult orElse(),
   }) =>
@@ -152,8 +152,8 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function() disconnected,
-    required TResult Function(AuthStatusLoginState state) login,
-    required TResult Function() authenticated,
+    required TResult Function() restricted,
+    required TResult Function(Map<Role, List<int>> roles) authenticated,
   }) {
     return unknown();
   }
@@ -163,8 +163,8 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
-    TResult? Function(AuthStatusLoginState state)? login,
-    TResult? Function()? authenticated,
+    TResult? Function()? restricted,
+    TResult? Function(Map<Role, List<int>> roles)? authenticated,
   }) {
     return unknown?.call();
   }
@@ -174,8 +174,8 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function()? disconnected,
-    TResult Function(AuthStatusLoginState state)? login,
-    TResult Function()? authenticated,
+    TResult Function()? restricted,
+    TResult Function(Map<Role, List<int>> roles)? authenticated,
     required TResult orElse(),
   }) {
     if (unknown != null) {
@@ -189,7 +189,7 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult map<TResult extends Object?>({
     required TResult Function(AuthStatusUnknown value) unknown,
     required TResult Function(AuthStatusDisconnected value) disconnected,
-    required TResult Function(AuthStatusLogin value) login,
+    required TResult Function(AuthStatusRestricted value) restricted,
     required TResult Function(AuthStatusAuthenticated value) authenticated,
   }) {
     return unknown(this);
@@ -200,7 +200,7 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthStatusUnknown value)? unknown,
     TResult? Function(AuthStatusDisconnected value)? disconnected,
-    TResult? Function(AuthStatusLogin value)? login,
+    TResult? Function(AuthStatusRestricted value)? restricted,
     TResult? Function(AuthStatusAuthenticated value)? authenticated,
   }) {
     return unknown?.call(this);
@@ -211,7 +211,7 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthStatusUnknown value)? unknown,
     TResult Function(AuthStatusDisconnected value)? disconnected,
-    TResult Function(AuthStatusLogin value)? login,
+    TResult Function(AuthStatusRestricted value)? restricted,
     TResult Function(AuthStatusAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
@@ -287,8 +287,8 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function() disconnected,
-    required TResult Function(AuthStatusLoginState state) login,
-    required TResult Function() authenticated,
+    required TResult Function() restricted,
+    required TResult Function(Map<Role, List<int>> roles) authenticated,
   }) {
     return disconnected();
   }
@@ -298,8 +298,8 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
-    TResult? Function(AuthStatusLoginState state)? login,
-    TResult? Function()? authenticated,
+    TResult? Function()? restricted,
+    TResult? Function(Map<Role, List<int>> roles)? authenticated,
   }) {
     return disconnected?.call();
   }
@@ -309,8 +309,8 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function()? disconnected,
-    TResult Function(AuthStatusLoginState state)? login,
-    TResult Function()? authenticated,
+    TResult Function()? restricted,
+    TResult Function(Map<Role, List<int>> roles)? authenticated,
     required TResult orElse(),
   }) {
     if (disconnected != null) {
@@ -324,7 +324,7 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult map<TResult extends Object?>({
     required TResult Function(AuthStatusUnknown value) unknown,
     required TResult Function(AuthStatusDisconnected value) disconnected,
-    required TResult Function(AuthStatusLogin value) login,
+    required TResult Function(AuthStatusRestricted value) restricted,
     required TResult Function(AuthStatusAuthenticated value) authenticated,
   }) {
     return disconnected(this);
@@ -335,7 +335,7 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthStatusUnknown value)? unknown,
     TResult? Function(AuthStatusDisconnected value)? disconnected,
-    TResult? Function(AuthStatusLogin value)? login,
+    TResult? Function(AuthStatusRestricted value)? restricted,
     TResult? Function(AuthStatusAuthenticated value)? authenticated,
   }) {
     return disconnected?.call(this);
@@ -346,7 +346,7 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthStatusUnknown value)? unknown,
     TResult Function(AuthStatusDisconnected value)? disconnected,
-    TResult Function(AuthStatusLogin value)? login,
+    TResult Function(AuthStatusRestricted value)? restricted,
     TResult Function(AuthStatusAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
@@ -372,210 +372,43 @@ abstract class AuthStatusDisconnected implements AuthStatus {
 }
 
 /// @nodoc
-abstract class _$$AuthStatusLoginImplCopyWith<$Res> {
-  factory _$$AuthStatusLoginImplCopyWith(_$AuthStatusLoginImpl value,
-          $Res Function(_$AuthStatusLoginImpl) then) =
-      __$$AuthStatusLoginImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({AuthStatusLoginState state});
+abstract class _$$AuthStatusRestrictedImplCopyWith<$Res> {
+  factory _$$AuthStatusRestrictedImplCopyWith(_$AuthStatusRestrictedImpl value,
+          $Res Function(_$AuthStatusRestrictedImpl) then) =
+      __$$AuthStatusRestrictedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$AuthStatusLoginImplCopyWithImpl<$Res>
-    extends _$AuthStatusCopyWithImpl<$Res, _$AuthStatusLoginImpl>
-    implements _$$AuthStatusLoginImplCopyWith<$Res> {
-  __$$AuthStatusLoginImplCopyWithImpl(
-      _$AuthStatusLoginImpl _value, $Res Function(_$AuthStatusLoginImpl) _then)
+class __$$AuthStatusRestrictedImplCopyWithImpl<$Res>
+    extends _$AuthStatusCopyWithImpl<$Res, _$AuthStatusRestrictedImpl>
+    implements _$$AuthStatusRestrictedImplCopyWith<$Res> {
+  __$$AuthStatusRestrictedImplCopyWithImpl(_$AuthStatusRestrictedImpl _value,
+      $Res Function(_$AuthStatusRestrictedImpl) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? state = null,
-  }) {
-    return _then(_$AuthStatusLoginImpl(
-      null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as AuthStatusLoginState,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$AuthStatusLoginImpl implements AuthStatusLogin {
-  const _$AuthStatusLoginImpl(this.state, {final String? $type})
-      : $type = $type ?? 'login';
+class _$AuthStatusRestrictedImpl implements AuthStatusRestricted {
+  const _$AuthStatusRestrictedImpl({final String? $type})
+      : $type = $type ?? 'restricted';
 
-  factory _$AuthStatusLoginImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthStatusLoginImplFromJson(json);
-
-  @override
-  final AuthStatusLoginState state;
+  factory _$AuthStatusRestrictedImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AuthStatusRestrictedImplFromJson(json);
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'AuthStatus.login(state: $state)';
+    return 'AuthStatus.restricted()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AuthStatusLoginImpl &&
-            (identical(other.state, state) || other.state == state));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, state);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthStatusLoginImplCopyWith<_$AuthStatusLoginImpl> get copyWith =>
-      __$$AuthStatusLoginImplCopyWithImpl<_$AuthStatusLoginImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() unknown,
-    required TResult Function() disconnected,
-    required TResult Function(AuthStatusLoginState state) login,
-    required TResult Function() authenticated,
-  }) {
-    return login(state);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? unknown,
-    TResult? Function()? disconnected,
-    TResult? Function(AuthStatusLoginState state)? login,
-    TResult? Function()? authenticated,
-  }) {
-    return login?.call(state);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? unknown,
-    TResult Function()? disconnected,
-    TResult Function(AuthStatusLoginState state)? login,
-    TResult Function()? authenticated,
-    required TResult orElse(),
-  }) {
-    if (login != null) {
-      return login(state);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(AuthStatusUnknown value) unknown,
-    required TResult Function(AuthStatusDisconnected value) disconnected,
-    required TResult Function(AuthStatusLogin value) login,
-    required TResult Function(AuthStatusAuthenticated value) authenticated,
-  }) {
-    return login(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(AuthStatusUnknown value)? unknown,
-    TResult? Function(AuthStatusDisconnected value)? disconnected,
-    TResult? Function(AuthStatusLogin value)? login,
-    TResult? Function(AuthStatusAuthenticated value)? authenticated,
-  }) {
-    return login?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(AuthStatusUnknown value)? unknown,
-    TResult Function(AuthStatusDisconnected value)? disconnected,
-    TResult Function(AuthStatusLogin value)? login,
-    TResult Function(AuthStatusAuthenticated value)? authenticated,
-    required TResult orElse(),
-  }) {
-    if (login != null) {
-      return login(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AuthStatusLoginImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class AuthStatusLogin implements AuthStatus {
-  const factory AuthStatusLogin(final AuthStatusLoginState state) =
-      _$AuthStatusLoginImpl;
-
-  factory AuthStatusLogin.fromJson(Map<String, dynamic> json) =
-      _$AuthStatusLoginImpl.fromJson;
-
-  AuthStatusLoginState get state;
-  @JsonKey(ignore: true)
-  _$$AuthStatusLoginImplCopyWith<_$AuthStatusLoginImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$AuthStatusAuthenticatedImplCopyWith<$Res> {
-  factory _$$AuthStatusAuthenticatedImplCopyWith(
-          _$AuthStatusAuthenticatedImpl value,
-          $Res Function(_$AuthStatusAuthenticatedImpl) then) =
-      __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>
-    extends _$AuthStatusCopyWithImpl<$Res, _$AuthStatusAuthenticatedImpl>
-    implements _$$AuthStatusAuthenticatedImplCopyWith<$Res> {
-  __$$AuthStatusAuthenticatedImplCopyWithImpl(
-      _$AuthStatusAuthenticatedImpl _value,
-      $Res Function(_$AuthStatusAuthenticatedImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
-  const _$AuthStatusAuthenticatedImpl({final String? $type})
-      : $type = $type ?? 'authenticated';
-
-  factory _$AuthStatusAuthenticatedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthStatusAuthenticatedImplFromJson(json);
-
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
-  @override
-  String toString() {
-    return 'AuthStatus.authenticated()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthStatusAuthenticatedImpl);
+            other is _$AuthStatusRestrictedImpl);
   }
 
   @JsonKey(ignore: true)
@@ -587,10 +420,10 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function() disconnected,
-    required TResult Function(AuthStatusLoginState state) login,
-    required TResult Function() authenticated,
+    required TResult Function() restricted,
+    required TResult Function(Map<Role, List<int>> roles) authenticated,
   }) {
-    return authenticated();
+    return restricted();
   }
 
   @override
@@ -598,10 +431,10 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
-    TResult? Function(AuthStatusLoginState state)? login,
-    TResult? Function()? authenticated,
+    TResult? Function()? restricted,
+    TResult? Function(Map<Role, List<int>> roles)? authenticated,
   }) {
-    return authenticated?.call();
+    return restricted?.call();
   }
 
   @override
@@ -609,12 +442,12 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function()? disconnected,
-    TResult Function(AuthStatusLoginState state)? login,
-    TResult Function()? authenticated,
+    TResult Function()? restricted,
+    TResult Function(Map<Role, List<int>> roles)? authenticated,
     required TResult orElse(),
   }) {
-    if (authenticated != null) {
-      return authenticated();
+    if (restricted != null) {
+      return restricted();
     }
     return orElse();
   }
@@ -624,7 +457,176 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult map<TResult extends Object?>({
     required TResult Function(AuthStatusUnknown value) unknown,
     required TResult Function(AuthStatusDisconnected value) disconnected,
-    required TResult Function(AuthStatusLogin value) login,
+    required TResult Function(AuthStatusRestricted value) restricted,
+    required TResult Function(AuthStatusAuthenticated value) authenticated,
+  }) {
+    return restricted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AuthStatusUnknown value)? unknown,
+    TResult? Function(AuthStatusDisconnected value)? disconnected,
+    TResult? Function(AuthStatusRestricted value)? restricted,
+    TResult? Function(AuthStatusAuthenticated value)? authenticated,
+  }) {
+    return restricted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AuthStatusUnknown value)? unknown,
+    TResult Function(AuthStatusDisconnected value)? disconnected,
+    TResult Function(AuthStatusRestricted value)? restricted,
+    TResult Function(AuthStatusAuthenticated value)? authenticated,
+    required TResult orElse(),
+  }) {
+    if (restricted != null) {
+      return restricted(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AuthStatusRestrictedImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class AuthStatusRestricted implements AuthStatus {
+  const factory AuthStatusRestricted() = _$AuthStatusRestrictedImpl;
+
+  factory AuthStatusRestricted.fromJson(Map<String, dynamic> json) =
+      _$AuthStatusRestrictedImpl.fromJson;
+}
+
+/// @nodoc
+abstract class _$$AuthStatusAuthenticatedImplCopyWith<$Res> {
+  factory _$$AuthStatusAuthenticatedImplCopyWith(
+          _$AuthStatusAuthenticatedImpl value,
+          $Res Function(_$AuthStatusAuthenticatedImpl) then) =
+      __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Map<Role, List<int>> roles});
+}
+
+/// @nodoc
+class __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>
+    extends _$AuthStatusCopyWithImpl<$Res, _$AuthStatusAuthenticatedImpl>
+    implements _$$AuthStatusAuthenticatedImplCopyWith<$Res> {
+  __$$AuthStatusAuthenticatedImplCopyWithImpl(
+      _$AuthStatusAuthenticatedImpl _value,
+      $Res Function(_$AuthStatusAuthenticatedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? roles = null,
+  }) {
+    return _then(_$AuthStatusAuthenticatedImpl(
+      null == roles
+          ? _value._roles
+          : roles // ignore: cast_nullable_to_non_nullable
+              as Map<Role, List<int>>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
+  const _$AuthStatusAuthenticatedImpl(final Map<Role, List<int>> roles,
+      {final String? $type})
+      : _roles = roles,
+        $type = $type ?? 'authenticated';
+
+  factory _$AuthStatusAuthenticatedImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AuthStatusAuthenticatedImplFromJson(json);
+
+  final Map<Role, List<int>> _roles;
+  @override
+  Map<Role, List<int>> get roles {
+    if (_roles is EqualUnmodifiableMapView) return _roles;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_roles);
+  }
+
+  @JsonKey(name: 'runtimeType')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'AuthStatus.authenticated(roles: $roles)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AuthStatusAuthenticatedImpl &&
+            const DeepCollectionEquality().equals(other._roles, _roles));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_roles));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AuthStatusAuthenticatedImplCopyWith<_$AuthStatusAuthenticatedImpl>
+      get copyWith => __$$AuthStatusAuthenticatedImplCopyWithImpl<
+          _$AuthStatusAuthenticatedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() unknown,
+    required TResult Function() disconnected,
+    required TResult Function() restricted,
+    required TResult Function(Map<Role, List<int>> roles) authenticated,
+  }) {
+    return authenticated(roles);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? unknown,
+    TResult? Function()? disconnected,
+    TResult? Function()? restricted,
+    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+  }) {
+    return authenticated?.call(roles);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? unknown,
+    TResult Function()? disconnected,
+    TResult Function()? restricted,
+    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    required TResult orElse(),
+  }) {
+    if (authenticated != null) {
+      return authenticated(roles);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AuthStatusUnknown value) unknown,
+    required TResult Function(AuthStatusDisconnected value) disconnected,
+    required TResult Function(AuthStatusRestricted value) restricted,
     required TResult Function(AuthStatusAuthenticated value) authenticated,
   }) {
     return authenticated(this);
@@ -635,7 +637,7 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthStatusUnknown value)? unknown,
     TResult? Function(AuthStatusDisconnected value)? disconnected,
-    TResult? Function(AuthStatusLogin value)? login,
+    TResult? Function(AuthStatusRestricted value)? restricted,
     TResult? Function(AuthStatusAuthenticated value)? authenticated,
   }) {
     return authenticated?.call(this);
@@ -646,7 +648,7 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthStatusUnknown value)? unknown,
     TResult Function(AuthStatusDisconnected value)? disconnected,
-    TResult Function(AuthStatusLogin value)? login,
+    TResult Function(AuthStatusRestricted value)? restricted,
     TResult Function(AuthStatusAuthenticated value)? authenticated,
     required TResult orElse(),
   }) {
@@ -665,8 +667,14 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
 }
 
 abstract class AuthStatusAuthenticated implements AuthStatus {
-  const factory AuthStatusAuthenticated() = _$AuthStatusAuthenticatedImpl;
+  const factory AuthStatusAuthenticated(final Map<Role, List<int>> roles) =
+      _$AuthStatusAuthenticatedImpl;
 
   factory AuthStatusAuthenticated.fromJson(Map<String, dynamic> json) =
       _$AuthStatusAuthenticatedImpl.fromJson;
+
+  Map<Role, List<int>> get roles;
+  @JsonKey(ignore: true)
+  _$$AuthStatusAuthenticatedImplCopyWith<_$AuthStatusAuthenticatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

@@ -2,8 +2,8 @@ FLUTTER := $(shell which flutter)
 DART := $(shell which dart)
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 APP_DIR := $(ROOT_DIR)
-CANINE_SYNC_DIR := $(APP_DIR)/package/canine_sync
-FORM_INPUTS_DIR := $(APP_DIR)/package/form_inputs
+CANINE_SYNC_DIR := $(APP_DIR)/../../packages/canine_sync
+FORM_INPUTS_DIR := $(APP_DIR)/../../packages/form_inputs
 
 GENERATE_DART := $(DART) run build_runner build --delete-conflicting-outputs
 PUB_GET := $(FLUTTER) pub get

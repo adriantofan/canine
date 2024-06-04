@@ -30,35 +30,35 @@ Map<String, dynamic> _$$AuthStatusDisconnectedImplToJson(
       'runtimeType': instance.$type,
     };
 
-_$AuthStatusLoginImpl _$$AuthStatusLoginImplFromJson(
+_$AuthStatusRestrictedImpl _$$AuthStatusRestrictedImplFromJson(
         Map<String, dynamic> json) =>
-    _$AuthStatusLoginImpl(
-      $enumDecode(_$AuthStatusLoginStateEnumMap, json['state']),
+    _$AuthStatusRestrictedImpl(
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$AuthStatusLoginImplToJson(
-        _$AuthStatusLoginImpl instance) =>
+Map<String, dynamic> _$$AuthStatusRestrictedImplToJson(
+        _$AuthStatusRestrictedImpl instance) =>
     <String, dynamic>{
-      'state': _$AuthStatusLoginStateEnumMap[instance.state]!,
       'runtimeType': instance.$type,
     };
-
-const _$AuthStatusLoginStateEnumMap = {
-  AuthStatusLoginState.disconnected: 'disconnected',
-  AuthStatusLoginState.connecting: 'connecting',
-  AuthStatusLoginState.link: 'link',
-  AuthStatusLoginState.rejected: 'rejected',
-};
 
 _$AuthStatusAuthenticatedImpl _$$AuthStatusAuthenticatedImplFromJson(
         Map<String, dynamic> json) =>
     _$AuthStatusAuthenticatedImpl(
+      (json['roles'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry($enumDecode(_$RoleEnumMap, k),
+            (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
+      ),
       $type: json['runtimeType'] as String?,
     );
 
 Map<String, dynamic> _$$AuthStatusAuthenticatedImplToJson(
         _$AuthStatusAuthenticatedImpl instance) =>
     <String, dynamic>{
+      'roles': instance.roles.map((k, e) => MapEntry(_$RoleEnumMap[k]!, e)),
       'runtimeType': instance.$type,
     };
+
+const _$RoleEnumMap = {
+  Role.wkspAdmin: 'wkspAdmin',
+};

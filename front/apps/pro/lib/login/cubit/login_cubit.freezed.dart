@@ -16,45 +16,27 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$LoginState {
-  Email get email => throw _privateConstructorUsedError;
-  PasswordSubmit get password => throw _privateConstructorUsedError;
-  WorkspaceId get workspaceId => throw _privateConstructorUsedError;
   FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)?
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)?
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
         initial,
     required TResult orElse(),
   }) =>
@@ -87,13 +69,7 @@ abstract class $LoginStateCopyWith<$Res> {
           LoginState value, $Res Function(LoginState) then) =
       _$LoginStateCopyWithImpl<$Res, LoginState>;
   @useResult
-  $Res call(
-      {Email email,
-      PasswordSubmit password,
-      WorkspaceId workspaceId,
-      FormzSubmissionStatus status,
-      bool isValid,
-      String? errorMessage});
+  $Res call({FormzSubmissionStatus status, bool isValid, String? errorMessage});
 }
 
 /// @nodoc
@@ -109,26 +85,11 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? email = null,
-    Object? password = null,
-    Object? workspaceId = null,
     Object? status = null,
     Object? isValid = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as Email,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as PasswordSubmit,
-      workspaceId: null == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
-              as WorkspaceId,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -153,13 +114,7 @@ abstract class _$$InitialImplCopyWith<$Res>
       __$$InitialImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {Email email,
-      PasswordSubmit password,
-      WorkspaceId workspaceId,
-      FormzSubmissionStatus status,
-      bool isValid,
-      String? errorMessage});
+  $Res call({FormzSubmissionStatus status, bool isValid, String? errorMessage});
 }
 
 /// @nodoc
@@ -173,26 +128,11 @@ class __$$InitialImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? email = null,
-    Object? password = null,
-    Object? workspaceId = null,
     Object? status = null,
     Object? isValid = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_$InitialImpl(
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as Email,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as PasswordSubmit,
-      workspaceId: null == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
-              as WorkspaceId,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -213,22 +153,10 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 class _$InitialImpl implements _Initial {
   const _$InitialImpl(
-      {this.email = const Email.pure(),
-      this.password = const PasswordSubmit.pure(),
-      this.workspaceId = const WorkspaceId.pure(),
-      this.status = FormzSubmissionStatus.initial,
-      this.isValid = false,
+      {this.status = FormzSubmissionStatus.initial,
+      this.isValid = true,
       this.errorMessage});
 
-  @override
-  @JsonKey()
-  final Email email;
-  @override
-  @JsonKey()
-  final PasswordSubmit password;
-  @override
-  @JsonKey()
-  final WorkspaceId workspaceId;
   @override
   @JsonKey()
   final FormzSubmissionStatus status;
@@ -240,7 +168,7 @@ class _$InitialImpl implements _Initial {
 
   @override
   String toString() {
-    return 'LoginState.initial(email: $email, password: $password, workspaceId: $workspaceId, status: $status, isValid: $isValid, errorMessage: $errorMessage)';
+    return 'LoginState.initial(status: $status, isValid: $isValid, errorMessage: $errorMessage)';
   }
 
   @override
@@ -248,11 +176,6 @@ class _$InitialImpl implements _Initial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$InitialImpl &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
-            (identical(other.workspaceId, workspaceId) ||
-                other.workspaceId == workspaceId) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.isValid, isValid) || other.isValid == isValid) &&
             (identical(other.errorMessage, errorMessage) ||
@@ -260,8 +183,7 @@ class _$InitialImpl implements _Initial {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, email, password, workspaceId, status, isValid, errorMessage);
+  int get hashCode => Object.hash(runtimeType, status, isValid, errorMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -273,49 +195,32 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)
         initial,
   }) {
-    return initial(email, password, workspaceId, status, isValid, errorMessage);
+    return initial(status, isValid, errorMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)?
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
         initial,
   }) {
-    return initial?.call(
-        email, password, workspaceId, status, isValid, errorMessage);
+    return initial?.call(status, isValid, errorMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            Email email,
-            PasswordSubmit password,
-            WorkspaceId workspaceId,
-            FormzSubmissionStatus status,
-            bool isValid,
-            String? errorMessage)?
+            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(
-          email, password, workspaceId, status, isValid, errorMessage);
+      return initial(status, isValid, errorMessage);
     }
     return orElse();
   }
@@ -351,19 +256,10 @@ class _$InitialImpl implements _Initial {
 
 abstract class _Initial implements LoginState {
   const factory _Initial(
-      {final Email email,
-      final PasswordSubmit password,
-      final WorkspaceId workspaceId,
-      final FormzSubmissionStatus status,
+      {final FormzSubmissionStatus status,
       final bool isValid,
       final String? errorMessage}) = _$InitialImpl;
 
-  @override
-  Email get email;
-  @override
-  PasswordSubmit get password;
-  @override
-  WorkspaceId get workspaceId;
   @override
   FormzSubmissionStatus get status;
   @override

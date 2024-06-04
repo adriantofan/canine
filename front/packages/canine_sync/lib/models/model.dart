@@ -1,4 +1,5 @@
 export 'api_error.dart';
+export 'auth/auth.dart';
 export 'conversation.dart';
 export 'devis_recipient.dart';
 export 'message.dart';

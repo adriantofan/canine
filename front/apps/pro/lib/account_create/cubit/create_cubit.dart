@@ -58,23 +58,5 @@ class CreateCubit extends Cubit<CreateState> {
       return;
     }
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _authRepository.signUp(
-          workspaceId: workspaceId,
-          email: state.email.value,
-          password: state.password.value);
-
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on APIError catch (e) {
-      emit(
-        state.copyWith(
-          errorMessage: e.userMessage,
-          status: FormzSubmissionStatus.failure,
-        ),
-      );
-    } catch (_) {
-      emit(state.copyWith(
-          status: FormzSubmissionStatus.failure, errorMessage: null));
-    }
   }
 }
