@@ -455,9 +455,15 @@ func getPaginatedParams(c *gin.Context) (int, *int64, domain.Direction, bool) {
 	return limit, id, direction, true
 }
 
-func (h ChatHandlers) GetMe(c *gin.Context) {
-	roles := zitadel.GinCtxMustGetRoles(c)
-	c.String(http.StatusOK, "roles %+v\n identity %+v", roles, authorize(c))
+func (h ChatHandlers) GetAuthInfo(ctx *gin.Context) {
+	userAuthID := zitadel.GinCtxMustGetUserAuthID(ctx)
+	authInfo, err := h.Service.GetAuthInfo(ctx, userAuthID)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+	}
+
+	ctx.JSON(http.StatusOK, authInfo)
 }
 
 func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {

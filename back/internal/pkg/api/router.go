@@ -26,8 +26,7 @@ func ConfigureRouter(
 	authRoutes := apiRoutes.Group("/auth")
 	authRoutes.Use(authMiddleware)
 
-	authRoutes.Use(identityMiddleware)
-	authRoutes.GET("/me", handlers.GetMe)
+	authRoutes.GET("/info", handlers.GetAuthInfo)
 
 	apiRoutes.GET("/workspaces", handlers.CreateWorkspace)
 	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
@@ -39,7 +38,7 @@ func ConfigureRouter(
 	workspaceGroup.GET("/authz/check", handlers.CheckAuthorization)
 
 	workspaceGroup.Use(identityMiddleware)
-	workspaceGroup.GET("/me", handlers.GetMe)
+	workspaceGroup.GET("/me", handlers.GetAuthInfo)
 
 	workspaceGroup.POST("/users", handlers.CreateUser)
 

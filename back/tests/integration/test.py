@@ -1,4 +1,4 @@
-from api import create_workspace, login, create_user, create_conversation, send_message
+from api import create_workspace, login, create_user, create_conversation, send_message, auth_info
 
 emma_email= "emma@example.com"
 kitty_email = "kitty@example.com"
@@ -11,6 +11,7 @@ print("emma logged in")
 print("emma token", emma_token)
 # kitty_id = create_user(emma_token, workspace, kitty_email, "external", "kitty forever", "+33688550315")
 kitty_id = 4
+print("Emma auth info", auth_info(emma_token))
 
 
 #
@@ -19,3 +20,4 @@ kitty_id = 4
 
 kitty_token = login("kitty@example.com", workspace)
 print("kitty token", kitty_token)
+print("Emma auth info", auth_info(kitty_token))

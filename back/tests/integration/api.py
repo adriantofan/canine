@@ -63,6 +63,17 @@ def create_user(token, workspace_id, email, user_type, phone=None):
     user_id = response_data.get("id")
     return user_id
 
+def auth_info(token):
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}",
+    }
+    response = requests.get(f"{base_url}/auth/info", headers=headers)
+    if response.status_code != 200:
+        raise Exception(f"Failed to get auth info {response.status_code}, {response.text}")
+    response_data = response.json()
+    return response_data
+
 
 # Function to create a conversation
 def create_conversation(token, workspace_id, recipient_id:int):

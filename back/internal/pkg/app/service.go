@@ -467,6 +467,19 @@ func makeEndUserAuthorization(authorized bool, code string) EndUserAuthorization
 	}
 }
 
+func (s *Service) GetAuthInfo(ctx context.Context, userAuthID string) ([]model.AuthInfo, error) {
+	chatRepo, err := s.t.WithoutTransaction()
+	if err != nil {
+		return nil, fmt.Errorf("GetAuthInfo begin transaction: %w", err)
+	}
+
+	authInfo, err := chatRepo.GetAuthInfo(ctx, userAuthID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAuthInfo get auth info: %w", err)
+	}
+	return authInfo, nil
+}
+
 func (s *Service) CheckAuthorization(
 	ctx context.Context,
 	workspaceID int64,

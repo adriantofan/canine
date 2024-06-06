@@ -21,7 +21,8 @@ type workspaceTable struct {
 	Name      postgres.ColumnString
 	CreatedAt postgres.ColumnTimestamp
 	UpdatedAt postgres.ColumnTimestamp
-	AuthID    postgres.ColumnString
+	// FIXME: This should actually by OrgID
+	AuthID postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList

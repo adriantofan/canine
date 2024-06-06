@@ -606,13 +606,13 @@ func (s *MessageRepository) GetChangedUsersForUser(
 	return users, err
 }
 
-func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, authID string) (model.Workspace, error) {
+func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, orgID string) (model.Workspace, error) {
 	var workspace model.Workspace
 	id := s.timeService.Now().UnixMilli()
 	for i := 0; i <= 4; i++ {
 		stmt := table.Workspace.
 			INSERT(table.Workspace.ID, table.Workspace.Name, table.Workspace.AuthID).
-			VALUES(Int64(id), String(name), String(authID)).
+			VALUES(Int64(id), String(name), String(orgID)).
 			RETURNING(table.Workspace.AllColumns)
 		err := stmt.QueryContext(ctx, s.db, &workspace)
 		if errors.Is(err, qrm.ErrNoRows) {
@@ -623,4 +623,18 @@ func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, au
 		}
 	}
 	return workspace, fmt.Errorf("failed to create workspace (retry) %s", name)
+}
+
+func (s *MessageRepository) GetAuthInfo(ctx context.Context, authID string) ([]model.AuthInfo, error) {
+	var authInfo []model.AuthInfo
+	stmt := SELECT(table.User.AllColumns, table.Workspace.AllColumns).
+		FROM(table.User.INNER_JOIN(table.Workspace, table.User.WorkspaceID.EQ(table.Workspace.ID))).
+		WHERE(table.User.AuthID.EQ(String(authID)))
+
+	err := stmt.QueryContext(ctx, s.db, &authInfo)
+	if err != nil {
+		return authInfo, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	return authInfo, nil
 }

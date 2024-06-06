@@ -33,7 +33,7 @@ type Transaction interface {
 
 //nolint:interfacebloat
 type ChatRepository interface {
-	CreateWorkspace(ctx context.Context, name string, authID string) (model.Workspace, error)
+	CreateWorkspace(ctx context.Context, name string, orgID string) (model.Workspace, error)
 	// GetConversations returns all conversations sorted id
 	// TODO: it should also work by change date, in order to sync conversations
 	// between the first page download and the first Websocket message
@@ -46,7 +46,7 @@ type ChatRepository interface {
 		direction Direction) ([]model.Conversation, error)
 
 	GetConversation(ctx context.Context, id int64) (model.Conversation, error)
-
+	GetAuthInfo(ctx context.Context, authID string) ([]model.AuthInfo, error)
 	GetMessages(
 		ctx context.Context,
 		conversationID int64,
