@@ -18,13 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Msg {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -48,12 +43,8 @@ mixin _$Msg {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -75,12 +66,8 @@ mixin _$Msg {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -103,11 +90,8 @@ mixin _$Msg {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -123,10 +107,8 @@ mixin _$Msg {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -142,10 +124,8 @@ mixin _$Msg {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -179,107 +159,90 @@ class _$MsgCopyWithImpl<$Res, $Val extends Msg> implements $MsgCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$$MsgLoginImplCopyWith<$Res> {
-  factory _$$MsgLoginImplCopyWith(
-          _$MsgLoginImpl value, $Res Function(_$MsgLoginImpl) then) =
-      __$$MsgLoginImplCopyWithImpl<$Res>;
+abstract class _$$MsgConnectImplCopyWith<$Res> {
+  factory _$$MsgConnectImplCopyWith(
+          _$MsgConnectImpl value, $Res Function(_$MsgConnectImpl) then) =
+      __$$MsgConnectImplCopyWithImpl<$Res>;
   @useResult
-  $Res call(
-      {SendPort sendPort, int workspaceId, String username, String password});
+  $Res call({SendPort sendPort, Session session});
+
+  $SessionCopyWith<$Res> get session;
 }
 
 /// @nodoc
-class __$$MsgLoginImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res, _$MsgLoginImpl>
-    implements _$$MsgLoginImplCopyWith<$Res> {
-  __$$MsgLoginImplCopyWithImpl(
-      _$MsgLoginImpl _value, $Res Function(_$MsgLoginImpl) _then)
+class __$$MsgConnectImplCopyWithImpl<$Res>
+    extends _$MsgCopyWithImpl<$Res, _$MsgConnectImpl>
+    implements _$$MsgConnectImplCopyWith<$Res> {
+  __$$MsgConnectImplCopyWithImpl(
+      _$MsgConnectImpl _value, $Res Function(_$MsgConnectImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? sendPort = null,
-    Object? workspaceId = null,
-    Object? username = null,
-    Object? password = null,
+    Object? session = null,
   }) {
-    return _then(_$MsgLoginImpl(
+    return _then(_$MsgConnectImpl(
       null == sendPort
           ? _value.sendPort
           : sendPort // ignore: cast_nullable_to_non_nullable
               as SendPort,
-      null == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
+      null == session
+          ? _value.session
+          : session // ignore: cast_nullable_to_non_nullable
+              as Session,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SessionCopyWith<$Res> get session {
+    return $SessionCopyWith<$Res>(_value.session, (value) {
+      return _then(_value.copyWith(session: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$MsgLoginImpl implements MsgLogin {
-  const _$MsgLoginImpl(
-      this.sendPort, this.workspaceId, this.username, this.password);
+class _$MsgConnectImpl implements MsgConnect {
+  const _$MsgConnectImpl(this.sendPort, this.session);
 
   @override
   final SendPort sendPort;
   @override
-  final int workspaceId;
-  @override
-  final String username;
-  @override
-  final String password;
+  final Session session;
 
   @override
   String toString() {
-    return 'Msg.login(sendPort: $sendPort, workspaceId: $workspaceId, username: $username, password: $password)';
+    return 'Msg.connect(sendPort: $sendPort, session: $session)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MsgLoginImpl &&
+            other is _$MsgConnectImpl &&
             (identical(other.sendPort, sendPort) ||
                 other.sendPort == sendPort) &&
-            (identical(other.workspaceId, workspaceId) ||
-                other.workspaceId == workspaceId) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.password, password) ||
-                other.password == password));
+            (identical(other.session, session) || other.session == session));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, sendPort, workspaceId, username, password);
+  int get hashCode => Object.hash(runtimeType, sendPort, session);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MsgLoginImplCopyWith<_$MsgLoginImpl> get copyWith =>
-      __$$MsgLoginImplCopyWithImpl<_$MsgLoginImpl>(this, _$identity);
+  _$$MsgConnectImplCopyWith<_$MsgConnectImpl> get copyWith =>
+      __$$MsgConnectImplCopyWithImpl<_$MsgConnectImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -300,18 +263,14 @@ class _$MsgLoginImpl implements MsgLogin {
             UserType userType, String password)
         createUser,
   }) {
-    return login(sendPort, workspaceId, username, password);
+    return connect(sendPort, session);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -330,18 +289,14 @@ class _$MsgLoginImpl implements MsgLogin {
             UserType userType, String password)?
         createUser,
   }) {
-    return login?.call(sendPort, workspaceId, username, password);
+    return connect?.call(sendPort, session);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -361,8 +316,8 @@ class _$MsgLoginImpl implements MsgLogin {
         createUser,
     required TResult orElse(),
   }) {
-    if (login != null) {
-      return login(sendPort, workspaceId, username, password);
+    if (connect != null) {
+      return connect(sendPort, session);
     }
     return orElse();
   }
@@ -370,11 +325,8 @@ class _$MsgLoginImpl implements MsgLogin {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -387,16 +339,14 @@ class _$MsgLoginImpl implements MsgLogin {
     required TResult Function(MsgCreateConversation value) createConversation,
     required TResult Function(MsgCreateUser value) createUser,
   }) {
-    return login(this);
+    return connect(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -409,16 +359,14 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult? Function(MsgCreateConversation value)? createConversation,
     TResult? Function(MsgCreateUser value)? createUser,
   }) {
-    return login?.call(this);
+    return connect?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -432,41 +380,39 @@ class _$MsgLoginImpl implements MsgLogin {
     TResult Function(MsgCreateUser value)? createUser,
     required TResult orElse(),
   }) {
-    if (login != null) {
-      return login(this);
+    if (connect != null) {
+      return connect(this);
     }
     return orElse();
   }
 }
 
-abstract class MsgLogin implements Msg {
-  const factory MsgLogin(final SendPort sendPort, final int workspaceId,
-      final String username, final String password) = _$MsgLoginImpl;
+abstract class MsgConnect implements Msg {
+  const factory MsgConnect(final SendPort sendPort, final Session session) =
+      _$MsgConnectImpl;
 
   SendPort get sendPort;
-  int get workspaceId;
-  String get username;
-  String get password;
+  Session get session;
   @JsonKey(ignore: true)
-  _$$MsgLoginImplCopyWith<_$MsgLoginImpl> get copyWith =>
+  _$$MsgConnectImplCopyWith<_$MsgConnectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MsgLogoutImplCopyWith<$Res> {
-  factory _$$MsgLogoutImplCopyWith(
-          _$MsgLogoutImpl value, $Res Function(_$MsgLogoutImpl) then) =
-      __$$MsgLogoutImplCopyWithImpl<$Res>;
+abstract class _$$MsgDisconnectImplCopyWith<$Res> {
+  factory _$$MsgDisconnectImplCopyWith(
+          _$MsgDisconnectImpl value, $Res Function(_$MsgDisconnectImpl) then) =
+      __$$MsgDisconnectImplCopyWithImpl<$Res>;
   @useResult
   $Res call({SendPort sendPort});
 }
 
 /// @nodoc
-class __$$MsgLogoutImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res, _$MsgLogoutImpl>
-    implements _$$MsgLogoutImplCopyWith<$Res> {
-  __$$MsgLogoutImplCopyWithImpl(
-      _$MsgLogoutImpl _value, $Res Function(_$MsgLogoutImpl) _then)
+class __$$MsgDisconnectImplCopyWithImpl<$Res>
+    extends _$MsgCopyWithImpl<$Res, _$MsgDisconnectImpl>
+    implements _$$MsgDisconnectImplCopyWith<$Res> {
+  __$$MsgDisconnectImplCopyWithImpl(
+      _$MsgDisconnectImpl _value, $Res Function(_$MsgDisconnectImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -474,7 +420,7 @@ class __$$MsgLogoutImplCopyWithImpl<$Res>
   $Res call({
     Object? sendPort = null,
   }) {
-    return _then(_$MsgLogoutImpl(
+    return _then(_$MsgDisconnectImpl(
       null == sendPort
           ? _value.sendPort
           : sendPort // ignore: cast_nullable_to_non_nullable
@@ -485,22 +431,22 @@ class __$$MsgLogoutImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MsgLogoutImpl implements MsgLogout {
-  const _$MsgLogoutImpl(this.sendPort);
+class _$MsgDisconnectImpl implements MsgDisconnect {
+  const _$MsgDisconnectImpl(this.sendPort);
 
   @override
   final SendPort sendPort;
 
   @override
   String toString() {
-    return 'Msg.logout(sendPort: $sendPort)';
+    return 'Msg.disconnect(sendPort: $sendPort)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MsgLogoutImpl &&
+            other is _$MsgDisconnectImpl &&
             (identical(other.sendPort, sendPort) ||
                 other.sendPort == sendPort));
   }
@@ -511,19 +457,14 @@ class _$MsgLogoutImpl implements MsgLogout {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MsgLogoutImplCopyWith<_$MsgLogoutImpl> get copyWith =>
-      __$$MsgLogoutImplCopyWithImpl<_$MsgLogoutImpl>(this, _$identity);
+  _$$MsgDisconnectImplCopyWith<_$MsgDisconnectImpl> get copyWith =>
+      __$$MsgDisconnectImplCopyWithImpl<_$MsgDisconnectImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -544,18 +485,14 @@ class _$MsgLogoutImpl implements MsgLogout {
             UserType userType, String password)
         createUser,
   }) {
-    return logout(sendPort);
+    return disconnect(sendPort);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -574,18 +511,14 @@ class _$MsgLogoutImpl implements MsgLogout {
             UserType userType, String password)?
         createUser,
   }) {
-    return logout?.call(sendPort);
+    return disconnect?.call(sendPort);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -605,8 +538,8 @@ class _$MsgLogoutImpl implements MsgLogout {
         createUser,
     required TResult orElse(),
   }) {
-    if (logout != null) {
-      return logout(sendPort);
+    if (disconnect != null) {
+      return disconnect(sendPort);
     }
     return orElse();
   }
@@ -614,11 +547,8 @@ class _$MsgLogoutImpl implements MsgLogout {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -631,16 +561,14 @@ class _$MsgLogoutImpl implements MsgLogout {
     required TResult Function(MsgCreateConversation value) createConversation,
     required TResult Function(MsgCreateUser value) createUser,
   }) {
-    return logout(this);
+    return disconnect(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -653,16 +581,14 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult? Function(MsgCreateConversation value)? createConversation,
     TResult? Function(MsgCreateUser value)? createUser,
   }) {
-    return logout?.call(this);
+    return disconnect?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -676,516 +602,20 @@ class _$MsgLogoutImpl implements MsgLogout {
     TResult Function(MsgCreateUser value)? createUser,
     required TResult orElse(),
   }) {
-    if (logout != null) {
-      return logout(this);
+    if (disconnect != null) {
+      return disconnect(this);
     }
     return orElse();
   }
 }
 
-abstract class MsgLogout implements Msg {
-  const factory MsgLogout(final SendPort sendPort) = _$MsgLogoutImpl;
+abstract class MsgDisconnect implements Msg {
+  const factory MsgDisconnect(final SendPort sendPort) = _$MsgDisconnectImpl;
 
   SendPort get sendPort;
   @JsonKey(ignore: true)
-  _$$MsgLogoutImplCopyWith<_$MsgLogoutImpl> get copyWith =>
+  _$$MsgDisconnectImplCopyWith<_$MsgDisconnectImpl> get copyWith =>
       throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MsgAuthStatusSubscribeImplCopyWith<$Res> {
-  factory _$$MsgAuthStatusSubscribeImplCopyWith(
-          _$MsgAuthStatusSubscribeImpl value,
-          $Res Function(_$MsgAuthStatusSubscribeImpl) then) =
-      __$$MsgAuthStatusSubscribeImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({SendPort sendPort, String key});
-}
-
-/// @nodoc
-class __$$MsgAuthStatusSubscribeImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res, _$MsgAuthStatusSubscribeImpl>
-    implements _$$MsgAuthStatusSubscribeImplCopyWith<$Res> {
-  __$$MsgAuthStatusSubscribeImplCopyWithImpl(
-      _$MsgAuthStatusSubscribeImpl _value,
-      $Res Function(_$MsgAuthStatusSubscribeImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? sendPort = null,
-    Object? key = null,
-  }) {
-    return _then(_$MsgAuthStatusSubscribeImpl(
-      null == sendPort
-          ? _value.sendPort
-          : sendPort // ignore: cast_nullable_to_non_nullable
-              as SendPort,
-      null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$MsgAuthStatusSubscribeImpl implements MsgAuthStatusSubscribe {
-  const _$MsgAuthStatusSubscribeImpl(this.sendPort, this.key);
-
-  @override
-  final SendPort sendPort;
-  @override
-  final String key;
-
-  @override
-  String toString() {
-    return 'Msg.authStatusSubscribe(sendPort: $sendPort, key: $key)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MsgAuthStatusSubscribeImpl &&
-            (identical(other.sendPort, sendPort) ||
-                other.sendPort == sendPort) &&
-            (identical(other.key, key) || other.key == key));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, sendPort, key);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MsgAuthStatusSubscribeImplCopyWith<_$MsgAuthStatusSubscribeImpl>
-      get copyWith => __$$MsgAuthStatusSubscribeImplCopyWithImpl<
-          _$MsgAuthStatusSubscribeImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
-    required TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
-        subscribeProc,
-    required TResult Function(String key) unsubscribeProc,
-    required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesSyncStateSubscribe,
-    required TResult Function(String key)
-        conversationMessagesSyncStateUnsubscribe,
-    required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesLoadPast,
-    required TResult Function(SendPort sendPort, int conversationId,
-            String text, String idempotencyId, List<XFile> attachments)
-        createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
-    required TResult Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)
-        createUser,
-  }) {
-    return authStatusSubscribe(sendPort, key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
-    TResult? Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult? Function(String key)? unsubscribeProc,
-    TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesSyncStateSubscribe,
-    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
-    TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesLoadPast,
-    TResult? Function(SendPort sendPort, int conversationId, String text,
-            String idempotencyId, List<XFile> attachments)?
-        createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
-    TResult? Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)?
-        createUser,
-  }) {
-    return authStatusSubscribe?.call(sendPort, key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
-    TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult Function(String key)? unsubscribeProc,
-    TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesSyncStateSubscribe,
-    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
-    TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesLoadPast,
-    TResult Function(SendPort sendPort, int conversationId, String text,
-            String idempotencyId, List<XFile> attachments)?
-        createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
-    TResult Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)?
-        createUser,
-    required TResult orElse(),
-  }) {
-    if (authStatusSubscribe != null) {
-      return authStatusSubscribe(sendPort, key);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
-    required TResult Function(MsgSubscribeProc value) subscribeProc,
-    required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
-        conversationMessagesSyncStateSubscribe,
-    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
-        conversationMessagesSyncStateUnsubscribe,
-    required TResult Function(MsgConversationMessagesLoadPast value)
-        conversationMessagesLoadPast,
-    required TResult Function(MsgCreateMessage value) createMessage,
-    required TResult Function(MsgCreateConversation value) createConversation,
-    required TResult Function(MsgCreateUser value) createUser,
-  }) {
-    return authStatusSubscribe(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult? Function(MsgSubscribeProc value)? subscribeProc,
-    TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
-        conversationMessagesSyncStateSubscribe,
-    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
-        conversationMessagesSyncStateUnsubscribe,
-    TResult? Function(MsgConversationMessagesLoadPast value)?
-        conversationMessagesLoadPast,
-    TResult? Function(MsgCreateMessage value)? createMessage,
-    TResult? Function(MsgCreateConversation value)? createConversation,
-    TResult? Function(MsgCreateUser value)? createUser,
-  }) {
-    return authStatusSubscribe?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult Function(MsgSubscribeProc value)? subscribeProc,
-    TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
-        conversationMessagesSyncStateSubscribe,
-    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
-        conversationMessagesSyncStateUnsubscribe,
-    TResult Function(MsgConversationMessagesLoadPast value)?
-        conversationMessagesLoadPast,
-    TResult Function(MsgCreateMessage value)? createMessage,
-    TResult Function(MsgCreateConversation value)? createConversation,
-    TResult Function(MsgCreateUser value)? createUser,
-    required TResult orElse(),
-  }) {
-    if (authStatusSubscribe != null) {
-      return authStatusSubscribe(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MsgAuthStatusSubscribe implements Msg {
-  const factory MsgAuthStatusSubscribe(
-      final SendPort sendPort, final String key) = _$MsgAuthStatusSubscribeImpl;
-
-  SendPort get sendPort;
-  String get key;
-  @JsonKey(ignore: true)
-  _$$MsgAuthStatusSubscribeImplCopyWith<_$MsgAuthStatusSubscribeImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MsgAuthStatusUnsubscribeImplCopyWith<$Res> {
-  factory _$$MsgAuthStatusUnsubscribeImplCopyWith(
-          _$MsgAuthStatusUnsubscribeImpl value,
-          $Res Function(_$MsgAuthStatusUnsubscribeImpl) then) =
-      __$$MsgAuthStatusUnsubscribeImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String key});
-}
-
-/// @nodoc
-class __$$MsgAuthStatusUnsubscribeImplCopyWithImpl<$Res>
-    extends _$MsgCopyWithImpl<$Res, _$MsgAuthStatusUnsubscribeImpl>
-    implements _$$MsgAuthStatusUnsubscribeImplCopyWith<$Res> {
-  __$$MsgAuthStatusUnsubscribeImplCopyWithImpl(
-      _$MsgAuthStatusUnsubscribeImpl _value,
-      $Res Function(_$MsgAuthStatusUnsubscribeImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-  }) {
-    return _then(_$MsgAuthStatusUnsubscribeImpl(
-      null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$MsgAuthStatusUnsubscribeImpl implements MsgAuthStatusUnsubscribe {
-  const _$MsgAuthStatusUnsubscribeImpl(this.key);
-
-  @override
-  final String key;
-
-  @override
-  String toString() {
-    return 'Msg.authStatusUnsubscribe(key: $key)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MsgAuthStatusUnsubscribeImpl &&
-            (identical(other.key, key) || other.key == key));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, key);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MsgAuthStatusUnsubscribeImplCopyWith<_$MsgAuthStatusUnsubscribeImpl>
-      get copyWith => __$$MsgAuthStatusUnsubscribeImplCopyWithImpl<
-          _$MsgAuthStatusUnsubscribeImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
-    required TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
-        subscribeProc,
-    required TResult Function(String key) unsubscribeProc,
-    required TResult Function(SendPort sendPort, int conversationId, String key)
-        conversationMessagesSyncStateSubscribe,
-    required TResult Function(String key)
-        conversationMessagesSyncStateUnsubscribe,
-    required TResult Function(SendPort sendPort, int conversationId)
-        conversationMessagesLoadPast,
-    required TResult Function(SendPort sendPort, int conversationId,
-            String text, String idempotencyId, List<XFile> attachments)
-        createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
-    required TResult Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)
-        createUser,
-  }) {
-    return authStatusUnsubscribe(key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
-    TResult? Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult? Function(String key)? unsubscribeProc,
-    TResult? Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesSyncStateSubscribe,
-    TResult? Function(String key)? conversationMessagesSyncStateUnsubscribe,
-    TResult? Function(SendPort sendPort, int conversationId)?
-        conversationMessagesLoadPast,
-    TResult? Function(SendPort sendPort, int conversationId, String text,
-            String idempotencyId, List<XFile> attachments)?
-        createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
-    TResult? Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)?
-        createUser,
-  }) {
-    return authStatusUnsubscribe?.call(key);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
-    TResult Function(
-            SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
-        subscribeProc,
-    TResult Function(String key)? unsubscribeProc,
-    TResult Function(SendPort sendPort, int conversationId, String key)?
-        conversationMessagesSyncStateSubscribe,
-    TResult Function(String key)? conversationMessagesSyncStateUnsubscribe,
-    TResult Function(SendPort sendPort, int conversationId)?
-        conversationMessagesLoadPast,
-    TResult Function(SendPort sendPort, int conversationId, String text,
-            String idempotencyId, List<XFile> attachments)?
-        createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
-    TResult Function(SendPort sendPort, String messagingAddress,
-            UserType userType, String password)?
-        createUser,
-    required TResult orElse(),
-  }) {
-    if (authStatusUnsubscribe != null) {
-      return authStatusUnsubscribe(key);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
-    required TResult Function(MsgSubscribeProc value) subscribeProc,
-    required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
-    required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
-        conversationMessagesSyncStateSubscribe,
-    required TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)
-        conversationMessagesSyncStateUnsubscribe,
-    required TResult Function(MsgConversationMessagesLoadPast value)
-        conversationMessagesLoadPast,
-    required TResult Function(MsgCreateMessage value) createMessage,
-    required TResult Function(MsgCreateConversation value) createConversation,
-    required TResult Function(MsgCreateUser value) createUser,
-  }) {
-    return authStatusUnsubscribe(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult? Function(MsgSubscribeProc value)? subscribeProc,
-    TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
-        conversationMessagesSyncStateSubscribe,
-    TResult? Function(MsgConversationMessagesSyncStateUnsubscribe value)?
-        conversationMessagesSyncStateUnsubscribe,
-    TResult? Function(MsgConversationMessagesLoadPast value)?
-        conversationMessagesLoadPast,
-    TResult? Function(MsgCreateMessage value)? createMessage,
-    TResult? Function(MsgCreateConversation value)? createConversation,
-    TResult? Function(MsgCreateUser value)? createUser,
-  }) {
-    return authStatusUnsubscribe?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
-    TResult Function(MsgSubscribeProc value)? subscribeProc,
-    TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
-    TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
-        conversationMessagesSyncStateSubscribe,
-    TResult Function(MsgConversationMessagesSyncStateUnsubscribe value)?
-        conversationMessagesSyncStateUnsubscribe,
-    TResult Function(MsgConversationMessagesLoadPast value)?
-        conversationMessagesLoadPast,
-    TResult Function(MsgCreateMessage value)? createMessage,
-    TResult Function(MsgCreateConversation value)? createConversation,
-    TResult Function(MsgCreateUser value)? createUser,
-    required TResult orElse(),
-  }) {
-    if (authStatusUnsubscribe != null) {
-      return authStatusUnsubscribe(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MsgAuthStatusUnsubscribe implements Msg {
-  const factory MsgAuthStatusUnsubscribe(final String key) =
-      _$MsgAuthStatusUnsubscribeImpl;
-
-  String get key;
-  @JsonKey(ignore: true)
-  _$$MsgAuthStatusUnsubscribeImplCopyWith<_$MsgAuthStatusUnsubscribeImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1271,13 +701,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -1304,12 +729,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1334,12 +755,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1368,11 +785,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -1391,10 +805,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -1413,10 +825,8 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -1516,13 +926,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -1549,12 +954,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1579,12 +980,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1613,11 +1010,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -1636,10 +1030,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -1658,10 +1050,8 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -1782,13 +1172,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -1816,12 +1201,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1847,12 +1228,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -1882,11 +1259,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -1905,10 +1279,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -1927,10 +1299,8 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2040,13 +1410,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -2073,12 +1438,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2103,12 +1464,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2137,11 +1494,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -2160,10 +1514,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2182,10 +1534,8 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2297,13 +1647,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -2330,12 +1675,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2360,12 +1701,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2394,11 +1731,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -2417,10 +1751,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2439,10 +1771,8 @@ class _$MsgConversationMessagesLoadPastImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2590,13 +1920,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -2624,12 +1949,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2655,12 +1976,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2690,11 +2007,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -2713,10 +2027,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2735,10 +2047,8 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2856,13 +2166,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -2889,12 +2194,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2919,12 +2220,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -2953,11 +2250,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -2976,10 +2270,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -2998,10 +2290,8 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -3134,13 +2424,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(SendPort sendPort, int workspaceId,
-            String username, String password)
-        login,
-    required TResult Function(SendPort sendPort) logout,
-    required TResult Function(SendPort sendPort, String key)
-        authStatusSubscribe,
-    required TResult Function(String key) authStatusUnsubscribe,
+    required TResult Function(SendPort sendPort, Session session) connect,
+    required TResult Function(SendPort sendPort) disconnect,
     required TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)
         subscribeProc,
@@ -3167,12 +2452,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult? Function(SendPort sendPort)? logout,
-    TResult? Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult? Function(String key)? authStatusUnsubscribe,
+    TResult? Function(SendPort sendPort, Session session)? connect,
+    TResult? Function(SendPort sendPort)? disconnect,
     TResult? Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -3197,12 +2478,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(SendPort sendPort, int workspaceId, String username,
-            String password)?
-        login,
-    TResult Function(SendPort sendPort)? logout,
-    TResult Function(SendPort sendPort, String key)? authStatusSubscribe,
-    TResult Function(String key)? authStatusUnsubscribe,
+    TResult Function(SendPort sendPort, Session session)? connect,
+    TResult Function(SendPort sendPort)? disconnect,
     TResult Function(
             SendPort sendPort, ProcBuilder<dynamic> procBuilder, String key)?
         subscribeProc,
@@ -3231,11 +2508,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(MsgLogin value) login,
-    required TResult Function(MsgLogout value) logout,
-    required TResult Function(MsgAuthStatusSubscribe value) authStatusSubscribe,
-    required TResult Function(MsgAuthStatusUnsubscribe value)
-        authStatusUnsubscribe,
+    required TResult Function(MsgConnect value) connect,
+    required TResult Function(MsgDisconnect value) disconnect,
     required TResult Function(MsgSubscribeProc value) subscribeProc,
     required TResult Function(MsgUnsubscribeProc value) unsubscribeProc,
     required TResult Function(MsgConversationMessagesSyncStateSubscribe value)
@@ -3254,10 +2528,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MsgLogin value)? login,
-    TResult? Function(MsgLogout value)? logout,
-    TResult? Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult? Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult? Function(MsgConnect value)? connect,
+    TResult? Function(MsgDisconnect value)? disconnect,
     TResult? Function(MsgSubscribeProc value)? subscribeProc,
     TResult? Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult? Function(MsgConversationMessagesSyncStateSubscribe value)?
@@ -3276,10 +2548,8 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(MsgLogin value)? login,
-    TResult Function(MsgLogout value)? logout,
-    TResult Function(MsgAuthStatusSubscribe value)? authStatusSubscribe,
-    TResult Function(MsgAuthStatusUnsubscribe value)? authStatusUnsubscribe,
+    TResult Function(MsgConnect value)? connect,
+    TResult Function(MsgDisconnect value)? disconnect,
     TResult Function(MsgSubscribeProc value)? subscribeProc,
     TResult Function(MsgUnsubscribeProc value)? unsubscribeProc,
     TResult Function(MsgConversationMessagesSyncStateSubscribe value)?

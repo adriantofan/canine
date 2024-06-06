@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:file_selector/file_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../api/session.dart';
 import '../../models/model.dart';
 import '../proc.dart';
 
@@ -10,13 +11,8 @@ part 'msg.freezed.dart';
 
 @freezed
 sealed class Msg with _$Msg {
-  const factory Msg.login(SendPort sendPort, int workspaceId, String username,
-      String password) = MsgLogin;
-  const factory Msg.logout(SendPort sendPort) = MsgLogout;
-  const factory Msg.authStatusSubscribe(SendPort sendPort, String key) =
-      MsgAuthStatusSubscribe;
-  const factory Msg.authStatusUnsubscribe(String key) =
-      MsgAuthStatusUnsubscribe;
+  const factory Msg.connect(SendPort sendPort, Session session) = MsgConnect;
+  const factory Msg.disconnect(SendPort sendPort) = MsgDisconnect;
   const factory Msg.subscribeProc(
           SendPort sendPort, ProcBuilder procBuilder, String key) =
       MsgSubscribeProc;

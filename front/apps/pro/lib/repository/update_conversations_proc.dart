@@ -213,7 +213,7 @@ ConversationInfo? makeConversationItem(int conversationId, Cache cache) {
 
   return ConversationInfo(
       conversationId: conversationId,
-      name: user.messagingAddress,
+      name: user.email,
       userId: user.id,
       lastMessageTime: lastMessage.createdAt,
       lastMessage: lastMessage.message);

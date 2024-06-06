@@ -1,6 +1,6 @@
 library canine_sync;
 
-export 'api/main.dart';
+export 'api/api.dart';
 export 'cache/cache.dart';
 export 'models/model.dart';
 export 'repository/auth_repository.dart';

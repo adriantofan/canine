@@ -96,7 +96,7 @@ ChatMessage? makeChatMessage(Message message, Cache cache) {
 
   return ChatMessage(
       id: message.id,
-      name: user.messagingAddress,
+      name: user.email,
       type: message.type,
       message: message.message,
       time: message.createdAt,

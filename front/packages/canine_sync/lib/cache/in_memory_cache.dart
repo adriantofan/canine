@@ -13,6 +13,8 @@ class InMemoryCache implements Cache {
   List<Conversation> conversations = []; // sorted by id
   Map<int, User> _usersById = {};
   Map<int, ListState<Message>> conversationMessages = {};
+  @override
+  late User me;
 
   @override
   ListState<Message> getConversationMessagesState(int conversationId) {
@@ -73,6 +75,9 @@ class InMemoryCache implements Cache {
     final update = Update.server(message);
     final user = message.data;
     _usersById[user.id] = user;
+    if (user.id == me.id) {
+      me = user;
+    }
     return update;
   }
 
@@ -100,11 +105,11 @@ class InMemoryCache implements Cache {
   // Changes
 
   @override
-  void init(RTCRemoteUpdate updates) {
-    conversations = updates.conversations;
+  void init(RTCRemoteUpdate updates, int userId) {
     _usersById = Map.fromEntries(updates.users.map((u) => MapEntry(u.id, u)));
     conversationMessages = Map.fromEntries(updates.messages.map((m) => MapEntry(
         m.conversationId, ListState.fromItems(m.messages, (m) => m.id, true))));
+    me = _usersById[userId]!;
   }
 
   @override

@@ -7,6 +7,7 @@ export 'model/models.dart';
 
 abstract class Cache {
   List<User> get users;
+  User get me;
   List<Conversation> get conversations;
   List<Message> getConversationMessages(int conversationId);
   ListState<Message> getConversationMessagesState(int conversationId);
@@ -15,7 +16,7 @@ abstract class Cache {
   Conversation? getConversation(int conversationId);
 
   //
-  void init(RTCRemoteUpdate remoteUpdate);
+  void init(RTCRemoteUpdate remoteUpdate, int userId);
   Update? serverDidUpdate(APIServerUpdate message);
   Update? conversationMessagesLoaded(
       int conversationId, List<Message> newMessages, bool moreBeforeStart);

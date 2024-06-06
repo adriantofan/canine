@@ -27,12 +27,9 @@ class SyncRepository {
     return _sync.subscribeProcRef(UpdateMessagesProcRef(conversationId));
   }
 
-  Stream<AuthenticationStatus> get authStatus => _sync.authStatus;
+  Future<void> connect(Session session) => _sync.connect(session);
 
-  Future<void> login(int workspaceId, String username, String password) =>
-      _sync.login(workspaceId, username, password);
-
-  Future<void> logout() => _sync.logout();
+  Future<void> disconnect() => _sync.disconnect();
 
   Stream<ListSyncState> conversationMessagesSyncStateStream(
       int conversationId) {

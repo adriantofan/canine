@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:file_selector/file_selector.dart';
 
-import '../api/main.dart';
+import '../api/session.dart';
 import '../models/model.dart';
 import 'proc.dart';
 
@@ -20,9 +20,8 @@ abstract class Sync {
 
   Stream<R> subscribeProcRef<R>(ProcBuilder<R> proc);
 
-  Future<void> login(int workspaceId, String username, String password);
-  Future<void> logout();
-  Stream<AuthenticationStatus> get authStatus;
+  Future<void> connect(Session session);
+  Future<void> disconnect();
 
   Stream<ListSyncState> conversationMessagesSyncStateStream<ListSyncState>(
       int conversationId);

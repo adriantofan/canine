@@ -2,6 +2,7 @@ import 'path.dart';
 
 class AppRoutes {
   static const RootPath wellcome = RootPath(path: '/wellcome');
+  static const RootPath restricted = RootPath(path: '/restricted');
   static const RootPath slash = RootPath(path: '/');
   static const WorkspacePath switchWorkspace =
       WorkspacePath(subPath: '/switch-workspace');

@@ -22,7 +22,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   int get id => throw _privateConstructorUsedError;
   int get workspaceId => throw _privateConstructorUsedError;
-  String get messagingAddress => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get phone => throw _privateConstructorUsedError;
   UserType get type => throw _privateConstructorUsedError;
   @TimestampSerializer()
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -42,7 +43,8 @@ abstract class $UserCopyWith<$Res> {
   $Res call(
       {int id,
       int workspaceId,
-      String messagingAddress,
+      String email,
+      String phone,
       UserType type,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
@@ -63,7 +65,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? id = null,
     Object? workspaceId = null,
-    Object? messagingAddress = null,
+    Object? email = null,
+    Object? phone = null,
     Object? type = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -77,9 +80,13 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.workspaceId
           : workspaceId // ignore: cast_nullable_to_non_nullable
               as int,
-      messagingAddress: null == messagingAddress
-          ? _value.messagingAddress
-          : messagingAddress // ignore: cast_nullable_to_non_nullable
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: null == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -107,7 +114,8 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   $Res call(
       {int id,
       int workspaceId,
-      String messagingAddress,
+      String email,
+      String phone,
       UserType type,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
@@ -125,7 +133,8 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? workspaceId = null,
-    Object? messagingAddress = null,
+    Object? email = null,
+    Object? phone = null,
     Object? type = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -139,9 +148,13 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.workspaceId
           : workspaceId // ignore: cast_nullable_to_non_nullable
               as int,
-      messagingAddress: null == messagingAddress
-          ? _value.messagingAddress
-          : messagingAddress // ignore: cast_nullable_to_non_nullable
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: null == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -165,7 +178,8 @@ class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.id,
       required this.workspaceId,
-      required this.messagingAddress,
+      required this.email,
+      this.phone = '',
       required this.type,
       @TimestampSerializer() required this.createdAt,
       @TimestampSerializer() required this.updatedAt});
@@ -178,7 +192,10 @@ class _$UserImpl implements _User {
   @override
   final int workspaceId;
   @override
-  final String messagingAddress;
+  final String email;
+  @override
+  @JsonKey()
+  final String phone;
   @override
   final UserType type;
   @override
@@ -190,7 +207,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, workspaceId: $workspaceId, messagingAddress: $messagingAddress, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, workspaceId: $workspaceId, email: $email, phone: $phone, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -201,8 +218,8 @@ class _$UserImpl implements _User {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.workspaceId, workspaceId) ||
                 other.workspaceId == workspaceId) &&
-            (identical(other.messagingAddress, messagingAddress) ||
-                other.messagingAddress == messagingAddress) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -212,8 +229,8 @@ class _$UserImpl implements _User {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, workspaceId,
-      messagingAddress, type, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, workspaceId, email, phone, type, createdAt, updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -233,7 +250,8 @@ abstract class _User implements User {
   const factory _User(
       {required final int id,
       required final int workspaceId,
-      required final String messagingAddress,
+      required final String email,
+      final String phone,
       required final UserType type,
       @TimestampSerializer() required final DateTime createdAt,
       @TimestampSerializer() required final DateTime updatedAt}) = _$UserImpl;
@@ -245,7 +263,9 @@ abstract class _User implements User {
   @override
   int get workspaceId;
   @override
-  String get messagingAddress;
+  String get email;
+  @override
+  String get phone;
   @override
   UserType get type;
   @override

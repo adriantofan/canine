@@ -19,14 +19,10 @@ class SyncSkeleton {
         _subscribeProc(msg);
       case MsgUnsubscribeProc():
         _unsubscribeProc(msg);
-      case MsgAuthStatusSubscribe():
-        _authStatusSubscribe(msg);
-      case MsgAuthStatusUnsubscribe():
-        _authStatusUnsubscribe(msg);
-      case MsgLogin():
-        _login(msg);
-      case MsgLogout():
-        _logout(msg);
+      case MsgConnect():
+        _connect(msg);
+      case MsgDisconnect():
+        _disconnect(msg);
       case MsgConversationMessagesSyncStateSubscribe():
         _conversationMessagesSyncStateSubscribe(msg);
       case MsgConversationMessagesSyncStateUnsubscribe():
@@ -113,42 +109,18 @@ class SyncSkeleton {
     _log.severe('Not subscribed $msg');
   }
 
-  void _logout(MsgLogout msg) {
-    _service.logout().then((_) => msg.sendPort.send(null),
+  void _disconnect(MsgDisconnect msg) {
+    _service.disconnect().then((_) => msg.sendPort.send(null),
         onError: (error, stackTrace) => (error is APIError)
             ? msg.sendPort.send(error)
             : msg.sendPort.send(error.toString()));
   }
 
-  void _login(MsgLogin msg) {
-    _service.login(msg.workspaceId, msg.username, msg.password).then(
-        (_) => msg.sendPort.send(null),
+  void _connect(MsgConnect msg) {
+    _service.connect(msg.session).then((_) => msg.sendPort.send(null),
         onError: (error, stackTrace) => (error is APIError)
             ? msg.sendPort.send(error)
             : msg.sendPort.send(error.toString()));
-  }
-
-  final Map<String, (StreamSubscription, SendPort)> _authStatusSubscriptions =
-      {};
-  void _authStatusSubscribe(MsgAuthStatusSubscribe msg) {
-    if (_authStatusSubscriptions.containsKey(msg.key)) {
-      _log.severe('Already subscribed to ${msg.key} in _authStatusSubscribe');
-      return;
-    }
-    final subscription = _service.authStatus.listen((status) {
-      msg.sendPort.send(status);
-    });
-    _authStatusSubscriptions[msg.key] = (subscription, msg.sendPort);
-  }
-
-  void _authStatusUnsubscribe(MsgAuthStatusUnsubscribe msg) {
-    if (_authStatusSubscriptions.remove(msg.key)
-        case (final subscription, final sendPort)) {
-      subscription.cancel();
-      sendPort.send(MsgOutUnsubscribeAck());
-      return;
-    }
-    _log.severe('Not subscribed $msg');
   }
 
   final Map<String, (StreamSubscription, SendPort)> _procSubscriptions = {};

@@ -38,7 +38,9 @@ mixin _$AuthStatus {
     required TResult Function() unknown,
     required TResult Function() disconnected,
     required TResult Function() restricted,
-    required TResult Function(Map<Role, List<int>> roles) authenticated,
+    required TResult Function(
+            Map<Role, List<int>> roles, String authId, String token)
+        authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -46,7 +48,8 @@ mixin _$AuthStatus {
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
     TResult? Function()? restricted,
-    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+    TResult? Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -54,7 +57,8 @@ mixin _$AuthStatus {
     TResult Function()? unknown,
     TResult Function()? disconnected,
     TResult Function()? restricted,
-    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    TResult Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -153,7 +157,9 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
     required TResult Function() unknown,
     required TResult Function() disconnected,
     required TResult Function() restricted,
-    required TResult Function(Map<Role, List<int>> roles) authenticated,
+    required TResult Function(
+            Map<Role, List<int>> roles, String authId, String token)
+        authenticated,
   }) {
     return unknown();
   }
@@ -164,7 +170,8 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
     TResult? Function()? restricted,
-    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+    TResult? Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
   }) {
     return unknown?.call();
   }
@@ -175,7 +182,8 @@ class _$AuthStatusUnknownImpl implements AuthStatusUnknown {
     TResult Function()? unknown,
     TResult Function()? disconnected,
     TResult Function()? restricted,
-    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    TResult Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
     required TResult orElse(),
   }) {
     if (unknown != null) {
@@ -288,7 +296,9 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
     required TResult Function() unknown,
     required TResult Function() disconnected,
     required TResult Function() restricted,
-    required TResult Function(Map<Role, List<int>> roles) authenticated,
+    required TResult Function(
+            Map<Role, List<int>> roles, String authId, String token)
+        authenticated,
   }) {
     return disconnected();
   }
@@ -299,7 +309,8 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
     TResult? Function()? restricted,
-    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+    TResult? Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
   }) {
     return disconnected?.call();
   }
@@ -310,7 +321,8 @@ class _$AuthStatusDisconnectedImpl implements AuthStatusDisconnected {
     TResult Function()? unknown,
     TResult Function()? disconnected,
     TResult Function()? restricted,
-    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    TResult Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
     required TResult orElse(),
   }) {
     if (disconnected != null) {
@@ -421,7 +433,9 @@ class _$AuthStatusRestrictedImpl implements AuthStatusRestricted {
     required TResult Function() unknown,
     required TResult Function() disconnected,
     required TResult Function() restricted,
-    required TResult Function(Map<Role, List<int>> roles) authenticated,
+    required TResult Function(
+            Map<Role, List<int>> roles, String authId, String token)
+        authenticated,
   }) {
     return restricted();
   }
@@ -432,7 +446,8 @@ class _$AuthStatusRestrictedImpl implements AuthStatusRestricted {
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
     TResult? Function()? restricted,
-    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+    TResult? Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
   }) {
     return restricted?.call();
   }
@@ -443,7 +458,8 @@ class _$AuthStatusRestrictedImpl implements AuthStatusRestricted {
     TResult Function()? unknown,
     TResult Function()? disconnected,
     TResult Function()? restricted,
-    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    TResult Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
     required TResult orElse(),
   }) {
     if (restricted != null) {
@@ -511,7 +527,7 @@ abstract class _$$AuthStatusAuthenticatedImplCopyWith<$Res> {
           $Res Function(_$AuthStatusAuthenticatedImpl) then) =
       __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Map<Role, List<int>> roles});
+  $Res call({Map<Role, List<int>> roles, String authId, String token});
 }
 
 /// @nodoc
@@ -527,12 +543,22 @@ class __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? roles = null,
+    Object? authId = null,
+    Object? token = null,
   }) {
     return _then(_$AuthStatusAuthenticatedImpl(
       null == roles
           ? _value._roles
           : roles // ignore: cast_nullable_to_non_nullable
               as Map<Role, List<int>>,
+      null == authId
+          ? _value.authId
+          : authId // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -540,7 +566,8 @@ class __$$AuthStatusAuthenticatedImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
-  const _$AuthStatusAuthenticatedImpl(final Map<Role, List<int>> roles,
+  const _$AuthStatusAuthenticatedImpl(
+      final Map<Role, List<int>> roles, this.authId, this.token,
       {final String? $type})
       : _roles = roles,
         $type = $type ?? 'authenticated';
@@ -556,12 +583,17 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
     return EqualUnmodifiableMapView(_roles);
   }
 
+  @override
+  final String authId;
+  @override
+  final String token;
+
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'AuthStatus.authenticated(roles: $roles)';
+    return 'AuthStatus.authenticated(roles: $roles, authId: $authId, token: $token)';
   }
 
   @override
@@ -569,13 +601,15 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthStatusAuthenticatedImpl &&
-            const DeepCollectionEquality().equals(other._roles, _roles));
+            const DeepCollectionEquality().equals(other._roles, _roles) &&
+            (identical(other.authId, authId) || other.authId == authId) &&
+            (identical(other.token, token) || other.token == token));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_roles));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_roles), authId, token);
 
   @JsonKey(ignore: true)
   @override
@@ -590,9 +624,11 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
     required TResult Function() unknown,
     required TResult Function() disconnected,
     required TResult Function() restricted,
-    required TResult Function(Map<Role, List<int>> roles) authenticated,
+    required TResult Function(
+            Map<Role, List<int>> roles, String authId, String token)
+        authenticated,
   }) {
-    return authenticated(roles);
+    return authenticated(roles, authId, token);
   }
 
   @override
@@ -601,9 +637,10 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
     TResult? Function()? unknown,
     TResult? Function()? disconnected,
     TResult? Function()? restricted,
-    TResult? Function(Map<Role, List<int>> roles)? authenticated,
+    TResult? Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
   }) {
-    return authenticated?.call(roles);
+    return authenticated?.call(roles, authId, token);
   }
 
   @override
@@ -612,11 +649,12 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
     TResult Function()? unknown,
     TResult Function()? disconnected,
     TResult Function()? restricted,
-    TResult Function(Map<Role, List<int>> roles)? authenticated,
+    TResult Function(Map<Role, List<int>> roles, String authId, String token)?
+        authenticated,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(roles);
+      return authenticated(roles, authId, token);
     }
     return orElse();
   }
@@ -667,13 +705,15 @@ class _$AuthStatusAuthenticatedImpl implements AuthStatusAuthenticated {
 }
 
 abstract class AuthStatusAuthenticated implements AuthStatus {
-  const factory AuthStatusAuthenticated(final Map<Role, List<int>> roles) =
-      _$AuthStatusAuthenticatedImpl;
+  const factory AuthStatusAuthenticated(final Map<Role, List<int>> roles,
+      final String authId, final String token) = _$AuthStatusAuthenticatedImpl;
 
   factory AuthStatusAuthenticated.fromJson(Map<String, dynamic> json) =
       _$AuthStatusAuthenticatedImpl.fromJson;
 
   Map<Role, List<int>> get roles;
+  String get authId;
+  String get token;
   @JsonKey(ignore: true)
   _$$AuthStatusAuthenticatedImplCopyWith<_$AuthStatusAuthenticatedImpl>
       get copyWith => throw _privateConstructorUsedError;

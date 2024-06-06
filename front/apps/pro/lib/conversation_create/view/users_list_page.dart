@@ -61,7 +61,7 @@ class UsersList extends StatelessWidget {
                 return (index == 0)
                     ? _makeButton(context)
                     : ListTile(
-                        title: Text(users[index - 1].messagingAddress),
+                        title: Text(users[index - 1].email),
                         onTap: () =>
                             onUserSelected?.call((context, users[index - 1])),
                       );

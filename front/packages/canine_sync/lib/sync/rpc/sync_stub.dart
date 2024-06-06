@@ -4,7 +4,7 @@ import 'dart:isolate';
 import 'package:file_selector/file_selector.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../api/main.dart';
+import '../../api/session.dart';
 import '../../models/model.dart';
 import '../proc.dart';
 import '../sync.dart';
@@ -48,40 +48,9 @@ class SyncStub extends Sync {
   }
 
   @override
-  Stream<AuthenticationStatus> get authStatus {
-    StreamController<AuthenticationStatus> controller = StreamController();
-    final key = uuid.v4();
+  Future<void> connect(Session session) async {
     ReceivePort receivePort = ReceivePort();
-    StreamSubscription? streamSubscription;
-    controller.onListen = () {
-      streamSubscription = receivePort.listen((data) {
-        if (data is MsgOutUnsubscribeAck) {
-          controller.close();
-          streamSubscription!.cancel();
-          return;
-        }
-        if (data is AuthenticationStatus) {
-          controller.add(data);
-          return;
-        }
-        throw ArgumentError.value(
-            data, "Invalid response from canine_sync on authStatus");
-      });
-      _sendPort.send(Msg.authStatusSubscribe(receivePort.sendPort, key));
-    };
-
-    controller.onCancel = () {
-      _sendPort.send(Msg.authStatusUnsubscribe(key));
-    };
-
-    return controller.stream;
-  }
-
-  @override
-  Future<void> login(int workspaceId, String username, String password) async {
-    ReceivePort receivePort = ReceivePort();
-    _sendPort
-        .send(Msg.login(receivePort.sendPort, workspaceId, username, password));
+    _sendPort.send(Msg.connect(receivePort.sendPort, session));
     await for (var data in receivePort) {
       if (data == null) {
         return;
@@ -92,16 +61,16 @@ class SyncStub extends Sync {
       }
 
       throw ArgumentError.value(
-          data, "Invalid response from canine_sync on login");
+          data, "Invalid response from canine_sync on connect");
     }
 
-    throw AssertionError("canine_sync did not respond to login");
+    throw AssertionError("canine_sync did not respond to connect");
   }
 
   @override
-  Future<void> logout() async {
+  Future<void> disconnect() async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(Msg.logout(receivePort.sendPort));
+    _sendPort.send(Msg.disconnect(receivePort.sendPort));
     await for (var data in receivePort) {
       if (data == null) {
         return;

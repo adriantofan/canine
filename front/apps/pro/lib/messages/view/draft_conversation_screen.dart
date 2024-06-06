@@ -87,7 +87,7 @@ class TitleWidget extends StatelessWidget {
 
   String buildTitle(DraftConversationState s) => switch (s) {
         DraftConversationStateInitial(:final draftConversation) =>
-          'New with ${draftConversation.user.messagingAddress}',
+          'New with ${draftConversation.user.email}',
         DraftConversationStateCreated(
           :final conversationInfo,
           :final draftMessage,

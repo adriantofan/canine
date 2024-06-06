@@ -49,6 +49,8 @@ _$AuthStatusAuthenticatedImpl _$$AuthStatusAuthenticatedImplFromJson(
         (k, e) => MapEntry($enumDecode(_$RoleEnumMap, k),
             (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
       ),
+      json['auth_id'] as String,
+      json['token'] as String,
       $type: json['runtimeType'] as String?,
     );
 
@@ -56,6 +58,8 @@ Map<String, dynamic> _$$AuthStatusAuthenticatedImplToJson(
         _$AuthStatusAuthenticatedImpl instance) =>
     <String, dynamic>{
       'roles': instance.roles.map((k, e) => MapEntry(_$RoleEnumMap[k]!, e)),
+      'auth_id': instance.authId,
+      'token': instance.token,
       'runtimeType': instance.$type,
     };
 

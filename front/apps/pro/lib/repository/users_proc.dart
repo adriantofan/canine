@@ -41,8 +41,7 @@ class UsersProc implements Proc<List<User>> {
       case APIServerUpdateUsers():
         if (message.kind == APIServerUpdateKind.create) {
           final user = message.data;
-          return [...prev, user]
-            ..sort((a, b) => a.messagingAddress.compareTo(b.messagingAddress));
+          return [...prev, user]..sort((a, b) => a.email.compareTo(b.email));
         } else {
           _log.warning(
               "UsersProc._handelUpdateServer: 🟡UNIMPLEMENTED $message");
@@ -52,7 +51,6 @@ class UsersProc implements Proc<List<User>> {
   }
 
   List<User> bootstrap(Cache cache) {
-    return cache.users.toList()
-      ..sort((a, b) => a.messagingAddress.compareTo(b.messagingAddress));
+    return cache.users.toList()..sort((a, b) => a.email.compareTo(b.email));
   }
 }

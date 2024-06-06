@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:oidc/oidc.dart';
 import 'package:oidc_default_store/oidc_default_store.dart';
 import 'package:rxdart/rxdart.dart';
@@ -29,6 +30,7 @@ class AuthRepository {
   /// for mobile platforms, we use `com.zitadel.zitadelflutter:/`
   late final redirectUri;
   late final OidcUserManager userManager;
+  final _logger = Logger('AuthRepository');
 
   AuthRepository({
     required this.oidcUrl,
@@ -69,10 +71,11 @@ class AuthRepository {
       ),
     );
   }
-
   void init() async {
-    processUserChanges();
-    await userManager.init();
+    await userManager.init().whenComplete(() {
+      _logger.fine('User manager initialized: ${userManager.currentUser}');
+      processUserChanges();
+    });
   }
 
   void dispose() {
@@ -97,8 +100,13 @@ class AuthRepository {
   StreamSubscription<dynamic>? _subscription;
   ProjectRoles _roles = {};
   void processUserChanges() {
+    // _subscription = userManager.userChanges().
+
+    // TODO: the skip(1) is a workaround for the initial value being null.
+    // Unclear if this is the right approach
+
     _subscription = userManager.userChanges().listen((user) {
-      print('User: $user');
+      _logger.fine('User changed: $user');
       if (user == null) {
         _authStatus.add(const AuthStatus.disconnected());
         _roles = {};
@@ -111,7 +119,8 @@ class AuthRepository {
           _authStatus.add(const AuthStatus.restricted());
           return;
         }
-        _authStatus.add(AuthStatus.authenticated(newRoles));
+        _authStatus.add(AuthStatus.authenticated(
+            newRoles, user.uidRequired, user.token.accessToken!));
       } catch (e, st) {
         _authStatus.addError(e, st);
       }

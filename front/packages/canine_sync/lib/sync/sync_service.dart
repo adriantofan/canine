@@ -6,35 +6,45 @@ import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../canine_sync.dart';
+import '../api/api_client.dart';
+import '../api/session.dart';
+import '../cache/cache.dart';
+import '../models/model.dart';
 import '../models/rtc_remote.dart';
 import '../models/rtc_remote_update.dart';
+import '../ws/model/models.dart';
+import 'proc.dart';
+import 'sync.dart';
 
 class SyncService implements Sync {
   final Cache _cache;
   final Logger _logger = Logger('SyncService');
-  final APIClient _apiClient;
+  APIWorkspaceClient? _apiClient;
+  final String _apiBase;
+  final String _wsBase;
+
   final StreamController<void> _stopController =
       StreamController<void>.broadcast();
+  final inSession = BehaviorSubject<bool>.seeded(false);
 
-  SyncService(this._cache, this._apiClient);
+  SyncService(this._cache, this._apiBase, this._wsBase);
 
   websocketListen() async {
     for (;;) {
       try {
-        await for (var authStatus in _apiClient.authStatus) {
-          if (authStatus is AuthenticationStatusAuthenticated) {
-            break;
+        await for (var inSession in inSession.stream) {
+          if (!inSession) {
+            continue;
           }
         }
 
-        var update = await _apiClient.rtcSession(const RtcRemote());
+        var update = await _apiClient!.rtcSession(const RtcRemote());
         _logger.fine('Got rtc session ${update.syncToken}');
-
-        initCache(update);
+        //TODO:  set me in the update cache
+        initCache(update, _apiClient!.session.userId);
 
         var channel = WebSocketChannel.connect(
-            _apiClient.rtcConnectionUri(update.syncToken));
+            _apiClient!.rtcConnectionUri(update.syncToken));
 
         await channel.ready;
         _logger.fine('Connected to websocket');
@@ -69,9 +79,6 @@ class SyncService implements Sync {
     }
   }
 
-  @override
-  Stream<AuthenticationStatus> get authStatus => _apiClient.authStatus;
-
   final _conversationMessagesLoadPastFutures =
       <int, (Completer<void>, Future<RemoteDataStatus>)>{};
 
@@ -102,7 +109,7 @@ class SyncService implements Sync {
       ListStateCached() => conversationMessageState.startId,
       _ => null,
     };
-    final future = _apiClient
+    final future = _apiClient!
         .getConversationMessages(conversationId, lastId)
         .then((result) {
       if (completer.isCompleted) {
@@ -144,15 +151,15 @@ class SyncService implements Sync {
   @override
   Future<Message> createMessage(int conversationId, String text,
       String idempotencyId, List<XFile> attachments) {
-    return _apiClient.createMessage(
-        conversationId, text, idempotencyId, attachments);
+    return _apiClient!
+        .createMessage(conversationId, text, idempotencyId, attachments);
   }
 
   @override
   Future<Conversation> createConversation(
       {required String recipientMessagingAddress}) {
-    return _apiClient.createConversation(
-        recipientMessagingAddress: recipientMessagingAddress);
+    return _apiClient!
+        .createConversation(recipientEmail: recipientMessagingAddress);
   }
 
   @override
@@ -160,7 +167,7 @@ class SyncService implements Sync {
       {required String messagingAddress,
       required UserType userType,
       required String password}) {
-    return _apiClient.createUser(
+    return _apiClient!.createUser(
         messagingAddress: messagingAddress,
         userType: userType,
         password: password);
@@ -174,12 +181,32 @@ class SyncService implements Sync {
   }
 
   @override
-  Future<void> login(int workspaceId, String username, String password) {
-    return _apiClient.login(workspaceId, username, password);
+  Future<void> connect(Session newSession) async {
+    if (inSession.value &&
+        _apiClient!.session.workspaceId == newSession.workspaceId &&
+        _apiClient!.session.authId == newSession.authId) {
+      _apiClient!.tokenDidRefresh(newSession.token);
+      return;
+    }
+
+    if (inSession.value) {
+      await disconnect();
+    }
+
+    _logger
+        .fine('Connecting to ${newSession.workspaceId} ${newSession.authId}');
+    final newApiClient = APIWorkspaceClient(_apiBase, _wsBase, newSession);
+    _apiClient = newApiClient;
+    inSession.add(true);
   }
 
   @override
-  Future<void> logout() {
+  Future<void> disconnect() async {
+    if (!inSession.value) {
+      return;
+    }
+
+    _logger.fine('Disconnecting');
     // (eventually) stops the websocket
     _stopController.add(null);
     // Make sure ongoing message loads won't change the state after completing
@@ -189,7 +216,7 @@ class SyncService implements Sync {
     });
     // Forget about them, so they won't remain in memory potentially with new ones
     _conversationMessagesLoadPastFutures.clear();
-    return _apiClient.logout();
+    inSession.add(false);
   }
 
   final Map<Proc, StreamController> _procs = {};
@@ -219,8 +246,8 @@ class SyncService implements Sync {
     _forEachProc((p) => p.update(update, _cache));
   }
 
-  initCache(RTCRemoteUpdate message) {
-    _cache.init(message);
+  initCache(RTCRemoteUpdate message, int userId) {
+    _cache.init(message, userId);
     // stop any ongoing message load, so they won't change the _cache after completing
     _conversationMessagesReset();
     // There are other side effects such as updating the conversation sync state

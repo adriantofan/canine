@@ -22,10 +22,10 @@ class DraftConversationCubit extends Cubit<DraftConversationState> {
           draftConversation.copyWith(message: msg)));
 
       final conversation = await repository.createConversation(
-          recipientMessagingAddress: draftConversation.user.messagingAddress);
+          recipientMessagingAddress: draftConversation.user.email);
       final conversationInfo = ConversationInfo(
           conversationId: conversation.id,
-          name: draftConversation.user.messagingAddress,
+          name: draftConversation.user.email,
           userId: draftConversation.user.id,
           lastMessageTime: DateTime.now(),
           lastMessage: msg.text ?? '');

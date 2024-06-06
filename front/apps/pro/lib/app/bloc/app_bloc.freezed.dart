@@ -19,18 +19,22 @@ mixin _$AppEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
     required TResult Function() logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     required TResult orElse(),
   }) =>
@@ -38,18 +42,21 @@ mixin _$AppEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) =>
@@ -112,6 +119,8 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
     required TResult Function() logout,
   }) {
     return initial();
@@ -121,6 +130,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
   }) {
     return initial?.call();
@@ -130,6 +140,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
@@ -143,6 +154,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
   }) {
     return initial(this);
@@ -152,6 +164,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
   }) {
     return initial?.call(this);
@@ -161,6 +174,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) {
@@ -173,6 +187,169 @@ class _$AppEventInitialImpl implements AppEventInitial {
 
 abstract class AppEventInitial implements AppEvent {
   const factory AppEventInitial() = _$AppEventInitialImpl;
+}
+
+/// @nodoc
+abstract class _$$AppEventAuthInfoFetchedImplCopyWith<$Res> {
+  factory _$$AppEventAuthInfoFetchedImplCopyWith(
+          _$AppEventAuthInfoFetchedImpl value,
+          $Res Function(_$AppEventAuthInfoFetchedImpl) then) =
+      __$$AppEventAuthInfoFetchedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<AuthInfo> authInfo, String authId});
+}
+
+/// @nodoc
+class __$$AppEventAuthInfoFetchedImplCopyWithImpl<$Res>
+    extends _$AppEventCopyWithImpl<$Res, _$AppEventAuthInfoFetchedImpl>
+    implements _$$AppEventAuthInfoFetchedImplCopyWith<$Res> {
+  __$$AppEventAuthInfoFetchedImplCopyWithImpl(
+      _$AppEventAuthInfoFetchedImpl _value,
+      $Res Function(_$AppEventAuthInfoFetchedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? authInfo = null,
+    Object? authId = null,
+  }) {
+    return _then(_$AppEventAuthInfoFetchedImpl(
+      null == authInfo
+          ? _value._authInfo
+          : authInfo // ignore: cast_nullable_to_non_nullable
+              as List<AuthInfo>,
+      null == authId
+          ? _value.authId
+          : authId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
+  const _$AppEventAuthInfoFetchedImpl(
+      final List<AuthInfo> authInfo, this.authId)
+      : _authInfo = authInfo;
+
+  final List<AuthInfo> _authInfo;
+  @override
+  List<AuthInfo> get authInfo {
+    if (_authInfo is EqualUnmodifiableListView) return _authInfo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_authInfo);
+  }
+
+  @override
+  final String authId;
+
+  @override
+  String toString() {
+    return 'AppEvent.authInfoFetched(authInfo: $authInfo, authId: $authId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppEventAuthInfoFetchedImpl &&
+            const DeepCollectionEquality().equals(other._authInfo, _authInfo) &&
+            (identical(other.authId, authId) || other.authId == authId));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_authInfo), authId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppEventAuthInfoFetchedImplCopyWith<_$AppEventAuthInfoFetchedImpl>
+      get copyWith => __$$AppEventAuthInfoFetchedImplCopyWithImpl<
+          _$AppEventAuthInfoFetchedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
+    required TResult Function() logout,
+  }) {
+    return authInfoFetched(authInfo, authId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult? Function()? logout,
+  }) {
+    return authInfoFetched?.call(authInfo, authId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult Function()? logout,
+    required TResult orElse(),
+  }) {
+    if (authInfoFetched != null) {
+      return authInfoFetched(authInfo, authId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
+    required TResult Function(AppEventLogout value) logout,
+  }) {
+    return authInfoFetched(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult? Function(AppEventLogout value)? logout,
+  }) {
+    return authInfoFetched?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult Function(AppEventLogout value)? logout,
+    required TResult orElse(),
+  }) {
+    if (authInfoFetched != null) {
+      return authInfoFetched(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AppEventAuthInfoFetched implements AppEvent {
+  const factory AppEventAuthInfoFetched(
+          final List<AuthInfo> authInfo, final String authId) =
+      _$AppEventAuthInfoFetchedImpl;
+
+  List<AuthInfo> get authInfo;
+  String get authId;
+  @JsonKey(ignore: true)
+  _$$AppEventAuthInfoFetchedImplCopyWith<_$AppEventAuthInfoFetchedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -214,6 +391,8 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
     required TResult Function() logout,
   }) {
     return logout();
@@ -223,6 +402,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
   }) {
     return logout?.call();
@@ -232,6 +412,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
@@ -245,6 +426,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
   }) {
     return logout(this);
@@ -254,6 +436,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
   }) {
     return logout?.call(this);
@@ -263,6 +446,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     required TResult orElse(),
   }) {
@@ -280,8 +464,60 @@ abstract class AppEventLogout implements AppEvent {
 /// @nodoc
 mixin _$AppState {
   AuthStatus get authStatus => throw _privateConstructorUsedError;
-  int? get workspaceId => throw _privateConstructorUsedError;
-  bool get isAuthorized => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AuthStatus authStatus) unauthenticated,
+    required TResult Function(
+            AuthStatus authStatus, String authId, String token)
+        authenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+        ready,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AuthStatus authStatus)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AuthStatus authStatus)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
+    required TResult Function(AppStateReady value) ready,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
+    TResult? Function(AppStateReady value)? ready,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
+    TResult Function(AppStateReady value)? ready,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppStateCopyWith<AppState> get copyWith =>
@@ -293,7 +529,7 @@ abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res, AppState>;
   @useResult
-  $Res call({AuthStatus authStatus, int? workspaceId, bool isAuthorized});
+  $Res call({AuthStatus authStatus});
 
   $AuthStatusCopyWith<$Res> get authStatus;
 }
@@ -312,22 +548,12 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   $Res call({
     Object? authStatus = null,
-    Object? workspaceId = freezed,
-    Object? isAuthorized = null,
   }) {
     return _then(_value.copyWith(
       authStatus: null == authStatus
           ? _value.authStatus
           : authStatus // ignore: cast_nullable_to_non_nullable
               as AuthStatus,
-      workspaceId: freezed == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      isAuthorized: null == isAuthorized
-          ? _value.isAuthorized
-          : isAuthorized // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 
@@ -341,109 +567,565 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
 }
 
 /// @nodoc
-abstract class _$$AppStateImplCopyWith<$Res>
+abstract class _$$AppStateUnauthenticatedImplCopyWith<$Res>
     implements $AppStateCopyWith<$Res> {
-  factory _$$AppStateImplCopyWith(
-          _$AppStateImpl value, $Res Function(_$AppStateImpl) then) =
-      __$$AppStateImplCopyWithImpl<$Res>;
+  factory _$$AppStateUnauthenticatedImplCopyWith(
+          _$AppStateUnauthenticatedImpl value,
+          $Res Function(_$AppStateUnauthenticatedImpl) then) =
+      __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AuthStatus authStatus, int? workspaceId, bool isAuthorized});
+  $Res call({AuthStatus authStatus});
 
   @override
   $AuthStatusCopyWith<$Res> get authStatus;
 }
 
 /// @nodoc
-class __$$AppStateImplCopyWithImpl<$Res>
-    extends _$AppStateCopyWithImpl<$Res, _$AppStateImpl>
-    implements _$$AppStateImplCopyWith<$Res> {
-  __$$AppStateImplCopyWithImpl(
-      _$AppStateImpl _value, $Res Function(_$AppStateImpl) _then)
+class __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateUnauthenticatedImpl>
+    implements _$$AppStateUnauthenticatedImplCopyWith<$Res> {
+  __$$AppStateUnauthenticatedImplCopyWithImpl(
+      _$AppStateUnauthenticatedImpl _value,
+      $Res Function(_$AppStateUnauthenticatedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? authStatus = null,
-    Object? workspaceId = freezed,
-    Object? isAuthorized = null,
   }) {
-    return _then(_$AppStateImpl(
+    return _then(_$AppStateUnauthenticatedImpl(
       authStatus: null == authStatus
           ? _value.authStatus
           : authStatus // ignore: cast_nullable_to_non_nullable
               as AuthStatus,
-      workspaceId: freezed == workspaceId
-          ? _value.workspaceId
-          : workspaceId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      isAuthorized: null == isAuthorized
-          ? _value.isAuthorized
-          : isAuthorized // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$AppStateImpl implements _AppState {
-  const _$AppStateImpl(
-      {required this.authStatus,
-      required this.workspaceId,
-      required this.isAuthorized});
+class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
+  const _$AppStateUnauthenticatedImpl({required this.authStatus}) : super._();
 
   @override
   final AuthStatus authStatus;
-  @override
-  final int? workspaceId;
-  @override
-  final bool isAuthorized;
 
   @override
   String toString() {
-    return 'AppState(authStatus: $authStatus, workspaceId: $workspaceId, isAuthorized: $isAuthorized)';
+    return 'AppState.unauthenticated(authStatus: $authStatus)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppStateImpl &&
+            other is _$AppStateUnauthenticatedImpl &&
             (identical(other.authStatus, authStatus) ||
-                other.authStatus == authStatus) &&
-            (identical(other.workspaceId, workspaceId) ||
-                other.workspaceId == workspaceId) &&
-            (identical(other.isAuthorized, isAuthorized) ||
-                other.isAuthorized == isAuthorized));
+                other.authStatus == authStatus));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, authStatus, workspaceId, isAuthorized);
+  int get hashCode => Object.hash(runtimeType, authStatus);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
-      __$$AppStateImplCopyWithImpl<_$AppStateImpl>(this, _$identity);
+  _$$AppStateUnauthenticatedImplCopyWith<_$AppStateUnauthenticatedImpl>
+      get copyWith => __$$AppStateUnauthenticatedImplCopyWithImpl<
+          _$AppStateUnauthenticatedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AuthStatus authStatus) unauthenticated,
+    required TResult Function(
+            AuthStatus authStatus, String authId, String token)
+        authenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+        ready,
+  }) {
+    return unauthenticated(authStatus);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AuthStatus authStatus)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+  }) {
+    return unauthenticated?.call(authStatus);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AuthStatus authStatus)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+    required TResult orElse(),
+  }) {
+    if (unauthenticated != null) {
+      return unauthenticated(authStatus);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
+    required TResult Function(AppStateReady value) ready,
+  }) {
+    return unauthenticated(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
+    TResult? Function(AppStateReady value)? ready,
+  }) {
+    return unauthenticated?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
+    TResult Function(AppStateReady value)? ready,
+    required TResult orElse(),
+  }) {
+    if (unauthenticated != null) {
+      return unauthenticated(this);
+    }
+    return orElse();
+  }
 }
 
-abstract class _AppState implements AppState {
-  const factory _AppState(
-      {required final AuthStatus authStatus,
-      required final int? workspaceId,
-      required final bool isAuthorized}) = _$AppStateImpl;
+abstract class AppStateUnauthenticated extends AppState {
+  const factory AppStateUnauthenticated(
+      {required final AuthStatus authStatus}) = _$AppStateUnauthenticatedImpl;
+  const AppStateUnauthenticated._() : super._();
 
   @override
   AuthStatus get authStatus;
   @override
-  int? get workspaceId;
+  @JsonKey(ignore: true)
+  _$$AppStateUnauthenticatedImplCopyWith<_$AppStateUnauthenticatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AppStateAuthenticatedImplCopyWith<$Res>
+    implements $AppStateCopyWith<$Res> {
+  factory _$$AppStateAuthenticatedImplCopyWith(
+          _$AppStateAuthenticatedImpl value,
+          $Res Function(_$AppStateAuthenticatedImpl) then) =
+      __$$AppStateAuthenticatedImplCopyWithImpl<$Res>;
   @override
-  bool get isAuthorized;
+  @useResult
+  $Res call({AuthStatus authStatus, String authId, String token});
+
+  @override
+  $AuthStatusCopyWith<$Res> get authStatus;
+}
+
+/// @nodoc
+class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateAuthenticatedImpl>
+    implements _$$AppStateAuthenticatedImplCopyWith<$Res> {
+  __$$AppStateAuthenticatedImplCopyWithImpl(_$AppStateAuthenticatedImpl _value,
+      $Res Function(_$AppStateAuthenticatedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? authStatus = null,
+    Object? authId = null,
+    Object? token = null,
+  }) {
+    return _then(_$AppStateAuthenticatedImpl(
+      authStatus: null == authStatus
+          ? _value.authStatus
+          : authStatus // ignore: cast_nullable_to_non_nullable
+              as AuthStatus,
+      authId: null == authId
+          ? _value.authId
+          : authId // ignore: cast_nullable_to_non_nullable
+              as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
+  const _$AppStateAuthenticatedImpl(
+      {required this.authStatus, required this.authId, required this.token})
+      : super._();
+
+  @override
+  final AuthStatus authStatus;
+  @override
+  final String authId;
+  @override
+  final String token;
+
+  @override
+  String toString() {
+    return 'AppState.authenticated(authStatus: $authStatus, authId: $authId, token: $token)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppStateAuthenticatedImpl &&
+            (identical(other.authStatus, authStatus) ||
+                other.authStatus == authStatus) &&
+            (identical(other.authId, authId) || other.authId == authId) &&
+            (identical(other.token, token) || other.token == token));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, authStatus, authId, token);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppStateAuthenticatedImplCopyWith<_$AppStateAuthenticatedImpl>
+      get copyWith => __$$AppStateAuthenticatedImplCopyWithImpl<
+          _$AppStateAuthenticatedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AuthStatus authStatus) unauthenticated,
+    required TResult Function(
+            AuthStatus authStatus, String authId, String token)
+        authenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+        ready,
+  }) {
+    return authenticated(authStatus, authId, token);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AuthStatus authStatus)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+  }) {
+    return authenticated?.call(authStatus, authId, token);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AuthStatus authStatus)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+    required TResult orElse(),
+  }) {
+    if (authenticated != null) {
+      return authenticated(authStatus, authId, token);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
+    required TResult Function(AppStateReady value) ready,
+  }) {
+    return authenticated(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
+    TResult? Function(AppStateReady value)? ready,
+  }) {
+    return authenticated?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
+    TResult Function(AppStateReady value)? ready,
+    required TResult orElse(),
+  }) {
+    if (authenticated != null) {
+      return authenticated(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AppStateAuthenticated extends AppState {
+  const factory AppStateAuthenticated(
+      {required final AuthStatus authStatus,
+      required final String authId,
+      required final String token}) = _$AppStateAuthenticatedImpl;
+  const AppStateAuthenticated._() : super._();
+
+  @override
+  AuthStatus get authStatus;
+  String get authId;
+  String get token;
   @override
   @JsonKey(ignore: true)
-  _$$AppStateImplCopyWith<_$AppStateImpl> get copyWith =>
+  _$$AppStateAuthenticatedImplCopyWith<_$AppStateAuthenticatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AppStateReadyImplCopyWith<$Res>
+    implements $AppStateCopyWith<$Res> {
+  factory _$$AppStateReadyImplCopyWith(
+          _$AppStateReadyImpl value, $Res Function(_$AppStateReadyImpl) then) =
+      __$$AppStateReadyImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {AuthStatus authStatus,
+      String authId,
+      String token,
+      int? workspaceId,
+      Map<int, AuthInfo> workspaceUsers});
+
+  @override
+  $AuthStatusCopyWith<$Res> get authStatus;
+}
+
+/// @nodoc
+class __$$AppStateReadyImplCopyWithImpl<$Res>
+    extends _$AppStateCopyWithImpl<$Res, _$AppStateReadyImpl>
+    implements _$$AppStateReadyImplCopyWith<$Res> {
+  __$$AppStateReadyImplCopyWithImpl(
+      _$AppStateReadyImpl _value, $Res Function(_$AppStateReadyImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? authStatus = null,
+    Object? authId = null,
+    Object? token = null,
+    Object? workspaceId = freezed,
+    Object? workspaceUsers = null,
+  }) {
+    return _then(_$AppStateReadyImpl(
+      authStatus: null == authStatus
+          ? _value.authStatus
+          : authStatus // ignore: cast_nullable_to_non_nullable
+              as AuthStatus,
+      authId: null == authId
+          ? _value.authId
+          : authId // ignore: cast_nullable_to_non_nullable
+              as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      workspaceUsers: null == workspaceUsers
+          ? _value._workspaceUsers
+          : workspaceUsers // ignore: cast_nullable_to_non_nullable
+              as Map<int, AuthInfo>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AppStateReadyImpl extends AppStateReady {
+  const _$AppStateReadyImpl(
+      {required this.authStatus,
+      required this.authId,
+      required this.token,
+      required this.workspaceId,
+      required final Map<int, AuthInfo> workspaceUsers})
+      : _workspaceUsers = workspaceUsers,
+        super._();
+
+  @override
+  final AuthStatus authStatus;
+  @override
+  final String authId;
+  @override
+  final String token;
+  @override
+  final int? workspaceId;
+  final Map<int, AuthInfo> _workspaceUsers;
+  @override
+  Map<int, AuthInfo> get workspaceUsers {
+    if (_workspaceUsers is EqualUnmodifiableMapView) return _workspaceUsers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_workspaceUsers);
+  }
+
+  @override
+  String toString() {
+    return 'AppState.ready(authStatus: $authStatus, authId: $authId, token: $token, workspaceId: $workspaceId, workspaceUsers: $workspaceUsers)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppStateReadyImpl &&
+            (identical(other.authStatus, authStatus) ||
+                other.authStatus == authStatus) &&
+            (identical(other.authId, authId) || other.authId == authId) &&
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId) &&
+            const DeepCollectionEquality()
+                .equals(other._workspaceUsers, _workspaceUsers));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, authStatus, authId, token,
+      workspaceId, const DeepCollectionEquality().hash(_workspaceUsers));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppStateReadyImplCopyWith<_$AppStateReadyImpl> get copyWith =>
+      __$$AppStateReadyImplCopyWithImpl<_$AppStateReadyImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AuthStatus authStatus) unauthenticated,
+    required TResult Function(
+            AuthStatus authStatus, String authId, String token)
+        authenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+        ready,
+  }) {
+    return ready(authStatus, authId, token, workspaceId, workspaceUsers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AuthStatus authStatus)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+  }) {
+    return ready?.call(authStatus, authId, token, workspaceId, workspaceUsers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AuthStatus authStatus)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token)?
+        authenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+        ready,
+    required TResult orElse(),
+  }) {
+    if (ready != null) {
+      return ready(authStatus, authId, token, workspaceId, workspaceUsers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppStateUnauthenticated value) unauthenticated,
+    required TResult Function(AppStateAuthenticated value) authenticated,
+    required TResult Function(AppStateReady value) ready,
+  }) {
+    return ready(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult? Function(AppStateAuthenticated value)? authenticated,
+    TResult? Function(AppStateReady value)? ready,
+  }) {
+    return ready?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppStateUnauthenticated value)? unauthenticated,
+    TResult Function(AppStateAuthenticated value)? authenticated,
+    TResult Function(AppStateReady value)? ready,
+    required TResult orElse(),
+  }) {
+    if (ready != null) {
+      return ready(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AppStateReady extends AppState {
+  const factory AppStateReady(
+      {required final AuthStatus authStatus,
+      required final String authId,
+      required final String token,
+      required final int? workspaceId,
+      required final Map<int, AuthInfo> workspaceUsers}) = _$AppStateReadyImpl;
+  const AppStateReady._() : super._();
+
+  @override
+  AuthStatus get authStatus;
+  String get authId;
+  String get token;
+  int? get workspaceId;
+  Map<int, AuthInfo> get workspaceUsers;
+  @override
+  @JsonKey(ignore: true)
+  _$$AppStateReadyImplCopyWith<_$AppStateReadyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

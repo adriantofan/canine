@@ -43,10 +43,12 @@ final Map<int, List<Message>> fakeMessages = {
 final Map<int, User> fakeUsers = {
   for (var userID in ids)
     userID: User(
-        id: userID,
-        messagingAddress: 'user $userID',
-        workspaceId: 0,
-        type: UserType.external,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now())
+      id: userID,
+      email: 'user $userID',
+      workspaceId: 0,
+      type: UserType.external,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      phone: '1234567890',
+    )
 };

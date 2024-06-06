@@ -11,7 +11,7 @@ class LogoutPage extends StatelessWidget {
     final repo = RepositoryProvider.of<SyncRepository>(context);
 
     return FutureBuilder<void>(
-      future: repo.logout(), // Initiate the logout process
+      future: repo.disconnect(), // Initiate the logout process
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(

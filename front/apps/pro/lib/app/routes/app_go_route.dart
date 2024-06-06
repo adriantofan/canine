@@ -1,3 +1,4 @@
+import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,15 +36,31 @@ class AppGoRoute extends GoRoute {
       return "${AppRoutes.login.path}?ref=${routerState.uri}";
     }
 
+    onHome(AppStateReady appState) {
+      if (appState.workspaceId == null) {
+        throw GoException('Empty workspaceId not implemented');
+      }
+      return AppRoutes.home.path(appState.workspaceId);
+    }
+
     final onSplash = routerState.path == AppRoutes.slash.path;
     if (onSplash) {
-      if (appBloc.isAuthenticated) {
-        print("Login");
-        return AppRoutes.home.path(appBloc.workspaceId);
-      } else {
-        print("Login");
-        return AppRoutes.login.path;
+      appBloc.state.authStatus;
+      final crtState = appBloc.state;
+      switch (crtState) {
+        case AppStateUnauthenticated():
+          switch (crtState.authStatus) {
+            case AuthStatusDisconnected():
+              return onLogin(null);
+            case AuthStatusRestricted():
+              return AppRoutes.restricted.path;
+            default:
+          }
+        case AppStateReady():
+          return onHome(appBloc.state as AppStateReady);
+        default:
       }
+      return null; // stay on splash
     }
 
     final isOnWorkspace =
@@ -56,8 +73,22 @@ class AppGoRoute extends GoRoute {
     }
 
     final isOnLogin = AppRoutes.login.path == routerState.path;
-    if (isOnLogin && appBloc.isAuthenticated) {
-      return AppRoutes.home.path(appBloc.workspaceId);
+
+    if (isOnLogin) {
+      appBloc.state.authStatus;
+      final crtState = appBloc.state;
+      switch (crtState) {
+        case AppStateUnauthenticated():
+          switch (crtState.authStatus) {
+            case AuthStatusRestricted():
+              return AppRoutes.restricted.path;
+            default:
+          }
+        case AppStateReady():
+          return onHome(appBloc.state as AppStateReady);
+        default:
+      }
+      return null; // stay onLogin
     }
 
     if (!isOnLogin && onlyAuthenticated) {
@@ -66,20 +97,6 @@ class AppGoRoute extends GoRoute {
       }
     }
 
-    // final isOnAnotherWorkspace =
-    //     isOnWorkspace && workspaceId != appBloc.workspaceId;
-    //
-    // if (isOnLogin && appBloc.isAuthenticated && !isOnAnotherWorkspace) {
-    //   // Don't go on login if not necessary
-    //   return AppRoutes.home.path(workspaceId);
-    // }
-    //
-    // if (!isOnLogin && onlyAuthenticated) {
-    //   if (!appBloc.isAuthenticated || isOnAnotherWorkspace) {
-    //     return onLogin(workspaceId!);
-    //   }
-    // }
-    // TODO: finish checking this , and go to the repository
     return null;
   }
 }

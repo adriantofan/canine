@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -10,13 +9,26 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository _authRepository;
+  var disposable;
+  LoginCubit(this._authRepository) : super(const LoginState.initial()) {
+    disposable = _authRepository.authStatusChanges.listen((status) {
+      if (status is AuthStatusAuthenticated) {
+        emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+      }
+    });
+  }
 
-  LoginCubit(this._authRepository) : super(const LoginState.initial());
+  @override
+  Future<void> close() {
+    disposable.cancel();
+    return super.close();
+  }
 
   Future<void> logIn() async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
       await _authRepository.login();
+      // remain in progress state to show loading indicator until app bloc changes state
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on APIError catch (e) {
       emit(

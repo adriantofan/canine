@@ -2,6 +2,8 @@ import 'package:app/conversations/bloc/selection.dart';
 import 'package:app/conversations/model/conversation_info.dart';
 import 'package:app/repository/repository.dart';
 
+import '../../util/logger.dart';
+
 final class ConversationsState {
   final List<ConversationInfo> conversations;
   final Selection? currentSelection;
@@ -14,7 +16,8 @@ final class ConversationsState {
       final targetConversationId = int.parse(conversationId);
       return replaceSelection(targetConversationId);
     } catch (e) {
-      print('Invalid conversation id: $conversationId');
+      globalLogger.warning(
+          'ConversationsState Invalid conversation id: $conversationId');
       return ConversationsState(conversations, null);
     }
   }

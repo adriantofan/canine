@@ -2,7 +2,6 @@ import 'dart:isolate';
 
 import 'package:logging/logging.dart';
 
-import '../../api/main.dart';
 import '../../cache/in_memory_cache.dart';
 import '../sync.dart';
 import '../sync_service.dart';
@@ -50,10 +49,7 @@ _runner(dynamic ags) async {
   SendPort sendPortStorage = await tmpReceivePort.first as SendPort;
 
   final cache = InMemoryCache();
-  APIClient apiClient = APIClient(apiBase, wsBase);
-  await apiClient.init(); // loads credentials from disk
-
-  final syncService = SyncService(cache, apiClient);
+  final syncService = SyncService(cache, apiBase, wsBase);
 
   // Communicates with SyncStub and delegates actual work to SyncService
   final syncSkeleton = SyncSkeleton(syncService);

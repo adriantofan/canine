@@ -43,7 +43,8 @@ class User with _$User {
   const factory User({
     required int id,
     required int workspaceId,
-    required String messagingAddress,
+    required String email,
+    @Default('') String phone,
     required UserType type,
     @TimestampSerializer() required DateTime createdAt,
     @TimestampSerializer() required DateTime updatedAt,

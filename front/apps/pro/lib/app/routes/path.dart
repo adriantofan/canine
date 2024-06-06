@@ -17,27 +17,28 @@ class WorkspacePath implements RouterPath {
   @override
   final String pattern;
   final String subPath;
-  const WorkspacePath({required this.subPath}) : pattern = '/:$pathKey$subPath';
+  const WorkspacePath({required this.subPath})
+      : pattern = '/workspace/:$pathKey$subPath';
 
   String path(dynamic workspaceId) {
-    return '/$workspaceId$subPath';
+    return '/workspace/$workspaceId$subPath';
   }
 
   bool isOnSubpath(Uri path) {
-    if (path.pathSegments.length < 2) {
+    if (path.pathSegments.length < 3) {
       return false;
     }
-    if (int.tryParse(path.pathSegments[0]) == null) {
+    if (int.tryParse(path.pathSegments[1]) == null) {
       return false;
     }
 
-    final rest = path.pathSegments.sublist(1).join('/');
+    final rest = path.pathSegments.sublist(2).join('/');
     return '/$rest'.startsWith(subPath);
   }
 
   static int? parseWorkspaceId(Uri path) {
     final segments = path.pathSegments;
-    return segments.isNotEmpty ? int.tryParse(path.pathSegments[0]) : null;
+    return segments.isNotEmpty ? int.tryParse(path.pathSegments[1]) : null;
   }
 
   int? workspaceId(Uri path) {
@@ -51,7 +52,7 @@ class ConversationPath implements RouterPath {
   final WorkspacePath _homePath;
   ConversationPath(this._homePath)
       : pattern = '${_homePath.pattern}/:conversationId' {
-    assert(_homePath.pattern.split('/').length == 3);
+    assert(_homePath.pattern.split('/').length == 4);
   }
 
   String path(int workspaceId, int conversationId) {
@@ -62,11 +63,11 @@ class ConversationPath implements RouterPath {
     if (!_homePath.isOnSubpath(path)) {
       return false;
     }
-    if (path.pathSegments.length == 2) {
+    if (path.pathSegments.length == 3) {
       return true;
     }
 
-    if (path.pathSegments.length == 3) {
+    if (path.pathSegments.length == 4) {
       return true;
     }
     return false;
@@ -77,9 +78,9 @@ class ConversationPath implements RouterPath {
   }
 
   int? conversationId(Uri path) {
-    if (path.pathSegments.length != 3) {
+    if (path.pathSegments.length != 4) {
       return null;
     }
-    return int.tryParse(path.pathSegments[2]);
+    return int.tryParse(path.pathSegments[3]);
   }
 }

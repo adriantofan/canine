@@ -18,8 +18,9 @@ void main() {
     final user = User(
         id: 1,
         workspaceId: 1,
-        messagingAddress: "adr",
+        email: "adr",
         type: UserType.external,
+        phone: "1234567890",
         createdAt: createdAt,
         updatedAt: updatedAt);
     final encoded = jsonEncode(user.toJson());

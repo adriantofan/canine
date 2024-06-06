@@ -8,7 +8,6 @@ import '../../conversations/conversations.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../messages/messages.dart';
-import '../../re_login/re_login.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
@@ -42,6 +41,7 @@ class AppRouter {
       StatefulShellRoute.indexedStack(
         parentNavigatorKey: _parentNavigatorKey,
         branches: [
+          // Conversations branch
           StatefulShellBranch(
             navigatorKey: _conversationsTabNavigatorKey,
             routes: [
@@ -51,6 +51,7 @@ class AppRouter {
                   parentNavigatorKey: _conversationsTabNavigatorKey,
                   navigatorKey: _messagesTabNavigatorKey,
                   routes: [
+                    // Empty conversation page
                     AppGoRoute(
                         onlyAuthenticated: true,
                         workspaceNamespaced: true,
@@ -67,6 +68,7 @@ class AppRouter {
                             state: state,
                           );
                         }),
+                    // Draft conversation page
                     AppGoRoute(
                       onlyAuthenticated: true,
                       workspaceNamespaced: true,
@@ -82,6 +84,7 @@ class AppRouter {
                         );
                       },
                     ),
+                    // Conversation page
                     AppGoRoute(
                       onlyAuthenticated: true,
                       workspaceNamespaced: true,
@@ -124,6 +127,7 @@ class AppRouter {
                   }),
             ],
           ),
+          // Settings branch
           StatefulShellBranch(
             navigatorKey: _settingsTabNavigatorKey,
             routes: [
@@ -142,17 +146,22 @@ class AppRouter {
             ],
           ),
         ],
+        // Build the shell
         pageBuilder: (
           BuildContext context,
           GoRouterState state,
           StatefulNavigationShell navigationShell,
         ) {
-          return getPage(
-            child: TabHome(
+          // TODO: give it the works so it can coordinate authorization
+          AppBloc appBloc = context.read<AppBloc>();
+          final page = getPage(
+            child: InWorkspace(
+              workspaceId: appBloc.workspaceId!,
               child: navigationShell,
             ),
             state: state,
           );
+          return page;
         },
       ),
       AppGoRoute(
@@ -182,14 +191,6 @@ class AppRouter {
                 child: CreatePage(workspaceId: workspaceId!), state: state);
           }),
       AppGoRoute(
-        onlyAuthenticated: false, // TODO: ??
-        workspaceNamespaced: true,
-        parentNavigatorKey: _parentNavigatorKey,
-        path: AppRoutes.confirmPassword.pattern,
-        pageBuilder: (context, state) =>
-            getPage(child: const ReLoginPage(), state: state),
-      ),
-      AppGoRoute(
         onlyAuthenticated: false,
         workspaceNamespaced: false,
         parentNavigatorKey: _parentNavigatorKey,
@@ -213,6 +214,10 @@ class AppRouter {
       // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
       debugLogDiagnostics: true,
     );
+    // router.routerDelegate.addListener(() {
+    //   final config = router.routerDelegate.currentConfiguration;
+    //   print('Router config: ${config.pathParameters}');
+    // });
   }
 
   GoRoute noPatternRoute(String path, WorkspacePath workspacePath) {
@@ -295,9 +300,10 @@ class AppRouter {
   static Page getPage({
     required Widget child,
     required GoRouterState state,
+    LocalKey? key,
   }) {
     return MaterialPage(
-      key: state.pageKey,
+      key: key ?? state.pageKey,
       child: child,
     );
   }
