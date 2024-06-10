@@ -9,7 +9,7 @@ enum EmailValidationError {
 /// {@template email}
 /// Form input for an email input.
 /// {@endtemplate}
-class Email extends FormzInput<String, EmailValidationError> {
+class Email extends FormzInput<String, String> {
   /// {@macro email}
   const Email.pure() : super.pure('');
 
@@ -17,13 +17,14 @@ class Email extends FormzInput<String, EmailValidationError> {
   const Email.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _emailRegExp = RegExp(
-    r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
+    r'^[a-zA-Z0-9.!#$%&’*+/=?|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
   );
 
   @override
-  EmailValidationError? validator(String? value) {
-    return _emailRegExp.hasMatch(value ?? '')
-        ? null
-        : EmailValidationError.invalid;
+  String? validator(String? value) {
+    if (_emailRegExp.hasMatch(value ?? '')) {
+      return null;
+    }
+    return value?.isEmpty ?? true ? "Email is empty" : "Invalid email address";
   }
 }

@@ -4,6 +4,7 @@ export 'auth_info.dart';
 export 'conversation.dart';
 export 'devis_recipient.dart';
 export 'message.dart';
+export 'org_create_payload.dart';
 export 'sync/list_sync_state.dart';
 export 'sync/remote_data_status.dart';
 export 'user.dart';

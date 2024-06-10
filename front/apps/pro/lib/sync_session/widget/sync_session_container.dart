@@ -14,12 +14,15 @@ class SyncSessionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<SyncSession>(
+    return StreamBuilder<SyncSession?>(
         stream: context.read<SyncSessionRepository>().syncSessionChanges,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
-              final syncSession = snapshot.data!;
+              final syncSession = snapshot.data;
+              if (syncSession == null) {
+                break;
+              }
               if (_onTheSameWorkspace(syncSession, context)) {
                 return RepositoryProvider<SyncRepository>.value(
                     value: SyncRepository(syncSession.service), child: child);

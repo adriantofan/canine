@@ -12,12 +12,17 @@ class SyncSessionRepository {
   String apiBase;
   String wsBase;
 
-  BehaviorSubject<SyncSession> syncSessionChanges =
-      BehaviorSubject<SyncSession>();
+  BehaviorSubject<SyncSession?> syncSessionChanges =
+      BehaviorSubject<SyncSession?>();
   final BehaviorSubject<Session> _sessionQueue = BehaviorSubject<Session>();
 
   connect(Session session) {
     _sessionQueue.add(session);
+  }
+
+  disconnect() async {
+    await syncSessionChanges.value?.service.disconnect();
+    syncSessionChanges.value = null;
   }
 
   update(Session session) {

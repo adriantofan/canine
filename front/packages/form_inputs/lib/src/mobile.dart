@@ -7,7 +7,7 @@ class Mobile extends FormzInput<String, String> {
   @override
   String? validator(String? value) {
     if (value == null) {
-      return 'Mobile cannot be empty';
+      return null;
     }
     // error if the number contains something else than digits or plus sign
     if (!RegExp(r'^[0-9+]+$').hasMatch(value)) {

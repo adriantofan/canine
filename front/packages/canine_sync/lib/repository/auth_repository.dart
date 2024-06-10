@@ -82,8 +82,10 @@ class AuthRepository {
     _subscription?.cancel();
   }
 
-  Future<void> login() async {
-    await userManager.loginAuthorizationCodeFlow();
+  Future<void> login({
+    String? loginHint,
+  }) async {
+    await userManager.loginAuthorizationCodeFlow(loginHint: loginHint);
   }
 
   Future<void> logout() async {
@@ -126,4 +128,6 @@ class AuthRepository {
       }
     });
   }
+
+  Future<void> createOrg(OrgCreatePayload payload) async {}
 }

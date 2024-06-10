@@ -36,6 +36,10 @@ class APIClientBase {
     }
   }
 
+  Future<void> createOrg(OrgCreatePayload data) async {
+    await _postJSON('/workspaces', data.toJson());
+  }
+
   Future<dynamic> _multipart(
     String path,
     Map<String, String>? fields,
@@ -63,7 +67,7 @@ class APIClientBase {
   Future<dynamic> _postJSON(
     String path,
     Object? body, {
-    required Map<String, String> headers,
+    Map<String, String>? headers,
   }) async {
     try {
       return _makeRequest(

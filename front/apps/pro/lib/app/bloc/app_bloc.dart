@@ -36,6 +36,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     });
 
     on<AppEventLogout>((event, emit) async {
+      await _syncSessionRepository.disconnect();
       await _authRepository.logout();
     });
 

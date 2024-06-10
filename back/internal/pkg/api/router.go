@@ -28,7 +28,7 @@ func ConfigureRouter(
 
 	authRoutes.GET("/info", handlers.GetAuthInfo)
 
-	apiRoutes.GET("/workspaces", handlers.CreateWorkspace)
+	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
 	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
 	// it MUST match the workspace_id param as defined in the identity middleware
 	workspaceGroup := apiRoutes.Group("/:" + zitadel.WorkspaceIDParam)

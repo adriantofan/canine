@@ -91,6 +91,18 @@ class AppGoRoute extends GoRoute {
       return null; // stay onLogin
     }
 
+    final isOnCreateOrg = AppRoutes.createOrg.path == routerState.path;
+    if (isOnCreateOrg) {
+      final crtState = appBloc.state;
+
+      if (crtState is AppStateReady) {
+        return onHome(appBloc.state as AppStateReady);
+      }
+      if (crtState is AppStateAuthenticated) {
+        return onLogin(workspaceId);
+      }
+    }
+
     if (!isOnLogin && onlyAuthenticated) {
       final crtState = appBloc.state;
 

@@ -6,6 +6,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  dlibphonenumber: ^1.1.16
   file_selector: ^1.0.3
   flutter:
     sdk: flutter

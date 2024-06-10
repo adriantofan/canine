@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../account_create/account_create.dart';
 import '../../conversations/conversations.dart';
 import '../../login/login.dart';
 import '../../logout/logout.dart';
 import '../../messages/messages.dart';
+import '../../org_create/org_create.dart';
 import '../../settings/screen.dart';
 import '../../splash/splash.dart';
 import '../../tab_home/tab_home.dart';
@@ -182,13 +182,11 @@ class AppRouter {
       ),
       AppGoRoute(
           onlyAuthenticated: false,
-          workspaceNamespaced: true,
+          workspaceNamespaced: false,
           parentNavigatorKey: _parentNavigatorKey,
-          path: AppRoutes.createAccount.pattern,
+          path: AppRoutes.createOrg.pattern,
           pageBuilder: (context, state) {
-            final workspaceId = WorkspacePath.parseWorkspaceId(state.uri);
-            return getPage(
-                child: CreatePage(workspaceId: workspaceId!), state: state);
+            return getPage(child: CreateOrgPage(), state: state);
           }),
       AppGoRoute(
         onlyAuthenticated: false,
@@ -204,7 +202,12 @@ class AppRouter {
           parentNavigatorKey: _parentNavigatorKey,
           path: AppRoutes.login.pattern,
           pageBuilder: (context, state) {
-            return getPage(child: const LoginPage(), state: state);
+            // this is passed as extra to make it invisible to the user
+            final loginHint = state.extra != null
+                ? (state.extra as Map)[loginHintExtraKey] as String?
+                : null;
+            return getPage(
+                child: LoginPage(loginHint: loginHint), state: state);
           }),
     ];
 
@@ -290,12 +293,9 @@ class AppRouter {
     router.go(newPath, extra: draftConversation);
   }
 
-  static goCreateAccountInWorkspace(int workspaceId) {
-    router.go(AppRoutes.createAccount.path(workspaceId));
-  }
-
-  static goLoginInWorkspace() {
-    router.go(AppRoutes.login.path);
+  static goLogin({String? loginHint}) {
+    router.go(AppRoutes.login.path,
+        extra: {if (loginHint != null) loginHintExtraKey: loginHint});
   }
 
   static Page getPage({
@@ -309,3 +309,5 @@ class AppRouter {
     );
   }
 }
+
+const loginHintExtraKey = 'loginHint';

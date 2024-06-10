@@ -2,13 +2,11 @@ import 'package:app/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/create_cubit.dart';
-import 'create_form.dart';
+import '../cubit/org_create_cubit.dart';
+import 'org_create_form.dart';
 
-class CreatePage extends StatelessWidget {
-  final int workspaceId;
-  CreatePage({required this.workspaceId})
-      : super(key: ValueKey('create_page_$workspaceId'));
+class CreateOrgPage extends StatelessWidget {
+  const CreateOrgPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +15,8 @@ class CreatePage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocProvider(
-          create: (_) =>
-              CreateCubit(context.read<AuthRepository>(), workspaceId),
-          child: CreateForm(workspaceId: workspaceId),
+          create: (_) => OrgCreateCubit(context.read<APIClientBase>()),
+          child: const CreateForm(),
         ),
       ),
     );

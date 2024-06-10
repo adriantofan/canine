@@ -9,8 +9,11 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository _authRepository;
+  final String? loginHint;
+
   var disposable;
-  LoginCubit(this._authRepository) : super(const LoginState.initial()) {
+  LoginCubit(this._authRepository, {this.loginHint})
+      : super(const LoginState.initial()) {
     disposable = _authRepository.authStatusChanges.listen((status) {
       if (status is AuthStatusAuthenticated) {
         emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
@@ -27,7 +30,7 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> logIn() async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      await _authRepository.login();
+      await _authRepository.login(loginHint: loginHint);
       // remain in progress state to show loading indicator until app bloc changes state
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     } on APIError catch (e) {
