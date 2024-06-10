@@ -19,34 +19,38 @@ import 'sync.dart';
 class SyncService implements Sync {
   final Cache _cache;
   final Logger _logger = Logger('SyncService');
-  APIWorkspaceClient? _apiClient;
   final String _apiBase;
   final String _wsBase;
+  final Session _session;
 
-  final StreamController<void> _stopController =
-      StreamController<void>.broadcast();
-  final inSession = BehaviorSubject<bool>.seeded(false);
+  late APIWorkspaceClient _apiClient;
 
-  SyncService(this._cache, this._apiBase, this._wsBase);
+  final BehaviorSubject<bool> _stopController = BehaviorSubject<bool>();
+
+  SyncService(this._cache, this._apiBase, this._wsBase, this._session) {
+    _apiClient = APIWorkspaceClient(_apiBase, _wsBase, _session);
+  }
 
   websocketListen() async {
+    _logger.fine(
+        'SyncService start workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
     for (;;) {
       try {
-        await for (var inSession in inSession.stream) {
-          if (!inSession) {
-            continue;
-          }
-        }
-
-        var update = await _apiClient!.rtcSession(const RtcRemote());
+        var update = await _apiClient.rtcSession(const RtcRemote());
         _logger.fine('Got rtc session ${update.syncToken}');
         //TODO:  set me in the update cache
-        initCache(update, _apiClient!.session.userId);
+        initCache(update, _apiClient.session.userId);
+        WebSocketChannel channel;
+        channel = WebSocketChannel.connect(
+            _apiClient.rtcConnectionUri(update.syncToken));
 
-        var channel = WebSocketChannel.connect(
-            _apiClient!.rtcConnectionUri(update.syncToken));
+        try {
+          await channel.ready;
+        } on WebSocketChannelException catch (e) {
+          _logger.fine('Failed to connect to websocket', e);
+          rethrow;
+        }
 
-        await channel.ready;
         _logger.fine('Connected to websocket');
 
         await for (var data
@@ -56,14 +60,14 @@ class SyncService implements Sync {
         }
 
         resetCache(); // clear cache on logout
+        _logger.fine(
+            'SyncService stopped workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
+        return;
       } on APIError catch (e) {
         _logger.severe('API error', e);
       } on Object catch (e) {
         _logger.fine('Retrying websocket connection in 3s', e);
         await Future.delayed(const Duration(seconds: 3));
-
-        // Todo: add exponential backoff
-        // TODO: what is going to happen with ongoing procs ?
       }
     }
   }
@@ -109,7 +113,7 @@ class SyncService implements Sync {
       ListStateCached() => conversationMessageState.startId,
       _ => null,
     };
-    final future = _apiClient!
+    final future = _apiClient
         .getConversationMessages(conversationId, lastId)
         .then((result) {
       if (completer.isCompleted) {
@@ -151,15 +155,15 @@ class SyncService implements Sync {
   @override
   Future<Message> createMessage(int conversationId, String text,
       String idempotencyId, List<XFile> attachments) {
-    return _apiClient!
-        .createMessage(conversationId, text, idempotencyId, attachments);
+    return _apiClient.createMessage(
+        conversationId, text, idempotencyId, attachments);
   }
 
   @override
   Future<Conversation> createConversation(
       {required String recipientMessagingAddress}) {
-    return _apiClient!
-        .createConversation(recipientEmail: recipientMessagingAddress);
+    return _apiClient.createConversation(
+        recipientEmail: recipientMessagingAddress);
   }
 
   @override
@@ -167,7 +171,7 @@ class SyncService implements Sync {
       {required String messagingAddress,
       required UserType userType,
       required String password}) {
-    return _apiClient!.createUser(
+    return _apiClient.createUser(
         messagingAddress: messagingAddress,
         userType: userType,
         password: password);
@@ -181,34 +185,15 @@ class SyncService implements Sync {
   }
 
   @override
-  Future<void> connect(Session newSession) async {
-    if (inSession.value &&
-        _apiClient!.session.workspaceId == newSession.workspaceId &&
-        _apiClient!.session.authId == newSession.authId) {
-      _apiClient!.tokenDidRefresh(newSession.token);
-      return;
-    }
-
-    if (inSession.value) {
-      await disconnect();
-    }
-
-    _logger
-        .fine('Connecting to ${newSession.workspaceId} ${newSession.authId}');
-    final newApiClient = APIWorkspaceClient(_apiBase, _wsBase, newSession);
-    _apiClient = newApiClient;
-    inSession.add(true);
+  Future<void> updateToken(String token) async {
+    _apiClient.tokenDidRefresh(token);
   }
 
   @override
   Future<void> disconnect() async {
-    if (!inSession.value) {
-      return;
-    }
-
-    _logger.fine('Disconnecting');
     // (eventually) stops the websocket
-    _stopController.add(null);
+    _stopController.add(true);
+    // this will stop the run loop in websocketListen
     // Make sure ongoing message loads won't change the state after completing
     _conversationMessagesLoadPastFutures.forEach((_, value) {
       var (completer, _) = value;
@@ -216,7 +201,6 @@ class SyncService implements Sync {
     });
     // Forget about them, so they won't remain in memory potentially with new ones
     _conversationMessagesLoadPastFutures.clear();
-    inSession.add(false);
   }
 
   final Map<Proc, StreamController> _procs = {};

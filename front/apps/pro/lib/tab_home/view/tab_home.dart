@@ -1,8 +1,8 @@
+import 'package:app/app/app.dart';
 import 'package:app/app/routes/routes.dart';
 import 'package:app/conversation_create/conversation_create.dart';
 import 'package:app/messages/messages.dart';
 import 'package:app/repository/repository.dart';
-import 'package:app/tab_home/view/disappearing_bottom_navigation_bar.dart';
 import 'package:app/tab_home/view/disappearing_navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,19 +35,25 @@ class _TabHomeState extends State<TabHome> {
     return Scaffold(
       body: Row(
         children: [
-          if (wideScreen)
-            DisappearingNavigationRail(
-              onAddCallback: _addConversation,
-              selectedIndex: widget.child.currentIndex,
-              backgroundColor: _backgroundColor,
-              onDestinationSelected: (index) {
-                widget.child.goBranch(
-                  index,
-                  initialLocation: index == widget.child.currentIndex,
-                );
-                setState(() {});
-              },
-            ),
+          // if (wideScreen)
+          BlocBuilder<AppBloc, AppState>(
+            builder: (context, state) {
+              return DisappearingNavigationRail(
+                onAddCallback: _addConversation,
+                selectedIndex: widget.child.currentIndex,
+                backgroundColor: _backgroundColor,
+                onDestinationSelected: (index) {
+                  widget.child.goBranch(
+                    index,
+                    initialLocation: index == widget.child.currentIndex,
+                  );
+                  setState(() {});
+                },
+                workspaceId: context.read<AppBloc>().workspaceId,
+                workspaces: context.read<AppBloc>().workspaces,
+              );
+            },
+          ),
           Expanded(
             child: Container(
               color: _backgroundColor,
@@ -56,26 +62,26 @@ class _TabHomeState extends State<TabHome> {
           ),
         ],
       ),
-      floatingActionButton: wideScreen
-          ? null
-          : FloatingActionButton(
-              backgroundColor: _colorScheme.tertiaryContainer,
-              foregroundColor: _colorScheme.onTertiaryContainer,
-              onPressed: () => _addConversation(context),
-              child: const Icon(Icons.add),
-            ),
-      bottomNavigationBar: wideScreen
-          ? null
-          : DisappearingBottomNavigationBar(
-              selectedIndex: widget.child.currentIndex,
-              onDestinationSelected: (index) {
-                widget.child.goBranch(
-                  index,
-                  initialLocation: index == widget.child.currentIndex,
-                );
-                setState(() {});
-              },
-            ),
+      // floatingActionButton: wideScreen
+      //     ? null
+      //     : FloatingActionButton(
+      //         backgroundColor: _colorScheme.tertiaryContainer,
+      //         foregroundColor: _colorScheme.onTertiaryContainer,
+      //         onPressed: () => _addConversation(context),
+      //         child: const Icon(Icons.add),
+      //       ),
+      // bottomNavigationBar: wideScreen
+      //     ? null
+      //     : DisappearingBottomNavigationBar(
+      //         selectedIndex: widget.child.currentIndex,
+      //         onDestinationSelected: (index) {
+      //           widget.child.goBranch(
+      //             index,
+      //             initialLocation: index == widget.child.currentIndex,
+      //           );
+      //           setState(() {});
+      //         },
+      //       ),
     );
   }
 

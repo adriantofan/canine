@@ -14,6 +14,7 @@ enum AppType { pro, consumer }
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthRepository _authRepository;
+  final SyncSessionRepository _syncSessionRepository;
   final APIClientBase _apiClient;
   final appType = AppType.pro;
   final _logger = Logger('MainApp');
@@ -23,14 +24,34 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   bool get isAuthenticated => state is! AppStateUnauthenticated;
   bool get isReady => state is AppStateReady;
+  Map<int, AuthInfo> get workspaces =>
+      (state is AppStateReady) ? (state as AppStateReady).workspaces : {};
 
-  AppBloc(this._authRepository, this._apiClient)
+  AppBloc(this._authRepository, this._apiClient, this._syncSessionRepository)
       : super(
             const AppState.unauthenticated(authStatus: AuthStatus.unknown())) {
     on<AppEventInitial>((event, emit) async {
       await emit.forEach(_authRepository.authStatusChanges,
           onData: _authStatusChanges);
     });
+
+    on<AppEventLogout>((event, emit) async {
+      await _authRepository.logout();
+    });
+
+    on<AppEventChangeWorkspace>((event, emit) async {
+      _logger.finer('Change workspace 2 sec delay to ${event.workspaceId}');
+      await Future.delayed(const Duration(seconds: 2));
+      final crtState = state;
+      if (crtState is! AppStateReady) {
+        return;
+      }
+      if (crtState.workspaceId == event.workspaceId) {
+        return;
+      }
+      emit(crtState.copyWith(workspaceId: event.workspaceId));
+    });
+
     on<AppEventAuthInfoFetched>((event, emit) {
       final crtState = state;
       switch (crtState) {
@@ -42,12 +63,19 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           }
           final newAuthInfoByWorkspace = _authInfoByWorkspace(event.authInfo);
           final firstWorkspaceID = newAuthInfoByWorkspace.keys.first;
+
+          _syncSessionRepository.connect(Session(
+            workspaceId: firstWorkspaceID,
+            authId: crtState.authId,
+            token: crtState.token,
+            userId: newAuthInfoByWorkspace[firstWorkspaceID]!.user.id,
+          ));
           emit(AppState.ready(
               authStatus: crtState.authStatus,
               authId: crtState.authId,
               token: crtState.token,
               workspaceId: firstWorkspaceID,
-              workspaceUsers: newAuthInfoByWorkspace));
+              workspaces: newAuthInfoByWorkspace));
         case AppStateReady():
           if (event.authId != crtState.authId) {
             return;
@@ -58,10 +86,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             final firstWorkspaceID = authInfoByWorkspace.keys.first;
             emit(crtState.copyWith(
                 workspaceId: firstWorkspaceID,
-                workspaceUsers: authInfoByWorkspace));
+                workspaces: authInfoByWorkspace));
             return;
           }
-          emit(crtState.copyWith(workspaceUsers: authInfoByWorkspace));
+          emit(crtState.copyWith(workspaces: authInfoByWorkspace));
       }
       // Deal with it -> update state with new auth info
     });
@@ -145,10 +173,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       authInfoByWorkspace[info.workspace.id] = info;
     }
     return authInfoByWorkspace;
-  }
-
-  logout() async {
-    await _authRepository.logout();
   }
 
   @override

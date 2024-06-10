@@ -29,7 +29,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       await _authRepository.login();
       // remain in progress state to show loading indicator until app bloc changes state
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
+      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     } on APIError catch (e) {
       emit(
         state.copyWith(

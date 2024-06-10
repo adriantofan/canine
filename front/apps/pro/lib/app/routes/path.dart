@@ -1,3 +1,5 @@
+import 'package:go_router/go_router.dart';
+
 abstract class RouterPath {
   String get pattern;
 }
@@ -43,6 +45,11 @@ class WorkspacePath implements RouterPath {
 
   int? workspaceId(Uri path) {
     return WorkspacePath.parseWorkspaceId(path);
+  }
+
+  static int? workspaceIdFromState(GoRouterState state) {
+    final id = state.pathParameters[pathKey];
+    return id == null ? null : int.tryParse(id);
   }
 }
 

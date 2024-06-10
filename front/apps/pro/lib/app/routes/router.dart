@@ -212,7 +212,8 @@ class AppRouter {
       navigatorKey: _parentNavigatorKey,
       routes: routes,
       // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
-      debugLogDiagnostics: true,
+      // If enabled , go router adds a listner to logger and outputs the logs to console
+      // debugLogDiagnostics: true,
     );
     // router.routerDelegate.addListener(() {
     //   final config = router.routerDelegate.currentConfiguration;

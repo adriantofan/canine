@@ -92,8 +92,24 @@ class AppGoRoute extends GoRoute {
     }
 
     if (!isOnLogin && onlyAuthenticated) {
-      if (!appBloc.isAuthenticated) {
+      final crtState = appBloc.state;
+
+      if (crtState is! AppStateReady) {
         return onLogin(workspaceId);
+      }
+
+      if (isOnWorkspace) {
+        if (crtState.workspaceId == null) {
+          // TODO: unclear what to do here
+        }
+
+        if (crtState.workspaces[workspaceId] == null) {
+          return AppRoutes.restricted.path;
+        }
+
+        if (crtState.workspaceId != workspaceId) {
+          appBloc.add(AppEventChangeWorkspace(workspaceId!));
+        }
       }
     }
 

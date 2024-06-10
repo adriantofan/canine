@@ -72,7 +72,7 @@ func (interceptor *IntrospectionInterceptor) Authorize() gin.HandlerFunc {
 }
 
 func (interceptor *IntrospectionInterceptor) LoadAuthorization(r *http.Request) (*oauth.IntrospectionContext, error) {
-	authCtx, err := Introspect(r.Context(), r.Header.Get("authorization"), interceptor.resourceServer)
+	authCtx, err := Introspect(r.Context(), r, interceptor.resourceServer)
 	if err != nil || !authCtx.IsAuthorized() {
 		if errors.Is(err, ErrIntrospectionFailed) {
 			log.Println("introspection failed")

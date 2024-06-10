@@ -6,16 +6,16 @@ import '../bloc/app_bloc.dart';
 import '../routes/routes.dart';
 
 class MainApp extends StatelessWidget {
-  final SyncRepository _syncRepository;
+  final SyncSessionRepository _syncSessionRepository;
   final AuthRepository _authRepository;
   final APIClientBase _apiClient;
 
   const MainApp({
-    required SyncRepository syncRepository,
+    required SyncSessionRepository syncSessionRepository,
     required AuthRepository authRepository,
     required APIClientBase apiClient,
     super.key,
-  })  : _syncRepository = syncRepository,
+  })  : _syncSessionRepository = syncSessionRepository,
         _authRepository = authRepository,
         _apiClient = apiClient;
 
@@ -26,17 +26,17 @@ class MainApp extends StatelessWidget {
         RepositoryProvider<APIClientBase>.value(
           value: _apiClient,
         ),
-        RepositoryProvider<SyncRepository>.value(
-          value: _syncRepository,
+        RepositoryProvider<SyncSessionRepository>.value(
+          value: _syncSessionRepository,
         ),
         RepositoryProvider<AuthRepository>.value(
           value: _authRepository,
         ),
       ],
       child: BlocProvider(
-        create: (c) =>
-            AppBloc(c.read<AuthRepository>(), c.read<APIClientBase>())
-              ..add(const AppEvent.initial()),
+        create: (c) => AppBloc(c.read<AuthRepository>(),
+            c.read<APIClientBase>(), _syncSessionRepository)
+          ..add(const AppEvent.initial()),
         // See AppRouter documentation for more information.
         child: BlocListener<AppBloc, AppState>(
           listener: (context, state) async {

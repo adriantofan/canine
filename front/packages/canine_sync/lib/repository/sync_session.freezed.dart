@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'session.dart';
+part of 'sync_session.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,34 +14,31 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Session _$SessionFromJson(Map<String, dynamic> json) {
-  return _Session.fromJson(json);
-}
-
 /// @nodoc
-mixin _$Session {
+mixin _$SyncSession {
   int get workspaceId => throw _privateConstructorUsedError;
   String get authId => throw _privateConstructorUsedError;
-  String get token => throw _privateConstructorUsedError;
   int get userId => throw _privateConstructorUsedError;
+  Sync get service => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $SessionCopyWith<Session> get copyWith => throw _privateConstructorUsedError;
+  $SyncSessionCopyWith<SyncSession> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SessionCopyWith<$Res> {
-  factory $SessionCopyWith(Session value, $Res Function(Session) then) =
-      _$SessionCopyWithImpl<$Res, Session>;
+abstract class $SyncSessionCopyWith<$Res> {
+  factory $SyncSessionCopyWith(
+          SyncSession value, $Res Function(SyncSession) then) =
+      _$SyncSessionCopyWithImpl<$Res, SyncSession>;
   @useResult
-  $Res call({int workspaceId, String authId, String token, int userId});
+  $Res call({int workspaceId, String authId, int userId, Sync service});
 }
 
 /// @nodoc
-class _$SessionCopyWithImpl<$Res, $Val extends Session>
-    implements $SessionCopyWith<$Res> {
-  _$SessionCopyWithImpl(this._value, this._then);
+class _$SyncSessionCopyWithImpl<$Res, $Val extends SyncSession>
+    implements $SyncSessionCopyWith<$Res> {
+  _$SyncSessionCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -53,8 +50,8 @@ class _$SessionCopyWithImpl<$Res, $Val extends Session>
   $Res call({
     Object? workspaceId = null,
     Object? authId = null,
-    Object? token = null,
     Object? userId = null,
+    Object? service = null,
   }) {
     return _then(_value.copyWith(
       workspaceId: null == workspaceId
@@ -65,34 +62,35 @@ class _$SessionCopyWithImpl<$Res, $Val extends Session>
           ? _value.authId
           : authId // ignore: cast_nullable_to_non_nullable
               as String,
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
-              as String,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as int,
+      service: null == service
+          ? _value.service
+          : service // ignore: cast_nullable_to_non_nullable
+              as Sync,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$SessionImplCopyWith<$Res> implements $SessionCopyWith<$Res> {
-  factory _$$SessionImplCopyWith(
-          _$SessionImpl value, $Res Function(_$SessionImpl) then) =
-      __$$SessionImplCopyWithImpl<$Res>;
+abstract class _$$SyncSessionImplCopyWith<$Res>
+    implements $SyncSessionCopyWith<$Res> {
+  factory _$$SyncSessionImplCopyWith(
+          _$SyncSessionImpl value, $Res Function(_$SyncSessionImpl) then) =
+      __$$SyncSessionImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int workspaceId, String authId, String token, int userId});
+  $Res call({int workspaceId, String authId, int userId, Sync service});
 }
 
 /// @nodoc
-class __$$SessionImplCopyWithImpl<$Res>
-    extends _$SessionCopyWithImpl<$Res, _$SessionImpl>
-    implements _$$SessionImplCopyWith<$Res> {
-  __$$SessionImplCopyWithImpl(
-      _$SessionImpl _value, $Res Function(_$SessionImpl) _then)
+class __$$SyncSessionImplCopyWithImpl<$Res>
+    extends _$SyncSessionCopyWithImpl<$Res, _$SyncSessionImpl>
+    implements _$$SyncSessionImplCopyWith<$Res> {
+  __$$SyncSessionImplCopyWithImpl(
+      _$SyncSessionImpl _value, $Res Function(_$SyncSessionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -100,10 +98,10 @@ class __$$SessionImplCopyWithImpl<$Res>
   $Res call({
     Object? workspaceId = null,
     Object? authId = null,
-    Object? token = null,
     Object? userId = null,
+    Object? service = null,
   }) {
-    return _then(_$SessionImpl(
+    return _then(_$SyncSessionImpl(
       workspaceId: null == workspaceId
           ? _value.workspaceId
           : workspaceId // ignore: cast_nullable_to_non_nullable
@@ -112,96 +110,83 @@ class __$$SessionImplCopyWithImpl<$Res>
           ? _value.authId
           : authId // ignore: cast_nullable_to_non_nullable
               as String,
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
-              as String,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as int,
+      service: null == service
+          ? _value.service
+          : service // ignore: cast_nullable_to_non_nullable
+              as Sync,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$SessionImpl extends _Session {
-  const _$SessionImpl(
+
+class _$SyncSessionImpl extends _SyncSession {
+  const _$SyncSessionImpl(
       {required this.workspaceId,
       required this.authId,
-      required this.token,
-      required this.userId})
+      required this.userId,
+      required this.service})
       : super._();
-
-  factory _$SessionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionImplFromJson(json);
 
   @override
   final int workspaceId;
   @override
   final String authId;
   @override
-  final String token;
-  @override
   final int userId;
+  @override
+  final Sync service;
 
   @override
   String toString() {
-    return 'Session(workspaceId: $workspaceId, authId: $authId, token: $token, userId: $userId)';
+    return 'SyncSession(workspaceId: $workspaceId, authId: $authId, userId: $userId, service: $service)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SessionImpl &&
+            other is _$SyncSessionImpl &&
             (identical(other.workspaceId, workspaceId) ||
                 other.workspaceId == workspaceId) &&
             (identical(other.authId, authId) || other.authId == authId) &&
-            (identical(other.token, token) || other.token == token) &&
-            (identical(other.userId, userId) || other.userId == userId));
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.service, service) || other.service == service));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, workspaceId, authId, token, userId);
+      Object.hash(runtimeType, workspaceId, authId, userId, service);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SessionImplCopyWith<_$SessionImpl> get copyWith =>
-      __$$SessionImplCopyWithImpl<_$SessionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionImplToJson(
-      this,
-    );
-  }
+  _$$SyncSessionImplCopyWith<_$SyncSessionImpl> get copyWith =>
+      __$$SyncSessionImplCopyWithImpl<_$SyncSessionImpl>(this, _$identity);
 }
 
-abstract class _Session extends Session {
-  const factory _Session(
+abstract class _SyncSession extends SyncSession {
+  const factory _SyncSession(
       {required final int workspaceId,
       required final String authId,
-      required final String token,
-      required final int userId}) = _$SessionImpl;
-  const _Session._() : super._();
-
-  factory _Session.fromJson(Map<String, dynamic> json) = _$SessionImpl.fromJson;
+      required final int userId,
+      required final Sync service}) = _$SyncSessionImpl;
+  const _SyncSession._() : super._();
 
   @override
   int get workspaceId;
   @override
   String get authId;
   @override
-  String get token;
-  @override
   int get userId;
   @override
+  Sync get service;
+  @override
   @JsonKey(ignore: true)
-  _$$SessionImplCopyWith<_$SessionImpl> get copyWith =>
+  _$$SyncSessionImplCopyWith<_$SyncSessionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

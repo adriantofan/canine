@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/zitadel/oidc/pkg/client/rs"
@@ -19,20 +20,28 @@ var (
 // Introspect calls the OAuth2 Introspection endpoint and returns an error if token is not active.
 func Introspect(
 	ctx context.Context,
-	authHeader string,
+	request *http.Request,
 	resourceServer rs.ResourceServer) (*oauth.IntrospectionContext, error) {
-	accessToken, ok := strings.CutPrefix(authHeader, oidc.BearerToken)
-	if !ok {
-		return nil, ErrInvalidHeader
+	var token string
+	if strings.HasSuffix(request.URL.Path, "rtc/connect") {
+		token = request.URL.Query().Get("token")
+	} else {
+		authHeader := request.Header.Get("authorization")
+		accessToken, ok := strings.CutPrefix(authHeader, oidc.BearerToken)
+		if !ok {
+			return nil, ErrInvalidHeader
+		}
+		token = strings.TrimSpace(accessToken)
 	}
-	resp, err := rs.Introspect(ctx, resourceServer, strings.TrimSpace(accessToken))
+
+	resp, err := rs.Introspect(ctx, resourceServer, token)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %w", ErrIntrospectionFailed, err)
 	}
 	r := &oauth.IntrospectionContext{
 		IntrospectionResponse: resp,
 	}
-	r.SetToken(accessToken)
+	r.SetToken(token)
 
 	return r, nil
 }

@@ -22,6 +22,7 @@ mixin _$AppEvent {
     required TResult Function(List<AuthInfo> authInfo, String authId)
         authInfoFetched,
     required TResult Function() logout,
+    required TResult Function(int workspaceId) changeWorkspace,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,6 +30,7 @@ mixin _$AppEvent {
     TResult? Function()? initial,
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
+    TResult? Function(int workspaceId)? changeWorkspace,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -36,6 +38,7 @@ mixin _$AppEvent {
     TResult Function()? initial,
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
+    TResult Function(int workspaceId)? changeWorkspace,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -44,6 +47,7 @@ mixin _$AppEvent {
     required TResult Function(AppEventInitial value) initial,
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -51,6 +55,7 @@ mixin _$AppEvent {
     TResult? Function(AppEventInitial value)? initial,
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -58,6 +63,7 @@ mixin _$AppEvent {
     TResult Function(AppEventInitial value)? initial,
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -122,6 +128,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     required TResult Function(List<AuthInfo> authInfo, String authId)
         authInfoFetched,
     required TResult Function() logout,
+    required TResult Function(int workspaceId) changeWorkspace,
   }) {
     return initial();
   }
@@ -132,6 +139,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult? Function()? initial,
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
+    TResult? Function(int workspaceId)? changeWorkspace,
   }) {
     return initial?.call();
   }
@@ -142,6 +150,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult Function()? initial,
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
+    TResult Function(int workspaceId)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -156,6 +165,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     required TResult Function(AppEventInitial value) initial,
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
   }) {
     return initial(this);
   }
@@ -166,6 +176,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult? Function(AppEventInitial value)? initial,
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
   }) {
     return initial?.call(this);
   }
@@ -176,6 +187,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult Function(AppEventInitial value)? initial,
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -277,6 +289,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     required TResult Function(List<AuthInfo> authInfo, String authId)
         authInfoFetched,
     required TResult Function() logout,
+    required TResult Function(int workspaceId) changeWorkspace,
   }) {
     return authInfoFetched(authInfo, authId);
   }
@@ -287,6 +300,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult? Function()? initial,
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
+    TResult? Function(int workspaceId)? changeWorkspace,
   }) {
     return authInfoFetched?.call(authInfo, authId);
   }
@@ -297,6 +311,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult Function()? initial,
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
+    TResult Function(int workspaceId)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (authInfoFetched != null) {
@@ -311,6 +326,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     required TResult Function(AppEventInitial value) initial,
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
   }) {
     return authInfoFetched(this);
   }
@@ -321,6 +337,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult? Function(AppEventInitial value)? initial,
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
   }) {
     return authInfoFetched?.call(this);
   }
@@ -331,6 +348,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult Function(AppEventInitial value)? initial,
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (authInfoFetched != null) {
@@ -394,6 +412,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     required TResult Function(List<AuthInfo> authInfo, String authId)
         authInfoFetched,
     required TResult Function() logout,
+    required TResult Function(int workspaceId) changeWorkspace,
   }) {
     return logout();
   }
@@ -404,6 +423,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult? Function()? initial,
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
+    TResult? Function(int workspaceId)? changeWorkspace,
   }) {
     return logout?.call();
   }
@@ -414,6 +434,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult Function()? initial,
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
+    TResult Function(int workspaceId)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -428,6 +449,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     required TResult Function(AppEventInitial value) initial,
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
   }) {
     return logout(this);
   }
@@ -438,6 +460,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult? Function(AppEventInitial value)? initial,
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
   }) {
     return logout?.call(this);
   }
@@ -448,6 +471,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult Function(AppEventInitial value)? initial,
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -462,6 +486,157 @@ abstract class AppEventLogout implements AppEvent {
 }
 
 /// @nodoc
+abstract class _$$AppEventChangeWorkspaceImplCopyWith<$Res> {
+  factory _$$AppEventChangeWorkspaceImplCopyWith(
+          _$AppEventChangeWorkspaceImpl value,
+          $Res Function(_$AppEventChangeWorkspaceImpl) then) =
+      __$$AppEventChangeWorkspaceImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int workspaceId});
+}
+
+/// @nodoc
+class __$$AppEventChangeWorkspaceImplCopyWithImpl<$Res>
+    extends _$AppEventCopyWithImpl<$Res, _$AppEventChangeWorkspaceImpl>
+    implements _$$AppEventChangeWorkspaceImplCopyWith<$Res> {
+  __$$AppEventChangeWorkspaceImplCopyWithImpl(
+      _$AppEventChangeWorkspaceImpl _value,
+      $Res Function(_$AppEventChangeWorkspaceImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? workspaceId = null,
+  }) {
+    return _then(_$AppEventChangeWorkspaceImpl(
+      null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
+  const _$AppEventChangeWorkspaceImpl(this.workspaceId);
+
+  @override
+  final int workspaceId;
+
+  @override
+  String toString() {
+    return 'AppEvent.changeWorkspace(workspaceId: $workspaceId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppEventChangeWorkspaceImpl &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, workspaceId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppEventChangeWorkspaceImplCopyWith<_$AppEventChangeWorkspaceImpl>
+      get copyWith => __$$AppEventChangeWorkspaceImplCopyWithImpl<
+          _$AppEventChangeWorkspaceImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
+    required TResult Function() logout,
+    required TResult Function(int workspaceId) changeWorkspace,
+  }) {
+    return changeWorkspace(workspaceId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult? Function()? logout,
+    TResult? Function(int workspaceId)? changeWorkspace,
+  }) {
+    return changeWorkspace?.call(workspaceId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult Function()? logout,
+    TResult Function(int workspaceId)? changeWorkspace,
+    required TResult orElse(),
+  }) {
+    if (changeWorkspace != null) {
+      return changeWorkspace(workspaceId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
+    required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+  }) {
+    return changeWorkspace(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+  }) {
+    return changeWorkspace?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    required TResult orElse(),
+  }) {
+    if (changeWorkspace != null) {
+      return changeWorkspace(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AppEventChangeWorkspace implements AppEvent {
+  const factory AppEventChangeWorkspace(final int workspaceId) =
+      _$AppEventChangeWorkspaceImpl;
+
+  int get workspaceId;
+  @JsonKey(ignore: true)
+  _$$AppEventChangeWorkspaceImplCopyWith<_$AppEventChangeWorkspaceImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$AppState {
   AuthStatus get authStatus => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -471,7 +646,7 @@ mixin _$AppState {
             AuthStatus authStatus, String authId, String token)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
-            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+            String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) =>
       throw _privateConstructorUsedError;
@@ -481,7 +656,7 @@ mixin _$AppState {
     TResult? Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) =>
       throw _privateConstructorUsedError;
@@ -491,7 +666,7 @@ mixin _$AppState {
     TResult Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
     required TResult orElse(),
   }) =>
@@ -644,7 +819,7 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
             AuthStatus authStatus, String authId, String token)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
-            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+            String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) {
     return unauthenticated(authStatus);
@@ -657,7 +832,7 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
     TResult? Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) {
     return unauthenticated?.call(authStatus);
@@ -670,7 +845,7 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
     TResult Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
     required TResult orElse(),
   }) {
@@ -823,7 +998,7 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
             AuthStatus authStatus, String authId, String token)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
-            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+            String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) {
     return authenticated(authStatus, authId, token);
@@ -836,7 +1011,7 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
     TResult? Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) {
     return authenticated?.call(authStatus, authId, token);
@@ -849,7 +1024,7 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
     TResult Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
     required TResult orElse(),
   }) {
@@ -924,7 +1099,7 @@ abstract class _$$AppStateReadyImplCopyWith<$Res>
       String authId,
       String token,
       int? workspaceId,
-      Map<int, AuthInfo> workspaceUsers});
+      Map<int, AuthInfo> workspaces});
 
   @override
   $AuthStatusCopyWith<$Res> get authStatus;
@@ -945,7 +1120,7 @@ class __$$AppStateReadyImplCopyWithImpl<$Res>
     Object? authId = null,
     Object? token = null,
     Object? workspaceId = freezed,
-    Object? workspaceUsers = null,
+    Object? workspaces = null,
   }) {
     return _then(_$AppStateReadyImpl(
       authStatus: null == authStatus
@@ -964,9 +1139,9 @@ class __$$AppStateReadyImplCopyWithImpl<$Res>
           ? _value.workspaceId
           : workspaceId // ignore: cast_nullable_to_non_nullable
               as int?,
-      workspaceUsers: null == workspaceUsers
-          ? _value._workspaceUsers
-          : workspaceUsers // ignore: cast_nullable_to_non_nullable
+      workspaces: null == workspaces
+          ? _value._workspaces
+          : workspaces // ignore: cast_nullable_to_non_nullable
               as Map<int, AuthInfo>,
     ));
   }
@@ -980,8 +1155,8 @@ class _$AppStateReadyImpl extends AppStateReady {
       required this.authId,
       required this.token,
       required this.workspaceId,
-      required final Map<int, AuthInfo> workspaceUsers})
-      : _workspaceUsers = workspaceUsers,
+      required final Map<int, AuthInfo> workspaces})
+      : _workspaces = workspaces,
         super._();
 
   @override
@@ -992,17 +1167,17 @@ class _$AppStateReadyImpl extends AppStateReady {
   final String token;
   @override
   final int? workspaceId;
-  final Map<int, AuthInfo> _workspaceUsers;
+  final Map<int, AuthInfo> _workspaces;
   @override
-  Map<int, AuthInfo> get workspaceUsers {
-    if (_workspaceUsers is EqualUnmodifiableMapView) return _workspaceUsers;
+  Map<int, AuthInfo> get workspaces {
+    if (_workspaces is EqualUnmodifiableMapView) return _workspaces;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_workspaceUsers);
+    return EqualUnmodifiableMapView(_workspaces);
   }
 
   @override
   String toString() {
-    return 'AppState.ready(authStatus: $authStatus, authId: $authId, token: $token, workspaceId: $workspaceId, workspaceUsers: $workspaceUsers)';
+    return 'AppState.ready(authStatus: $authStatus, authId: $authId, token: $token, workspaceId: $workspaceId, workspaces: $workspaces)';
   }
 
   @override
@@ -1017,12 +1192,12 @@ class _$AppStateReadyImpl extends AppStateReady {
             (identical(other.workspaceId, workspaceId) ||
                 other.workspaceId == workspaceId) &&
             const DeepCollectionEquality()
-                .equals(other._workspaceUsers, _workspaceUsers));
+                .equals(other._workspaces, _workspaces));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, authStatus, authId, token,
-      workspaceId, const DeepCollectionEquality().hash(_workspaceUsers));
+      workspaceId, const DeepCollectionEquality().hash(_workspaces));
 
   @JsonKey(ignore: true)
   @override
@@ -1038,10 +1213,10 @@ class _$AppStateReadyImpl extends AppStateReady {
             AuthStatus authStatus, String authId, String token)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
-            String token, int? workspaceId, Map<int, AuthInfo> workspaceUsers)
+            String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) {
-    return ready(authStatus, authId, token, workspaceId, workspaceUsers);
+    return ready(authStatus, authId, token, workspaceId, workspaces);
   }
 
   @override
@@ -1051,10 +1226,10 @@ class _$AppStateReadyImpl extends AppStateReady {
     TResult? Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) {
-    return ready?.call(authStatus, authId, token, workspaceId, workspaceUsers);
+    return ready?.call(authStatus, authId, token, workspaceId, workspaces);
   }
 
   @override
@@ -1064,12 +1239,12 @@ class _$AppStateReadyImpl extends AppStateReady {
     TResult Function(AuthStatus authStatus, String authId, String token)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
-            int? workspaceId, Map<int, AuthInfo> workspaceUsers)?
+            int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
     required TResult orElse(),
   }) {
     if (ready != null) {
-      return ready(authStatus, authId, token, workspaceId, workspaceUsers);
+      return ready(authStatus, authId, token, workspaceId, workspaces);
     }
     return orElse();
   }
@@ -1115,7 +1290,7 @@ abstract class AppStateReady extends AppState {
       required final String authId,
       required final String token,
       required final int? workspaceId,
-      required final Map<int, AuthInfo> workspaceUsers}) = _$AppStateReadyImpl;
+      required final Map<int, AuthInfo> workspaces}) = _$AppStateReadyImpl;
   const AppStateReady._() : super._();
 
   @override
@@ -1123,7 +1298,7 @@ abstract class AppStateReady extends AppState {
   String get authId;
   String get token;
   int? get workspaceId;
-  Map<int, AuthInfo> get workspaceUsers;
+  Map<int, AuthInfo> get workspaces;
   @override
   @JsonKey(ignore: true)
   _$$AppStateReadyImplCopyWith<_$AppStateReadyImpl> get copyWith =>

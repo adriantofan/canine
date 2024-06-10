@@ -7,16 +7,17 @@ import 'app/routes/routes.dart';
 import 'config.dart';
 
 void main() async {
+  // setLogging();
   Logger.root.level = Level.ALL; // defaults to Level.INFO
-  // Logger.root.onRecord.listen((record) {
-  //   if (record.error != null || record.stackTrace != null) {
-  //     print(
-  //         '${record.level.name}: ${record.time}: ${record.loggerName}: ❗️${record.message} ${record.error} ${record.stackTrace}');
-  //   } else {
-  //     print(
-  //         '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
-  //   }
-  // });
+  Logger.root.onRecord.listen((record) {
+    if (record.error != null || record.stackTrace != null) {
+      print(
+          '${record.level.name}: ${record.time}: ${record.loggerName}: ❗️${record.message} ${record.error} ${record.stackTrace}');
+    } else {
+      print(
+          '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+    }
+  });
   // usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Config().loadConfig();
@@ -25,7 +26,6 @@ void main() async {
   // );
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 
-  final sync = await start(Config().apiBase, Config().wsBase);
   final authRepository = AuthRepository(
     oidcUrl: Config().oidcUrl,
     appClientId: Config().appClientId,
@@ -34,13 +34,14 @@ void main() async {
     callbackUrlScheme: Config().callbackUrlScheme,
     // apiClient: APIClientBase(Config().apiBase, Config().wsBase),
   );
-  final syncRepository = SyncRepository(sync);
   final apiClient = APIClientBase(Config().apiBase, Config().wsBase);
   authRepository.init();
+  final syncSessionRepository =
+      SyncSessionRepository(Config().apiBase, Config().wsBase);
   AppRouter.instance; // Make sure the router is initialized when app starts
   runApp(MainApp(
-    syncRepository: syncRepository,
     authRepository: authRepository,
     apiClient: apiClient,
+    syncSessionRepository: syncSessionRepository,
   ));
 }

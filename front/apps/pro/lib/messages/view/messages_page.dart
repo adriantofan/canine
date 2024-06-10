@@ -1,5 +1,6 @@
 import 'package:app/messages/model/draft_message.dart';
 import 'package:app/repository/repository.dart';
+import 'package:app/sync_session/widget/sync_session_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,20 +20,21 @@ class MessagesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizes based to include virtual keyboard
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(conversationInfo.name),
-      ),
-      body: MessagesList(
-          conversationInfo,
-          SendWidget(draftMessage, (msg) async {
-            await context.read<SyncRepository>().createMessage(
-                conversationInfo.conversationId,
-                msg.text!,
-                msg.idempotencyId!,
-                msg.attachments);
-          })),
-    );
+        // resizes based to include virtual keyboard
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(conversationInfo.name),
+        ),
+        body: SyncSessionContainer(
+          child: MessagesList(
+              conversationInfo,
+              SendWidget(draftMessage, (msg) async {
+                await context.read<SyncRepository>().createMessage(
+                    conversationInfo.conversationId,
+                    msg.text!,
+                    msg.idempotencyId!,
+                    msg.attachments);
+              })),
+        ));
   }
 }

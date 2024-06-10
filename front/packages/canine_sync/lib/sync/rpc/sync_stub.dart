@@ -4,7 +4,6 @@ import 'dart:isolate';
 import 'package:file_selector/file_selector.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../api/session.dart';
 import '../../models/model.dart';
 import '../proc.dart';
 import '../sync.dart';
@@ -48,9 +47,9 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<void> connect(Session session) async {
+  Future<void> updateToken(String token) async {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(Msg.connect(receivePort.sendPort, session));
+    _sendPort.send(Msg.updateToken(receivePort.sendPort, token));
     await for (var data in receivePort) {
       if (data == null) {
         return;

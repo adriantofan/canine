@@ -27,10 +27,6 @@ class SyncRepository {
     return _sync.subscribeProcRef(UpdateMessagesProcRef(conversationId));
   }
 
-  Future<void> connect(Session session) => _sync.connect(session);
-
-  Future<void> disconnect() => _sync.disconnect();
-
   Stream<ListSyncState> conversationMessagesSyncStateStream(
       int conversationId) {
     return _sync.conversationMessagesSyncStateStream(conversationId);

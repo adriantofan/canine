@@ -19,6 +19,6 @@ sealed class AppState with _$AppState {
     required String authId,
     required String token,
     required int? workspaceId,
-    required Map<int, AuthInfo> workspaceUsers,
+    required Map<int, AuthInfo> workspaces,
   }) = AppStateReady;
 }

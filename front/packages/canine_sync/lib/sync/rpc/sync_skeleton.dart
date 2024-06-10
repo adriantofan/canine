@@ -19,8 +19,8 @@ class SyncSkeleton {
         _subscribeProc(msg);
       case MsgUnsubscribeProc():
         _unsubscribeProc(msg);
-      case MsgConnect():
-        _connect(msg);
+      case MsgUpdateToken():
+        _updateToken(msg);
       case MsgDisconnect():
         _disconnect(msg);
       case MsgConversationMessagesSyncStateSubscribe():
@@ -116,8 +116,8 @@ class SyncSkeleton {
             : msg.sendPort.send(error.toString()));
   }
 
-  void _connect(MsgConnect msg) {
-    _service.connect(msg.session).then((_) => msg.sendPort.send(null),
+  void _updateToken(MsgUpdateToken msg) {
+    _service.updateToken(msg.token).then((_) => msg.sendPort.send(null),
         onError: (error, stackTrace) => (error is APIError)
             ? msg.sendPort.send(error)
             : msg.sendPort.send(error.toString()));

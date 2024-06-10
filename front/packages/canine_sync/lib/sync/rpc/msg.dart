@@ -11,7 +11,8 @@ part 'msg.freezed.dart';
 
 @freezed
 sealed class Msg with _$Msg {
-  const factory Msg.connect(SendPort sendPort, Session session) = MsgConnect;
+  const factory Msg.updateToken(SendPort sendPort, String token) =
+      MsgUpdateToken;
   const factory Msg.disconnect(SendPort sendPort) = MsgDisconnect;
   const factory Msg.subscribeProc(
           SendPort sendPort, ProcBuilder procBuilder, String key) =

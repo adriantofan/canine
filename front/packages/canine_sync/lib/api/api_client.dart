@@ -21,7 +21,7 @@ class APIClientBase {
 
   Future<List<AuthInfo>> userInfo(String token) async {
     // TODO: remove this delay
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     final response = await _getJSON(
       '/auth/info',
       headers: {'Authorization': 'Bearer $token'},
@@ -175,8 +175,7 @@ class APIWorkspaceClient extends APIClientBase {
   Session _session;
   Session get session => _session;
 
-  APIWorkspaceClient(String apiBase, String wsBase, this._session)
-      : super(apiBase, wsBase);
+  APIWorkspaceClient(super.apiBase, super.wsBase, this._session);
 
   void tokenDidRefresh(String newToken) {
     _session = _session.copyWith(token: newToken);

@@ -37,7 +37,7 @@ class _LogoutButton extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFFFFD600),
       ),
-      onPressed: () => context.read<AppBloc>().logout(),
+      onPressed: () => context.read<AppBloc>().add(const AppEvent.logout()),
       child: const Text('LOGOUT'),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:isolate';
 
 import 'package:logging/logging.dart';
 
+import '../../api/session.dart';
 import '../../cache/in_memory_cache.dart';
 import '../sync.dart';
 import '../sync_service.dart';
@@ -9,14 +10,15 @@ import './msg.dart';
 import './sync_skeleton.dart';
 import './sync_stub.dart';
 
-Future<Sync> start(String apiBase, String wsBase) async {
+Future<Sync> start(String apiBase, String wsBase, Session session) async {
   var receivePortStorage = ReceivePort();
 
   // Needs to happen on the main isolate
 
   var receivePort = ReceivePort();
 
-  await Isolate.spawn(_runner, [receivePort.sendPort, apiBase, wsBase]);
+  await Isolate.spawn(
+      _runner, [receivePort.sendPort, apiBase, wsBase, session]);
   final [sendPort, stubSendPort] = await receivePort.first as List<SendPort>;
   stubSendPort.send(receivePortStorage.sendPort);
 
@@ -28,6 +30,7 @@ _runner(dynamic ags) async {
   final sendPort = ags[0] as SendPort;
   final apiBase = ags[1] as String;
   final wsBase = ags[2] as String;
+  final session = ags[3] as Session;
 
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
@@ -49,7 +52,7 @@ _runner(dynamic ags) async {
   SendPort sendPortStorage = await tmpReceivePort.first as SendPort;
 
   final cache = InMemoryCache();
-  final syncService = SyncService(cache, apiBase, wsBase);
+  final syncService = SyncService(cache, apiBase, wsBase, session);
 
   // Communicates with SyncStub and delegates actual work to SyncService
   final syncSkeleton = SyncSkeleton(syncService);
