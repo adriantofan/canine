@@ -581,3 +581,19 @@ func (s *Service) WorkspaceLogin(
 
 	return "", nil
 }
+
+func (s *Service) GetWorkspace(
+	ctx context.Context,
+	workspaceID int64) (*model.Workspace, error) {
+	repo, err := s.t.WithoutTransaction()
+	if err != nil {
+		return nil, fmt.Errorf("GetWorkspace begin transaction: %w", err)
+	}
+
+	workspace, err := repo.GetWorkspace(ctx, workspaceID)
+	if err != nil {
+		return nil, fmt.Errorf("GetWorkspace get workspace: %w", err)
+	}
+
+	return workspace, nil
+}

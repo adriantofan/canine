@@ -32,7 +32,7 @@ class AppGoRoute extends GoRoute {
     final appBloc = context.read<AppBloc>();
 
     onLogin(workspaceId) {
-      return "${AppRoutes.login.path}?ref=${routerState.uri}";
+      return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$workspaceId";
     }
 
     onHome(AppStateReady appState) {

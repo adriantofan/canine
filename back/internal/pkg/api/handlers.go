@@ -81,6 +81,34 @@ func (h ChatHandlers) CreateWorkspace(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, workspaceWithUser)
 }
 
+func (h ChatHandlers) GetWorkspace(ctx *gin.Context) {
+	var params struct {
+		WorkspaceID int64 `binding:"required" uri:"workspace_id"`
+	}
+
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	workspace, err := h.Service.GetWorkspace(ctx, params.WorkspaceID)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+
+	if workspace == nil {
+		ctx.JSON(http.StatusNotFound, apiModel.ErrorNotFound)
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, workspace)
+}
+
 func (h ChatHandlers) WorkspaceLogin(ctx *gin.Context) {
 	var payload WorkspaceLoginData
 

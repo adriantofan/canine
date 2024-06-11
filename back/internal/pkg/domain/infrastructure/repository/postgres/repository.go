@@ -625,6 +625,24 @@ func (s *MessageRepository) CreateWorkspace(ctx context.Context, name string, or
 	return workspace, fmt.Errorf("failed to create workspace (retry) %s", name)
 }
 
+func (s *MessageRepository) GetWorkspace(ctx context.Context, workspaceID int64) (*model.Workspace, error) {
+	var workspace model.Workspace
+	stmt := SELECT(table.Workspace.ID, table.Workspace.Name).
+		FROM(table.Workspace).
+		WHERE(table.Workspace.ID.EQ(Int64(workspaceID)))
+	err := stmt.QueryContext(ctx, s.db, &workspace)
+
+	if errors.Is(err, qrm.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get workspace by id: %w", err)
+	}
+
+	return &workspace, nil
+
+}
+
 func (s *MessageRepository) GetAuthInfo(ctx context.Context, authID string) ([]model.AuthInfo, error) {
 	var authInfo []model.AuthInfo
 	stmt := SELECT(table.User.AllColumns, table.Workspace.AllColumns).

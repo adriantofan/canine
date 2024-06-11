@@ -211,6 +211,8 @@ abstract class _$$CreateFlowResultDevisImplCopyWith<$Res> {
       __$$CreateFlowResultDevisImplCopyWithImpl<$Res>;
   @useResult
   $Res call({XFile file, User user});
+
+  $UserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -225,18 +227,26 @@ class __$$CreateFlowResultDevisImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? file = null,
-    Object? user = freezed,
+    Object? user = null,
   }) {
     return _then(_$CreateFlowResultDevisImpl(
       null == file
           ? _value.file
           : file // ignore: cast_nullable_to_non_nullable
               as XFile,
-      freezed == user
+      null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as User,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get user {
+    return $UserCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value));
+    });
   }
 }
 
@@ -261,12 +271,11 @@ class _$CreateFlowResultDevisImpl implements CreateFlowResultDevis {
         (other.runtimeType == runtimeType &&
             other is _$CreateFlowResultDevisImpl &&
             (identical(other.file, file) || other.file == file) &&
-            const DeepCollectionEquality().equals(other.user, user));
+            (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, file, const DeepCollectionEquality().hash(user));
+  int get hashCode => Object.hash(runtimeType, file, user);
 
   @JsonKey(ignore: true)
   @override
@@ -368,6 +377,8 @@ abstract class _$$CreateFlowResultUserImplCopyWith<$Res> {
       __$$CreateFlowResultUserImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User user});
+
+  $UserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -381,14 +392,22 @@ class __$$CreateFlowResultUserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? user = freezed,
+    Object? user = null,
   }) {
     return _then(_$CreateFlowResultUserImpl(
-      freezed == user
+      null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as User,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get user {
+    return $UserCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value));
+    });
   }
 }
 
@@ -410,12 +429,11 @@ class _$CreateFlowResultUserImpl implements CreateFlowResultUser {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateFlowResultUserImpl &&
-            const DeepCollectionEquality().equals(other.user, user));
+            (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(user));
+  int get hashCode => Object.hash(runtimeType, user);
 
   @JsonKey(ignore: true)
   @override

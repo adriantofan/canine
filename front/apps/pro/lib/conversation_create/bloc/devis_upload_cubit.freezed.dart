@@ -94,6 +94,8 @@ abstract class $DevisUploadStateCopyWith<$Res> {
       FormzSubmissionStatus status,
       bool isValid,
       String? errorMessage});
+
+  $DevisRecipientCopyWith<$Res>? get recipient;
 }
 
 /// @nodoc
@@ -143,6 +145,18 @@ class _$DevisUploadStateCopyWithImpl<$Res, $Val extends DevisUploadState>
               as String?,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $DevisRecipientCopyWith<$Res>? get recipient {
+    if (_value.recipient == null) {
+      return null;
+    }
+
+    return $DevisRecipientCopyWith<$Res>(_value.recipient!, (value) {
+      return _then(_value.copyWith(recipient: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -160,6 +174,9 @@ abstract class _$$DevisUploadStateFormImplCopyWith<$Res>
       FormzSubmissionStatus status,
       bool isValid,
       String? errorMessage});
+
+  @override
+  $DevisRecipientCopyWith<$Res>? get recipient;
 }
 
 /// @nodoc
@@ -248,7 +265,8 @@ class _$DevisUploadStateFormImpl implements DevisUploadStateForm {
             const DeepCollectionEquality()
                 .equals(other.showFileDialog, showFileDialog) &&
             (identical(other.file, file) || other.file == file) &&
-            const DeepCollectionEquality().equals(other.recipient, recipient) &&
+            (identical(other.recipient, recipient) ||
+                other.recipient == recipient) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.isValid, isValid) || other.isValid == isValid) &&
             (identical(other.errorMessage, errorMessage) ||
@@ -260,7 +278,7 @@ class _$DevisUploadStateFormImpl implements DevisUploadStateForm {
       runtimeType,
       const DeepCollectionEquality().hash(showFileDialog),
       file,
-      const DeepCollectionEquality().hash(recipient),
+      recipient,
       status,
       isValid,
       errorMessage);

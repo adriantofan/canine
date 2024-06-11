@@ -16,27 +16,55 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$LoginState {
-  FormzSubmissionStatus get status => throw _privateConstructorUsedError;
-  bool get isValid => throw _privateConstructorUsedError;
+  FormzSubmissionStatus get workspaceStatus =>
+      throw _privateConstructorUsedError;
+  FormzSubmissionStatus get createStatus => throw _privateConstructorUsedError;
+  bool get onWorkspace => throw _privateConstructorUsedError;
+  String? get loadErrorMessage => throw _privateConstructorUsedError;
+  Workspace? get workspace => throw _privateConstructorUsedError;
+  bool get notFound =>
+      throw _privateConstructorUsedError; // Second step of the login step
+  FormzSubmissionStatus get loginStatus => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)?
         initial,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)?
         initial,
     required TResult orElse(),
   }) =>
@@ -69,7 +97,17 @@ abstract class $LoginStateCopyWith<$Res> {
           LoginState value, $Res Function(LoginState) then) =
       _$LoginStateCopyWithImpl<$Res, LoginState>;
   @useResult
-  $Res call({FormzSubmissionStatus status, bool isValid, String? errorMessage});
+  $Res call(
+      {FormzSubmissionStatus workspaceStatus,
+      FormzSubmissionStatus createStatus,
+      bool onWorkspace,
+      String? loadErrorMessage,
+      Workspace? workspace,
+      bool notFound,
+      FormzSubmissionStatus loginStatus,
+      String? errorMessage});
+
+  $WorkspaceCopyWith<$Res>? get workspace;
 }
 
 /// @nodoc
@@ -85,24 +123,61 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
-    Object? isValid = null,
+    Object? workspaceStatus = null,
+    Object? createStatus = null,
+    Object? onWorkspace = null,
+    Object? loadErrorMessage = freezed,
+    Object? workspace = freezed,
+    Object? notFound = null,
+    Object? loginStatus = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      workspaceStatus: null == workspaceStatus
+          ? _value.workspaceStatus
+          : workspaceStatus // ignore: cast_nullable_to_non_nullable
               as FormzSubmissionStatus,
-      isValid: null == isValid
-          ? _value.isValid
-          : isValid // ignore: cast_nullable_to_non_nullable
+      createStatus: null == createStatus
+          ? _value.createStatus
+          : createStatus // ignore: cast_nullable_to_non_nullable
+              as FormzSubmissionStatus,
+      onWorkspace: null == onWorkspace
+          ? _value.onWorkspace
+          : onWorkspace // ignore: cast_nullable_to_non_nullable
               as bool,
+      loadErrorMessage: freezed == loadErrorMessage
+          ? _value.loadErrorMessage
+          : loadErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      workspace: freezed == workspace
+          ? _value.workspace
+          : workspace // ignore: cast_nullable_to_non_nullable
+              as Workspace?,
+      notFound: null == notFound
+          ? _value.notFound
+          : notFound // ignore: cast_nullable_to_non_nullable
+              as bool,
+      loginStatus: null == loginStatus
+          ? _value.loginStatus
+          : loginStatus // ignore: cast_nullable_to_non_nullable
+              as FormzSubmissionStatus,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $WorkspaceCopyWith<$Res>? get workspace {
+    if (_value.workspace == null) {
+      return null;
+    }
+
+    return $WorkspaceCopyWith<$Res>(_value.workspace!, (value) {
+      return _then(_value.copyWith(workspace: value) as $Val);
+    });
   }
 }
 
@@ -114,7 +189,18 @@ abstract class _$$InitialImplCopyWith<$Res>
       __$$InitialImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({FormzSubmissionStatus status, bool isValid, String? errorMessage});
+  $Res call(
+      {FormzSubmissionStatus workspaceStatus,
+      FormzSubmissionStatus createStatus,
+      bool onWorkspace,
+      String? loadErrorMessage,
+      Workspace? workspace,
+      bool notFound,
+      FormzSubmissionStatus loginStatus,
+      String? errorMessage});
+
+  @override
+  $WorkspaceCopyWith<$Res>? get workspace;
 }
 
 /// @nodoc
@@ -128,19 +214,44 @@ class __$$InitialImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
-    Object? isValid = null,
+    Object? workspaceStatus = null,
+    Object? createStatus = null,
+    Object? onWorkspace = null,
+    Object? loadErrorMessage = freezed,
+    Object? workspace = freezed,
+    Object? notFound = null,
+    Object? loginStatus = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_$InitialImpl(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      workspaceStatus: null == workspaceStatus
+          ? _value.workspaceStatus
+          : workspaceStatus // ignore: cast_nullable_to_non_nullable
               as FormzSubmissionStatus,
-      isValid: null == isValid
-          ? _value.isValid
-          : isValid // ignore: cast_nullable_to_non_nullable
+      createStatus: null == createStatus
+          ? _value.createStatus
+          : createStatus // ignore: cast_nullable_to_non_nullable
+              as FormzSubmissionStatus,
+      onWorkspace: null == onWorkspace
+          ? _value.onWorkspace
+          : onWorkspace // ignore: cast_nullable_to_non_nullable
               as bool,
+      loadErrorMessage: freezed == loadErrorMessage
+          ? _value.loadErrorMessage
+          : loadErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      workspace: freezed == workspace
+          ? _value.workspace
+          : workspace // ignore: cast_nullable_to_non_nullable
+              as Workspace?,
+      notFound: null == notFound
+          ? _value.notFound
+          : notFound // ignore: cast_nullable_to_non_nullable
+              as bool,
+      loginStatus: null == loginStatus
+          ? _value.loginStatus
+          : loginStatus // ignore: cast_nullable_to_non_nullable
+              as FormzSubmissionStatus,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -151,24 +262,44 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$InitialImpl implements _Initial {
+class _$InitialImpl extends _Initial {
   const _$InitialImpl(
-      {this.status = FormzSubmissionStatus.initial,
-      this.isValid = true,
-      this.errorMessage});
+      {this.workspaceStatus = FormzSubmissionStatus.initial,
+      this.createStatus = FormzSubmissionStatus.initial,
+      this.onWorkspace = false,
+      this.loadErrorMessage,
+      this.workspace,
+      this.notFound = true,
+      this.loginStatus = FormzSubmissionStatus.initial,
+      this.errorMessage})
+      : super._();
 
   @override
   @JsonKey()
-  final FormzSubmissionStatus status;
+  final FormzSubmissionStatus workspaceStatus;
   @override
   @JsonKey()
-  final bool isValid;
+  final FormzSubmissionStatus createStatus;
+  @override
+  @JsonKey()
+  final bool onWorkspace;
+  @override
+  final String? loadErrorMessage;
+  @override
+  final Workspace? workspace;
+  @override
+  @JsonKey()
+  final bool notFound;
+// Second step of the login step
+  @override
+  @JsonKey()
+  final FormzSubmissionStatus loginStatus;
   @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'LoginState.initial(status: $status, isValid: $isValid, errorMessage: $errorMessage)';
+    return 'LoginState.initial(workspaceStatus: $workspaceStatus, createStatus: $createStatus, onWorkspace: $onWorkspace, loadErrorMessage: $loadErrorMessage, workspace: $workspace, notFound: $notFound, loginStatus: $loginStatus, errorMessage: $errorMessage)';
   }
 
   @override
@@ -176,14 +307,35 @@ class _$InitialImpl implements _Initial {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$InitialImpl &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.isValid, isValid) || other.isValid == isValid) &&
+            (identical(other.workspaceStatus, workspaceStatus) ||
+                other.workspaceStatus == workspaceStatus) &&
+            (identical(other.createStatus, createStatus) ||
+                other.createStatus == createStatus) &&
+            (identical(other.onWorkspace, onWorkspace) ||
+                other.onWorkspace == onWorkspace) &&
+            (identical(other.loadErrorMessage, loadErrorMessage) ||
+                other.loadErrorMessage == loadErrorMessage) &&
+            (identical(other.workspace, workspace) ||
+                other.workspace == workspace) &&
+            (identical(other.notFound, notFound) ||
+                other.notFound == notFound) &&
+            (identical(other.loginStatus, loginStatus) ||
+                other.loginStatus == loginStatus) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, isValid, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      workspaceStatus,
+      createStatus,
+      onWorkspace,
+      loadErrorMessage,
+      workspace,
+      notFound,
+      loginStatus,
+      errorMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -195,32 +347,56 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)
         initial,
   }) {
-    return initial(status, isValid, errorMessage);
+    return initial(workspaceStatus, createStatus, onWorkspace, loadErrorMessage,
+        workspace, notFound, loginStatus, errorMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)?
         initial,
   }) {
-    return initial?.call(status, isValid, errorMessage);
+    return initial?.call(workspaceStatus, createStatus, onWorkspace,
+        loadErrorMessage, workspace, notFound, loginStatus, errorMessage);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            FormzSubmissionStatus status, bool isValid, String? errorMessage)?
+            FormzSubmissionStatus workspaceStatus,
+            FormzSubmissionStatus createStatus,
+            bool onWorkspace,
+            String? loadErrorMessage,
+            Workspace? workspace,
+            bool notFound,
+            FormzSubmissionStatus loginStatus,
+            String? errorMessage)?
         initial,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial(status, isValid, errorMessage);
+      return initial(workspaceStatus, createStatus, onWorkspace,
+          loadErrorMessage, workspace, notFound, loginStatus, errorMessage);
     }
     return orElse();
   }
@@ -254,16 +430,32 @@ class _$InitialImpl implements _Initial {
   }
 }
 
-abstract class _Initial implements LoginState {
+abstract class _Initial extends LoginState {
   const factory _Initial(
-      {final FormzSubmissionStatus status,
-      final bool isValid,
+      {final FormzSubmissionStatus workspaceStatus,
+      final FormzSubmissionStatus createStatus,
+      final bool onWorkspace,
+      final String? loadErrorMessage,
+      final Workspace? workspace,
+      final bool notFound,
+      final FormzSubmissionStatus loginStatus,
       final String? errorMessage}) = _$InitialImpl;
+  const _Initial._() : super._();
 
   @override
-  FormzSubmissionStatus get status;
+  FormzSubmissionStatus get workspaceStatus;
   @override
-  bool get isValid;
+  FormzSubmissionStatus get createStatus;
+  @override
+  bool get onWorkspace;
+  @override
+  String? get loadErrorMessage;
+  @override
+  Workspace? get workspace;
+  @override
+  bool get notFound;
+  @override // Second step of the login step
+  FormzSubmissionStatus get loginStatus;
   @override
   String? get errorMessage;
   @override

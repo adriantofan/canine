@@ -104,6 +104,8 @@ abstract class $UserCreateStateCopyWith<$Res> {
       bool isValid,
       User? user,
       String? errorMessage});
+
+  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -163,6 +165,18 @@ class _$UserCreateStateCopyWithImpl<$Res, $Val extends UserCreateState>
               as String?,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.user!, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -182,6 +196,9 @@ abstract class _$$InitialImplCopyWith<$Res>
       bool isValid,
       User? user,
       String? errorMessage});
+
+  @override
+  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -297,22 +314,14 @@ class _$InitialImpl extends _Initial {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.isValid, isValid) || other.isValid == isValid) &&
-            const DeepCollectionEquality().equals(other.user, user) &&
+            (identical(other.user, user) || other.user == user) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      firstName,
-      lastName,
-      mobile,
-      email,
-      status,
-      isValid,
-      const DeepCollectionEquality().hash(user),
-      errorMessage);
+  int get hashCode => Object.hash(runtimeType, firstName, lastName, mobile,
+      email, status, isValid, user, errorMessage);
 
   @JsonKey(ignore: true)
   @override

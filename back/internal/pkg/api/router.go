@@ -22,6 +22,7 @@ func ConfigureRouter(
 	apiRoutes.Use(apiLogger) // Order matters, this should be the first middleware on the group
 	apiRoutes.GET("/healthz", func(c *gin.Context) { c.String(http.StatusOK, "") })
 	apiRoutes.Use(gin.Recovery())
+	apiRoutes.GET("/:"+zitadel.WorkspaceIDParam, handlers.GetWorkspace)
 
 	authRoutes := apiRoutes.Group("/auth")
 	authRoutes.Use(authMiddleware)
@@ -29,6 +30,7 @@ func ConfigureRouter(
 	authRoutes.GET("/info", handlers.GetAuthInfo)
 
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
+
 	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
 	// it MUST match the workspace_id param as defined in the identity middleware
 	workspaceGroup := apiRoutes.Group("/:" + zitadel.WorkspaceIDParam)

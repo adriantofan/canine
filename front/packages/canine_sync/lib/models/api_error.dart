@@ -61,6 +61,7 @@ const kServerUnauthorized = 'unauthorized';
 const kServerForbidden = 'forbidden';
 const kServerInvalidRequest = 'invalid_request';
 const kServerPayloadExists = 'payload_exists';
+const kServerNotFound = 'not_found';
 
 const messagesByCode = {
   // Client codes
@@ -74,4 +75,5 @@ const messagesByCode = {
   kServerUnauthorized:
       'Unauthorized. Please check your credentials and try again.',
   kServerForbidden: 'Forbidden',
+  kServerNotFound: 'Not found',
 };

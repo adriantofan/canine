@@ -7,7 +7,8 @@ import 'login_form.dart';
 
 class LoginPage extends StatelessWidget {
   final String? loginHint;
-  const LoginPage({super.key, this.loginHint});
+  final int? workspaceId;
+  const LoginPage({super.key, this.loginHint, this.workspaceId});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +17,9 @@ class LoginPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocProvider(
-          create: (_) =>
-              LoginCubit(context.read<AuthRepository>(), loginHint: loginHint),
+          create: (_) => LoginCubit(
+              context.read<AuthRepository>(), context.read<APIClientBase>(),
+              loginHint: loginHint, workspaceId: workspaceId),
           child: const LoginForm(),
         ),
       ),

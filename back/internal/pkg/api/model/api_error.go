@@ -15,7 +15,9 @@ var (
 		Message: "Internal server error",
 	}
 	ErrorNotFound = Error{
+		Code:    ErrorCodeNotFound,
 		Message: "Not found",
+		Reason:  "",
 	}
 	ErrorNotAuthorized = Error{
 		Message: "Not authorized",
@@ -26,6 +28,7 @@ const (
 	ErrorCodeInvalidRequest            = "invalid_request"
 	ErrorCodePayloadExists             = "payload_exists"
 	ErrorCodeAuthWorkspaceOrUserExists = "auth_workspace_or_user_exists"
+	ErrorCodeNotFound                  = "not_found"
 	ErrorCodeUnauthorized              = "unauthorized"
 	ErrorCodeForbidden                 = "forbidden"
 

@@ -65,8 +65,14 @@ class AppRouter {
             final loginHint = state.extra != null
                 ? (state.extra as Map)[loginHintExtraKey] as String?
                 : null;
+            final workspaceIdStr =
+                state.uri.queryParameters[LoginWorkspaceIdQueryParam];
+            final workspaceId =
+                workspaceIdStr != null ? int.tryParse(workspaceIdStr) : null;
             return getPage(
-                child: LoginPage(loginHint: loginHint), state: state);
+              child: LoginPage(loginHint: loginHint, workspaceId: workspaceId),
+              state: state,
+            );
           }),
     ];
 
@@ -116,3 +122,4 @@ class AppRouter {
 }
 
 const loginHintExtraKey = 'loginHint';
+const LoginWorkspaceIdQueryParam = 'workspaceId';

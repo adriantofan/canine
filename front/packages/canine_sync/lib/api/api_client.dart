@@ -40,6 +40,17 @@ class APIClientBase {
     await _postJSON('/workspaces', data.toJson());
   }
 
+  Future<Workspace> getWorkspace(int workspaceId) async {
+    final response = await _getJSON('/$workspaceId');
+    try {
+      return Workspace.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse workspace response', e);
+      _logger.finest('Response: $response');
+      throw APIError.invalidResponse(e.toString());
+    }
+  }
+
   Future<dynamic> _multipart(
     String path,
     Map<String, String>? fields,
@@ -83,8 +94,7 @@ class APIClientBase {
     }
   }
 
-  Future<dynamic> _getJSON(String path,
-      {required Map<String, String> headers}) async {
+  Future<dynamic> _getJSON(String path, {Map<String, String>? headers}) async {
     try {
       return _makeRequest(HttpMethod.get, path, null, null, headers: headers);
     } catch (e) {

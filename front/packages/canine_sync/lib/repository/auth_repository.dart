@@ -84,8 +84,15 @@ class AuthRepository {
 
   Future<void> login({
     String? loginHint,
+    bool createAccount = false,
   }) async {
-    await userManager.loginAuthorizationCodeFlow(loginHint: loginHint);
+    List<String>? prompt;
+    if (createAccount) {
+      prompt = ['create'];
+    }
+
+    await userManager.loginAuthorizationCodeFlow(
+        loginHint: loginHint, promptOverride: prompt);
   }
 
   Future<void> logout() async {
@@ -128,6 +135,4 @@ class AuthRepository {
       }
     });
   }
-
-  Future<void> createOrg(OrgCreatePayload payload) async {}
 }
