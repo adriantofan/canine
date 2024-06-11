@@ -32,7 +32,6 @@ abstract class $DraftConversationCopyWith<$Res> {
   @useResult
   $Res call({User user, DraftMessage message});
 
-  $UserCopyWith<$Res> get user;
   $DraftMessageCopyWith<$Res> get message;
 }
 
@@ -49,11 +48,11 @@ class _$DraftConversationCopyWithImpl<$Res, $Val extends DraftConversation>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? user = null,
+    Object? user = freezed,
     Object? message = null,
   }) {
     return _then(_value.copyWith(
-      user: null == user
+      user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as User,
@@ -62,14 +61,6 @@ class _$DraftConversationCopyWithImpl<$Res, $Val extends DraftConversation>
           : message // ignore: cast_nullable_to_non_nullable
               as DraftMessage,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get user {
-    return $UserCopyWith<$Res>(_value.user, (value) {
-      return _then(_value.copyWith(user: value) as $Val);
-    });
   }
 
   @override
@@ -92,8 +83,6 @@ abstract class _$$NewConversationImplCopyWith<$Res>
   $Res call({User user, DraftMessage message});
 
   @override
-  $UserCopyWith<$Res> get user;
-  @override
   $DraftMessageCopyWith<$Res> get message;
 }
 
@@ -108,11 +97,11 @@ class __$$NewConversationImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? user = null,
+    Object? user = freezed,
     Object? message = null,
   }) {
     return _then(_$NewConversationImpl(
-      user: null == user
+      user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as User,
@@ -144,12 +133,13 @@ class _$NewConversationImpl implements _NewConversation {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$NewConversationImpl &&
-            (identical(other.user, user) || other.user == user) &&
+            const DeepCollectionEquality().equals(other.user, user) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user, message);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(user), message);
 
   @JsonKey(ignore: true)
   @override

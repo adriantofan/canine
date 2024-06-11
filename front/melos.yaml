@@ -3,3 +3,13 @@ name: canine
 packages:
   - apps/**
   - packages/**
+
+scripts:
+  analyze:
+    exec: flutter analyze .
+  outdated:
+    exec: flutter pub outdated
+  test:
+    exec: flutter test
+  generate:
+    exec: dart run build_runner build --delete-conflicting-outputs
