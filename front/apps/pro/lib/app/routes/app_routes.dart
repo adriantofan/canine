@@ -1,4 +1,4 @@
-import 'path.dart';
+import 'package:applib/applib.dart';
 
 class AppRoutes {
   static const RootPath wellcome = RootPath(path: '/wellcome');

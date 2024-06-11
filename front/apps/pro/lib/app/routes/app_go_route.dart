@@ -1,11 +1,10 @@
-import 'package:app/repository/repository.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../bloc/app_bloc.dart';
 import 'app_routes.dart';
-import 'path.dart';
 
 class AppGoRoute extends GoRoute {
   final bool onlyAuthenticated;

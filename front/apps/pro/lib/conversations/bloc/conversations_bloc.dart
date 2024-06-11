@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:app/app/routes/routes.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/repository/repository.dart';
+import 'package:applib/applib.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';

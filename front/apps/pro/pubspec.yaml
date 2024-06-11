@@ -7,6 +7,12 @@ environment:
   sdk: '>=3.2.4 <4.0.0'
 
 dependencies:
+  canine_sync:
+    path: ../../packages/canine_sync
+  form_inputs:
+    path: ../../packages/form_inputs
+  applib:
+    path: ../../packages/applib
   bloc: ^8.1.2
   flutter:
     sdk: flutter
@@ -16,11 +22,7 @@ dependencies:
   intl: ^0.19.0
   json_annotation: ^4.8.1
   web_socket_channel: ^2.4.0
-  canine_sync:
-    path: ../../packages/canine_sync
   flow_builder: ^0.1.0
-  form_inputs:
-    path: ../../packages/form_inputs
   formz: ^0.7.0
   logging: ^1.2.0
   flutter_svg: ^2.0.10+1

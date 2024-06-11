@@ -1,8 +1,6 @@
-import 'package:app/conversations/conversations.dart';
+import 'package:applib/applib.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../repository/repository.dart';
 
 part 'create_result.freezed.dart';
 

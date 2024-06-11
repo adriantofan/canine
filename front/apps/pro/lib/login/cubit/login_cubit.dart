@@ -1,8 +1,7 @@
+import 'package:applib/applib.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../repository/repository.dart';
 
 part 'login_cubit.freezed.dart';
 part 'login_state.dart';

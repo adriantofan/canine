@@ -1,4 +1,4 @@
-import 'package:app/conversations/model/conversation_info.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 
 class ConversationRowWidget extends StatefulWidget {

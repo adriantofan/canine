@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/repository/update_messages_proc.dart';
-import 'package:app/repository/users_proc.dart';
 import 'package:canine_sync/canine_sync.dart';
 import 'package:file_selector/file_selector.dart';
 
+import '../conversations/model/conversation_info.dart';
 import '../messages/messages.dart';
+import './update_messages_proc.dart';
+import './users_proc.dart';
 import 'update_conversations_proc.dart';
 
 export 'package:canine_sync/canine_sync.dart';

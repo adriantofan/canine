@@ -1,12 +1,11 @@
 import 'package:app/app/routes/routes.dart';
-import 'package:app/messages/model/draft_conversation.dart';
-import 'package:app/messages/model/draft_message.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/draft_conversation_cubit.dart';
-import 'empty_messages_list.dart';
-import 'send_widget.dart';
+import '../model/draft_conversation.dart';
+import './empty_messages_list.dart';
 
 // See following url for some ideas about improving various mobile functions
 // https://github.com/Xim-ya/basic_chat_ui_Implementation/blob/main/lib/chat_screen.dart

@@ -1,7 +1,6 @@
 import 'package:app/conversations/bloc/conversations_bloc.dart';
 import 'package:app/conversations/bloc/conversations_state.dart';
-import 'package:app/repository/repository.dart';
-import 'package:app/sync_session/widget/sync_session_container.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,10 +1,10 @@
-import 'package:app/messages/model/draft_message.dart';
-import 'package:app/repository/repository.dart';
-import 'package:app/sync_session/widget/sync_session_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../conversations/model/conversation_info.dart';
+import '../../repository/repository.dart';
+import '../../sync_session/widget/sync_session_container.dart';
+import '../model/draft_message.dart';
 import 'messages_list.dart';
 import 'send_widget.dart';
 

@@ -1,8 +1,7 @@
-import 'package:canine_sync/canine_sync.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 
 import '../../destinations.dart';
-import '../../util/avatar.dart';
 
 class DisappearingNavigationRail extends StatelessWidget {
   final void Function(BuildContext) onAddCallback;

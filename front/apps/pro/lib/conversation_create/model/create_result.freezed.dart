@@ -550,10 +550,10 @@ class __$$CreateFlowResultConversationImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? conversation = null,
+    Object? conversation = freezed,
   }) {
     return _then(_$CreateFlowResultConversationImpl(
-      null == conversation
+      freezed == conversation
           ? _value.conversation
           : conversation // ignore: cast_nullable_to_non_nullable
               as ConversationInfo,
@@ -580,12 +580,13 @@ class _$CreateFlowResultConversationImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateFlowResultConversationImpl &&
-            (identical(other.conversation, conversation) ||
-                other.conversation == conversation));
+            const DeepCollectionEquality()
+                .equals(other.conversation, conversation));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, conversation);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(conversation));
 
   @JsonKey(ignore: true)
   @override

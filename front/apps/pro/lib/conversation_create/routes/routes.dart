@@ -1,9 +1,9 @@
+import 'package:canine_sync/canine_sync.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../repository/repository.dart';
 import '../bloc/create_flow_cubit.dart';
 import '../view/view.dart';
 

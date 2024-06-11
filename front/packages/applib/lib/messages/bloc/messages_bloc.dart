@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/messages/messages.dart';
-import 'package:app/repository/repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../../conversations/model/conversation_info.dart';
+import '../../repository/repository.dart';
+import '../model/chat_message.dart';
 
 part 'messages_bloc.freezed.dart';
 part 'messages_event.dart';

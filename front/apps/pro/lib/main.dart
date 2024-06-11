@@ -1,4 +1,4 @@
-import 'package:app/repository/repository.dart';
+import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 

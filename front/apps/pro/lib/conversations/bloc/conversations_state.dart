@@ -1,6 +1,5 @@
 import 'package:app/conversations/bloc/selection.dart';
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/repository/repository.dart';
+import 'package:applib/applib.dart';
 
 import '../../util/logger.dart';
 

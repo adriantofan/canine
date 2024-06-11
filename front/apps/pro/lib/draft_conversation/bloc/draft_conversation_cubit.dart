@@ -1,10 +1,8 @@
-import 'package:app/conversations/model/conversation_info.dart';
-import 'package:app/messages/model/draft_conversation.dart';
-import 'package:app/messages/model/draft_message.dart';
+import 'package:applib/applib.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../repository/repository.dart';
+import '../model/draft_conversation.dart';
 
 part 'draft_conversation_cubit.freezed.dart';
 part 'draft_conversation_state.dart';

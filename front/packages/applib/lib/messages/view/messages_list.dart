@@ -1,10 +1,10 @@
-import 'package:app/messages/bloc/messages_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../conversations/model/conversation_info.dart';
 import '../../repository/repository.dart';
+import '../bloc/messages_bloc.dart';
 import 'message_row.dart';
 
 class MessagesList extends StatefulWidget {

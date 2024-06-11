@@ -1,10 +1,11 @@
-import 'package:app/messages/bloc/send_bloc.dart';
-import 'package:app/messages/model/draft_message.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
+
+import '../bloc/send_bloc.dart';
+import '../model/draft_message.dart';
 
 class SendWidget extends StatelessWidget {
   final Future<void> Function(DraftMessage msg) sendMessage;

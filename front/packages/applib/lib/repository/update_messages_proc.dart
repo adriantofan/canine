@@ -1,7 +1,8 @@
-import 'package:app/messages/messages.dart';
-import 'package:app/messages/model/chat_message.dart';
 import 'package:canine_sync/canine_sync.dart';
 import 'package:logging/logging.dart';
+
+import '../messages/messages.dart';
+import '../messages/model/chat_message.dart';
 
 class UpdateMessagesProcRef implements ProcBuilder<List<ChatMessage>> {
   final int _conversationId;
