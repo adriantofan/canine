@@ -1,5 +1,6 @@
 enum Role {
   wkspAdmin,
+  user,
   // add other roles as needed
 }
 
@@ -10,6 +11,8 @@ extension RoleExtension on Role {
       case Role.wkspAdmin:
         return "wksp_admin";
       // add other roles as needed
+      case Role.user:
+        return "user";
       default:
         return "";
     }
@@ -20,6 +23,8 @@ extension RoleExtension on Role {
       case "wksp_admin":
         return Role.wkspAdmin;
       // add other roles as needed
+      case "user":
+        return Role.user;
       default:
         throw ArgumentError("Unknown role: $name");
     }

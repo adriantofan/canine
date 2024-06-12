@@ -21,7 +21,7 @@ class SyncSessionRepository {
   }
 
   disconnect() async {
-    await syncSessionChanges.value?.service.disconnect();
+    await syncSessionChanges.valueOrNull?.service.disconnect();
     syncSessionChanges.value = null;
   }
 

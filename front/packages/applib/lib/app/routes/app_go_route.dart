@@ -1,8 +1,10 @@
-import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
+import '../../repository/repository.dart';
+import '../../routes/path.dart';
 import '../bloc/app_bloc.dart';
 import 'app_routes.dart';
 
@@ -10,6 +12,7 @@ class AppGoRoute extends GoRoute {
   final bool onlyAuthenticated;
   final bool workspaceNamespaced;
   final bool isLogin;
+  static final Logger _logger = Logger('AppGoRoute');
   // GoRouterRedirect? redirect;
 
   AppGoRoute({
@@ -32,12 +35,20 @@ class AppGoRoute extends GoRoute {
     final appBloc = context.read<AppBloc>();
 
     onLogin(workspaceId) {
+      if (workspaceId != null) {
+        appBloc.add(AppEventChangeWorkspace(workspaceId));
+      }
       return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$workspaceId";
     }
 
-    onHome(AppStateReady appState) {
+    maybeOnHome(AppStateReady appState) {
       if (appState.workspaceId == null) {
-        throw GoException('Empty workspaceId not implemented');
+        // This can happen when the user doens not have roles at all
+        // ot when there are no roles returned from the backend despite
+        // having a roles in zitadel
+        _logger.warning('No workspaceId in AppStateReady');
+
+        return AppRoutes.error.path;
       }
       return AppRoutes.home.path(appState.workspaceId);
     }
@@ -56,7 +67,7 @@ class AppGoRoute extends GoRoute {
             default:
           }
         case AppStateReady():
-          return onHome(appBloc.state as AppStateReady);
+          return maybeOnHome(crtState);
         default:
       }
       return null; // stay on splash
@@ -84,10 +95,24 @@ class AppGoRoute extends GoRoute {
             default:
           }
         case AppStateReady():
-          return onHome(appBloc.state as AppStateReady);
+          return maybeOnHome(appBloc.state as AppStateReady);
         default:
       }
       return null; // stay onLogin
+    }
+
+    final isOnCreateOrg = AppRoutes.createOrg.path == routerState.path;
+    if (isOnCreateOrg) {
+      final crtState = appBloc.state;
+
+      if (crtState is AppStateReady) {
+        return maybeOnHome(appBloc.state as AppStateReady);
+      }
+
+      if (crtState is AppStateAuthenticated) {
+        // it will get redirected to the home page
+        return onLogin(workspaceId);
+      }
     }
 
     if (!isOnLogin && onlyAuthenticated) {

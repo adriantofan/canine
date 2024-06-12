@@ -4,7 +4,7 @@ import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../app/routes/routes.dart';
+import '../../router.dart';
 import 'conversations_list.dart';
 
 class ConversationsScreen extends StatefulWidget {

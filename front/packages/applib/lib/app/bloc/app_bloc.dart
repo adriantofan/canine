@@ -10,13 +10,13 @@ part 'app_bloc.freezed.dart';
 part 'app_event.dart';
 part 'app_state.dart';
 
-enum AppType { pro, consumer }
+enum AppType { pro, clemia }
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthRepository _authRepository;
   final SyncSessionRepository _syncSessionRepository;
   final APIClientBase _apiClient;
-  final appType = AppType.pro;
+  final appType;
   final _logger = Logger('MainApp');
 
   int? get workspaceId =>
@@ -27,9 +27,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Map<int, AuthInfo> get workspaces =>
       (state is AppStateReady) ? (state as AppStateReady).workspaces : {};
 
-  AppBloc(this._authRepository, this._apiClient, this._syncSessionRepository)
-      : super(
-            const AppState.unauthenticated(authStatus: AuthStatus.unknown())) {
+  AppBloc(this._authRepository, this._apiClient, this._syncSessionRepository,
+      this.appType)
+      : super(const AppState.unauthenticated(
+            authStatus: AuthStatus.unknown(), workspaceId: null)) {
     on<AppEventInitial>((event, emit) async {
       await emit.forEach(_authRepository.authStatusChanges,
           onData: _authStatusChanges);
@@ -42,11 +43,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     on<AppEventChangeWorkspace>((event, emit) async {
       _logger.finer('Change workspace 2 sec delay to ${event.workspaceId}');
-      await Future.delayed(const Duration(seconds: 2));
+      // await Future.delayed(const Duration(seconds: 2));
       final crtState = state;
-      if (crtState is! AppStateReady) {
-        return;
-      }
       if (crtState.workspaceId == event.workspaceId) {
         return;
       }
@@ -63,19 +61,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             return;
           }
           final newAuthInfoByWorkspace = _authInfoByWorkspace(event.authInfo);
-          final firstWorkspaceID = newAuthInfoByWorkspace.keys.first;
-
-          _syncSessionRepository.connect(Session(
-            workspaceId: firstWorkspaceID,
-            authId: crtState.authId,
-            token: crtState.token,
-            userId: newAuthInfoByWorkspace[firstWorkspaceID]!.user.id,
-          ));
+          final targetWorkspaceID =
+              state.workspaceId ?? newAuthInfoByWorkspace.keys.firstOrNull;
+          if (targetWorkspaceID != null) {
+            _syncSessionRepository.connect(Session(
+              workspaceId: targetWorkspaceID,
+              authId: crtState.authId,
+              token: crtState.token,
+              userId: newAuthInfoByWorkspace[targetWorkspaceID]!.user.id,
+            ));
+          }
           emit(AppState.ready(
               authStatus: crtState.authStatus,
               authId: crtState.authId,
               token: crtState.token,
-              workspaceId: firstWorkspaceID,
+              workspaceId: targetWorkspaceID,
               workspaces: newAuthInfoByWorkspace));
         case AppStateReady():
           if (event.authId != crtState.authId) {
@@ -101,7 +101,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       case AuthStatusUnknown() ||
             AuthStatusDisconnected() ||
             AuthStatusRestricted():
-        return AppState.unauthenticated(authStatus: status);
+        return AppState.unauthenticated(
+            authStatus: status, workspaceId: state.workspaceId);
       case AuthStatusAuthenticated():
         return _authStatusAuthenticated(status);
     }
@@ -117,6 +118,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           authStatus: authStatus,
           authId: authStatus.authId,
           token: authStatus.token,
+          workspaceId: crtState.workspaceId,
         );
       // TODO: trigger fetch of user info
       case AppStateAuthenticated():
@@ -124,6 +126,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           authStatus: authStatus,
           authId: authStatus.authId,
           token: authStatus.token,
+          workspaceId: crtState.workspaceId,
         );
       case AppStateReady():
         if (authStatus.authId != authStatus.authId) {
@@ -133,6 +136,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             authStatus: authStatus,
             authId: authStatus.authId,
             token: authStatus.token,
+            workspaceId: crtState.workspaceId,
           );
         }
         return crtState.copyWith(
@@ -167,7 +171,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       if (appType == AppType.pro && info.user.type != UserType.internal) {
         continue;
       }
-      if (appType == AppType.consumer && info.user.type != UserType.external) {
+      if (appType == AppType.clemia && info.user.type != UserType.external) {
         continue;
       }
 

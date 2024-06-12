@@ -4,16 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../conversations/conversations.dart';
-import '../../draft_conversation/draft_conversation.dart';
-import '../../login/login.dart';
-import '../../logout/logout.dart';
-import '../../org_create/org_create.dart';
-import '../../settings/screen.dart';
-import '../../tab_home/tab_home.dart';
-import '../bloc/app_bloc.dart';
-import 'app_go_route.dart';
-import 'app_routes.dart';
+import 'conversations/conversations.dart';
+import 'draft_conversation/draft_conversation.dart';
+import 'login/login.dart';
+import 'logout/logout.dart';
+import 'org_create/org_create.dart';
+import 'settings/screen.dart';
+import 'tab_home/tab_home.dart';
+
+class ProRoutes {
+  static const WorkspacePath switchWorkspace =
+      WorkspacePath(subPath: '/switch-workspace');
+  static const WorkspacePath confirmPassword =
+      WorkspacePath(subPath: '/confirm-password');
+
+  static final ConversationPath homeConversation =
+      ConversationPath(AppRoutes.home);
+  static const WorkspacePath homeNew = WorkspacePath(subPath: '/new');
+  static const WorkspacePath settings = WorkspacePath(subPath: '/settings');
+}
 
 // see https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
 //  about making a modal route and dealing with transiations
@@ -54,7 +63,7 @@ class AppRouter {
                     AppGoRoute(
                         onlyAuthenticated: true,
                         workspaceNamespaced: true,
-                        path: AppRoutes.home.pattern,
+                        path: ProRoutes.homeConversation.pattern,
                         parentNavigatorKey: _messagesTabNavigatorKey,
                         pageBuilder: (context, state) {
                           return getPage(
@@ -71,7 +80,7 @@ class AppRouter {
                     AppGoRoute(
                       onlyAuthenticated: true,
                       workspaceNamespaced: true,
-                      path: AppRoutes.homeNew.pattern,
+                      path: ProRoutes.homeNew.pattern,
                       parentNavigatorKey: _messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         return getPage(
@@ -87,7 +96,7 @@ class AppRouter {
                     AppGoRoute(
                       onlyAuthenticated: true,
                       workspaceNamespaced: true,
-                      path: AppRoutes.homeConversation.pattern,
+                      path: ProRoutes.homeConversation.pattern,
                       parentNavigatorKey: _messagesTabNavigatorKey,
                       pageBuilder: (context, state) {
                         switch (state.extra) {
@@ -130,11 +139,11 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: _settingsTabNavigatorKey,
             routes: [
-              noPatternRoute('/home/settings-na', AppRoutes.settings),
+              noPatternRoute('/home/settings-na', ProRoutes.settings),
               AppGoRoute(
                 onlyAuthenticated: true,
                 workspaceNamespaced: true,
-                path: AppRoutes.settings.pattern,
+                path: ProRoutes.settings.pattern,
                 pageBuilder: (context, state) {
                   return getPage(
                     child: const SettingsScreen(),
@@ -238,22 +247,22 @@ class AppRouter {
         });
   }
 
-  static bool get onConversations => AppRoutes.homeConversation
+  static bool get onConversations => ProRoutes.homeConversation
       .isOn(router.routeInformationProvider.value.uri);
 
-  static int? get crtConversationRouteId => AppRoutes.homeConversation
+  static int? get crtConversationRouteId => ProRoutes.homeConversation
       .conversationId(router.routeInformationProvider.value.uri);
 
   static goConversationWithInfo(ConversationInfo conversationInfo) {
     final crtUri = router.routeInformationProvider.value.uri;
-    if (AppRoutes.homeConversation.isOn(crtUri) &&
-        AppRoutes.homeConversation.conversationId(crtUri) ==
+    if (ProRoutes.homeConversation.isOn(crtUri) &&
+        ProRoutes.homeConversation.conversationId(crtUri) ==
             conversationInfo.conversationId) {
       // assumes conversationInfo is not relevant
       return;
     }
 
-    final workspaceId = AppRoutes.homeConversation.workspaceId(crtUri);
+    final workspaceId = ProRoutes.homeConversation.workspaceId(crtUri);
     if (workspaceId == null) {
       throw FormatException(
           'Cannot go on a conversation only from a workspaced resource',
@@ -261,7 +270,7 @@ class AppRouter {
     }
 
     router.go(
-        AppRoutes.homeConversation
+        ProRoutes.homeConversation
             .path(workspaceId, conversationInfo.conversationId),
         extra: conversationInfo);
   }
@@ -276,7 +285,7 @@ class AppRouter {
           'Cannot create draft conversation only from a workspaced resource',
           crtUri.path);
     }
-    router.replace(AppRoutes.homeNew.path(conversationInfo.conversationId),
+    router.replace(ProRoutes.homeNew.path(conversationInfo.conversationId),
         extra: (conversationInfo, draftMessage));
   }
 
@@ -288,7 +297,7 @@ class AppRouter {
           'Cannot create draft conversation only from a workspaced resource',
           crtUri.path);
     }
-    final newPath = AppRoutes.homeNew.path(AppRoutes.home.workspaceId(crtUri)!);
+    final newPath = ProRoutes.homeNew.path(AppRoutes.home.workspaceId(crtUri)!);
     router.go(newPath, extra: draftConversation);
   }
 

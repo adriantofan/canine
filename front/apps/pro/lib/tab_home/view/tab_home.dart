@@ -1,5 +1,3 @@
-import 'package:app/app/app.dart';
-import 'package:app/app/routes/routes.dart';
 import 'package:app/conversation_create/conversation_create.dart';
 import 'package:app/tab_home/view/disappearing_navigation_rail.dart';
 import 'package:applib/applib.dart';
@@ -8,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../draft_conversation/draft_conversation.dart';
+import '../../router.dart';
 
 class TabHome extends StatefulWidget {
   const TabHome({super.key, required this.child});

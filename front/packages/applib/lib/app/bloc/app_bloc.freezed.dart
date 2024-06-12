@@ -639,11 +639,13 @@ abstract class AppEventChangeWorkspace implements AppEvent {
 /// @nodoc
 mixin _$AppState {
   AuthStatus get authStatus => throw _privateConstructorUsedError;
+  int? get workspaceId => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(AuthStatus authStatus) unauthenticated,
-    required TResult Function(
-            AuthStatus authStatus, String authId, String token)
+    required TResult Function(AuthStatus authStatus, int? workspaceId)
+        unauthenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
             String token, int? workspaceId, Map<int, AuthInfo> workspaces)
@@ -652,8 +654,9 @@ mixin _$AppState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AuthStatus authStatus)? unauthenticated,
-    TResult? Function(AuthStatus authStatus, String authId, String token)?
+    TResult? Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -662,8 +665,9 @@ mixin _$AppState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AuthStatus authStatus)? unauthenticated,
-    TResult Function(AuthStatus authStatus, String authId, String token)?
+    TResult Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -704,7 +708,7 @@ abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res, AppState>;
   @useResult
-  $Res call({AuthStatus authStatus});
+  $Res call({AuthStatus authStatus, int? workspaceId});
 
   $AuthStatusCopyWith<$Res> get authStatus;
 }
@@ -723,12 +727,17 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
   @override
   $Res call({
     Object? authStatus = null,
+    Object? workspaceId = freezed,
   }) {
     return _then(_value.copyWith(
       authStatus: null == authStatus
           ? _value.authStatus
           : authStatus // ignore: cast_nullable_to_non_nullable
               as AuthStatus,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 
@@ -750,7 +759,7 @@ abstract class _$$AppStateUnauthenticatedImplCopyWith<$Res>
       __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AuthStatus authStatus});
+  $Res call({AuthStatus authStatus, int? workspaceId});
 
   @override
   $AuthStatusCopyWith<$Res> get authStatus;
@@ -769,12 +778,17 @@ class __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? authStatus = null,
+    Object? workspaceId = freezed,
   }) {
     return _then(_$AppStateUnauthenticatedImpl(
       authStatus: null == authStatus
           ? _value.authStatus
           : authStatus // ignore: cast_nullable_to_non_nullable
               as AuthStatus,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -782,14 +796,18 @@ class __$$AppStateUnauthenticatedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
-  const _$AppStateUnauthenticatedImpl({required this.authStatus}) : super._();
+  const _$AppStateUnauthenticatedImpl(
+      {required this.authStatus, required this.workspaceId})
+      : super._();
 
   @override
   final AuthStatus authStatus;
+  @override
+  final int? workspaceId;
 
   @override
   String toString() {
-    return 'AppState.unauthenticated(authStatus: $authStatus)';
+    return 'AppState.unauthenticated(authStatus: $authStatus, workspaceId: $workspaceId)';
   }
 
   @override
@@ -798,11 +816,13 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
         (other.runtimeType == runtimeType &&
             other is _$AppStateUnauthenticatedImpl &&
             (identical(other.authStatus, authStatus) ||
-                other.authStatus == authStatus));
+                other.authStatus == authStatus) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, authStatus);
+  int get hashCode => Object.hash(runtimeType, authStatus, workspaceId);
 
   @JsonKey(ignore: true)
   @override
@@ -814,35 +834,38 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(AuthStatus authStatus) unauthenticated,
-    required TResult Function(
-            AuthStatus authStatus, String authId, String token)
+    required TResult Function(AuthStatus authStatus, int? workspaceId)
+        unauthenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
             String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) {
-    return unauthenticated(authStatus);
+    return unauthenticated(authStatus, workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AuthStatus authStatus)? unauthenticated,
-    TResult? Function(AuthStatus authStatus, String authId, String token)?
+    TResult? Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) {
-    return unauthenticated?.call(authStatus);
+    return unauthenticated?.call(authStatus, workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AuthStatus authStatus)? unauthenticated,
-    TResult Function(AuthStatus authStatus, String authId, String token)?
+    TResult Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -850,7 +873,7 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
     required TResult orElse(),
   }) {
     if (unauthenticated != null) {
-      return unauthenticated(authStatus);
+      return unauthenticated(authStatus, workspaceId);
     }
     return orElse();
   }
@@ -892,11 +915,14 @@ class _$AppStateUnauthenticatedImpl extends AppStateUnauthenticated {
 
 abstract class AppStateUnauthenticated extends AppState {
   const factory AppStateUnauthenticated(
-      {required final AuthStatus authStatus}) = _$AppStateUnauthenticatedImpl;
+      {required final AuthStatus authStatus,
+      required final int? workspaceId}) = _$AppStateUnauthenticatedImpl;
   const AppStateUnauthenticated._() : super._();
 
   @override
   AuthStatus get authStatus;
+  @override
+  int? get workspaceId;
   @override
   @JsonKey(ignore: true)
   _$$AppStateUnauthenticatedImplCopyWith<_$AppStateUnauthenticatedImpl>
@@ -912,7 +938,8 @@ abstract class _$$AppStateAuthenticatedImplCopyWith<$Res>
       __$$AppStateAuthenticatedImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AuthStatus authStatus, String authId, String token});
+  $Res call(
+      {AuthStatus authStatus, String authId, String token, int? workspaceId});
 
   @override
   $AuthStatusCopyWith<$Res> get authStatus;
@@ -932,6 +959,7 @@ class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
     Object? authStatus = null,
     Object? authId = null,
     Object? token = null,
+    Object? workspaceId = freezed,
   }) {
     return _then(_$AppStateAuthenticatedImpl(
       authStatus: null == authStatus
@@ -946,6 +974,10 @@ class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      workspaceId: freezed == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -954,7 +986,10 @@ class __$$AppStateAuthenticatedImplCopyWithImpl<$Res>
 
 class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
   const _$AppStateAuthenticatedImpl(
-      {required this.authStatus, required this.authId, required this.token})
+      {required this.authStatus,
+      required this.authId,
+      required this.token,
+      required this.workspaceId})
       : super._();
 
   @override
@@ -963,10 +998,12 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
   final String authId;
   @override
   final String token;
+  @override
+  final int? workspaceId;
 
   @override
   String toString() {
-    return 'AppState.authenticated(authStatus: $authStatus, authId: $authId, token: $token)';
+    return 'AppState.authenticated(authStatus: $authStatus, authId: $authId, token: $token, workspaceId: $workspaceId)';
   }
 
   @override
@@ -977,11 +1014,14 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
             (identical(other.authStatus, authStatus) ||
                 other.authStatus == authStatus) &&
             (identical(other.authId, authId) || other.authId == authId) &&
-            (identical(other.token, token) || other.token == token));
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, authStatus, authId, token);
+  int get hashCode =>
+      Object.hash(runtimeType, authStatus, authId, token, workspaceId);
 
   @JsonKey(ignore: true)
   @override
@@ -993,35 +1033,38 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(AuthStatus authStatus) unauthenticated,
-    required TResult Function(
-            AuthStatus authStatus, String authId, String token)
+    required TResult Function(AuthStatus authStatus, int? workspaceId)
+        unauthenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
             String token, int? workspaceId, Map<int, AuthInfo> workspaces)
         ready,
   }) {
-    return authenticated(authStatus, authId, token);
+    return authenticated(authStatus, authId, token, workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AuthStatus authStatus)? unauthenticated,
-    TResult? Function(AuthStatus authStatus, String authId, String token)?
+    TResult? Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
         ready,
   }) {
-    return authenticated?.call(authStatus, authId, token);
+    return authenticated?.call(authStatus, authId, token, workspaceId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AuthStatus authStatus)? unauthenticated,
-    TResult Function(AuthStatus authStatus, String authId, String token)?
+    TResult Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -1029,7 +1072,7 @@ class _$AppStateAuthenticatedImpl extends AppStateAuthenticated {
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(authStatus, authId, token);
+      return authenticated(authStatus, authId, token, workspaceId);
     }
     return orElse();
   }
@@ -1073,13 +1116,16 @@ abstract class AppStateAuthenticated extends AppState {
   const factory AppStateAuthenticated(
       {required final AuthStatus authStatus,
       required final String authId,
-      required final String token}) = _$AppStateAuthenticatedImpl;
+      required final String token,
+      required final int? workspaceId}) = _$AppStateAuthenticatedImpl;
   const AppStateAuthenticated._() : super._();
 
   @override
   AuthStatus get authStatus;
   String get authId;
   String get token;
+  @override
+  int? get workspaceId;
   @override
   @JsonKey(ignore: true)
   _$$AppStateAuthenticatedImplCopyWith<_$AppStateAuthenticatedImpl>
@@ -1208,9 +1254,10 @@ class _$AppStateReadyImpl extends AppStateReady {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(AuthStatus authStatus) unauthenticated,
-    required TResult Function(
-            AuthStatus authStatus, String authId, String token)
+    required TResult Function(AuthStatus authStatus, int? workspaceId)
+        unauthenticated,
+    required TResult Function(AuthStatus authStatus, String authId,
+            String token, int? workspaceId)
         authenticated,
     required TResult Function(AuthStatus authStatus, String authId,
             String token, int? workspaceId, Map<int, AuthInfo> workspaces)
@@ -1222,8 +1269,9 @@ class _$AppStateReadyImpl extends AppStateReady {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AuthStatus authStatus)? unauthenticated,
-    TResult? Function(AuthStatus authStatus, String authId, String token)?
+    TResult? Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult? Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult? Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -1235,8 +1283,9 @@ class _$AppStateReadyImpl extends AppStateReady {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AuthStatus authStatus)? unauthenticated,
-    TResult Function(AuthStatus authStatus, String authId, String token)?
+    TResult Function(AuthStatus authStatus, int? workspaceId)? unauthenticated,
+    TResult Function(AuthStatus authStatus, String authId, String token,
+            int? workspaceId)?
         authenticated,
     TResult Function(AuthStatus authStatus, String authId, String token,
             int? workspaceId, Map<int, AuthInfo> workspaces)?
@@ -1297,6 +1346,7 @@ abstract class AppStateReady extends AppState {
   AuthStatus get authStatus;
   String get authId;
   String get token;
+  @override
   int? get workspaceId;
   Map<int, AuthInfo> get workspaces;
   @override

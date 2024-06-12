@@ -1,8 +1,8 @@
-import 'package:app/app/routes/routes.dart';
 import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../router.dart';
 import '../bloc/draft_conversation_cubit.dart';
 import '../model/draft_conversation.dart';
 import './empty_messages_list.dart';

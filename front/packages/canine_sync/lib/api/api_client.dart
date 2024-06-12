@@ -28,6 +28,9 @@ class APIClientBase {
     );
 
     try {
+      if (response == null) {
+        return [];
+      }
       return (response as List).map((e) => AuthInfo.fromJson(e)).toList();
     } catch (e) {
       _logger.severe('Failed to parse auth_info response', e);

@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../login/login.dart';
-import '../../logout/logout.dart';
-import '../bloc/app_bloc.dart';
-import 'app_go_route.dart';
-import 'app_routes.dart';
+import 'login/login.dart';
+import 'logout/logout.dart';
 
 // see https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
 //  about making a modal route and dealing with transiations
@@ -28,7 +25,7 @@ class AppRouter {
       AppGoRoute(
         onlyAuthenticated: true,
         workspaceNamespaced: true,
-        path: AppRoutes.homeConversation.pattern,
+        path: AppRoutes.home.pattern,
         parentNavigatorKey: _parentNavigatorKey,
         pageBuilder: (context, state) {
           return getPage(

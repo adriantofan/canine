@@ -65,4 +65,5 @@ Map<String, dynamic> _$$AuthStatusAuthenticatedImplToJson(
 
 const _$RoleEnumMap = {
   Role.wkspAdmin: 'wkspAdmin',
+  Role.user: 'user',
 };

@@ -2,9 +2,8 @@ import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-import 'app/app.dart';
-import 'app/routes/routes.dart';
 import 'config.dart';
+import 'router.dart';
 
 void main() async {
   // setLogging();
@@ -43,5 +42,7 @@ void main() async {
     authRepository: authRepository,
     apiClient: apiClient,
     syncSessionRepository: syncSessionRepository,
+    router: AppRouter.router,
+    appType: AppType.pro,
   ));
 }
