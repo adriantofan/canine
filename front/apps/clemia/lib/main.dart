@@ -1,4 +1,5 @@
 import 'package:applib/applib.dart';
+import 'package:applib/preferences/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -33,12 +34,19 @@ void main() async {
   authRepository.init();
   final syncSessionRepository =
       SyncSessionRepository(Config().apiBase, Config().wsBase);
+  initAppLib(AppType.clemia);
   AppRouter.instance; // Make sure the router is initialized when app starts
+  final prefs = PersistentPreferences();
+  await prefs.init();
+  final (lastWorkspaceId, lastConversationId) = await prefs.getLastWorkspace();
   runApp(MainApp(
     authRepository: authRepository,
     apiClient: apiClient,
     syncSessionRepository: syncSessionRepository,
     router: AppRouter.router,
     appType: AppType.clemia,
+    preferences: prefs,
+    lastWorkspaceId: lastWorkspaceId,
+    lastConversationId: lastConversationId,
   ));
 }

@@ -6,6 +6,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../preferences/preferences.dart';
+
 part 'app_bloc.freezed.dart';
 part 'app_event.dart';
 part 'app_state.dart';
@@ -18,19 +20,37 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final APIClientBase _apiClient;
   final appType;
   final _logger = Logger('MainApp');
+  final PersistentPreferences preferences;
+  final int? lastWorkspaceId;
+  final int? lastConversationId;
 
-  int? get workspaceId =>
-      (state is AppStateReady) ? (state as AppStateReady).workspaceId : null;
+  int? get workspaceId => state.workspaceId;
+
+  int? get conversationId => switch (state) {
+        AppStateUnauthenticated() =>
+          (state as AppStateUnauthenticated).conversationId,
+        AppStateAuthenticated() =>
+          (state as AppStateAuthenticated).conversationId,
+        AppStateReady() => null,
+      };
 
   bool get isAuthenticated => state is! AppStateUnauthenticated;
   bool get isReady => state is AppStateReady;
   Map<int, AuthInfo> get workspaces =>
       (state is AppStateReady) ? (state as AppStateReady).workspaces : {};
 
-  AppBloc(this._authRepository, this._apiClient, this._syncSessionRepository,
-      this.appType)
-      : super(const AppState.unauthenticated(
-            authStatus: AuthStatus.unknown(), workspaceId: null)) {
+  AppBloc(
+      this._authRepository,
+      this._apiClient,
+      this._syncSessionRepository,
+      this.appType,
+      this.preferences,
+      this.lastWorkspaceId,
+      this.lastConversationId)
+      : super(AppState.unauthenticated(
+            authStatus: const AuthStatus.unknown(),
+            workspaceId: lastWorkspaceId,
+            conversationId: lastConversationId)) {
     on<AppEventInitial>((event, emit) async {
       await emit.forEach(_authRepository.authStatusChanges,
           onData: _authStatusChanges);
@@ -44,11 +64,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppEventChangeWorkspace>((event, emit) async {
       _logger.finer('Change workspace 2 sec delay to ${event.workspaceId}');
       // await Future.delayed(const Duration(seconds: 2));
-      final crtState = state;
-      if (crtState.workspaceId == event.workspaceId) {
+      if (workspaceId == event.workspaceId &&
+          event.conversationId == conversationId) {
         return;
       }
-      emit(crtState.copyWith(workspaceId: event.workspaceId));
+      preferences.setLastWorkspace(event.workspaceId, event.conversationId);
+      final crtState = state;
+      switch (crtState) {
+        case AppStateUnauthenticated():
+          emit(crtState.copyWith(
+              workspaceId: event.workspaceId,
+              conversationId: event.conversationId));
+        case AppStateAuthenticated():
+          emit(crtState.copyWith(
+              workspaceId: event.workspaceId,
+              conversationId: event.conversationId));
+        case AppStateReady():
+          emit(crtState.copyWith(
+            workspaceId: event.workspaceId,
+          ));
+      }
     });
 
     on<AppEventAuthInfoFetched>((event, emit) {
@@ -64,6 +99,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           final targetWorkspaceID =
               state.workspaceId ?? newAuthInfoByWorkspace.keys.firstOrNull;
           if (targetWorkspaceID != null) {
+            if (newAuthInfoByWorkspace[targetWorkspaceID] == null) {
+              _logger.warning(
+                  'No workspace info for $targetWorkspaceID authId: ${crtState.authId}');
+              return;
+            }
             _syncSessionRepository.connect(Session(
               workspaceId: targetWorkspaceID,
               authId: crtState.authId,
@@ -98,11 +138,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppState _authStatusChanges(AuthStatus status) {
     switch (status) {
-      case AuthStatusUnknown() ||
-            AuthStatusDisconnected() ||
-            AuthStatusRestricted():
+      case AuthStatusUnknown() || AuthStatusDisconnected():
         return AppState.unauthenticated(
-            authStatus: status, workspaceId: state.workspaceId);
+            authStatus: status,
+            workspaceId: workspaceId,
+            conversationId: conversationId);
       case AuthStatusAuthenticated():
         return _authStatusAuthenticated(status);
     }
@@ -110,16 +150,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppState _authStatusAuthenticated(AuthStatusAuthenticated authStatus) {
     final crtState = state;
-    // always fetch user info, even in case of token refresh
-    _fetchAuthInfo(authStatus.token, authStatus.authId);
+    if (authStatus.roles.isNotEmpty) {
+      // always fetch user info, even in case of token refresh
+      _fetchAuthInfo(authStatus.token, authStatus.authId);
+    }
     switch (crtState) {
       case AppStateUnauthenticated():
         return AppState.authenticated(
-          authStatus: authStatus,
-          authId: authStatus.authId,
-          token: authStatus.token,
-          workspaceId: crtState.workspaceId,
-        );
+            authStatus: authStatus,
+            authId: authStatus.authId,
+            token: authStatus.token,
+            workspaceId: crtState.workspaceId,
+            conversationId: conversationId);
       // TODO: trigger fetch of user info
       case AppStateAuthenticated():
         return AppState.authenticated(
@@ -127,6 +169,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           authId: authStatus.authId,
           token: authStatus.token,
           workspaceId: crtState.workspaceId,
+          conversationId: conversationId,
         );
       case AppStateReady():
         if (authStatus.authId != authStatus.authId) {
@@ -137,6 +180,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             authId: authStatus.authId,
             token: authStatus.token,
             workspaceId: crtState.workspaceId,
+            conversationId: conversationId,
+          );
+        }
+        if (authStatus.roles.isEmpty) {
+          return AppState.authenticated(
+            authStatus: authStatus,
+            authId: authStatus.authId,
+            token: authStatus.token,
+            workspaceId: crtState.workspaceId,
+            conversationId: conversationId,
           );
         }
         return crtState.copyWith(
@@ -184,5 +237,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void onChange(Change<AppState> change) {
     _logger.finer('AppState change: $change');
     super.onChange(change);
+  }
+
+  @override
+  void onEvent(AppEvent event) {
+    if (event is AppEventChangeWorkspace) {
+      _logger.finer('AppEvent: $event');
+    }
+    super.onEvent(event);
   }
 }

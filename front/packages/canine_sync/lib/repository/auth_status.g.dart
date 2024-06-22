@@ -30,18 +30,6 @@ Map<String, dynamic> _$$AuthStatusDisconnectedImplToJson(
       'runtimeType': instance.$type,
     };
 
-_$AuthStatusRestrictedImpl _$$AuthStatusRestrictedImplFromJson(
-        Map<String, dynamic> json) =>
-    _$AuthStatusRestrictedImpl(
-      $type: json['runtimeType'] as String?,
-    );
-
-Map<String, dynamic> _$$AuthStatusRestrictedImplToJson(
-        _$AuthStatusRestrictedImpl instance) =>
-    <String, dynamic>{
-      'runtimeType': instance.$type,
-    };
-
 _$AuthStatusAuthenticatedImpl _$$AuthStatusAuthenticatedImplFromJson(
         Map<String, dynamic> json) =>
     _$AuthStatusAuthenticatedImpl(

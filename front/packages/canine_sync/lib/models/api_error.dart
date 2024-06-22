@@ -20,7 +20,10 @@ class APIError with _$APIError {
     return APIError(kClientUnableToMakeRequest, '', '', debug: e.toString());
   }
 
-  factory APIError.serverError(Map<String, dynamic> json) {
+  factory APIError.serverError(Map<String, dynamic>? json) {
+    if (json == null || json.isEmpty) {
+      return APIError.invalidResponse('Invalid response.');
+    }
     try {
       return APIError.fromJson(json);
     } catch (e) {

@@ -8,6 +8,8 @@ import (
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
 
+	"back/internal/obfuscate"
+
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/rt/eventlog"
 	"context"
@@ -55,6 +57,7 @@ var (
 	ErrNotAuthorized          = errors.New("user not authorized")
 	ErrForbidden              = errors.New("forbidden to perform this action")
 	ErrNotFound               = errors.New("not found")
+	ErrInvalidRequest         = errors.New("invalid request")
 	ErrZitadelWorkspaceExists = errors.New("authorization workspace already exists")
 
 	ErrCreateUserEmailExists = domain.ErrEmailExists
@@ -440,8 +443,9 @@ func (s *Service) sendChangesToEventLog(
 }
 
 type EndUserAuthorization struct {
-	Authorized bool
-	Code       string
+	Authorized bool   `json:"authorized"`
+	Code       string `json:"code"`
+	Hint       string `json:"hint"`
 }
 
 //nolint:gochecknoglobals
@@ -451,19 +455,21 @@ var (
 	EndUserAuthorizationPrivate = makeEndUserAuthorization(false, "private")
 	// EndUserAuthorizationAlreadyAuthorized means the user is already authorized
 	EndUserAuthorizationAlreadyAuthorized = makeEndUserAuthorization(true, "already_authorized")
-	EndUserAuthorizationNA                = makeEndUserAuthorization(true, "does_not_apply")
+	EndUserAuthorizationDoesNotApply      = makeEndUserAuthorization(true, "does_not_apply")
 	EndUserAuthorizationAlreadyLinked     = makeEndUserAuthorization(false, "already_linked")
 	EndUserAuthorizationGrantedEmail      = makeEndUserAuthorization(true, "granted_email")
-	EndUserAuthorizationGrantedPhone      = makeEndUserAuthorization(true, "granted_email")
-	EndUserAuthorizationFailPhone         = makeEndUserAuthorization(false, "phone_no_match")
-	EndUserAuthorizationAskPhone          = makeEndUserAuthorization(false, "ask_phone")
-	EndUserAuthorizationFailEmail         = makeEndUserAuthorization(false, "email_no_match")
+	EndUserAuthorizationGrantedPhone      = makeEndUserAuthorization(true, "granted_phone")
+	EndUserAuthorizationFailPhoneNoMatch  = makeEndUserAuthorization(false, "phone_no_match")
+	EndUserAuthorizationFailAskPhone      = makeEndUserAuthorization(false, "ask_phone")
+	EndUserAuthorizationFailVerifyPhone   = makeEndUserAuthorization(false, "verify_phone")
+	EndUserAuthorizationFailEmailNoMatch  = makeEndUserAuthorization(false, "email_no_match")
 )
 
 func makeEndUserAuthorization(authorized bool, code string) EndUserAuthorization {
 	return EndUserAuthorization{
 		Authorized: authorized,
 		Code:       code,
+		Hint:       "",
 	}
 }
 
@@ -477,10 +483,97 @@ func (s *Service) GetAuthInfo(ctx context.Context, userAuthID string) ([]model.A
 	if err != nil {
 		return nil, fmt.Errorf("GetAuthInfo get auth info: %w", err)
 	}
+
 	return authInfo, nil
 }
 
-func (s *Service) CheckAuthorization(
+func (s *Service) VerifyPhone(ctx context.Context, token string, authID string, code string) error {
+	err := s.zitadelService.VerifyPhone(ctx, token, authID, code)
+
+	if err != nil {
+		if errors.Is(err, ErrZitadelInvalidRequest) {
+			return ErrInvalidRequest
+		}
+
+		if errors.Is(err, ErrZitadelUserUnauthorized) {
+			return ErrNotAuthorized
+		}
+		if errors.Is(err, ErrZitadelUserNotFound) {
+			return ErrNotFound
+		}
+
+		return fmt.Errorf("VerifyPhone verify phone: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) ResendPhoneCode(ctx context.Context, token, authID string) error {
+	err := s.zitadelService.ResendCode(ctx, authID, token)
+
+	if err != nil {
+		if errors.Is(err, ErrZitadelUserUnauthorized) {
+			return ErrNotAuthorized
+		}
+		if errors.Is(err, ErrZitadelUserNotFound) {
+			return ErrNotFound
+		}
+
+		return fmt.Errorf("ResendPhoneCode resend code: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) UpdatePhone(ctx context.Context, workspaceID,
+	conversationID int64, authID, token, phone string) error {
+	chatRepo, err := s.t.WithoutTransaction()
+	if err != nil {
+		return fmt.Errorf("LinkPhone begin transaction: %w", err)
+	}
+	conversation, err := chatRepo.GetConversation(ctx, conversationID)
+	if err != nil {
+		return fmt.Errorf("LinkPhone get conversation: %w", err)
+	}
+
+	if conversation.WorkspaceID != workspaceID {
+		return ErrNotFound
+	}
+
+	if conversation.ExternalUserID == 0 {
+		return ErrForbidden
+	}
+
+	wkspUser, err := chatRepo.GetUserByID(ctx, conversation.ExternalUserID)
+
+	if err != nil {
+		return fmt.Errorf("LinkPhone fail to get workspace user: %w", err)
+	}
+
+	if wkspUser.Type != genModel.UserType_External {
+		return ErrForbidden
+	}
+
+	if wkspUser.AuthID != "" && wkspUser.AuthID != authID {
+		return ErrNotAuthorized
+	}
+
+	err = s.zitadelService.SetPhone(ctx, token, authID, phone)
+
+	if err != nil {
+		if errors.Is(err, ErrZitadelUserUnauthorized) {
+			return ErrNotAuthorized
+		}
+		if errors.Is(err, ErrZitadelUserNotFound) {
+			return ErrNotFound
+		}
+		return fmt.Errorf("LinkPhone set phone: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) Link(
 	ctx context.Context,
 	workspaceID int64,
 	conversationID int64,
@@ -511,6 +604,10 @@ func (s *Service) CheckAuthorization(
 		return EndUserAuthorizationUndefined, fmt.Errorf("LoadAuthorization fail to get workspace user: %w", err)
 	}
 
+	if wkspUser.Type != genModel.UserType_External {
+		return EndUserAuthorizationDoesNotApply, nil
+	}
+
 	if wkspUser.AuthID != "" {
 		if wkspUser.AuthID == userAuthID {
 			// makes sure the user has the role in the project
@@ -523,10 +620,6 @@ func (s *Service) CheckAuthorization(
 		}
 
 		return EndUserAuthorizationAlreadyLinked, nil
-	}
-
-	if wkspUser.Type != genModel.UserType_External {
-		return EndUserAuthorizationNA, nil
 	}
 
 	// try authorized email
@@ -543,9 +636,9 @@ func (s *Service) CheckAuthorization(
 
 		return EndUserAuthorizationGrantedEmail, nil
 	}
-
+	authPhoneNumber := authContext.GetPhoneNumber()
 	if authContext.IsPhoneNumberVerified() { // has phone on the context
-		if authContext.GetPhoneNumber() == wkspUser.Phone {
+		if authPhoneNumber == wkspUser.Phone {
 			wkspUser.AuthID = userAuthID
 			err = chatRepo.SetUserAuthID(ctx, wkspUser.ID, userAuthID)
 			if err != nil {
@@ -560,15 +653,33 @@ func (s *Service) CheckAuthorization(
 		}
 
 		if wkspUser.Phone != "" {
-			return EndUserAuthorizationFailPhone, nil
+			return EndUserAuthorizationFailPhoneNoMatch, nil
 		}
 	}
 
-	if wkspUser.Phone != "" {
-		return EndUserAuthorizationAskPhone, nil
+	if wkspUser.Phone != "" && authPhoneNumber != "" {
+		if wkspUser.Phone == authPhoneNumber {
+			resp := EndUserAuthorizationFailVerifyPhone
+			resp.Hint = wkspUser.Phone
+
+			return resp, nil
+		}
+		// if not the case we will ask again for the phone to match the hint
+		// then we will follow up with the phone verification
 	}
 
-	return EndUserAuthorizationFailEmail, nil
+	if wkspUser.Phone != "" {
+		// TODO: remove this when the bug on zitaadel is understood
+		resp := EndUserAuthorizationFailAskPhone
+		resp.Hint = phoneHint(wkspUser.Phone)
+
+		return resp, nil
+	}
+
+	resp := EndUserAuthorizationFailEmailNoMatch
+	resp.Hint = emailHint(wkspUser.Email)
+
+	return resp, nil
 }
 
 func (s *Service) WorkspaceLogin(
@@ -596,4 +707,12 @@ func (s *Service) GetWorkspace(
 	}
 
 	return workspace, nil
+}
+
+func phoneHint(phone string) string {
+	return obfuscate.PhoneNumberPartially(phone)
+}
+
+func emailHint(email string) string {
+	return obfuscate.EmailAddressPartially(email)
 }

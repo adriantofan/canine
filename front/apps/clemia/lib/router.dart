@@ -6,6 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'login/login.dart';
 import 'logout/logout.dart';
 
+class ClemiaRoutes {
+  static final ConversationPath homeConversation =
+      ConversationPath(WorkspacePath(subPath: '/conversation'));
+}
+
 // see https://croxx5f.hashnode.dev/adding-modal-routes-to-your-gorouter
 //  about making a modal route and dealing with transiations
 //  This model ws explained here https://github.com/flutter/flutter/issues/116651#issuecomment-1956528322
@@ -28,6 +33,23 @@ class AppRouter {
         path: AppRoutes.home.pattern,
         parentNavigatorKey: _parentNavigatorKey,
         pageBuilder: (context, state) {
+          // TODO: this needs fixing because there is no conversationInfo
+          //  AND MOST IMPORTANTLY there is no conversationId in the path
+          return getPage(
+            child: MessagesPage(
+              conversationInfo: state.extra! as ConversationInfo,
+            ),
+            state: state,
+          );
+        },
+      ),
+      AppGoRoute(
+        onlyAuthenticated: true,
+        workspaceNamespaced: true,
+        path: ClemiaRoutes.homeConversation.pattern,
+        parentNavigatorKey: _parentNavigatorKey,
+        pageBuilder: (context, state) {
+          // TODO: this needs fixing because there is no conversationInfo
           return getPage(
             child: MessagesPage(
               conversationInfo: state.extra! as ConversationInfo,
@@ -43,6 +65,14 @@ class AppRouter {
         path: AppRoutes.slash.pattern,
         pageBuilder: (context, state) =>
             getPage(child: const SplashPage(), state: state),
+      ),
+      AppGoRoute(
+        onlyAuthenticated: false,
+        workspaceNamespaced: false,
+        parentNavigatorKey: _parentNavigatorKey,
+        path: AppRoutes.restricted.pattern,
+        pageBuilder: (context, state) =>
+            getPage(child: const RestrictedWidget(), state: state),
       ),
       AppGoRoute(
         onlyAuthenticated: false,

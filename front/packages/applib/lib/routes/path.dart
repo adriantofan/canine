@@ -54,11 +54,12 @@ class WorkspacePath implements RouterPath {
 }
 
 class ConversationPath implements RouterPath {
+  static const String conversationIdPathKey = 'conversationId';
   @override
   final String pattern;
   final WorkspacePath _homePath;
   ConversationPath(this._homePath)
-      : pattern = '${_homePath.pattern}/:conversationId' {
+      : pattern = '${_homePath.pattern}/:$conversationIdPathKey' {
     assert(_homePath.pattern.split('/').length == 4);
   }
 
@@ -89,5 +90,10 @@ class ConversationPath implements RouterPath {
       return null;
     }
     return int.tryParse(path.pathSegments[3]);
+  }
+
+  static int? getConversationId(GoRouterState state) {
+    final id = state.pathParameters[conversationIdPathKey];
+    return id == null ? null : int.tryParse(id);
   }
 }

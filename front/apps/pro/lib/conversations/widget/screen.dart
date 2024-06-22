@@ -9,8 +9,8 @@ import 'conversations_list.dart';
 
 class ConversationsScreen extends StatefulWidget {
   const ConversationsScreen({super.key, required this.child});
-
   final Widget child;
+
   @override
   State<ConversationsScreen> createState() => _ConversationsScreenState();
 }

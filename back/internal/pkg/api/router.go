@@ -28,8 +28,10 @@ func ConfigureRouter(
 	authRoutes.Use(authMiddleware)
 
 	authRoutes.GET("/info", handlers.GetAuthInfo)
-
 	apiRoutes.POST("/workspaces", handlers.CreateWorkspace)
+	authMeRoutes := authRoutes.Group("/me")
+	authMeRoutes.POST("verify-phone", handlers.MeVerifyPhone)
+	authMeRoutes.POST("resend-phone-code", handlers.MeResendPhoneCode)
 
 	// ATTENTION: This is a security check to ensure that the user is only allowed to access their own workspace
 	// it MUST match the workspace_id param as defined in the identity middleware
@@ -37,7 +39,8 @@ func ConfigureRouter(
 
 	// TODO: write a firebase middleware
 	workspaceGroup.Use(authMiddleware)
-	workspaceGroup.GET("/authz/check", handlers.CheckAuthorization)
+	workspaceGroup.POST("/authz/link", handlers.Link)
+	workspaceGroup.POST("/authz/link-phone", handlers.LinkPhone)
 
 	workspaceGroup.Use(identityMiddleware)
 	workspaceGroup.GET("/me", handlers.GetAuthInfo)

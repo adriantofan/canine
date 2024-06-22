@@ -10,8 +10,8 @@ class SyncSessionContainer extends StatelessWidget {
   // if not supplied, the workspace from path is used
   final int? workspaceId;
 
-  const SyncSessionContainer(
-      {super.key, required this.child, this.workspaceId});
+  SyncSessionContainer({required this.child, this.workspaceId})
+      : super(key: ValueKey('sync-session-container-$workspaceId'));
 
   @override
   Widget build(BuildContext context) {

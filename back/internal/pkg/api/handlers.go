@@ -494,7 +494,50 @@ func (h ChatHandlers) GetAuthInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, authInfo)
 }
 
-func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {
+func (h ChatHandlers) MeVerifyPhone(ctx *gin.Context) {
+	userCtx := zitadel.GinMustGetUserContext(ctx)
+	authID := zitadel.GinCtxMustGetUserAuthID(ctx)
+
+	var params struct {
+		Code string `binding:"required" form:"code" json:"code"`
+	}
+
+	if err := ctx.ShouldBind(&params); err != nil {
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	err := h.Service.VerifyPhone(ctx, userCtx.GetToken(), authID, params.Code)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (h ChatHandlers) MeResendPhoneCode(ctx *gin.Context) {
+	userCtx := zitadel.GinMustGetUserContext(ctx)
+	authID := zitadel.GinCtxMustGetUserAuthID(ctx)
+
+	// TODO: add rate limiting with redis to prevent abuse 30 seconds
+	err := h.Service.ResendPhoneCode(ctx, userCtx.GetToken(), authID)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (h ChatHandlers) LinkPhone(ctx *gin.Context) {
+	userCtx := zitadel.GinMustGetUserContext(ctx)
+	authID := zitadel.GinCtxMustGetUserAuthID(ctx)
 
 	var uriParams zitadel.WorkspaceBased
 
@@ -506,7 +549,46 @@ func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {
 	}
 
 	var params struct {
-		ConversationID int64 `binding:"required" form:"cid"`
+		ConversationID int64  `binding:"required" form:"conversation_id" json:"conversation_id"`
+		Phone          string `binding:"required" form:"phone" json:"phone"`
+	}
+
+	if err := ctx.ShouldBind(&params); err != nil {
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	err := h.Service.UpdatePhone(
+		ctx,
+		uriParams.WorkspaceID,
+		params.ConversationID,
+		authID,
+		userCtx.GetToken(),
+		params.Phone,
+	)
+
+	if err != nil {
+		abortWithAppError(ctx, err)
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (h ChatHandlers) Link(ctx *gin.Context) {
+	var uriParams zitadel.WorkspaceBased
+
+	if err := ctx.ShouldBindUri(&uriParams); err != nil {
+		// this is a bug
+		abortBadRequest(ctx, err)
+
+		return
+	}
+
+	var params struct {
+		ConversationID int64 `binding:"required" form:"conversation_id" json:"conversation_id"`
 	}
 
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -517,7 +599,7 @@ func (h ChatHandlers) CheckAuthorization(ctx *gin.Context) {
 
 	userAuthID := zitadel.GinCtxMustGetUserAuthID(ctx)
 	authContext := zitadel.GinMustGetUserContext(ctx)
-	authorization, err := h.Service.CheckAuthorization(
+	authorization, err := h.Service.Link(
 		ctx,
 		uriParams.WorkspaceID,
 		params.ConversationID,

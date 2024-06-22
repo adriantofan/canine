@@ -6,20 +6,25 @@ sealed class AppState with _$AppState {
 
   const factory AppState.unauthenticated({
     required AuthStatus authStatus,
-    required int? workspaceId, // wanted workspaceId
+    // target workspaceId
+    required int? workspaceId,
+    required int? conversationId,
   }) = AppStateUnauthenticated;
 
   const factory AppState.authenticated({
     required AuthStatus authStatus,
     required String authId,
     required String token,
-    required int? workspaceId, // wanted workspaceId
+    // target workspace
+    required int? workspaceId,
+    required int? conversationId,
   }) = AppStateAuthenticated;
 
   const factory AppState.ready({
     required AuthStatus authStatus,
     required String authId,
     required String token,
+    // actual workspace
     required int? workspaceId,
     required Map<int, AuthInfo> workspaces,
   }) = AppStateReady;

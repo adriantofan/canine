@@ -19,7 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
       {this.loginHint, this.workspaceId})
       : super(LoginState.initial(onWorkspace: workspaceId != null)) {
     _disposable = _authRepository.authStatusChanges.listen((status) {
-      if (status is AuthStatusAuthenticated) {
+      if (status is AuthStatusAuthenticated && status.hasGrants) {
         emit(state.copyWith(loginStatus: FormzSubmissionStatus.inProgress));
       }
     });

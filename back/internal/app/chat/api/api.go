@@ -152,10 +152,10 @@ func Run(args []string) {
 	zitadelService := app.NewZitadelService(
 		adminAdminClient,
 		managementClient,
-		nil,
 		*zitadelAuthProjectID,
 		*zitadelAuthOrgID,
 		*zitadelAutoApprove,
+		"https://"+issuerURL.Hostname(),
 	)
 
 	service := app.NewService(

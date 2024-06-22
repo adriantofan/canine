@@ -8,7 +8,8 @@ import 'login_form.dart';
 class LoginPage extends StatelessWidget {
   final String? loginHint;
   final int? workspaceId;
-  const LoginPage({super.key, this.loginHint, this.workspaceId});
+  LoginPage({this.loginHint, this.workspaceId})
+      : super(key: ValueKey('login-page-$workspaceId'));
 
   @override
   Widget build(BuildContext context) {

@@ -33,13 +33,7 @@ class AppGoRoute extends GoRoute {
   Future<String?> _guard(
       BuildContext context, GoRouterState routerState) async {
     final appBloc = context.read<AppBloc>();
-
-    onLogin(workspaceId) {
-      if (workspaceId != null) {
-        appBloc.add(AppEventChangeWorkspace(workspaceId));
-      }
-      return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$workspaceId";
-    }
+    _logger.finer('refresh ${routerState.uri}');
 
     maybeOnHome(AppStateReady appState) {
       if (appState.workspaceId == null) {
@@ -53,30 +47,50 @@ class AppGoRoute extends GoRoute {
       return AppRoutes.home.path(appState.workspaceId);
     }
 
-    final onSplash = routerState.path == AppRoutes.slash.path;
-    if (onSplash) {
-      appBloc.state.authStatus;
-      final crtState = appBloc.state;
-      switch (crtState) {
-        case AppStateUnauthenticated():
-          switch (crtState.authStatus) {
-            case AuthStatusDisconnected():
-              return onLogin(null);
-            case AuthStatusRestricted():
-              return AppRoutes.restricted.path;
-            default:
-          }
-        case AppStateReady():
-          return maybeOnHome(crtState);
-        default:
-      }
-      return null; // stay on splash
-    }
-
     final isOnWorkspace =
         routerState.pathParameters.containsKey(WorkspacePath.pathKey);
     final workspaceId =
         isOnWorkspace ? WorkspacePath.parseWorkspaceId(routerState.uri) : null;
+
+    final conversationId = ConversationPath.getConversationId(routerState);
+    final isOnConversation = conversationId != null;
+
+    onLogin() {
+      if (workspaceId != null &&
+          (appBloc.workspaceId != workspaceId ||
+              appBloc.conversationId != conversationId)) {
+        appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+      }
+      return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$workspaceId";
+    }
+
+    onRestricted() {
+      return '${AppRoutes.restricted.path}';
+    }
+
+    final isOnSplash = routerState.path == AppRoutes.slash.path;
+
+    if (isOnSplash) {
+      appBloc.state.authStatus;
+      final crtState = appBloc.state;
+      final crtAuthStatus = crtState.authStatus;
+      switch (crtState) {
+        case AppStateUnauthenticated():
+          switch (crtState.authStatus) {
+            case AuthStatusDisconnected():
+              return onLogin();
+            case AuthStatusUnknown() || AuthStatusAuthenticated():
+              break;
+          }
+        case AppStateAuthenticated():
+          if (crtAuthStatus.doesNotHaveGrants) {
+            return onRestricted(); // ok, no wksp/conv changes with respect to app state
+          }
+        case AppStateReady():
+          return maybeOnHome(crtState);
+      }
+      return null; // stay on splash
+    }
 
     if (isOnWorkspace && workspaceId == null) {
       throw GoException('Invalid workspace');
@@ -87,16 +101,16 @@ class AppGoRoute extends GoRoute {
     if (isOnLogin) {
       appBloc.state.authStatus;
       final crtState = appBloc.state;
+      final crtAuthStatus = crtState.authStatus;
       switch (crtState) {
-        case AppStateUnauthenticated():
-          switch (crtState.authStatus) {
-            case AuthStatusRestricted():
-              return AppRoutes.restricted.path;
-            default:
+        case AppStateAuthenticated():
+          if (crtAuthStatus.doesNotHaveGrants) {
+            return onRestricted(); // ok, no wksp/conv changes with respect to app state
           }
         case AppStateReady():
           return maybeOnHome(appBloc.state as AppStateReady);
-        default:
+        case AppStateUnauthenticated():
+          break;
       }
       return null; // stay onLogin
     }
@@ -111,28 +125,42 @@ class AppGoRoute extends GoRoute {
 
       if (crtState is AppStateAuthenticated) {
         // it will get redirected to the home page
-        return onLogin(workspaceId);
+        return onLogin();
       }
     }
 
     if (!isOnLogin && onlyAuthenticated) {
       final crtState = appBloc.state;
 
-      if (crtState is! AppStateReady) {
-        return onLogin(workspaceId);
+      if (crtState.authStatus is AuthStatusUnknown) {
+        // this is probably the first route the user visits at load
+        // so we don't know the auth status yet
+        if (workspaceId != null) {
+          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+        }
+        return AppRoutes.slash.path;
       }
+
+      if (crtState is! AppStateReady) {
+        return onLogin();
+      }
+      // From here on we are in state Ready
 
       if (isOnWorkspace) {
         if (crtState.workspaceId == null) {
           // TODO: unclear what to do here
         }
 
-        if (crtState.workspaces[workspaceId] == null) {
-          return AppRoutes.restricted.path;
-        }
+        if (crtState.workspaceId != workspaceId && workspaceId != null) {
+          // workspace changed
+          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+          // TODO: workspace that we stay are on is different from the one in the state
 
-        if (crtState.workspaceId != workspaceId) {
-          appBloc.add(AppEventChangeWorkspace(workspaceId!));
+          if (crtState.workspaces[workspaceId] == null) {
+            // TODO: this breaks the contract of the AppEventChangeWorkspace
+            //     because the workspace is not yet in the state
+            return onRestricted();
+          }
         }
       }
     }

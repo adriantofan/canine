@@ -1,3 +1,4 @@
+export './src/code.dart';
 export './src/confirmed_password.dart';
 export './src/email.dart';
 export './src/file_input.dart';

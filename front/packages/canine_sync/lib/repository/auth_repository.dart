@@ -53,6 +53,7 @@ class AuthRepository {
           'openid',
           'profile',
           'email',
+          'phone',
           'offline_access',
           // adds the following in to the claims
           // urn:zitadel:iam:user:metadata: {0000001: YXNzaXN0YW50}
@@ -61,7 +62,8 @@ class AuthRepository {
           'urn:zitadel:iam:org:projects:roles',
           // Unclear how this is used
           'urn:zitadel:iam:org:project:id:$appProjectId:aud',
-
+          // We make calls on behalf of the user on the server size
+          'urn:zitadel:iam:org:project:id:zitadel:aud'
           // this is where the non matched users land in
           // also possible to have a default instance organization
           // 'urn:zitadel:iam:org:id:${endUserOrganizationId}',
@@ -124,10 +126,6 @@ class AuthRepository {
       try {
         final newRoles = parseRoles(appProjectId, user.aggregatedClaims);
         _roles = newRoles;
-        if (newRoles.isEmpty) {
-          _authStatus.add(const AuthStatus.restricted());
-          return;
-        }
         _authStatus.add(AuthStatus.authenticated(
             newRoles, user.uidRequired, user.token.accessToken!));
       } catch (e, st) {

@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authRepository, {this.loginHint})
       : super(const LoginState.initial()) {
     disposable = _authRepository.authStatusChanges.listen((status) {
-      if (status is AuthStatusAuthenticated) {
+      if (status is AuthStatusAuthenticated && status.hasGrants) {
         emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       }
     });

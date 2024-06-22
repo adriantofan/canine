@@ -22,6 +22,11 @@ var (
 	ErrorNotAuthorized = Error{
 		Message: "Not authorized",
 	}
+
+	ErrorBadRequest = Error{
+		Code:    ErrorCodeInvalidRequest,
+		Message: "Invalid request",
+	}
 )
 
 const (

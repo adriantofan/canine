@@ -29,6 +29,7 @@ dependencies:
     path: ../../packages/form_inputs
   go_router: ^14.1.4
   meta: ^1.11.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

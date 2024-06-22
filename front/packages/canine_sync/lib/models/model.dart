@@ -3,6 +3,7 @@ export 'auth/auth.dart';
 export 'auth_info.dart';
 export 'conversation.dart';
 export 'devis_recipient.dart';
+export 'end_user_authorization.dart';
 export 'message.dart';
 export 'org_create_payload.dart';
 export 'sync/list_sync_state.dart';

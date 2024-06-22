@@ -6,6 +6,9 @@ sealed class AppEvent with _$AppEvent {
   const factory AppEvent.authInfoFetched(
       List<AuthInfo> authInfo, String authId) = AppEventAuthInfoFetched;
   const factory AppEvent.logout() = AppEventLogout;
-  const factory AppEvent.changeWorkspace(int workspaceId) =
+  // Assumptions:
+  // - triggered from the router, before redirecting to some form of authentication / authorization
+  // - the target route, will stay on the same place before and after the  changeWorkspace event
+  const factory AppEvent.changeWorkspace(int workspaceId, int? conversationId) =
       AppEventChangeWorkspace;
 }

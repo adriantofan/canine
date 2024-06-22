@@ -19,6 +19,51 @@ class APIClientBase {
   final _logger = Logger('APIClient');
   APIClientBase(this._apiBase, this._wsBase);
 
+  Future<void> meVerifyPhone(String token, String code) async {
+    await _postJSON('/auth/me/verify-phone', {
+      'code': code,
+    }, headers: {
+      'Authorization': 'Bearer $token',
+    });
+  }
+
+  Future<void> meResendPhoneCode(String token) async {
+    await _postJSON('/auth/me/resend-phone-code', null, headers: {
+      'Authorization': 'Bearer $token',
+    });
+  }
+
+  Future<void> meUpdatePhone(String token, int workspaceId, int conversationId,
+      String mobileFormat164) async {
+    await _postJSON('/$workspaceId/authz/link-phone', {
+      'phone': mobileFormat164,
+      'conversation_id': conversationId,
+    }, headers: {
+      'Authorization': 'Bearer $token',
+    });
+  }
+
+  Future<EndUserAuthorization> authzCheck(
+      String token, int workspaceId, int conversationId) async {
+    // TODO: remove this delay
+    // await Future.delayed(const Duration(seconds: 2));
+    final response = await _postJSON(
+      '/$workspaceId/authz/link',
+      {
+        'conversation_id': conversationId,
+      },
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    try {
+      return EndUserAuthorization.fromJson(response);
+    } catch (e) {
+      _logger.severe('Failed to parse auth_info response', e);
+      _logger.finest('Response: ${jsonEncode(response)}');
+      throw APIError.invalidResponse(e.toString());
+    }
+  }
+
   Future<List<AuthInfo>> userInfo(String token) async {
     // TODO: remove this delay
     // await Future.delayed(const Duration(seconds: 2));
@@ -62,7 +107,7 @@ class APIClientBase {
     required Map<String, String> headers,
   }) async {
     try {
-      return _makeRequest(
+      return await _makeRequest(
         HttpMethod.multipart,
         path,
         null,
@@ -84,7 +129,7 @@ class APIClientBase {
     Map<String, String>? headers,
   }) async {
     try {
-      return _makeRequest(
+      return await _makeRequest(
         HttpMethod.post,
         path,
         body,
@@ -99,7 +144,8 @@ class APIClientBase {
 
   Future<dynamic> _getJSON(String path, {Map<String, String>? headers}) async {
     try {
-      return _makeRequest(HttpMethod.get, path, null, null, headers: headers);
+      return await _makeRequest(HttpMethod.get, path, null, null,
+          headers: headers);
     } catch (e) {
       _logger.finer("Failed GET request to $path", e);
       rethrow;
@@ -166,17 +212,20 @@ class APIClientBase {
     } catch (e) {
       throw APIError.unableToMakeRequest(e);
     }
-
     final dynamic decoded;
-    try {
-      decoded = jsonDecode(response.body);
-      _logger.fine(
-          '🌐📩${methodLog(method)} $path $fileNamesLog $bodyOrFieldsLog: $decoded');
-    } catch (e) {
-      _logger.finer(
-          '🌐💥Invalid response ${methodLog(method)} $path : ${response.body}',
-          e);
-      throw APIError.invalidResponse(e.toString());
+    if (response.body.isEmpty) {
+      decoded = null;
+    } else {
+      try {
+        decoded = jsonDecode(response.body);
+        _logger.fine(
+            '🌐📩${methodLog(method)} $path $fileNamesLog $bodyOrFieldsLog: $decoded');
+      } catch (e) {
+        _logger.finer(
+            '🌐💥Invalid response ${methodLog(method)} $path : ${response.body}',
+            e);
+        throw APIError.invalidResponse(e.toString());
+      }
     }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
