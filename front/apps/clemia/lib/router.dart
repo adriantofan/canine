@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'login/login.dart';
 import 'logout/logout.dart';
+import 'skaffold/skaffold.dart';
 
 class ClemiaRoutes {
   static final ConversationPath homeConversation =
@@ -24,24 +25,46 @@ class AppRouter {
 
   static final GlobalKey<NavigatorState> _parentNavigatorKey =
       GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> _contentNavigatorKey =
+      GlobalKey<NavigatorState>();
 
   AppRouter._internal() {
     final routes = [
-      AppGoRoute(
-        onlyAuthenticated: true,
-        workspaceNamespaced: true,
-        path: AppRoutes.home.pattern,
+      ShellRoute(
         parentNavigatorKey: _parentNavigatorKey,
-        pageBuilder: (context, state) {
-          // TODO: this needs fixing because there is no conversationInfo
-          //  AND MOST IMPORTANTLY there is no conversationId in the path
-          return getPage(
-            child: MessagesPage(
-              conversationInfo: state.extra! as ConversationInfo,
-            ),
-            state: state,
+        builder: (context, state, child) {
+          return SkaffoldView(
+            child: child,
           );
         },
+        routes: [
+          AppGoRoute(
+            onlyAuthenticated: true,
+            workspaceNamespaced: true,
+            path: AppRoutes.home.pattern,
+            pageBuilder: (context, state) {
+              return getPage(
+                child: Scaffold(
+                  // appBar: AppBar(
+                  //   title: Text('Home'),
+                  // ),
+                  body: const Center(
+                    child: Text('Home'),
+                  ),
+                ),
+                state: state,
+              );
+              // // TODO: this needs fixing because there is no conversationInfo
+              // //  AND MOST IMPORTANTLY there is no conversationId in the path
+              // return getPage(
+              //   child: MessagesPage(
+              //     conversationInfo: state.extra! as ConversationInfo,
+              //   ),
+              //   state: state,
+              // );
+            },
+          ),
+        ],
       ),
       AppGoRoute(
         onlyAuthenticated: true,
@@ -108,7 +131,7 @@ class AppRouter {
       routes: routes,
       // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
       // If enabled , go router adds a listner to logger and outputs the logs to console
-      // debugLogDiagnostics: true,
+      debugLogDiagnostics: true,
     );
     // router.routerDelegate.addListener(() {
     //   final config = router.routerDelegate.currentConfiguration;

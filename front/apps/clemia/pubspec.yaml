@@ -38,6 +38,7 @@ dependencies:
   go_router: ^14.1.4
   rxdart: ^0.27.7
   meta: ^1.11.0
+  sidebarx: ^0.17.1
 
 dev_dependencies:
   flutter_test:
