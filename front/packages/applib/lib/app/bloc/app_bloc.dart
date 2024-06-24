@@ -101,7 +101,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           if (targetWorkspaceID != null) {
             if (newAuthInfoByWorkspace[targetWorkspaceID] == null) {
               _logger.warning(
-                  'No workspace info for $targetWorkspaceID authId: ${crtState.authId}');
+                  '❗️No workspace info for $targetWorkspaceID authId: ${crtState.authId}');
+              throw ArgumentError.value(
+                  targetWorkspaceID, 'Invalid workspace ID');
               return;
             }
             _syncSessionRepository.connect(Session(

@@ -56,6 +56,7 @@ class SyncService implements Sync {
         await for (var data
             in channel.stream.takeUntil(_stopController.stream)) {
           final msg = _decodeApiServerMessage(data);
+          _logger.fine('🪽Server change:', msg);
           onUpdate(msg);
         }
 
@@ -160,10 +161,8 @@ class SyncService implements Sync {
   }
 
   @override
-  Future<Conversation> createConversation(
-      {required String recipientMessagingAddress}) {
-    return _apiClient.createConversation(
-        recipientEmail: recipientMessagingAddress);
+  Future<Conversation> createConversation({required int userId}) {
+    return _apiClient.createConversation(userId: userId);
   }
 
   @override
@@ -213,8 +212,8 @@ class SyncService implements Sync {
     controller.onCancel = () {
       _procs.remove(proc);
     };
-    var initialValue = proc.init(_cache);
     controller.onListen = () {
+      var initialValue = proc.init(_cache);
       if (initialValue != null) {
         controller.add(initialValue);
       }

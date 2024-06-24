@@ -158,11 +158,10 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<Conversation> createConversation(
-      {required String recipientMessagingAddress}) {
+  Future<Conversation> createConversation({required int userId}) {
     ReceivePort receivePort = ReceivePort();
-    _sendPort.send(Msg.createConversation(receivePort.sendPort,
-        recipientMessagingAddress: recipientMessagingAddress));
+    _sendPort
+        .send(Msg.createConversation(receivePort.sendPort, userId: userId));
     return receivePort.first.then((data) {
       if (data is Conversation) {
         return data;

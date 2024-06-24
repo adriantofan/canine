@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'package:file_selector/file_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../api/session.dart';
 import '../../models/model.dart';
 import '../proc.dart';
 
@@ -32,7 +31,7 @@ sealed class Msg with _$Msg {
       String idempotencyId,
       List<XFile> attachments) = MsgCreateMessage;
   const factory Msg.createConversation(SendPort sendPort,
-      {required String recipientMessagingAddress}) = MsgCreateConversation;
+      {required int userId}) = MsgCreateConversation;
   const factory Msg.createUser(SendPort sendPort,
       {required String messagingAddress,
       required UserType userType,

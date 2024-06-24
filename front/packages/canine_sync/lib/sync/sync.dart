@@ -9,8 +9,7 @@ abstract class Sync {
   Future<Message> createMessage(int conversationId, String text,
       String idempotencyId, List<XFile> attachments);
 
-  Future<Conversation> createConversation(
-      {required String recipientMessagingAddress});
+  Future<Conversation> createConversation({required int userId});
 
   Future<User> createUser(
       {required String messagingAddress,

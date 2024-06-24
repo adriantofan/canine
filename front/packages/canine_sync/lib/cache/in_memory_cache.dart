@@ -110,6 +110,7 @@ class InMemoryCache implements Cache {
     conversationMessages = Map.fromEntries(updates.messages.map((m) => MapEntry(
         m.conversationId, ListState.fromItems(m.messages, (m) => m.id, true))));
     me = _usersById[userId]!;
+    conversations = updates.conversations;
   }
 
   @override

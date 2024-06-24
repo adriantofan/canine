@@ -63,7 +63,7 @@ class AppRouter {
                     AppGoRoute(
                         onlyAuthenticated: true,
                         workspaceNamespaced: true,
-                        path: ProRoutes.homeConversation.pattern,
+                        path: AppRoutes.home.pattern,
                         parentNavigatorKey: _messagesTabNavigatorKey,
                         pageBuilder: (context, state) {
                           return getPage(
@@ -280,13 +280,16 @@ class AppRouter {
       ConversationInfo conversationInfo, DraftMessage draftMessage) {
     final crtUri = router.routeInformationProvider.value.uri;
 
-    if (!AppRoutes.home.isOnSubpath(crtUri) ||
-        AppRoutes.home.workspaceId(crtUri) == null) {
+    if (!ProRoutes.homeNew.isOnSubpath(crtUri) ||
+        ProRoutes.homeNew.workspaceId(crtUri) == null) {
       throw FormatException(
           'Cannot create draft conversation only from a workspaced resource',
           crtUri.path);
     }
-    router.replace(ProRoutes.homeNew.path(conversationInfo.conversationId),
+    final workspaceId = ProRoutes.homeConversation.workspaceId(crtUri)!;
+    router.replace(
+        ProRoutes.homeConversation
+            .path(workspaceId, conversationInfo.conversationId),
         extra: (conversationInfo, draftMessage));
   }
 

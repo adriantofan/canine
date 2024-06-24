@@ -41,13 +41,11 @@ class SyncSkeleton {
   // Section: Message handlers
 
   void _createConversation(MsgCreateConversation msg) {
-    _service
-        .createConversation(
-            recipientMessagingAddress: msg.recipientMessagingAddress)
-        .then((c) => msg.sendPort.send(c),
-            onError: (error, stackTrace) => (error is APIError)
-                ? msg.sendPort.send(error)
-                : msg.sendPort.send(error.toString()));
+    _service.createConversation(userId: msg.userId).then(
+        (c) => msg.sendPort.send(c),
+        onError: (error, stackTrace) => (error is APIError)
+            ? msg.sendPort.send(error)
+            : msg.sendPort.send(error.toString()));
   }
 
   void _createUser(MsgCreateUser msg) {

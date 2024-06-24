@@ -39,7 +39,8 @@ class _TabHomeState extends State<TabHome> {
           BlocBuilder<AppBloc, AppState>(
             builder: (context, state) {
               return DisappearingNavigationRail(
-                onAddCallback: _addConversation,
+                onAddCallback: () =>
+                    _addConversation(context.read<AppBloc>().workspaceId!),
                 selectedIndex: widget.child.currentIndex,
                 backgroundColor: _backgroundColor,
                 onDestinationSelected: (index) {
@@ -85,29 +86,36 @@ class _TabHomeState extends State<TabHome> {
     );
   }
 
-  void _addConversation(BuildContext rootContext) {
+  void _addConversation(int workspaceId) {
     showDialog(
         context: context,
         builder: (context) => Dialog(
-              child: ConversationCreatePage(
-                  repository: context.read<SyncRepository>(),
-                  didCreate: (result) {
-                    Navigator.of(rootContext, rootNavigator: true).pop();
-                    switch (result) {
-                      case CreateFlowResultCancel():
-                        return;
-                      case CreateFlowResultDevis():
-                        AppRouter.goConversationWithUser(DraftConversation(
-                            user: result.user,
-                            message: DraftMessage(attachments: [result.file])));
-                      case CreateFlowResultUser():
-                        AppRouter.goConversationWithUser(DraftConversation(
-                            user: result.user, message: const DraftMessage()));
-                      case CreateFlowResultConversation():
-                        AppRouter.replaceConversationWithInfo(
-                            result.conversation, const DraftMessage());
-                    }
-                  }),
+              child: SyncSessionContainer(
+                workspaceId: workspaceId,
+                child: Builder(builder: (inSessionContext) {
+                  return ConversationCreatePage(
+                      repository: inSessionContext.read<SyncRepository>(),
+                      didCreate: (result) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        switch (result) {
+                          case CreateFlowResultCancel():
+                            return;
+                          case CreateFlowResultDevis():
+                            AppRouter.goConversationWithUser(DraftConversation(
+                                user: result.user,
+                                message:
+                                    DraftMessage(attachments: [result.file])));
+                          case CreateFlowResultUser():
+                            AppRouter.goConversationWithUser(DraftConversation(
+                                user: result.user,
+                                message: const DraftMessage()));
+                          case CreateFlowResultConversation():
+                            AppRouter.replaceConversationWithInfo(
+                                result.conversation, const DraftMessage());
+                        }
+                      });
+                }),
+              ),
             ));
   }
 }

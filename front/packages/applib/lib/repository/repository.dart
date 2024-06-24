@@ -42,10 +42,8 @@ class SyncRepository {
         conversationId, text, idempotencyId, attachments);
   }
 
-  Future<Conversation> createConversation(
-      {required String recipientMessagingAddress}) async {
-    return _sync.createConversation(
-        recipientMessagingAddress: recipientMessagingAddress);
+  Future<Conversation> createConversation({required int userId}) async {
+    return _sync.createConversation(userId: userId);
   }
 
   Future<DevisRecipient> analyseDevis(XFile file) async {

@@ -38,9 +38,10 @@ void main() async {
   authRepository.init();
   final syncSessionRepository =
       SyncSessionRepository(Config().apiBase, Config().wsBase);
-  initAppLib(AppType.pro);
+  var appType = AppType.pro;
+  initAppLib(appType);
   AppRouter.instance; // Make sure the router is initialized when app starts
-  final prefs = PersistentPreferences();
+  final prefs = PersistentPreferences(appType: appType);
   await prefs.init();
   final (lastWorkspaceId, lastConversationId) = await prefs.getLastWorkspace();
   runApp(MainApp(
@@ -48,7 +49,7 @@ void main() async {
     apiClient: apiClient,
     syncSessionRepository: syncSessionRepository,
     router: AppRouter.router,
-    appType: AppType.clemia,
+    appType: appType,
     preferences: prefs,
     lastWorkspaceId: lastWorkspaceId,
     lastConversationId: lastConversationId,

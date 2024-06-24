@@ -259,12 +259,11 @@ class APIWorkspaceClient extends APIClientBase {
     }
   }
 
-  Future<Conversation> createConversation(
-      {required String recipientEmail}) async {
+  Future<Conversation> createConversation({required int userId}) async {
     final authHeader = await this.authHeader();
 
-    final response = await _postJSON('/${_session.workspaceId}/conversations',
-        {'recipient_email': recipientEmail},
+    final response = await _postJSON(
+        '/${_session.workspaceId}/conversations', {'user_id': userId},
         headers: authHeader);
     try {
       return Conversation.fromJson(response);
@@ -321,7 +320,7 @@ class APIWorkspaceClient extends APIClientBase {
       int conversationId, int? lastId) async {
     final authHeader = await this.authHeader();
     final response = await _getJSON(
-        '/${_session.workspaceId}/conversations/$conversationId/messages?lower_than=$lastId&limit=$APIClientBase.kItemsPerPage',
+        '/${_session.workspaceId}/conversations/$conversationId/messages?lower_than=$lastId&limit=${APIClientBase.kItemsPerPage}',
         headers: authHeader);
     try {
       final result = Paginated<Message>.fromJson(

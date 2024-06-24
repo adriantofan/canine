@@ -29,8 +29,17 @@ class AppGoRoute extends GoRoute {
 
   @override
   get redirect => _guard;
-
   Future<String?> _guard(
+      BuildContext context, GoRouterState routerState) async {
+    final result = await _guard1(context, routerState);
+
+    if (result != null) {
+      _logger.fine('redirect: $result');
+    }
+    return result;
+  }
+
+  Future<String?> _guard1(
       BuildContext context, GoRouterState routerState) async {
     final appBloc = context.read<AppBloc>();
     _logger.finer('refresh ${routerState.uri}');

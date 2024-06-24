@@ -33,9 +33,7 @@ mixin _$Msg {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -57,8 +55,7 @@ mixin _$Msg {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -80,8 +77,7 @@ mixin _$Msg {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -247,9 +243,7 @@ class _$MsgUpdateTokenImpl implements MsgUpdateToken {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -274,8 +268,7 @@ class _$MsgUpdateTokenImpl implements MsgUpdateToken {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -300,8 +293,7 @@ class _$MsgUpdateTokenImpl implements MsgUpdateToken {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -469,9 +461,7 @@ class _$MsgDisconnectImpl implements MsgDisconnect {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -496,8 +486,7 @@ class _$MsgDisconnectImpl implements MsgDisconnect {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -522,8 +511,7 @@ class _$MsgDisconnectImpl implements MsgDisconnect {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -707,9 +695,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -734,8 +720,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -760,8 +745,7 @@ class _$MsgSubscribeProcImpl implements MsgSubscribeProc {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -932,9 +916,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -959,8 +941,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -985,8 +966,7 @@ class _$MsgUnsubscribeProcImpl implements MsgUnsubscribeProc {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1178,9 +1158,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -1206,8 +1184,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1233,8 +1210,7 @@ class _$MsgConversationMessagesSyncStateSubscribeImpl
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1416,9 +1392,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -1443,8 +1417,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1469,8 +1442,7 @@ class _$MsgConversationMessagesSyncStateUnsubscribeImpl
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1653,9 +1625,7 @@ class _$MsgConversationMessagesLoadPastImpl
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -1680,8 +1650,7 @@ class _$MsgConversationMessagesLoadPastImpl
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1706,8 +1675,7 @@ class _$MsgConversationMessagesLoadPastImpl
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1926,9 +1894,7 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -1954,8 +1920,7 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -1981,8 +1946,7 @@ class _$MsgCreateMessageImpl implements MsgCreateMessage {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -2085,7 +2049,7 @@ abstract class _$$MsgCreateConversationImplCopyWith<$Res> {
           $Res Function(_$MsgCreateConversationImpl) then) =
       __$$MsgCreateConversationImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({SendPort sendPort, String recipientMessagingAddress});
+  $Res call({SendPort sendPort, int userId});
 }
 
 /// @nodoc
@@ -2100,17 +2064,17 @@ class __$$MsgCreateConversationImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? sendPort = null,
-    Object? recipientMessagingAddress = null,
+    Object? userId = null,
   }) {
     return _then(_$MsgCreateConversationImpl(
       null == sendPort
           ? _value.sendPort
           : sendPort // ignore: cast_nullable_to_non_nullable
               as SendPort,
-      recipientMessagingAddress: null == recipientMessagingAddress
-          ? _value.recipientMessagingAddress
-          : recipientMessagingAddress // ignore: cast_nullable_to_non_nullable
-              as String,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -2118,17 +2082,16 @@ class __$$MsgCreateConversationImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$MsgCreateConversationImpl implements MsgCreateConversation {
-  const _$MsgCreateConversationImpl(this.sendPort,
-      {required this.recipientMessagingAddress});
+  const _$MsgCreateConversationImpl(this.sendPort, {required this.userId});
 
   @override
   final SendPort sendPort;
   @override
-  final String recipientMessagingAddress;
+  final int userId;
 
   @override
   String toString() {
-    return 'Msg.createConversation(sendPort: $sendPort, recipientMessagingAddress: $recipientMessagingAddress)';
+    return 'Msg.createConversation(sendPort: $sendPort, userId: $userId)';
   }
 
   @override
@@ -2138,14 +2101,11 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
             other is _$MsgCreateConversationImpl &&
             (identical(other.sendPort, sendPort) ||
                 other.sendPort == sendPort) &&
-            (identical(other.recipientMessagingAddress,
-                    recipientMessagingAddress) ||
-                other.recipientMessagingAddress == recipientMessagingAddress));
+            (identical(other.userId, userId) || other.userId == userId));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, sendPort, recipientMessagingAddress);
+  int get hashCode => Object.hash(runtimeType, sendPort, userId);
 
   @JsonKey(ignore: true)
   @override
@@ -2172,14 +2132,12 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
   }) {
-    return createConversation(sendPort, recipientMessagingAddress);
+    return createConversation(sendPort, userId);
   }
 
   @override
@@ -2199,13 +2157,12 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
   }) {
-    return createConversation?.call(sendPort, recipientMessagingAddress);
+    return createConversation?.call(sendPort, userId);
   }
 
   @override
@@ -2225,15 +2182,14 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
     required TResult orElse(),
   }) {
     if (createConversation != null) {
-      return createConversation(sendPort, recipientMessagingAddress);
+      return createConversation(sendPort, userId);
     }
     return orElse();
   }
@@ -2305,11 +2261,10 @@ class _$MsgCreateConversationImpl implements MsgCreateConversation {
 
 abstract class MsgCreateConversation implements Msg {
   const factory MsgCreateConversation(final SendPort sendPort,
-          {required final String recipientMessagingAddress}) =
-      _$MsgCreateConversationImpl;
+      {required final int userId}) = _$MsgCreateConversationImpl;
 
   SendPort get sendPort;
-  String get recipientMessagingAddress;
+  int get userId;
   @JsonKey(ignore: true)
   _$$MsgCreateConversationImplCopyWith<_$MsgCreateConversationImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -2430,9 +2385,7 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
     required TResult Function(SendPort sendPort, int conversationId,
             String text, String idempotencyId, List<XFile> attachments)
         createMessage,
-    required TResult Function(
-            SendPort sendPort, String recipientMessagingAddress)
-        createConversation,
+    required TResult Function(SendPort sendPort, int userId) createConversation,
     required TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)
         createUser,
@@ -2457,8 +2410,7 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
     TResult? Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult? Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult? Function(SendPort sendPort, int userId)? createConversation,
     TResult? Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,
@@ -2483,8 +2435,7 @@ class _$MsgCreateUserImpl implements MsgCreateUser {
     TResult Function(SendPort sendPort, int conversationId, String text,
             String idempotencyId, List<XFile> attachments)?
         createMessage,
-    TResult Function(SendPort sendPort, String recipientMessagingAddress)?
-        createConversation,
+    TResult Function(SendPort sendPort, int userId)? createConversation,
     TResult Function(SendPort sendPort, String messagingAddress,
             UserType userType, String password)?
         createUser,

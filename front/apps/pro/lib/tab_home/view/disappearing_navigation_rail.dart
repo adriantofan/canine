@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../destinations.dart';
 
 class DisappearingNavigationRail extends StatelessWidget {
-  final void Function(BuildContext) onAddCallback;
+  final void Function() onAddCallback;
   const DisappearingNavigationRail({
     super.key,
     required this.onAddCallback,
@@ -41,7 +41,7 @@ class DisappearingNavigationRail extends StatelessWidget {
               ),
               backgroundColor: colorScheme.tertiaryContainer,
               foregroundColor: colorScheme.onTertiaryContainer,
-              onPressed: () => onAddCallback(context),
+              onPressed: () => onAddCallback(),
               child: const Icon(Icons.add),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:applib/applib.dart';
+import 'package:clemia/conversation_loader/conversation_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,24 +45,10 @@ class AppRouter {
             path: AppRoutes.home.pattern,
             pageBuilder: (context, state) {
               return getPage(
-                child: Scaffold(
-                  // appBar: AppBar(
-                  //   title: Text('Home'),
-                  // ),
-                  body: const Center(
-                    child: Text('Home'),
-                  ),
-                ),
+                child: ConversationLoaderPage(
+                    workspaceId: context.read<AppBloc>().workspaceId!),
                 state: state,
               );
-              // // TODO: this needs fixing because there is no conversationInfo
-              // //  AND MOST IMPORTANTLY there is no conversationId in the path
-              // return getPage(
-              //   child: MessagesPage(
-              //     conversationInfo: state.extra! as ConversationInfo,
-              //   ),
-              //   state: state,
-              // );
             },
           ),
         ],
@@ -131,7 +118,7 @@ class AppRouter {
       routes: routes,
       // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
       // If enabled , go router adds a listner to logger and outputs the logs to console
-      debugLogDiagnostics: true,
+      // debugLogDiagnostics: true,
     );
     // router.routerDelegate.addListener(() {
     //   final config = router.routerDelegate.currentConfiguration;
