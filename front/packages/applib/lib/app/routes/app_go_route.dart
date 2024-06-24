@@ -70,11 +70,23 @@ class AppGoRoute extends GoRoute {
               appBloc.conversationId != conversationId)) {
         appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
       }
-      return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$workspaceId";
+      final targetWorkspaceId =
+          (workspaceId == null && appBloc.workspaceId != null)
+              ? appBloc.workspaceId
+              : workspaceId;
+      return "${AppRoutes.login.path}?ref=${routerState.uri}&workspaceId=$targetWorkspaceId";
     }
 
     onRestricted() {
       return '${AppRoutes.restricted.path}';
+    }
+
+    final isOnLogout = routerState.path == AppRoutes.logout.path;
+    if (isOnLogout) {
+      final crtState = appBloc.state;
+      if (crtState is AppStateUnauthenticated) {
+        return onLogin();
+      }
     }
 
     final isOnSplash = routerState.path == AppRoutes.slash.path;

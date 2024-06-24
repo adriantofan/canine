@@ -1,6 +1,7 @@
 import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class SkaffoldView extends StatefulWidget {
@@ -82,19 +83,32 @@ class _SkaffoldViewState extends State<SkaffoldView> {
                     ),
                     margin: EdgeInsets.only(right: 10),
                   ),
-                  footerDivider: divider,
-                  // headerBuilder: (context, extended) {
-                  //   return SafeArea(
-                  //     child: SizedBox(
-                  //       height: 100,
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.all(16.0),
-                  //         child: Image.asset('assets/images/avatar.png'),
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
+                  // footerDivider: divider,
+                  headerBuilder: (context, extended) {
+                    return const SafeArea(
+                      child: SizedBox(
+                        height: 20,
+                        child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child:
+                                SizedBox() //Image.asset('assets/images/avatar.png'),
+                            ),
+                      ),
+                    );
+                  },
                   items: buildItems(state),
+                  footerItems: [
+                    SidebarXItem(
+                      selectable: false,
+                      icon: Icons.logout,
+                      label: 'Logout',
+                      onTap: () {
+                        if (context.mounted) {
+                          GoRouter.of(context).go(AppRoutes.logout.path);
+                        }
+                      },
+                    ),
+                  ],
                 )
               : const SizedBox(),
         );

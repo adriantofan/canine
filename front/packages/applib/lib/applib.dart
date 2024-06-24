@@ -3,6 +3,7 @@ library applib;
 export 'app/app.dart';
 export 'conversations/model/conversation_info.dart';
 export 'init.dart';
+export 'logout/logout.dart';
 export 'messages/messages.dart';
 export 'repository/repository.dart';
 export 'restricted/restricted.dart';

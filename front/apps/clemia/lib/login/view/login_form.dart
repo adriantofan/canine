@@ -83,7 +83,7 @@ class WorkspaceWidget extends StatelessWidget {
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: () => context.read<LoginCubit>().create(),
-                    child: const Text('Create Workspace'),
+                    child: const Text('Create Account'),
                   ),
         ];
 
