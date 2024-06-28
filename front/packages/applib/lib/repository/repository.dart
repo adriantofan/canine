@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:canine_sync/canine_sync.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:logging/logging.dart';
 
 import '../conversations/model/conversation_info.dart';
 import '../messages/messages.dart';
@@ -13,6 +15,7 @@ export 'package:canine_sync/canine_sync.dart';
 
 class SyncRepository {
   final Sync _sync;
+  final _logger = Logger('SyncRepository');
 
   SyncRepository(Sync sync) : _sync = sync;
   Stream<List<User>> users() {
@@ -47,12 +50,17 @@ class SyncRepository {
   }
 
   Future<DevisRecipient> analyseDevis(XFile file) async {
+    var random = Random();
+
+    // Generate a random integer between 1 and 1000
+    int randomNumber = random.nextInt(1000) + 1;
     await Future.delayed(const Duration(milliseconds: 200));
+    _logger.warning('FAKE analyseDevis $file');
     return DevisRecipient(
         firstName: 'John',
         lastName: 'Doe',
-        email: 'email@example.com',
-        phone: '06');
+        email: 'adrian+doe$randomNumber@clemia.fr',
+        phone: '+33688550315');
   }
 
   Future<User> createUser(

@@ -28,4 +28,10 @@ sealed class AppState with _$AppState {
     required int? workspaceId,
     required Map<int, AuthInfo> workspaces,
   }) = AppStateReady;
+
+  get conversationId => switch (this) {
+        AppStateUnauthenticated() => conversationId,
+        AppStateAuthenticated() => conversationId,
+        AppStateReady() => null,
+      };
 }

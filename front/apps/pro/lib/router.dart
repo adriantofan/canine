@@ -224,7 +224,7 @@ class AppRouter {
       routes: routes,
       // routerNeglect: true, // TODO: ~~see if this is a good idea~~ probably not
       // If enabled , go router adds a listner to logger and outputs the logs to console
-      // debugLogDiagnostics: true,
+      debugLogDiagnostics: true,
     );
     // router.routerDelegate.addListener(() {
     //   final config = router.routerDelegate.currentConfiguration;
@@ -279,8 +279,7 @@ class AppRouter {
       ConversationInfo conversationInfo, DraftMessage draftMessage) {
     final crtUri = router.routeInformationProvider.value.uri;
 
-    if (!ProRoutes.homeNew.isOnSubpath(crtUri) ||
-        ProRoutes.homeNew.workspaceId(crtUri) == null) {
+    if (ProRoutes.homeConversation.workspaceId(crtUri) == null) {
       throw FormatException(
           'Cannot create draft conversation only from a workspaced resource',
           crtUri.path);
@@ -294,13 +293,13 @@ class AppRouter {
 
   static goConversationWithUser(DraftConversation draftConversation) {
     final crtUri = router.routeInformationProvider.value.uri;
-    if (!AppRoutes.home.isOnSubpath(crtUri) ||
-        AppRoutes.home.workspaceId(crtUri) == null) {
+    if (AppRoutes.home.workspaceId(crtUri) == null) {
       throw FormatException(
           'Cannot create draft conversation only from a workspaced resource',
           crtUri.path);
     }
     final newPath = ProRoutes.homeNew.path(AppRoutes.home.workspaceId(crtUri)!);
+    // TODO: this is not serializable :-( so it can't work on web
     router.go(newPath, extra: draftConversation);
   }
 

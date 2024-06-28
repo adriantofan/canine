@@ -18,11 +18,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthRepository _authRepository;
   final SyncSessionRepository _syncSessionRepository;
   final APIClientBase _apiClient;
-  final appType;
+  final AppType appType;
   final _logger = Logger('MainApp');
   final PersistentPreferences preferences;
-  final int? lastWorkspaceId;
-  final int? lastConversationId;
 
   int? get workspaceId => state.workspaceId;
 
@@ -45,8 +43,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       this._syncSessionRepository,
       this.appType,
       this.preferences,
-      this.lastWorkspaceId,
-      this.lastConversationId)
+      int? lastWorkspaceId,
+      int? lastConversationId)
       : super(AppState.unauthenticated(
             authStatus: const AuthStatus.unknown(),
             workspaceId: lastWorkspaceId,
@@ -62,12 +60,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     });
 
     on<AppEventChangeWorkspace>((event, emit) async {
-      _logger.finer('Change workspace 2 sec delay to ${event.workspaceId}');
       // await Future.delayed(const Duration(seconds: 2));
       if (workspaceId == event.workspaceId &&
           event.conversationId == conversationId) {
         return;
       }
+      _logger.finer('Change workspace ${event.workspaceId}');
       preferences.setLastWorkspace(event.workspaceId, event.conversationId);
       final crtState = state;
       switch (crtState) {
@@ -156,42 +154,43 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       // always fetch user info, even in case of token refresh
       _fetchAuthInfo(authStatus.token, authStatus.authId);
     }
+    final hasAccess =
+        hasAccessToWorkspace(crtState.workspaceId, authStatus.roles);
     switch (crtState) {
       case AppStateUnauthenticated():
         return AppState.authenticated(
             authStatus: authStatus,
             authId: authStatus.authId,
             token: authStatus.token,
-            workspaceId: crtState.workspaceId,
-            conversationId: conversationId);
+            workspaceId: hasAccess ? crtState.workspaceId : null,
+            conversationId: hasAccess ? conversationId : null);
       // TODO: trigger fetch of user info
       case AppStateAuthenticated():
         return AppState.authenticated(
           authStatus: authStatus,
           authId: authStatus.authId,
           token: authStatus.token,
-          workspaceId: crtState.workspaceId,
-          conversationId: conversationId,
+          workspaceId: hasAccess ? crtState.workspaceId : null,
+          conversationId: hasAccess ? conversationId : null,
         );
       case AppStateReady():
         if (authStatus.authId != authStatus.authId) {
           // Normally this won't happen, as a logout will trigger a change to
           // unauthenticated state.
           return AppState.authenticated(
-            authStatus: authStatus,
-            authId: authStatus.authId,
-            token: authStatus.token,
-            workspaceId: crtState.workspaceId,
-            conversationId: conversationId,
-          );
+              authStatus: authStatus,
+              authId: authStatus.authId,
+              token: authStatus.token,
+              workspaceId: hasAccess ? crtState.workspaceId : null,
+              conversationId: hasAccess ? conversationId : null);
         }
         if (authStatus.roles.isEmpty) {
           return AppState.authenticated(
             authStatus: authStatus,
             authId: authStatus.authId,
             token: authStatus.token,
-            workspaceId: crtState.workspaceId,
-            conversationId: conversationId,
+            workspaceId: hasAccess ? crtState.workspaceId : null,
+            conversationId: hasAccess ? conversationId : null,
           );
         }
         return crtState.copyWith(
@@ -247,5 +246,20 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       _logger.finer('AppEvent: $event');
     }
     super.onEvent(event);
+  }
+
+  bool hasAccessToWorkspace(int? workspaceId, ProjectRoles roles) {
+    if (workspaceId == null) {
+      return false;
+    }
+
+    switch (appType) {
+      case AppType.pro:
+        return RoleExtension.proRoles
+            .any((role) => roles[role]?.contains(workspaceId) ?? false);
+      case AppType.clemia:
+        return RoleExtension.endUserRoles
+            .any((role) => roles[role]?.contains(workspaceId) ?? false);
+    }
   }
 }

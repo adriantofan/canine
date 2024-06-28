@@ -6,6 +6,9 @@ enum Role {
 
 extension RoleExtension on Role {
   static List<Role> adminRoles = [Role.wkspAdmin];
+  static const endUserRoles = [Role.user];
+  static const proRoles = [Role.wkspAdmin];
+
   String get name {
     switch (this) {
       case Role.wkspAdmin:

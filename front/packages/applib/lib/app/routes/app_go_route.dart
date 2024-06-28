@@ -12,6 +12,7 @@ class AppGoRoute extends GoRoute {
   final bool onlyAuthenticated;
   final bool workspaceNamespaced;
   final bool isLogin;
+  final AppType? appType;
   static final Logger _logger = Logger('AppGoRoute');
   // GoRouterRedirect? redirect;
 
@@ -25,6 +26,7 @@ class AppGoRoute extends GoRoute {
     this.onlyAuthenticated = false,
     this.workspaceNamespaced = false,
     this.isLogin = false,
+    this.appType,
   }) : super();
 
   @override
@@ -68,7 +70,8 @@ class AppGoRoute extends GoRoute {
       if (workspaceId != null &&
           (appBloc.workspaceId != workspaceId ||
               appBloc.conversationId != conversationId)) {
-        appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+        Future.microtask(() =>
+            appBloc.add(AppEventChangeWorkspace(workspaceId!, conversationId)));
       }
       final targetWorkspaceId =
           (workspaceId == null && appBloc.workspaceId != null)
@@ -149,15 +152,27 @@ class AppGoRoute extends GoRoute {
         return onLogin();
       }
     }
+    final crtState = appBloc.state;
+
+    if (isOnConversation && isOnWorkspace && appType == AppType.clemia) {
+      // this is used only on the clemia app, to deal with the inapp links to
+      // conversations
+      if (crtState.workspaceId != workspaceId ||
+          crtState.conversationId != conversationId) {
+        // workspace changed
+        Future.microtask(() =>
+            appBloc.add(AppEventChangeWorkspace(workspaceId!, conversationId)));
+      }
+      return AppRoutes.home.path(workspaceId);
+    }
 
     if (!isOnLogin && onlyAuthenticated) {
-      final crtState = appBloc.state;
-
       if (crtState.authStatus is AuthStatusUnknown) {
         // this is probably the first route the user visits at load
         // so we don't know the auth status yet
         if (workspaceId != null) {
-          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+          Future.microtask(() => appBloc
+              .add(AppEventChangeWorkspace(workspaceId!, conversationId)));
         }
         return AppRoutes.slash.path;
       }
@@ -168,13 +183,14 @@ class AppGoRoute extends GoRoute {
       // From here on we are in state Ready
 
       if (isOnWorkspace) {
-        if (crtState.workspaceId == null) {
-          // TODO: unclear what to do here
-        }
+        // if (crtState.workspaceId == null) {
+        //   // TODO: unclear what to do here
+        // }
 
         if (crtState.workspaceId != workspaceId && workspaceId != null) {
           // workspace changed
-          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
+          Future.microtask(() => appBloc
+              .add(AppEventChangeWorkspace(workspaceId!, conversationId)));
           // TODO: workspace that we stay are on is different from the one in the state
 
           if (crtState.workspaces[workspaceId] == null) {

@@ -29,6 +29,8 @@ class AppRouter {
       GlobalKey<NavigatorState>();
 
   AppRouter._internal() {
+    print(ClemiaRoutes.homeConversation.pattern);
+
     final routes = [
       ShellRoute(
         parentNavigatorKey: _parentNavigatorKey,
@@ -57,12 +59,11 @@ class AppRouter {
         workspaceNamespaced: true,
         path: ClemiaRoutes.homeConversation.pattern,
         parentNavigatorKey: _parentNavigatorKey,
+        appType: AppType.clemia,
         pageBuilder: (context, state) {
-          // TODO: this needs fixing because there is no conversationInfo
+          // This gets rendered to AppRoutes.home.pattern
           return getPage(
-            child: MessagesPage(
-              conversationInfo: state.extra! as ConversationInfo,
-            ),
+            child: const CircularProgressIndicator(),
             state: state,
           );
         },
