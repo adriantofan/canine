@@ -51,9 +51,11 @@ class SyncSkeleton {
   void _createUser(MsgCreateUser msg) {
     _service
         .createUser(
-            messagingAddress: msg.messagingAddress,
-            userType: msg.userType,
-            password: msg.password)
+            email: msg.email,
+            firstName: msg.firstName,
+            lastName: msg.lastName,
+            phone: msg.phone,
+            userType: msg.userType)
         .then((u) => msg.sendPort.send(u),
             onError: (error, stackTrace) => (error is APIError)
                 ? msg.sendPort.send(error)

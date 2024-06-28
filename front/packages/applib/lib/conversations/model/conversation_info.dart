@@ -4,16 +4,19 @@ import '../../util/avatar.dart';
 
 class ConversationInfo {
   final int conversationId;
+  final int workspaceId;
   final String name;
   final int userId;
   final DateTime lastMessageTime;
   final String lastMessage;
   final String avatarInitials;
+
   late final String lastMessageTimeFormatted =
       DateFormat.yMd().add_Hm().format(lastMessageTime);
 
   ConversationInfo({
     required this.conversationId,
+    required this.workspaceId,
     required this.name,
     required this.userId,
     required this.lastMessageTime,

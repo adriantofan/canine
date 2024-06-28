@@ -177,15 +177,20 @@ class SyncStub extends Sync {
   }
 
   @override
-  Future<User> createUser(
-      {required String messagingAddress,
-      required userType,
-      required password}) {
+  Future<User> createUser({
+    required String email,
+    required String firstName,
+    required String lastName,
+    String phone = '',
+    UserType userType = UserType.external,
+  }) {
     ReceivePort receivePort = ReceivePort();
     _sendPort.send(Msg.createUser(receivePort.sendPort,
-        messagingAddress: messagingAddress,
-        userType: userType,
-        password: password));
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        userType: userType));
     return receivePort.first.then((data) {
       if (data is User) {
         return data;

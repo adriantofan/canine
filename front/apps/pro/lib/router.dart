@@ -254,51 +254,22 @@ class AppRouter {
       .conversationId(router.routeInformationProvider.value.uri);
 
   static goConversationWithInfo(ConversationInfo conversationInfo) {
-    final crtUri = router.routeInformationProvider.value.uri;
-    if (ProRoutes.homeConversation.isOn(crtUri) &&
-        ProRoutes.homeConversation.conversationId(crtUri) ==
-            conversationInfo.conversationId) {
-      // assumes conversationInfo is not relevant
-      return;
-    }
-
-    final workspaceId = ProRoutes.homeConversation.workspaceId(crtUri);
-    if (workspaceId == null) {
-      throw FormatException(
-          'Cannot go on a conversation only from a workspaced resource',
-          crtUri.path);
-    }
-
     router.go(
-        ProRoutes.homeConversation
-            .path(workspaceId, conversationInfo.conversationId),
+        ProRoutes.homeConversation.path(
+            conversationInfo.workspaceId, conversationInfo.conversationId),
         extra: conversationInfo);
   }
 
   static replaceConversationWithInfo(
       ConversationInfo conversationInfo, DraftMessage draftMessage) {
-    final crtUri = router.routeInformationProvider.value.uri;
-
-    if (ProRoutes.homeConversation.workspaceId(crtUri) == null) {
-      throw FormatException(
-          'Cannot create draft conversation only from a workspaced resource',
-          crtUri.path);
-    }
-    final workspaceId = ProRoutes.homeConversation.workspaceId(crtUri)!;
-    router.replace(
-        ProRoutes.homeConversation
-            .path(workspaceId, conversationInfo.conversationId),
+    router.go(
+        ProRoutes.homeConversation.path(
+            conversationInfo.workspaceId, conversationInfo.conversationId),
         extra: (conversationInfo, draftMessage));
   }
 
   static goConversationWithUser(DraftConversation draftConversation) {
-    final crtUri = router.routeInformationProvider.value.uri;
-    if (AppRoutes.home.workspaceId(crtUri) == null) {
-      throw FormatException(
-          'Cannot create draft conversation only from a workspaced resource',
-          crtUri.path);
-    }
-    final newPath = ProRoutes.homeNew.path(AppRoutes.home.workspaceId(crtUri)!);
+    final newPath = ProRoutes.homeNew.path(draftConversation.user.workspaceId);
     // TODO: this is not serializable :-( so it can't work on web
     router.go(newPath, extra: draftConversation);
   }

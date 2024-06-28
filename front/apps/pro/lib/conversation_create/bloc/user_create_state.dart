@@ -7,7 +7,7 @@ class UserCreateState with _$UserCreateState {
   const factory UserCreateState.form([
     @Default(FirstName.pure()) FirstName firstName,
     @Default(LastName.pure()) LastName lastName,
-    @Default(Mobile.pure()) Mobile mobile,
+    @Default(FrenchMobile.pure()) FrenchMobile mobile,
     @Default(Email.pure()) Email email,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
     @Default(false) bool isValid,
@@ -21,7 +21,7 @@ class UserCreateState with _$UserCreateState {
     }
     final first = FirstName.dirty(recipient.firstName);
     final last = LastName.dirty(recipient.lastName);
-    final mobile = Mobile.dirty(recipient.phone);
+    final mobile = FrenchMobile.dirty(recipient.phone);
     final email = Email.dirty(recipient.email ?? '');
 
     return UserCreateState.form(

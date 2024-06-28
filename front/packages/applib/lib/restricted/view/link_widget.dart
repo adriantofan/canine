@@ -52,6 +52,7 @@ class _LinkWidget extends StatelessWidget {
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state.authorization?.authorized ?? false) {
+          print('pop_link');
           Navigator.of(context).pop(true);
         }
         if (state.errorMessage != null) {

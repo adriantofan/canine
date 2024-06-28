@@ -46,8 +46,8 @@ class AppGoRoute extends GoRoute {
     final appBloc = context.read<AppBloc>();
     _logger.finer('refresh ${routerState.uri}');
 
-    maybeOnHome(AppStateReady appState) {
-      if (appState.workspaceId == null) {
+    maybeOnHome() {
+      if (appBloc.workspaceId == null) {
         // This can happen when the user doens not have roles at all
         // ot when there are no roles returned from the backend despite
         // having a roles in zitadel
@@ -55,7 +55,7 @@ class AppGoRoute extends GoRoute {
 
         return AppRoutes.error.path;
       }
-      return AppRoutes.home.path(appState.workspaceId);
+      return AppRoutes.home.path(appBloc.workspaceId);
     }
 
     final isOnWorkspace =
@@ -67,11 +67,8 @@ class AppGoRoute extends GoRoute {
     final isOnConversation = conversationId != null;
 
     onLogin() {
-      if (workspaceId != null &&
-          (appBloc.workspaceId != workspaceId ||
-              appBloc.conversationId != conversationId)) {
-        Future.microtask(() =>
-            appBloc.add(AppEventChangeWorkspace(workspaceId!, conversationId)));
+      if (workspaceId != null && (appBloc.workspaceId != workspaceId)) {
+        appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
       }
       final targetWorkspaceId =
           (workspaceId == null && appBloc.workspaceId != null)
@@ -111,7 +108,7 @@ class AppGoRoute extends GoRoute {
             return onRestricted(); // ok, no wksp/conv changes with respect to app state
           }
         case AppStateReady():
-          return maybeOnHome(crtState);
+          return maybeOnHome();
       }
       return null; // stay on splash
     }
@@ -132,7 +129,7 @@ class AppGoRoute extends GoRoute {
             return onRestricted(); // ok, no wksp/conv changes with respect to app state
           }
         case AppStateReady():
-          return maybeOnHome(appBloc.state as AppStateReady);
+          return maybeOnHome();
         case AppStateUnauthenticated():
           break;
       }
@@ -144,7 +141,7 @@ class AppGoRoute extends GoRoute {
       final crtState = appBloc.state;
 
       if (crtState is AppStateReady) {
-        return maybeOnHome(appBloc.state as AppStateReady);
+        return maybeOnHome();
       }
 
       if (crtState is AppStateAuthenticated) {
@@ -157,11 +154,10 @@ class AppGoRoute extends GoRoute {
     if (isOnConversation && isOnWorkspace && appType == AppType.clemia) {
       // this is used only on the clemia app, to deal with the inapp links to
       // conversations
-      if (crtState.workspaceId != workspaceId ||
-          crtState.conversationId != conversationId) {
+      if (appBloc.workspaceId != workspaceId ||
+          appBloc.conversationId != conversationId) {
         // workspace changed
-        Future.microtask(() =>
-            appBloc.add(AppEventChangeWorkspace(workspaceId!, conversationId)));
+        appBloc.add(AppEventChangeWorkspace(workspaceId!, conversationId));
       }
       return AppRoutes.home.path(workspaceId);
     }
@@ -171,8 +167,7 @@ class AppGoRoute extends GoRoute {
         // this is probably the first route the user visits at load
         // so we don't know the auth status yet
         if (workspaceId != null) {
-          Future.microtask(() => appBloc
-              .add(AppEventChangeWorkspace(workspaceId!, conversationId)));
+          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
         }
         return AppRoutes.slash.path;
       }
@@ -187,10 +182,9 @@ class AppGoRoute extends GoRoute {
         //   // TODO: unclear what to do here
         // }
 
-        if (crtState.workspaceId != workspaceId && workspaceId != null) {
+        if (appBloc.workspaceId != workspaceId && workspaceId != null) {
           // workspace changed
-          Future.microtask(() => appBloc
-              .add(AppEventChangeWorkspace(workspaceId!, conversationId)));
+          appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
           // TODO: workspace that we stay are on is different from the one in the state
 
           if (crtState.workspaces[workspaceId] == null) {

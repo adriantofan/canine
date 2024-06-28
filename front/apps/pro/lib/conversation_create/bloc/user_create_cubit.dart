@@ -37,7 +37,7 @@ class UserCreateCubit extends Cubit<UserCreateState> {
   }
 
   void mobileChanged(String value) {
-    final mobile = Mobile.dirty(value);
+    final mobile = FrenchMobile.dirty(value);
     emit(
       state.copyWith(
         mobile: mobile,
@@ -65,8 +65,11 @@ class UserCreateCubit extends Cubit<UserCreateState> {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
       // TODO: add remaining fields
-      final user =
-          await _repository.createUser(messagingAddress: state.email.value);
+      final user = await _repository.createUser(
+          email: state.email.value,
+          firstName: state.firstName.value,
+          lastName: state.lastName.value,
+          phone: state.mobile.formate164());
       emit(state.copyWith(status: FormzSubmissionStatus.success, user: user));
     } on APIError catch (e) {
       emit(state.copyWith(

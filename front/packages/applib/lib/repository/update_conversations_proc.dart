@@ -213,6 +213,7 @@ ConversationInfo? makeConversationItem(int conversationId, Cache cache) {
 
   return ConversationInfo(
       conversationId: conversationId,
+      workspaceId: user.workspaceId,
       name: user.email,
       userId: user.id,
       lastMessageTime: lastMessage.createdAt,

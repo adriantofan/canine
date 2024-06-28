@@ -11,10 +11,13 @@ abstract class Sync {
 
   Future<Conversation> createConversation({required int userId});
 
-  Future<User> createUser(
-      {required String messagingAddress,
-      required UserType userType,
-      required String password});
+  Future<User> createUser({
+    required String email,
+    required String firstName,
+    required String lastName,
+    String phone = '',
+    UserType userType = UserType.external,
+  });
 
   Stream<R> subscribeProcRef<R>(ProcBuilder<R> proc);
 

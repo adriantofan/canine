@@ -62,21 +62,19 @@ class _LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
       builder: (context, state) {
-        return state.status.isInProgress
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-                key: const Key('loginForm_continue_raisedButton'),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  backgroundColor: const Color(0xFFFFD600),
-                ),
-                onPressed: state.isValid
-                    ? () => context.read<LoginCubit>().logIn()
-                    : null,
-                child: const Text('LOGIN'),
-              );
+        return ElevatedButton(
+          key: const Key('loginForm_continue_raisedButton'),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            backgroundColor: const Color(0xFFFFD600),
+          ),
+          onPressed: state.isValid || state.status.isInProgress
+              ? () => context.read<LoginCubit>().logIn()
+              : null,
+          child: const Text('LOGIN'),
+        );
       },
     );
   }

@@ -33,9 +33,11 @@ sealed class Msg with _$Msg {
   const factory Msg.createConversation(SendPort sendPort,
       {required int userId}) = MsgCreateConversation;
   const factory Msg.createUser(SendPort sendPort,
-      {required String messagingAddress,
-      required UserType userType,
-      required String password}) = MsgCreateUser;
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String phone,
+      required UserType userType}) = MsgCreateUser;
 }
 
 class MsgOutUnsubscribeAck {

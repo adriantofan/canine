@@ -23,6 +23,7 @@ class DraftConversationCubit extends Cubit<DraftConversationState> {
           userId: draftConversation.user.id);
       final conversationInfo = ConversationInfo(
           conversationId: conversation.id,
+          workspaceId: conversation.workspaceId,
           name: draftConversation.user.email,
           userId: draftConversation.user.id,
           lastMessageTime: DateTime.now(),

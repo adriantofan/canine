@@ -166,12 +166,19 @@ class SyncService implements Sync {
   }
 
   @override
-  Future<User> createUser(
-      {required String messagingAddress,
-      required UserType userType,
-      required String password}) {
+  Future<User> createUser({
+    required String email,
+    required String firstName,
+    required String lastName,
+    String phone = '',
+    UserType userType = UserType.external,
+  }) {
     return _apiClient.createUser(
-        email: messagingAddress, userType: userType, password: password);
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        userType: userType);
   }
 
   @override

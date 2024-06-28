@@ -274,10 +274,13 @@ class APIWorkspaceClient extends APIClientBase {
     }
   }
 
-  Future<User> createUser(
-      {required String email,
-      required UserType userType,
-      required String password}) async {
+  Future<User> createUser({
+    required String email,
+    required String firstName,
+    required String lastName,
+    String phone = '',
+    UserType userType = UserType.external,
+  }) async {
     final authHeader = await this.authHeader();
 
     final response = await _postJSON(
@@ -285,7 +288,9 @@ class APIWorkspaceClient extends APIClientBase {
         {
           'email': email,
           'user_type': userType,
-          'password': password,
+          'first_name': firstName,
+          'last_name': lastName,
+          'phone': phone,
         },
         headers: authHeader);
 

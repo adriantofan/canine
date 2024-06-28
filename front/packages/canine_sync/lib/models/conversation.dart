@@ -11,6 +11,7 @@ class Conversation with _$Conversation {
     required int id,
     required int externalUserId,
     required String name,
+    required int workspaceId,
     @TimestampSerializer() required DateTime createdAt,
     @TimestampSerializer() required DateTime updatedAt,
     // required int lastMessageId,

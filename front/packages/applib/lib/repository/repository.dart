@@ -63,13 +63,18 @@ class SyncRepository {
         phone: '+33688550315');
   }
 
-  Future<User> createUser(
-      {required String messagingAddress,
-      UserType userType = UserType.external,
-      String password = ''}) async {
+  Future<User> createUser({
+    required String email,
+    required String firstName,
+    required String lastName,
+    String phone = '',
+    UserType userType = UserType.external,
+  }) async {
     return _sync.createUser(
-        messagingAddress: messagingAddress,
-        userType: userType,
-        password: password);
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        userType: userType);
   }
 }

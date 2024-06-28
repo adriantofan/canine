@@ -21,7 +21,8 @@ class _SkaffoldViewState extends State<SkaffoldView> {
     return BlocConsumer<AppBloc, AppState>(
       listener: (context, state) {
         if (state is AppStateReady) {
-          final idx = _getSelectedWorkspaceIndex(state);
+          final idx = _getSelectedWorkspaceIndex(
+              state, context.read<AppBloc>().workspaceId);
           if (idx != null) {
             if (_controller.selectedIndex != idx) {
               _controller.selectIndex(idx);
@@ -133,8 +134,7 @@ class _SkaffoldViewState extends State<SkaffoldView> {
         .toList();
   }
 
-  int? _getSelectedWorkspaceIndex(AppStateReady state) {
-    final workspaceId = state.workspaceId;
+  int? _getSelectedWorkspaceIndex(AppStateReady state, int? workspaceId) {
     if (workspaceId == null) {
       return null;
     }

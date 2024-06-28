@@ -24,6 +24,8 @@ class RestrictedWidget extends StatelessWidget {
   }
 
   Widget getRestricted(BuildContext context, AppState state) {
+    final workspaceId = context.read<AppBloc>().workspaceId;
+    final conversationId = context.read<AppBloc>().conversationId;
     switch (state) {
       case AppStateUnauthenticated():
         return const Center(
@@ -35,15 +37,15 @@ class RestrictedWidget extends StatelessWidget {
             child: Text('This workspace is restricted to its personnel only'),
           );
         }
-        if (state.workspaceId == null || state.conversationId == null) {
+        if (workspaceId == null || conversationId == null) {
           return const Center(
             child: Text(
                 'You need to be invited by your doctor to access Clemia. Open the invitation link in your email'),
           );
         }
         return LinkWidget(
-            workspaceId: state.workspaceId!,
-            conversationId: state.conversationId!,
+            workspaceId: workspaceId,
+            conversationId: conversationId,
             token: state.token);
       case AppStateReady():
         if (AppLibConfig.instance.appType == AppType.pro) {
@@ -53,8 +55,7 @@ class RestrictedWidget extends StatelessWidget {
         }
         //TODO: implement this case
         return Center(
-          child:
-              Text('Grant access to workspace ${state.workspaceId} to switch'),
+          child: Text('Grant access to workspace ${workspaceId} to switch'),
         );
     }
   }

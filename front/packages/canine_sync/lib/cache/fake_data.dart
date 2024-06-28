@@ -5,6 +5,7 @@ final List<Conversation> fakeConversationList = [
   for (var i = 1; i <= conversationCount; i++)
     Conversation(
         id: i,
+        workspaceId: 1,
         externalUserId: i,
         name: "Conversation $i",
         createdAt: DateTime.now(),

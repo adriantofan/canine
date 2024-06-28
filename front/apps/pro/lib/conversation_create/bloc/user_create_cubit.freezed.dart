@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$UserCreateState {
   FirstName get firstName => throw _privateConstructorUsedError;
   LastName get lastName => throw _privateConstructorUsedError;
-  Mobile get mobile => throw _privateConstructorUsedError;
+  FrenchMobile get mobile => throw _privateConstructorUsedError;
   Email get email => throw _privateConstructorUsedError;
   FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
@@ -29,7 +29,7 @@ mixin _$UserCreateState {
     required TResult Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -43,7 +43,7 @@ mixin _$UserCreateState {
     TResult? Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -57,7 +57,7 @@ mixin _$UserCreateState {
     TResult Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -98,7 +98,7 @@ abstract class $UserCreateStateCopyWith<$Res> {
   $Res call(
       {FirstName firstName,
       LastName lastName,
-      Mobile mobile,
+      FrenchMobile mobile,
       Email email,
       FormzSubmissionStatus status,
       bool isValid,
@@ -142,7 +142,7 @@ class _$UserCreateStateCopyWithImpl<$Res, $Val extends UserCreateState>
       mobile: null == mobile
           ? _value.mobile
           : mobile // ignore: cast_nullable_to_non_nullable
-              as Mobile,
+              as FrenchMobile,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -190,7 +190,7 @@ abstract class _$$InitialImplCopyWith<$Res>
   $Res call(
       {FirstName firstName,
       LastName lastName,
-      Mobile mobile,
+      FrenchMobile mobile,
       Email email,
       FormzSubmissionStatus status,
       bool isValid,
@@ -233,7 +233,7 @@ class __$$InitialImplCopyWithImpl<$Res>
       null == mobile
           ? _value.mobile
           : mobile // ignore: cast_nullable_to_non_nullable
-              as Mobile,
+              as FrenchMobile,
       null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -264,7 +264,7 @@ class _$InitialImpl extends _Initial {
   const _$InitialImpl(
       [this.firstName = const FirstName.pure(),
       this.lastName = const LastName.pure(),
-      this.mobile = const Mobile.pure(),
+      this.mobile = const FrenchMobile.pure(),
       this.email = const Email.pure(),
       this.status = FormzSubmissionStatus.initial,
       this.isValid = false,
@@ -280,7 +280,7 @@ class _$InitialImpl extends _Initial {
   final LastName lastName;
   @override
   @JsonKey()
-  final Mobile mobile;
+  final FrenchMobile mobile;
   @override
   @JsonKey()
   final Email email;
@@ -335,7 +335,7 @@ class _$InitialImpl extends _Initial {
     required TResult Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -353,7 +353,7 @@ class _$InitialImpl extends _Initial {
     TResult? Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -371,7 +371,7 @@ class _$InitialImpl extends _Initial {
     TResult Function(
             FirstName firstName,
             LastName lastName,
-            Mobile mobile,
+            FrenchMobile mobile,
             Email email,
             FormzSubmissionStatus status,
             bool isValid,
@@ -420,7 +420,7 @@ abstract class _Initial extends UserCreateState {
   const factory _Initial(
       [final FirstName firstName,
       final LastName lastName,
-      final Mobile mobile,
+      final FrenchMobile mobile,
       final Email email,
       final FormzSubmissionStatus status,
       final bool isValid,
@@ -433,7 +433,7 @@ abstract class _Initial extends UserCreateState {
   @override
   LastName get lastName;
   @override
-  Mobile get mobile;
+  FrenchMobile get mobile;
   @override
   Email get email;
   @override

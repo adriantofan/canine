@@ -23,6 +23,7 @@ mixin _$Conversation {
   int get id => throw _privateConstructorUsedError;
   int get externalUserId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  int get workspaceId => throw _privateConstructorUsedError;
   @TimestampSerializer()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampSerializer()
@@ -44,6 +45,7 @@ abstract class $ConversationCopyWith<$Res> {
       {int id,
       int externalUserId,
       String name,
+      int workspaceId,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
 }
@@ -64,6 +66,7 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
     Object? id = null,
     Object? externalUserId = null,
     Object? name = null,
+    Object? workspaceId = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -80,6 +83,10 @@ class _$ConversationCopyWithImpl<$Res, $Val extends Conversation>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      workspaceId: null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -104,6 +111,7 @@ abstract class _$$ConversationImplCopyWith<$Res>
       {int id,
       int externalUserId,
       String name,
+      int workspaceId,
       @TimestampSerializer() DateTime createdAt,
       @TimestampSerializer() DateTime updatedAt});
 }
@@ -122,6 +130,7 @@ class __$$ConversationImplCopyWithImpl<$Res>
     Object? id = null,
     Object? externalUserId = null,
     Object? name = null,
+    Object? workspaceId = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -138,6 +147,10 @@ class __$$ConversationImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      workspaceId: null == workspaceId
+          ? _value.workspaceId
+          : workspaceId // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -157,6 +170,7 @@ class _$ConversationImpl implements _Conversation {
       {required this.id,
       required this.externalUserId,
       required this.name,
+      required this.workspaceId,
       @TimestampSerializer() required this.createdAt,
       @TimestampSerializer() required this.updatedAt});
 
@@ -170,6 +184,8 @@ class _$ConversationImpl implements _Conversation {
   @override
   final String name;
   @override
+  final int workspaceId;
+  @override
   @TimestampSerializer()
   final DateTime createdAt;
   @override
@@ -178,7 +194,7 @@ class _$ConversationImpl implements _Conversation {
 
   @override
   String toString() {
-    return 'Conversation(id: $id, externalUserId: $externalUserId, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Conversation(id: $id, externalUserId: $externalUserId, name: $name, workspaceId: $workspaceId, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -190,6 +206,8 @@ class _$ConversationImpl implements _Conversation {
             (identical(other.externalUserId, externalUserId) ||
                 other.externalUserId == externalUserId) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.workspaceId, workspaceId) ||
+                other.workspaceId == workspaceId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -198,8 +216,8 @@ class _$ConversationImpl implements _Conversation {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, externalUserId, name, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, externalUserId, name, workspaceId, createdAt, updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -220,6 +238,7 @@ abstract class _Conversation implements Conversation {
           {required final int id,
           required final int externalUserId,
           required final String name,
+          required final int workspaceId,
           @TimestampSerializer() required final DateTime createdAt,
           @TimestampSerializer() required final DateTime updatedAt}) =
       _$ConversationImpl;
@@ -233,6 +252,8 @@ abstract class _Conversation implements Conversation {
   int get externalUserId;
   @override
   String get name;
+  @override
+  int get workspaceId;
   @override
   @TimestampSerializer()
   DateTime get createdAt;
