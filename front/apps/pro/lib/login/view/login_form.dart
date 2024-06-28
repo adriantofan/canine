@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:go_router/go_router.dart';
 
 import '../cubit/login_cubit.dart';
 
@@ -29,10 +30,29 @@ class LoginForm extends StatelessWidget {
             children: [
               const SizedBox(height: 8),
               _LoginButton(),
+              const SizedBox(height: 8),
+              _CreateOrgButton(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CreateOrgButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      key: const Key('loginForm_createOrg_raisedButton'),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        backgroundColor: const Color(0xFFFFD600),
+      ),
+      onPressed: () => GoRouter.of(context).go('/create-org'),
+      child: const Text('CREATE ORG'),
     );
   }
 }

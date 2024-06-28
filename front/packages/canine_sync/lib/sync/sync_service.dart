@@ -171,9 +171,7 @@ class SyncService implements Sync {
       required UserType userType,
       required String password}) {
     return _apiClient.createUser(
-        messagingAddress: messagingAddress,
-        userType: userType,
-        password: password);
+        email: messagingAddress, userType: userType, password: password);
   }
 
   @override
