@@ -78,7 +78,7 @@ class AppGoRoute extends GoRoute {
     }
 
     onRestricted() {
-      return '${AppRoutes.restricted.path}';
+      return AppRoutes.restricted.path;
     }
 
     final isOnLogout = routerState.path == AppRoutes.logout.path;
@@ -151,6 +151,27 @@ class AppGoRoute extends GoRoute {
     }
     final crtState = appBloc.state;
 
+    final isOnRestricted = AppRoutes.restricted.path == routerState.path;
+    if (isOnRestricted) {
+      if (crtState is AppStateUnauthenticated) {
+        return onLogin();
+      }
+      if (crtState is AppStateReady) {
+        if (workspaceId != null) {
+          if (crtState.workspaces[workspaceId] != null) {
+            return AppRoutes.home.path(workspaceId);
+          }
+        } else {
+          if (appBloc.workspaceId != null) {
+            if (crtState.workspaces[appBloc.workspaceId] != null) {
+              return AppRoutes.home.path(appBloc.workspaceId);
+            }
+          }
+        }
+        return null;
+      }
+    }
+
     if (isOnConversation && isOnWorkspace && appType == AppType.clemia) {
       // this is used only on the clemia app, to deal with the inapp links to
       // conversations
@@ -186,12 +207,12 @@ class AppGoRoute extends GoRoute {
           // workspace changed
           appBloc.add(AppEventChangeWorkspace(workspaceId, conversationId));
           // TODO: workspace that we stay are on is different from the one in the state
+        }
 
-          if (crtState.workspaces[workspaceId] == null) {
-            // TODO: this breaks the contract of the AppEventChangeWorkspace
-            //     because the workspace is not yet in the state
-            return onRestricted();
-          }
+        if (crtState.workspaces[workspaceId] == null) {
+          // TODO: this breaks the contract of the AppEventChangeWorkspace
+          //     because the workspace is not yet in the state
+          return onRestricted();
         }
       }
     }

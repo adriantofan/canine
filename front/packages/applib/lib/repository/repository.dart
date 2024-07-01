@@ -70,7 +70,7 @@ class SyncRepository {
     String phone = '',
     UserType userType = UserType.external,
   }) async {
-    return _sync.createUser(
+    return await _sync.createUser(
         email: email,
         firstName: firstName,
         lastName: lastName,

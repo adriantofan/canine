@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
@@ -14,6 +15,7 @@ class VerifyPhoneCubit extends Cubit<VerifyPhoneState> {
   DateTime sentAt;
   String token;
   final APIClientBase apiClient;
+
   VerifyPhoneCubit({
     required this.apiClient,
     required this.token,
@@ -24,10 +26,12 @@ class VerifyPhoneCubit extends Cubit<VerifyPhoneState> {
     delayResend();
   }
 
+  CancelableOperation? refresh;
   void delayResend() {
-    Future.delayed(resendDelay, () {
-      emit(state.copyWith(canResend: true));
-    });
+    refresh?.cancel();
+    refresh =
+        CancelableOperation.fromFuture(Future.delayed(resendDelay, () {}));
+    refresh!.then((p0) => emit(state.copyWith(canResend: true)));
   }
 
   void codeChanged(String value) {
@@ -91,5 +95,11 @@ class VerifyPhoneCubit extends Cubit<VerifyPhoneState> {
         errorMessage: e.message,
       ));
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await refresh?.cancel();
+    super.close();
   }
 }

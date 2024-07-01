@@ -37,26 +37,25 @@ class RestrictedWidget extends StatelessWidget {
             child: Text('This workspace is restricted to its personnel only'),
           );
         }
-        if (workspaceId == null || conversationId == null) {
-          return const Center(
-            child: Text(
-                'You need to be invited by your doctor to access Clemia. Open the invitation link in your email'),
-          );
-        }
-        return LinkWidget(
-            workspaceId: workspaceId,
-            conversationId: conversationId,
-            token: state.token);
+        return showLink(workspaceId, conversationId, state.token);
       case AppStateReady():
         if (AppLibConfig.instance.appType == AppType.pro) {
           return const Center(
             child: Text('This workspace is restricted to its personnel only'),
           );
         }
-        //TODO: implement this case
-        return Center(
-          child: Text('Grant access to workspace ${workspaceId} to switch'),
-        );
+        return showLink(workspaceId, conversationId, state.token);
     }
+  }
+
+  Widget showLink(int? workspaceId, int? conversationId, String token) {
+    if (workspaceId == null || conversationId == null) {
+      return const Center(
+        child: Text(
+            'You need to be invited by your doctor to access Clemia. Open the invitation link in your email'),
+      );
+    }
+    return LinkWidget(
+        workspaceId: workspaceId, conversationId: conversationId, token: token);
   }
 }

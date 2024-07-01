@@ -11,4 +11,5 @@ sealed class AppEvent with _$AppEvent {
   // - the target route, will stay on the same place before and after the  changeWorkspace event
   const factory AppEvent.changeWorkspace(int workspaceId, int? conversationId) =
       AppEventChangeWorkspace;
+  const factory AppEvent.refreshAuthorization() = AppEventRefresh;
 }

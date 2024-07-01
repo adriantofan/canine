@@ -24,6 +24,7 @@ mixin _$AppEvent {
     required TResult Function() logout,
     required TResult Function(int workspaceId, int? conversationId)
         changeWorkspace,
+    required TResult Function() refreshAuthorization,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -32,6 +33,7 @@ mixin _$AppEvent {
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
     TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -40,6 +42,7 @@ mixin _$AppEvent {
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -49,6 +52,7 @@ mixin _$AppEvent {
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
     required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +61,7 @@ mixin _$AppEvent {
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
     TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -65,6 +70,7 @@ mixin _$AppEvent {
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -131,6 +137,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     required TResult Function() logout,
     required TResult Function(int workspaceId, int? conversationId)
         changeWorkspace,
+    required TResult Function() refreshAuthorization,
   }) {
     return initial();
   }
@@ -142,6 +149,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
     TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
   }) {
     return initial?.call();
   }
@@ -153,6 +161,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -168,6 +177,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
     required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
   }) {
     return initial(this);
   }
@@ -179,6 +189,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
     TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
   }) {
     return initial?.call(this);
   }
@@ -190,6 +201,7 @@ class _$AppEventInitialImpl implements AppEventInitial {
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -293,6 +305,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     required TResult Function() logout,
     required TResult Function(int workspaceId, int? conversationId)
         changeWorkspace,
+    required TResult Function() refreshAuthorization,
   }) {
     return authInfoFetched(authInfo, authId);
   }
@@ -304,6 +317,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
     TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
   }) {
     return authInfoFetched?.call(authInfo, authId);
   }
@@ -315,6 +329,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (authInfoFetched != null) {
@@ -330,6 +345,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
     required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
   }) {
     return authInfoFetched(this);
   }
@@ -341,6 +357,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
     TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
   }) {
     return authInfoFetched?.call(this);
   }
@@ -352,6 +369,7 @@ class _$AppEventAuthInfoFetchedImpl implements AppEventAuthInfoFetched {
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (authInfoFetched != null) {
@@ -417,6 +435,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     required TResult Function() logout,
     required TResult Function(int workspaceId, int? conversationId)
         changeWorkspace,
+    required TResult Function() refreshAuthorization,
   }) {
     return logout();
   }
@@ -428,6 +447,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
     TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
   }) {
     return logout?.call();
   }
@@ -439,6 +459,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -454,6 +475,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
     required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
   }) {
     return logout(this);
   }
@@ -465,6 +487,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
     TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
   }) {
     return logout?.call(this);
   }
@@ -476,6 +499,7 @@ class _$AppEventLogoutImpl implements AppEventLogout {
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -572,6 +596,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     required TResult Function() logout,
     required TResult Function(int workspaceId, int? conversationId)
         changeWorkspace,
+    required TResult Function() refreshAuthorization,
   }) {
     return changeWorkspace(workspaceId, conversationId);
   }
@@ -583,6 +608,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult? Function()? logout,
     TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
   }) {
     return changeWorkspace?.call(workspaceId, conversationId);
   }
@@ -594,6 +620,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
     TResult Function()? logout,
     TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (changeWorkspace != null) {
@@ -609,6 +636,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
     required TResult Function(AppEventLogout value) logout,
     required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
   }) {
     return changeWorkspace(this);
   }
@@ -620,6 +648,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult? Function(AppEventLogout value)? logout,
     TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
   }) {
     return changeWorkspace?.call(this);
   }
@@ -631,6 +660,7 @@ class _$AppEventChangeWorkspaceImpl implements AppEventChangeWorkspace {
     TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
     TResult Function(AppEventLogout value)? logout,
     TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
     required TResult orElse(),
   }) {
     if (changeWorkspace != null) {
@@ -650,6 +680,128 @@ abstract class AppEventChangeWorkspace implements AppEvent {
   @JsonKey(ignore: true)
   _$$AppEventChangeWorkspaceImplCopyWith<_$AppEventChangeWorkspaceImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AppEventRefreshImplCopyWith<$Res> {
+  factory _$$AppEventRefreshImplCopyWith(_$AppEventRefreshImpl value,
+          $Res Function(_$AppEventRefreshImpl) then) =
+      __$$AppEventRefreshImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$AppEventRefreshImplCopyWithImpl<$Res>
+    extends _$AppEventCopyWithImpl<$Res, _$AppEventRefreshImpl>
+    implements _$$AppEventRefreshImplCopyWith<$Res> {
+  __$$AppEventRefreshImplCopyWithImpl(
+      _$AppEventRefreshImpl _value, $Res Function(_$AppEventRefreshImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$AppEventRefreshImpl implements AppEventRefresh {
+  const _$AppEventRefreshImpl();
+
+  @override
+  String toString() {
+    return 'AppEvent.refreshAuthorization()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$AppEventRefreshImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(List<AuthInfo> authInfo, String authId)
+        authInfoFetched,
+    required TResult Function() logout,
+    required TResult Function(int workspaceId, int? conversationId)
+        changeWorkspace,
+    required TResult Function() refreshAuthorization,
+  }) {
+    return refreshAuthorization();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult? Function()? logout,
+    TResult? Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult? Function()? refreshAuthorization,
+  }) {
+    return refreshAuthorization?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(List<AuthInfo> authInfo, String authId)? authInfoFetched,
+    TResult Function()? logout,
+    TResult Function(int workspaceId, int? conversationId)? changeWorkspace,
+    TResult Function()? refreshAuthorization,
+    required TResult orElse(),
+  }) {
+    if (refreshAuthorization != null) {
+      return refreshAuthorization();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AppEventInitial value) initial,
+    required TResult Function(AppEventAuthInfoFetched value) authInfoFetched,
+    required TResult Function(AppEventLogout value) logout,
+    required TResult Function(AppEventChangeWorkspace value) changeWorkspace,
+    required TResult Function(AppEventRefresh value) refreshAuthorization,
+  }) {
+    return refreshAuthorization(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AppEventInitial value)? initial,
+    TResult? Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult? Function(AppEventLogout value)? logout,
+    TResult? Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult? Function(AppEventRefresh value)? refreshAuthorization,
+  }) {
+    return refreshAuthorization?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AppEventInitial value)? initial,
+    TResult Function(AppEventAuthInfoFetched value)? authInfoFetched,
+    TResult Function(AppEventLogout value)? logout,
+    TResult Function(AppEventChangeWorkspace value)? changeWorkspace,
+    TResult Function(AppEventRefresh value)? refreshAuthorization,
+    required TResult orElse(),
+  }) {
+    if (refreshAuthorization != null) {
+      return refreshAuthorization(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AppEventRefresh implements AppEvent {
+  const factory AppEventRefresh() = _$AppEventRefreshImpl;
 }
 
 /// @nodoc

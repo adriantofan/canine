@@ -84,6 +84,10 @@ class AuthRepository {
     _subscription?.cancel();
   }
 
+  Future<void> refresh() async {
+    await userManager.refreshToken();
+  }
+
   Future<void> login({
     String? loginHint,
     bool createAccount = false,

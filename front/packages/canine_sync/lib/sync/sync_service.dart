@@ -65,7 +65,9 @@ class SyncService implements Sync {
             'SyncService stopped workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
         return;
       } on APIError catch (e) {
-        _logger.severe('API error', e);
+        _logger.severe(
+            'API error, retry in 3 s ❗️should do something smarter', e);
+        await Future.delayed(const Duration(seconds: 3));
       } on Object catch (e) {
         _logger.fine('Retrying websocket connection in 3s', e);
         await Future.delayed(const Duration(seconds: 3));
@@ -249,12 +251,13 @@ class SyncService implements Sync {
   }
 
   void _forEachProc(dynamic Function(Proc p) f) {
-    _procs.forEach((proc, controller) {
+    final allKeys = _procs.keys;
+    for (var proc in allKeys.toList()) {
       final result = f(proc);
       if (result != null) {
-        controller.add(result);
+        _procs[proc]?.add(result);
       }
-    });
+    }
   }
 
   final _conversationSyncState = <int, BehaviorSubject<ListSyncState>>{};

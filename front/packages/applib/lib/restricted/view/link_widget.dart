@@ -51,10 +51,6 @@ class _LinkWidget extends StatelessWidget {
     return BlocConsumer<LinkBloc, LinkState>(
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
-        if (state.authorization?.authorized ?? false) {
-          print('pop_link');
-          Navigator.of(context).pop(true);
-        }
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -101,6 +97,14 @@ class _LinkWidget extends StatelessWidget {
                 .read<LinkBloc>()
                 .add(LinkEvent.didValidate(value is bool ? value : false)));
           }
+        }
+        if (state.didValidate) {
+          if (Navigator.of(context).canPop() == true) {
+            Navigator.pop(context);
+          }
+        }
+        if (state.authorization?.authorized ?? false) {
+          context.read<AppBloc>().add(const AppEvent.refreshAuthorization());
         }
       },
       builder: (BuildContext context, LinkState state) {

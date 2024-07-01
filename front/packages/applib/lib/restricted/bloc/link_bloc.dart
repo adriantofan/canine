@@ -2,6 +2,7 @@ import 'package:applib/applib.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'link_bloc.freezed.dart';
 part 'link_event.dart';
@@ -12,6 +13,8 @@ class LinkBloc extends Bloc<LinkEvent, LinkState> {
   int _workspaceId;
   int _conversationId;
   String _token;
+
+  var _logger = Logger('LinkBloc');
 
   LinkBloc(
       this._apiClient, this._workspaceId, this._conversationId, this._token)
@@ -67,5 +70,11 @@ class LinkBloc extends Bloc<LinkEvent, LinkState> {
           authorization: null,
           didValidate: false));
     }
+  }
+
+  @override
+  void onChange(Change<LinkState> change) {
+    _logger.finer('LinkState change: $change');
+    super.onChange(change);
   }
 }

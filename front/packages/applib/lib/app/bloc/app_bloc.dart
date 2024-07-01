@@ -55,9 +55,19 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         return;
       }
       _logger.finer('Change workspace ${event.workspaceId}');
+      if (state is AppStateReady) {
+        _logger.severe("❗️Change workspace reset sync session not implemented");
+      }
       preferences.setLastWorkspace(event.workspaceId, event.conversationId);
       workspaceId = event.workspaceId;
       conversationId = event.conversationId;
+    });
+
+    on<AppEventRefresh>((event, emit) async {
+      final authStatus = state.authStatus;
+      if (authStatus is AuthStatusAuthenticated) {
+        _fetchAuthInfo(authStatus.token, authStatus.authId);
+      }
     });
 
     on<AppEventAuthInfoFetched>((event, emit) {
@@ -74,10 +84,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               workspaceId ?? newAuthInfoByWorkspace.keys.firstOrNull;
           if (targetWorkspaceID != null) {
             if (newAuthInfoByWorkspace[targetWorkspaceID] == null) {
-              _logger.warning(
+              _logger.severe(
                   '❗️No workspace info for $targetWorkspaceID authId: ${crtState.authId}');
-              throw ArgumentError.value(
-                  targetWorkspaceID, 'Invalid workspace ID');
+              // throw ArgumentError.value(
+              //     targetWorkspaceID, 'Invalid workspace ID');
+              // We are on login, and it is going to be stuck on it even if we
+              // are logged in. We should end up on /restricted but imp
+              updateWorkspaceId(targetWorkspaceID);
+              emit(AppState.ready(
+                  authStatus: crtState.authStatus,
+                  authId: crtState.authId,
+                  token: crtState.token,
+                  workspaces: newAuthInfoByWorkspace));
               return;
             }
             _syncSessionRepository.connect(Session(
