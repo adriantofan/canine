@@ -66,7 +66,7 @@ class SyncService implements Sync {
         return;
       } on APIError catch (e) {
         _logger.severe(
-            'API error, retry in 3 s ❗️should do something smarter', e);
+            'API error, retry in 3 s ❗️(should do something smarter)', e);
         await Future.delayed(const Duration(seconds: 3));
       } on Object catch (e) {
         _logger.fine('Retrying websocket connection in 3s', e);
