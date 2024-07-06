@@ -32,6 +32,10 @@ func Run(args []string) {
 	pubsubNotificationSubscription := flagSet.String("pubsub-notification-subscription", "", "")
 	pubsubNotificationTopic := flagSet.String("pubsub-notification-topic", "", "")
 	pubsubNotificationProject := flagSet.String("pubsub-notification-project", "", "")
+	twilioSid := flagSet.String("twilio-sid", "", "twilio sid")
+	twilioAuthToken := flagSet.String("twilio-auth-token", "", "twilio auth token")
+	twilioFromNumber := flagSet.String("twilio-from-number", "", "twilio from number")
+
 	if err := env.SetFlagsFromEnvironment(flagSet); err != nil {
 		log.Fatal().Err(err).Msg("failed to set flags from environment")
 	}
@@ -62,6 +66,9 @@ func Run(args []string) {
 		*appURL,
 		*senderEmail,
 		*senderName,
+		*twilioSid,
+		*twilioAuthToken,
+		*twilioFromNumber,
 		transactionFactory,
 	)
 	if err != nil {
@@ -70,7 +77,7 @@ func Run(args []string) {
 
 	pubsubClient, err := pubsub.NewClient(ctx, *pubsubNotificationProject)
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to create pubsub client")
+		log.Panic().Err(err).Msg("failed to create pubsub client")
 	}
 	worker := notification.NewWorker[payloads.NotificationMessage](
 		*pubsubNotificationSubscription,
