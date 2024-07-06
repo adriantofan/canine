@@ -8,6 +8,7 @@ import (
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
 	"back/internal/pkg/notification"
+	"back/internal/pkg/notification/payloads"
 
 	"back/internal/obfuscate"
 
@@ -33,6 +34,7 @@ type Service struct {
 	attachmentsService service.Attachments
 	zitadelService     *ZitadelService
 	publisher          notification.Publisher
+	appURL             string
 }
 
 func NewService(
@@ -42,6 +44,7 @@ func NewService(
 	attachmentsService service.Attachments,
 	zitadelService *ZitadelService,
 	publisher notification.Publisher,
+	appURL string,
 ) *Service {
 	return &Service{
 		t:                  transaction,
@@ -51,6 +54,7 @@ func NewService(
 		attachmentsService: attachmentsService,
 		zitadelService:     zitadelService,
 		publisher:          publisher,
+		appURL:             appURL,
 	}
 }
 
@@ -234,14 +238,25 @@ func (s *Service) CreateMessage(
 	if err != nil {
 		return model.Message{}, fmt.Errorf("CreateMessage commit: %w", err)
 	}
-	err = s.publisher.NotifyMessage(ctx, conversation.WorkspaceID, conversation.ID, message.ID, message.Type)
-	if err != nil {
-		// TODO: delete message from db and fail
-		zerolog.Ctx(ctx).Error().Err(err).Msg("failed to publish message (TODO: delete message from db and fail)")
-	}
 
 	destination := eventlog.MakeDestinationExternalMessage(conversation.ExternalUserID)
 	s.sendChangesToEventLog(identity.WorkspaceID, changes, destination)
+
+	if conversation.ExternalUserID != 0 && sender.Type != genModel.UserType_External {
+		payload, err := s.makeNotificationPayload(ctx, message, conversation)
+		if err != nil {
+			if errors.Is(err, errDontNotify) {
+				return message, nil
+			}
+
+			return message, fmt.Errorf("CreateMessage make notification payload: %w", err)
+		}
+		err = s.publisher.NotifyMessage(ctx, payload)
+		if err != nil {
+			// TODO: delete message from db and fail
+			zerolog.Ctx(ctx).Error().Err(err).Msg("failed to publish message (TODO: delete message from db and fail)")
+		}
+	}
 
 	return message, nil
 }
@@ -717,6 +732,77 @@ func (s *Service) GetWorkspace(
 	}
 
 	return workspace, nil
+}
+
+var errDontNotify = fmt.Errorf("don't notify")
+
+func (s *Service) makeNotificationPayload(ctx context.Context, message model.Message, conversation model.Conversation) (*payloads.NotificationMessage, error) {
+	repository, err := s.t.WithoutTransaction()
+	if err != nil {
+		return nil, fmt.Errorf("makeNotificationPayload begin transaction: %w", err)
+	}
+
+	workspace, err := repository.GetWorkspace(ctx, conversation.WorkspaceID)
+	if err != nil {
+		if errors.Is(err, domain.ErrConversationNotFound) {
+			zerolog.Ctx(ctx).Error().Msgf("workspace not found for message %+v", message)
+
+			return nil, errDontNotify
+		}
+
+		return nil, fmt.Errorf("failed to get workspace %w", err)
+	}
+
+	user, err := repository.GetUserByID(ctx, conversation.ExternalUserID)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			zerolog.Ctx(ctx).Error().Msgf("user not found for conversation %+v", conversation)
+
+			return nil, errDontNotify
+		}
+
+		return nil, fmt.Errorf("failed to get user %w", err)
+	}
+
+	if user.Email != "" {
+		return &payloads.NotificationMessage{
+			WorkspaceID:    conversation.WorkspaceID,
+			ConversationID: conversation.ID,
+			Email: &payloads.EmailMessageTemplateValues{
+				UserEmail: user.Email,
+				// TODO: Implement user name
+				UserName:   "TODO",
+				DoctorName: workspace.Name,
+				MessageURL: fmt.Sprintf(
+					"%s#/workspace/%d/conversation/%d",
+					s.appURL,
+					conversation.WorkspaceID,
+					conversation.ID,
+				),
+			},
+			SMS: nil}, nil
+	}
+
+	if user.Phone != "" {
+		return &payloads.NotificationMessage{
+			WorkspaceID:    conversation.WorkspaceID,
+			ConversationID: conversation.ID,
+			Email:          nil,
+			SMS: &payloads.SMSMessageTemplateValues{
+				UserPhone: user.Phone,
+				// TODO: Implement user name
+				UserName:   "TODO",
+				DoctorName: workspace.Name,
+				MessageURL: fmt.Sprintf(
+					"%s#/workspace/%d/conversation/%d",
+					s.appURL,
+					conversation.WorkspaceID,
+					conversation.ID,
+				),
+			}}, nil
+	}
+
+	return nil, errDontNotify
 }
 
 func phoneHint(phone string) string {

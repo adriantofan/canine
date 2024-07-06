@@ -151,6 +151,7 @@ linters-settings:
           - "cloud.google.com/go/pubsub"
           - "github.com/sendgrid/sendgrid-go"
           - "cloud.google.com/go/storage"
+          - "github.com/twilio/twilio-go"
   ireturn:
     allow:
       - anon

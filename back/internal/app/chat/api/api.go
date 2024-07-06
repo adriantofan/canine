@@ -74,6 +74,7 @@ func Run(args []string) {
 		"(supply either this or zitadel-admin-key-path)")
 	pubsubNotificationProject := flagSet.String("pubsub-notification-project", "", "")
 	pubsubNotificationTopic := flagSet.String("pubsub-notification-topic", "", "")
+	appURL := flagSet.String("app-url", "", "app url")
 
 	if err := env.SetFlagsFromEnvironment(flagSet); err != nil {
 		log.Fatal().Err(err).Msg("failed to set flags from environment")
@@ -185,6 +186,7 @@ func Run(args []string) {
 		attachmentService,
 		zitadelService,
 		publisher,
+		*appURL,
 	)
 
 	router := gin.New()

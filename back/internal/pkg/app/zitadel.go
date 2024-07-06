@@ -140,8 +140,8 @@ func (z *ZitadelService) CreateOrg(ctx context.Context, data CreateWorkspaceData
 					IsEmailVerified: z.zitadelAutoApprove,
 				},
 				// TODO: do we want a phone number?
-				//Phone: &zAdminPb.SetUpOrgRequest_Human_Phone{
-				//	Phone:           "",
+				//SMS: &zAdminPb.SetUpOrgRequest_Human_Phone{
+				//	SMS:           "",
 				//	IsPhoneVerified: false,
 				// },
 				Password: data.Password,

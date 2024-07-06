@@ -1,7 +1,6 @@
 package worker
 
 import (
-	"back/internal/pkg/domain/infrastructure/repository/postgres"
 	"back/internal/pkg/env"
 	"back/internal/pkg/infrastructure"
 	"back/internal/pkg/notification"
@@ -21,12 +20,9 @@ import (
 func Run(args []string) {
 	log.Debug().Msgf("Running workers with args: %v", args)
 	flagSet := flag.NewFlagSet("api", flag.ExitOnError)
-	dsn := flagSet.String("postgres-dsn", "", "database connection string")
-	instanceConnectionName := flagSet.String("instance-connection-name", "", "cloud sql instance connection name, if any")
 	logLevel := flagSet.String("log-level", "info", "log level: debug, info, warn, error, fatal, panic")
 	structuredLog := flagSet.Bool("structured-log", true, "use structured log output")
 	sendgridAPIKey := flagSet.String("sendgrid-api-key", "", "sendgrid api key")
-	appURL := flagSet.String("app-url", "https://clemia.fr/app", "app url")
 	senderEmail := flagSet.String("sender-email", "noreply@clemia.fr", "sender email")
 	senderName := flagSet.String("sender-name", "Clemia", "sender name")
 	pubsubNotificationSubscription := flagSet.String("pubsub-notification-subscription", "", "")
@@ -46,31 +42,29 @@ func Run(args []string) {
 
 	infrastructure.SetupLogger(*structuredLog, *logLevel)
 
-	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to connect to db")
-	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	transactionFactory := postgres.NewTransactionFactory(connexion)
-
 	// TODO: need to script pubsub dev pubsub setup
-	err = notification.SetupDev(ctx, *pubsubNotificationProject, *pubsubNotificationTopic, *pubsubNotificationSubscription)
+	err := notification.SetupDev(
+		ctx,
+		*pubsubNotificationProject,
+		*pubsubNotificationTopic,
+		*pubsubNotificationSubscription,
+	)
 	if err != nil {
 		log.Panic().Err(err).Msg("failed to setup pubsub")
 	}
 
 	processor, err := notification.NewNotificationProcessor(
 		*sendgridAPIKey,
-		*appURL,
 		*senderEmail,
 		*senderName,
 		*twilioSid,
 		*twilioAuthToken,
 		*twilioFromNumber,
-		transactionFactory,
 	)
+
 	if err != nil {
 		log.Panic().Err(err).Msg("failed to create email processor")
 	}

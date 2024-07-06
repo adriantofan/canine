@@ -1,7 +1,6 @@
 package notification
 
 import (
-	"back/.gen/canine/public/model"
 	"back/internal/pkg/notification/payloads"
 	"context"
 	"encoding/json"
@@ -13,8 +12,7 @@ import (
 type Publisher interface {
 	NotifyMessage(
 		ctx context.Context,
-		workspaceID, conversationID, messageID int64,
-		messageType model.MessageType,
+		payload *payloads.NotificationMessage,
 	) error
 }
 
@@ -35,22 +33,16 @@ func NewPublisher(emailTopic string, client *pubsub.Client) *PubSubPublisher {
 
 func (p *PubSubPublisher) NotifyMessage(
 	ctx context.Context,
-	workspaceID, conversationID, messageID int64,
-	messageType model.MessageType,
+	payload *payloads.NotificationMessage,
 ) error {
-	msg := payloads.NotificationMessage{
-		WorkspaceID:    workspaceID,
-		ConversationID: conversationID,
-		MessageID:      messageID,
-		MessageType:    messageType,
-	}
-	data, err := json.Marshal(msg)
+
+	data, err := json.Marshal(payload)
 	if err != nil {
 		return fmt.Errorf("failed to marshal email message %w", err)
 	}
 
 	result := p.emailTopic.Publish(ctx, &pubsub.Message{ //nolint:exhaustruct
-		OrderingKey: fmt.Sprintf("%d-%d", workspaceID, conversationID),
+		OrderingKey: fmt.Sprintf("%d-%d", payload.WorkspaceID, payload.ConversationID),
 		Data:        data,
 	})
 	_, err = result.Get(ctx)
