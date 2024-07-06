@@ -8,6 +8,7 @@ import (
 	domainServices "back/internal/pkg/domain/infrastructure/service"
 	"back/internal/pkg/env"
 	"back/internal/pkg/infrastructure"
+	"back/internal/pkg/notification"
 	"back/internal/pkg/rt/eventlog"
 	"context"
 	"errors"
@@ -18,6 +19,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"cloud.google.com/go/pubsub"
 
 	zitadelManagement "github.com/zitadel/zitadel-go/v2/pkg/client/management"
 
@@ -69,6 +72,8 @@ func Run(args []string) {
 		"(supply either this or zitadel-admin-key-data)")
 	zitadelAdminKeyData := flagSet.String("zitadel-admin-key-data", "", "zitadel admin key data "+
 		"(supply either this or zitadel-admin-key-path)")
+	pubsubNotificationProject := flagSet.String("pubsub-notification-project", "", "")
+	pubsubNotificationTopic := flagSet.String("pubsub-notification-topic", "", "")
 
 	if err := env.SetFlagsFromEnvironment(flagSet); err != nil {
 		log.Fatal().Err(err).Msg("failed to set flags from environment")
@@ -94,6 +99,14 @@ func Run(args []string) {
 
 	if len(*zitadelIssuer) == 0 {
 		log.Fatal().Msg("zitadel-issuer must be provided")
+	}
+
+	if *pubsubNotificationProject == "" {
+		log.Fatal().Msg("notification-project-id must be provided")
+	}
+
+	if *pubsubNotificationTopic == "" {
+		log.Fatal().Msg("notification-topic must be provided")
 	}
 
 	connexion, err := infrastructure.ConnectDB(*dsn, *instanceConnectionName)
@@ -157,6 +170,11 @@ func Run(args []string) {
 		*zitadelAutoApprove,
 		"https://"+issuerURL.Hostname(),
 	)
+	pubsubClient, err := pubsub.NewClient(fatalCtx, *pubsubNotificationProject)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create pubsub client")
+	}
+	publisher := notification.NewPublisher(*pubsubNotificationTopic, pubsubClient)
 
 	service := app.NewService(
 		transactionFactory,
@@ -166,6 +184,7 @@ func Run(args []string) {
 		},
 		attachmentService,
 		zitadelService,
+		publisher,
 	)
 
 	router := gin.New()
@@ -206,9 +225,16 @@ func Run(args []string) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to listen and serve")
 	}
+	err = csClient.Close()
+	if err != nil {
+		log.Error().Err(err).Msg("failed to close cloud storage client")
+	}
+	err = pubsubClient.Close()
+	if err != nil {
+		log.Error().Err(err).Msg("failed to close pubsub client")
+	}
 
 	os.Exit(0)
-
 }
 
 func gracefullyListenAndServe(

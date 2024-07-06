@@ -7,6 +7,7 @@ import (
 	"back/internal/pkg/domain"
 	"back/internal/pkg/domain/model"
 	"back/internal/pkg/domain/service"
+	"back/internal/pkg/notification"
 
 	"back/internal/obfuscate"
 
@@ -31,6 +32,7 @@ type Service struct {
 	timeService        infrastructure.TimeService
 	attachmentsService service.Attachments
 	zitadelService     *ZitadelService
+	publisher          notification.Publisher
 }
 
 func NewService(
@@ -39,6 +41,7 @@ func NewService(
 	fatalErr func(error),
 	attachmentsService service.Attachments,
 	zitadelService *ZitadelService,
+	publisher notification.Publisher,
 ) *Service {
 	return &Service{
 		t:                  transaction,
@@ -47,6 +50,7 @@ func NewService(
 		timeService:        infrastructure.NewRealTimeService(),
 		attachmentsService: attachmentsService,
 		zitadelService:     zitadelService,
+		publisher:          publisher,
 	}
 }
 
@@ -221,6 +225,7 @@ func (s *Service) CreateMessage(
 		genModel.MessageType_Msg,
 		attachments,
 	)
+
 	if err != nil {
 		return message, fmt.Errorf("CreateMessage create message: %w", err)
 	}
@@ -228,6 +233,11 @@ func (s *Service) CreateMessage(
 	changes, err := s.t.Commit()
 	if err != nil {
 		return model.Message{}, fmt.Errorf("CreateMessage commit: %w", err)
+	}
+	err = s.publisher.NotifyMessage(ctx, conversation.WorkspaceID, conversation.ID, message.ID, message.Type)
+	if err != nil {
+		// TODO: delete message from db and fail
+		zerolog.Ctx(ctx).Error().Err(err).Msg("failed to publish message (TODO: delete message from db and fail)")
 	}
 
 	destination := eventlog.MakeDestinationExternalMessage(conversation.ExternalUserID)

@@ -148,12 +148,12 @@ start-dependencies:
 	docker compose up \
 		--abort-on-container-exit \
 		--remove-orphans \
-		db rdb gcs-emulator
+		db rdb gcs-emulator pubsub-emulator
 
 .PHONY: start-ci-dependencies-background
 start-ci-dependencies-background:
 	docker compose up -d \
-		db rdb
+		db rdb gcs-emulator pubsub-emulator
 
 .PHONY: compose-down
 compose-down:

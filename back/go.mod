@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	cloud.google.com/go/cloudsqlconn v1.9.0
+	cloud.google.com/go/pubsub v1.36.1
 	cloud.google.com/go/secretmanager v1.11.5
 	cloud.google.com/go/storage v1.40.0
 	github.com/gammazero/deque v0.2.1
@@ -20,6 +21,7 @@ require (
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/rs/zerolog v1.15.0
 	github.com/segmentio/ksuid v1.0.4
+	github.com/sendgrid/sendgrid-go v3.14.0+incompatible
 	github.com/spf13/pflag v1.0.5
 	github.com/zitadel/oidc v1.13.5
 	github.com/zitadel/zitadel-go/v2 v2.2.3
@@ -79,6 +81,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

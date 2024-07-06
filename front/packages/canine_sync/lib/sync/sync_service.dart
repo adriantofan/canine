@@ -61,9 +61,14 @@ class SyncService implements Sync {
         }
 
         resetCache(); // clear cache on logout
-        _logger.fine(
-            'SyncService stopped workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
-        return;
+        if (_stopController.valueOrNull == true) {
+          _logger.fine(
+              'SyncService stopped workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
+          return;
+        } else {
+          _logger.fine(
+              'SyncService disconnected workspaceId:${_apiClient.session.workspaceId} userId:${_apiClient.session.userId} authId:${_apiClient.session.authId}');
+        }
       } on APIError catch (e) {
         _logger.severe(
             'API error, retry in 3 s ❗️(should do something smarter)', e);

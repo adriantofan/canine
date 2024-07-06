@@ -45,10 +45,17 @@ services:
       - "9000:9000"
     volumes:
       - gcs-data:/data
-
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
+    ports:
+      - "8432:8432"
+    volumes:
+      - pubsub_data:/opt/data
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8432", "--project=canine-dev"]
 
 volumes:
     pg-data:
     redis-data:
     gcs-data:
+    pubsub_data:
 
