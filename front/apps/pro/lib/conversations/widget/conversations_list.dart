@@ -16,22 +16,30 @@ class ConversationList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: BlocConsumer<ConversationsBloc, ConversationsState>(
         builder: (context, state) {
-          return ListView.builder(
-            itemCount: state.conversations.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConversationRowWidget(
-                      conversationID: state.conversations[index].conversationId,
-                      conversationInfo: state.conversations[index],
-                      isSelected: selectedConversationId ==
-                          state.conversations[index].conversationId,
-                      onSelected: () {
-                        final bloc = context.read<ConversationsBloc>();
-                        bloc.add(ConversationsSelect(
-                            bloc.state.conversations[index]));
-                      }));
-            },
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.conversations.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ConversationRowWidget(
+                            conversationID:
+                                state.conversations[index].conversationId,
+                            conversationInfo: state.conversations[index],
+                            isSelected: selectedConversationId ==
+                                state.conversations[index].conversationId,
+                            onSelected: () {
+                              final bloc = context.read<ConversationsBloc>();
+                              bloc.add(ConversationsEvent.select(
+                                  bloc.state.conversations[index]));
+                            }));
+                  },
+                ),
+              ),
+            ],
           );
         },
         listener: (BuildContext context, ConversationsState state) {},

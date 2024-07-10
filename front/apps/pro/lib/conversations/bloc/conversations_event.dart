@@ -1,18 +1,11 @@
 part of 'conversations_bloc.dart';
 
-@immutable
-sealed class ConversationsEvent {}
-
-class ConversationsInitial extends ConversationsEvent {}
-
-class ConversationsSelect extends ConversationsEvent {
-  final ConversationInfo conversation;
-  ConversationsSelect(this.conversation);
+@freezed
+sealed class ConversationsEvent with _$ConversationsEvent {
+  const factory ConversationsEvent.initial() = ConversationsEventInitial;
+  const factory ConversationsEvent.select(ConversationInfo conversation) =
+      ConversationsEventSelect;
+  const factory ConversationsEvent.routeChanged(String id) =
+      ConversationsEventRouteChanged;
+  const factory ConversationsEvent.deselect() = ConversationsEventDeselect;
 }
-
-class ConversationsRouteChanged extends ConversationsEvent {
-  final String id;
-  ConversationsRouteChanged(this.id);
-}
-
-class ConversationsDeselect extends ConversationsEvent {}

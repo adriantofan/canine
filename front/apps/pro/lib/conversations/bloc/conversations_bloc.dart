@@ -8,51 +8,52 @@ import 'package:logging/logging.dart';
 
 import '../../router.dart';
 
+part 'conversations_bloc.freezed.dart';
 part 'conversations_event.dart';
 
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   SyncRepository _repository;
-  late final VoidCallback listener;
+  late final VoidCallback routeListener;
 
   final _log = Logger('ConversationsBloc');
   ConversationsBloc(SyncRepository repository)
       : _repository = repository,
         super(ConversationsState.empty()) {
-    listener = () {
+    routeListener = () {
       if (!AppRouter.onConversations) {
         return;
       }
       final maybeConversationId = AppRouter.crtConversationRouteId;
 
       if (maybeConversationId != null) {
-        add(ConversationsRouteChanged('$maybeConversationId'));
+        add(ConversationsEvent.routeChanged('$maybeConversationId'));
       } else {
-        add(ConversationsDeselect());
+        add(const ConversationsEvent.deselect());
       }
     };
 
-    AppRouter.router.routeInformationProvider.addListener(listener);
-    on<ConversationsInitial>((event, emit) async {
+    AppRouter.router.routeInformationProvider.addListener(routeListener);
+    on<ConversationsEventInitial>((event, emit) async {
       await emit.forEach(_repository.conversations(), onData: (changes) {
         return state.withChanges(changes, _repository);
       });
     });
 
-    on<ConversationsSelect>((event, emit) {
+    on<ConversationsEventSelect>((event, emit) {
       emit(state.withSelection(event.conversation));
     });
 
-    on<ConversationsRouteChanged>((event, emit) {
+    on<ConversationsEventRouteChanged>((event, emit) {
       emit(state.withConversationId(event.id));
     });
 
-    on<ConversationsDeselect>((event, emit) {
+    on<ConversationsEventDeselect>((event, emit) {
       emit(state.withSelection(null));
     });
   }
   @override
   Future<void> close() {
-    AppRouter.router.routeInformationProvider.removeListener(listener);
+    AppRouter.router.routeInformationProvider.removeListener(routeListener);
     return super.close();
   }
 }

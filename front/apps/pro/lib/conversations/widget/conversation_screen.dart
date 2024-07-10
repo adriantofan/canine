@@ -23,7 +23,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         child: LayoutBuilder(builder: (context, constraints) {
       return BlocProvider(
         create: (context) => ConversationsBloc(context.read<SyncRepository>())
-          ..add(ConversationsInitial()),
+          ..add(const ConversationsEvent.initial()),
         child: BlocConsumer<ConversationsBloc, ConversationsState>(
             listenWhen: (previous, current) =>
                 previous.currentSelection != current.currentSelection,
