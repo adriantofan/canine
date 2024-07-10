@@ -2,6 +2,7 @@ import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
 
 import '../../destinations.dart';
+import '../../search/search.dart';
 
 class DisappearingNavigationRail extends StatelessWidget {
   final void Function() onAddCallback;
@@ -44,6 +45,12 @@ class DisappearingNavigationRail extends StatelessWidget {
               onPressed: () => onAddCallback(),
               child: const Icon(Icons.add),
             ),
+            const SizedBox(height: 8),
+            FloatingActionButton(
+                onPressed: () async {
+                  await showSearch(context: context, delegate: SearchAll());
+                },
+                child: const Icon(Icons.search))
           ],
         ),
         groupAlignment: -0.8,
