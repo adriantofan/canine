@@ -1,11 +1,13 @@
 import 'package:applib/applib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../destinations.dart';
 import '../../search/search.dart';
 
 class DisappearingNavigationRail extends StatelessWidget {
   final void Function() onAddCallback;
+
   const DisappearingNavigationRail({
     super.key,
     required this.onAddCallback,
@@ -25,46 +27,55 @@ class DisappearingNavigationRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return NavigationRail(
-        selectedIndex: selectedIndex,
-        selectedIconTheme: IconThemeData(color: colorScheme.primary),
-        backgroundColor: backgroundColor,
-        onDestinationSelected: onDestinationSelected,
-        leading: Column(
-          children: [
-            const SizedBox(height: 8),
-            FloatingActionButton(
-              heroTag: "disappearing_fab",
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+    return BlocProvider(
+      create: (context) => SearchSuggestBloc(context.read())
+        ..add(const SearchSuggestEvent.started()),
+      child: NavigationRail(
+          selectedIndex: selectedIndex,
+          selectedIconTheme: IconThemeData(color: colorScheme.primary),
+          backgroundColor: backgroundColor,
+          onDestinationSelected: onDestinationSelected,
+          leading: Column(
+            children: [
+              const SizedBox(height: 8),
+              FloatingActionButton(
+                heroTag: "disappearing_fab",
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  ),
                 ),
+                backgroundColor: colorScheme.tertiaryContainer,
+                foregroundColor: colorScheme.onTertiaryContainer,
+                onPressed: () => onAddCallback(),
+                child: const Icon(Icons.add),
               ),
-              backgroundColor: colorScheme.tertiaryContainer,
-              foregroundColor: colorScheme.onTertiaryContainer,
-              onPressed: () => onAddCallback(),
-              child: const Icon(Icons.add),
-            ),
-            const SizedBox(height: 8),
-            FloatingActionButton(
-                onPressed: () async {
-                  await showSearch(context: context, delegate: SearchAll());
-                },
-                child: const Icon(Icons.search))
-          ],
-        ),
-        groupAlignment: -0.8,
-        destinations: destinations.map((d) {
-          return NavigationRailDestination(
-            icon: Icon(d.icon),
-            label: Text(d.label),
-          );
-        }).toList(),
-        trailing: Column(
-          children: workspaces.values
-              .map((authInfo) => _buildWorkspaceButton(workspaceId, authInfo))
-              .toList(),
-        ));
+              const SizedBox(height: 8),
+              Builder(builder: (context) {
+                return FloatingActionButton(
+                    onPressed: () async {
+                      await showSearch(
+                          context: context,
+                          delegate: SearchAll(
+                              searchBloc: context.read<SearchSuggestBloc>()));
+                    },
+                    child: const Icon(Icons.search));
+              }),
+            ],
+          ),
+          groupAlignment: -0.8,
+          destinations: destinations.map((d) {
+            return NavigationRailDestination(
+              icon: Icon(d.icon),
+              label: Text(d.label),
+            );
+          }).toList(),
+          trailing: Column(
+            children: workspaces.values
+                .map((authInfo) => _buildWorkspaceButton(workspaceId, authInfo))
+                .toList(),
+          )),
+    );
   }
 
   Widget _buildWorkspaceButton(int? selectedWorkspaceId, AuthInfo authInfo) {

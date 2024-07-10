@@ -19,8 +19,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   @override
   Widget build(BuildContext context) {
     const kListViewWidth = 300.0;
-    return SyncSessionContainer(
-        child: LayoutBuilder(builder: (context, constraints) {
+    return LayoutBuilder(builder: (context, constraints) {
       return BlocProvider(
         create: (context) => ConversationsBloc(context.read<SyncRepository>())
           ..add(const ConversationsEvent.initial()),
@@ -51,6 +50,6 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
               );
             }),
       );
-    }));
+    });
   }
 }
